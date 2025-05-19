@@ -1,7 +1,7 @@
 export const metadata = {
-  title: "App Router",
+  title: "RMUD3",
 };
 
 export default function Page() {
-  return <h1>App Router</h1>;
+  return <h1>RMUD3</h1>;
 }

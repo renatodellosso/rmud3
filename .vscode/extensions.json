@@ -1,0 +1,9 @@
+
+{
+	"recommendations": [
+		"esbenp.prettier-vscode",
+		"pmneo.tsimporter",
+		"austenc.tailwind-docs",
+		"bradlc.vscode-tailwindcss"
+	]
+}
