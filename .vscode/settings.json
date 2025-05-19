@@ -10,5 +10,4 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "typescript.format.enable": false,
-  "prettier.configPath": ".prettierrc"
 }
