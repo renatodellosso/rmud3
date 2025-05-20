@@ -1,4 +1,5 @@
-import { restoreFieldsAndMethods } from "lib/utils";
+import { ItemDefinition, ItemInstance } from "lib/types";
+import { areItemInstancesEqual, restoreFieldsAndMethods } from "lib/utils";
 
 describe(restoreFieldsAndMethods.name, () => {
   test("restores methods from prototype to object", () => {
@@ -39,5 +40,62 @@ describe(restoreFieldsAndMethods.name, () => {
 
     obj.method1!();
     expect(obj.method1).toHaveBeenCalled();
+  });
+});
+
+describe(areItemInstancesEqual.name, () => {
+  test("returns true for equal item instances", () => {
+    const item1: ItemInstance = {
+      definitionId: "test",
+      amount: 1,
+    };
+
+    const item2: ItemInstance = {
+      definitionId: "test",
+      amount: 2,
+    };
+
+    expect(areItemInstancesEqual(item1, item2)).toBe(true);
+  });
+
+  test("returns false for different item instances", () => {
+    const item1: ItemInstance = {
+      definitionId: "test",
+      amount: 1,
+    };
+
+    const item2: ItemInstance = {
+      definitionId: "test2",
+      amount: 1,
+    };
+
+    expect(areItemInstancesEqual(item1, item2)).toBe(false);
+  });
+
+  test("returns false for different item instances with different amounts when skipAmounts is false", () => {
+    const item1: ItemInstance = {
+      definitionId: "test",
+      amount: 1,
+    };
+
+    const item2: ItemInstance = {
+      definitionId: "test",
+      amount: 2,
+    };
+
+    expect(areItemInstancesEqual(item1, item2, false)).toBe(false);
+  });
+  test("returns true for equal item instances with equal amounts when skipAmounts is false", () => {
+    const item1: ItemInstance = {
+      definitionId: "test",
+      amount: 1,
+    };
+
+    const item2: ItemInstance = {
+      definitionId: "test",
+      amount: 1,
+    };
+
+    expect(areItemInstancesEqual(item1, item2, false)).toBe(true);
   });
 });
