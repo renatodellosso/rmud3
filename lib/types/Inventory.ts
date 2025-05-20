@@ -1,6 +1,6 @@
-import items from "./gamedata/items";
+import items from "../gamedata/items";
 import { ItemInstance } from "./item";
-import { areItemInstancesEqual } from "./utils";
+import { areItemInstancesEqual } from "../utils";
 
 export default interface Inventory {
   /**

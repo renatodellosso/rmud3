@@ -1,9 +1,9 @@
-import { Location } from "../types";
+import { Location } from "../types/types";
 
 const locations = {
-  "test": {
+  test: {
     name: "Test Location",
-  }
+  },
 } satisfies Record<string, Location>;
 
 export default locations;

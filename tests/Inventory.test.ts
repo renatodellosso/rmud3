@@ -1,5 +1,5 @@
-import { DirectInventory } from "lib/Inventory";
-import { ItemInstance } from "lib/item";
+import { DirectInventory } from "lib/types/Inventory";
+import { ItemInstance } from "lib/types/item";
 
 describe(DirectInventory.name, () => {
   describe(DirectInventory.prototype.add.name, () => {
@@ -60,7 +60,10 @@ describe(DirectInventory.name, () => {
     test("does not remove an item if it is not in the inventory", () => {
       const inventory = new DirectInventory();
 
-      const removedAmount = inventory.remove({ definitionId: "test", amount: 2 });
+      const removedAmount = inventory.remove({
+        definitionId: "test",
+        amount: 2,
+      });
 
       expect(removedAmount).toBe(0);
     });

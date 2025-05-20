@@ -1,6 +1,6 @@
 //Use this file to get around circular dependencies
 
-import { restoreFieldsAndMethods } from "./utils";
+import { restoreFieldsAndMethods } from "../utils";
 
 export class CannotDirectlyCreateInstanceError extends Error {
   constructor(className: string) {

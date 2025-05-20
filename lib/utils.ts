@@ -1,4 +1,4 @@
-import { ItemInstance } from "./types";
+import { ItemInstance } from "./types/types";
 
 /**
  * Copies all properties from the prototype to the object if they are not already defined.
@@ -27,8 +27,7 @@ export function areItemInstancesEqual(
   item2: ItemInstance,
   skipAmount = true
 ) {
-  if (item1 == item2)
-    return true;
+  if (item1 == item2) return true;
 
   for (const key in item1) {
     if (skipAmount && key === "amount") continue;
