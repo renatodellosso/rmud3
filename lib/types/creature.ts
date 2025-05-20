@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
-import creatures from "./gamedata/creatures";
-import locations from "./gamedata/locations";
+import creatures from "../gamedata/creatures";
+import locations from "../gamedata/locations";
 import { AbilityScore, CannotDirectlyCreateInstanceError } from "./utilstypes";
 
 export type CreatureDefinition = {

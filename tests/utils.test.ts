@@ -1,4 +1,4 @@
-import { ItemDefinition, ItemInstance } from "lib/types";
+import { ItemDefinition, ItemInstance } from "lib/types/types";
 import { areItemInstancesEqual, restoreFieldsAndMethods } from "lib/utils";
 
 describe(restoreFieldsAndMethods.name, () => {
