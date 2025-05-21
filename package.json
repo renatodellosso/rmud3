@@ -8,6 +8,7 @@
     "test:ci": "jest --ci"
   },
   "dependencies": {
+    "mongodb": "^6.16.0",
     "next": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
