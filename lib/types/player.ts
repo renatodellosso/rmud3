@@ -2,7 +2,9 @@ import { ObjectId } from "bson";
 import { CreatureInstance } from "./creature";
 import Inventory from "./Inventory";
 import { AbilityScore, CannotDirectlyCreateInstanceError } from "./utilstypes";
-import { ItemInstance } from "./item";
+import { EquipmentDefinition, ItemInstance } from "./item";
+import Ability from "./Ability";
+import items from "lib/gamedata/items";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId;
@@ -22,6 +24,18 @@ export class PlayerInstance extends CreatureInstance {
 
   getAbilityScore(score: AbilityScore) {
     return this.abilityScores[score] + super.getAbilityScore(score);
+  }
+
+  getAbilities(): Ability[] {
+    const abilities = super.getAbilities();
+
+    for (const equipment of this.equipment) {
+      const def = items[equipment.definitionId] as EquipmentDefinition;
+      if (def.abilities) {
+        abilities.push(...def.abilities);
+      }
+    }
+    return abilities;
   }
 }
 

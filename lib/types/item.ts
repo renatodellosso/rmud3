@@ -1,4 +1,5 @@
 import items from "../gamedata/items";
+import Ability from "./Ability";
 
 export type ItemDefinition = {
   name: string;
@@ -15,7 +16,8 @@ export type ItemInstance = {
 export enum ItemTag {}
 
 export type EquipmentDefinition = ItemDefinition & {
-  type?: EquipmentType;
+  slot?: EquipmentSlot;
+  abilities?: Ability[];
 };
 
-export enum EquipmentType {}
+export enum EquipmentSlot {}

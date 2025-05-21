@@ -16,3 +16,9 @@ export enum AbilityScore {
   Constitution = "Constitution",
   Intelligence = "Intelligence",
 }
+
+export type OptionalFunc<TReturn, TParams extends any> =
+  | TReturn
+  | TParams extends []
+  ? (...params: TParams extends [] ? TParams : [TParams]) => TReturn
+  : (params: TParams) => TReturn;

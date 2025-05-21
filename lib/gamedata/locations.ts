@@ -4,6 +4,6 @@ const locations = {
   test: {
     name: "Test Location",
   },
-} satisfies Record<string, Location>;
+} as Record<string, Location>;
 
 export default locations;

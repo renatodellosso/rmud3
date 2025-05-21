@@ -1,5 +1,5 @@
 import { AbilityScore } from "lib/types/utilstypes";
-import { CreatureDefinition } from "../types/types";
+import { CreatureDefinition } from "../types/creature";
 
 const creatures = Object.freeze({
   test: {
@@ -20,6 +20,6 @@ const creatures = Object.freeze({
       [AbilityScore.Intelligence]: 10,
     },
   },
-} satisfies Record<string, CreatureDefinition>);
+} as Record<string, CreatureDefinition>);
 
 export default creatures;

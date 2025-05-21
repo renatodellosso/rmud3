@@ -13,6 +13,6 @@ const items = Object.freeze({
     description: "This is another test item.",
     weight: 2,
   },
-} satisfies Record<string, ItemDefinition>);
+} as Record<string, ItemDefinition>);
 
 export default items;
