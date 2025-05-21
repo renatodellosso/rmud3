@@ -19,6 +19,4 @@ export enum AbilityScore {
 
 export type OptionalFunc<TReturn, TParams extends any> =
   | TReturn
-  | TParams extends []
-  ? (...params: TParams extends [] ? TParams : [TParams]) => TReturn
-  : (params: TParams) => TReturn;
+  | ((...params: TParams extends any[] ? TParams : [TParams]) => TReturn);

@@ -22,8 +22,38 @@ export class PlayerInstance extends CreatureInstance {
     super();
   }
 
+  getMaxHealth(): number {
+    let val = super.getMaxHealth();
+
+    for (const equipment of this.equipment) {
+      const def = items[equipment.definitionId] as EquipmentDefinition;
+      if (!def.getMaxHealth) continue;
+
+      if (typeof def.getMaxHealth === "function") {
+        val += def.getMaxHealth(this, equipment);
+      } else {
+        val += def.getMaxHealth;
+      }
+    }
+
+    return val;
+  }
+
   getAbilityScore(score: AbilityScore) {
-    return this.abilityScores[score] + super.getAbilityScore(score);
+    let val = this.abilityScores[score] + super.getAbilityScore(score);
+
+    for (const equipment of this.equipment) {
+      const def = items[equipment.definitionId] as EquipmentDefinition;
+      if (!def.abilityScores || !def.abilityScores[score]) continue;
+
+      if (typeof def.abilityScores[score] === "function") {
+        val += def.abilityScores[score](this, equipment);
+      } else {
+        val += def.abilityScores[score];
+      }
+    }
+
+    return val;
   }
 
   getAbilities(): Ability[] {
@@ -31,8 +61,10 @@ export class PlayerInstance extends CreatureInstance {
 
     for (const equipment of this.equipment) {
       const def = items[equipment.definitionId] as EquipmentDefinition;
-      if (def.abilities) {
-        abilities.push(...def.abilities);
+      if (Array.isArray(def.getAbilities)) {
+        abilities.push(...def.getAbilities);
+      } else if (typeof def.getAbilities === "function") {
+        abilities.push(...def.getAbilities(this, equipment));
       }
     }
     return abilities;
