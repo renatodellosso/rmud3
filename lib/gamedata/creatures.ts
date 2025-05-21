@@ -20,6 +20,6 @@ const creatures = Object.freeze({
       [AbilityScore.Intelligence]: 10,
     },
   },
-} satisfies Record<string, CreatureDefinition>);
+} as Record<string, CreatureDefinition>);
 
 export default creatures;

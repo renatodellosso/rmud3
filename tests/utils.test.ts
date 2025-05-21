@@ -1,4 +1,4 @@
-import { ItemDefinition, ItemInstance } from "lib/types/types";
+import { ItemInstance } from "lib/types/item";
 import { areItemInstancesEqual, restoreFieldsAndMethods } from "lib/utils";
 
 describe(restoreFieldsAndMethods.name, () => {
@@ -40,6 +40,20 @@ describe(restoreFieldsAndMethods.name, () => {
 
     obj.method1!();
     expect(obj.method1).toHaveBeenCalled();
+  });
+
+  test("Works on instances of classes", () => {
+    class TestClass {
+      methodA() {}
+    }
+
+    const obj = {} as any as TestClass;
+    const prototype = TestClass.prototype;
+
+    restoreFieldsAndMethods(obj, prototype);
+
+    expect(obj.methodA).toBeDefined();
+    expect(obj.methodA).toBe(prototype.methodA);
   });
 });
 
@@ -85,6 +99,7 @@ describe(areItemInstancesEqual.name, () => {
 
     expect(areItemInstancesEqual(item1, item2, false)).toBe(false);
   });
+
   test("returns true for equal item instances with equal amounts when skipAmounts is false", () => {
     const item1: ItemInstance = {
       definitionId: "test",

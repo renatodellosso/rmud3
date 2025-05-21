@@ -1,4 +1,7 @@
 import items from "../gamedata/items";
+import Ability from "./Ability";
+import { CreatureInstance } from "./creature";
+import { AbilityScore, OptionalFunc } from "./utilstypes";
 
 export type ItemDefinition = {
   name: string;
@@ -12,10 +15,29 @@ export type ItemInstance = {
   amount: number;
 };
 
-export enum ItemTag {}
+export enum ItemTag {
+  Equipment = "Equipment",
+}
 
-export type EquipmentDefinition = ItemDefinition & {
-  type?: EquipmentType;
+export type EquipmentDefinition = Omit<
+  ItemDefinition,
+  "tags" | "definitionId"
+> & {
+  tags: [ItemTag.Equipment, ...ItemTag[]]; // Ensure Equipment always has the Equipment tag
+  slot?: EquipmentSlot;
+  getAbilities?: OptionalFunc<Ability[], [CreatureInstance, ItemInstance]>;
+  getMaxHealth?: OptionalFunc<number, [CreatureInstance, ItemInstance]>;
+  abilityScores?: {
+    [score in AbilityScore]:
+      | OptionalFunc<number, [CreatureInstance, ItemInstance]>
+      | undefined;
+  };
+  /**
+   * Undefined defaults to true
+   */
+  canEquip?: (player: CreatureInstance) => boolean;
 };
 
-export enum EquipmentType {}
+export enum EquipmentSlot {
+  Chest = "Chest",
+}

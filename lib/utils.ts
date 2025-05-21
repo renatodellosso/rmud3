@@ -1,4 +1,4 @@
-import { ItemInstance } from "./types/types";
+import { ItemInstance } from "./types/item";
 
 /**
  * Copies all properties from the prototype to the object if they are not already defined.
@@ -7,13 +7,18 @@ export function restoreFieldsAndMethods<T extends object>(
   obj: T,
   prototype: T
 ) {
-  for (const key in prototype) {
+  const keys = Object.getOwnPropertyNames(prototype);
+
+  // Cast to Record<string, any> to avoid TypeScript errors
+  const rObj = obj as Record<string, any>;
+  const rPrototype = prototype as Record<string, any>;
+
+  for (const key of keys) {
     if (
-      !(key in obj) ||
-      (obj[key] === undefined && prototype[key] !== undefined)
+      (!(key in obj) && key in prototype) ||
+      (rObj[key] === undefined && rPrototype[key] !== undefined)
     ) {
-      const method = prototype[key];
-      obj[key] = method;
+      rObj[key] = rPrototype[key];
     }
   }
 }
