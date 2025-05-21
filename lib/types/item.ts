@@ -15,9 +15,15 @@ export type ItemInstance = {
   amount: number;
 };
 
-export enum ItemTag {}
+export enum ItemTag {
+  Equipment = "Equipment",
+}
 
-export type EquipmentDefinition = ItemDefinition & {
+export type EquipmentDefinition = Omit<
+  ItemDefinition,
+  "tags" | "definitionId"
+> & {
+  tags: [ItemTag.Equipment, ...ItemTag[]]; // Ensure Equipment always has the Equipment tag
   slot?: EquipmentSlot;
   getAbilities?: OptionalFunc<Ability[], [CreatureInstance, ItemInstance]>;
   getMaxHealth?: OptionalFunc<number, [CreatureInstance, ItemInstance]>;
@@ -26,6 +32,12 @@ export type EquipmentDefinition = ItemDefinition & {
       | OptionalFunc<number, [CreatureInstance, ItemInstance]>
       | undefined;
   };
+  /**
+   * Undefined defaults to true
+   */
+  canEquip?: (player: CreatureInstance) => boolean;
 };
 
-export enum EquipmentSlot {}
+export enum EquipmentSlot {
+  Chest = "Chest",
+}

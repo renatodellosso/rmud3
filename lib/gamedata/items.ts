@@ -1,4 +1,9 @@
-import { ItemDefinition } from "lib/types/item";
+import {
+  EquipmentDefinition,
+  EquipmentSlot,
+  ItemDefinition,
+  ItemTag,
+} from "lib/types/item";
 
 const items = Object.freeze({
   test: {
@@ -13,6 +18,25 @@ const items = Object.freeze({
     description: "This is another test item.",
     weight: 2,
   },
+  equipment1: {
+    name: "Test Equipment",
+    tags: [ItemTag.Equipment],
+    description: "This is a test equipment.",
+    weight: 1,
+  } satisfies EquipmentDefinition,
+  equipment2: {
+    name: "Test Equipment 2",
+    tags: [ItemTag.Equipment],
+    description: "This is another test equipment.",
+    weight: 2,
+  } satisfies EquipmentDefinition,
+  chestplate1: {
+    name: "Test Chestplate",
+    tags: [ItemTag.Equipment],
+    description: "This is a test chestplate.",
+    weight: 1,
+    slot: EquipmentSlot.Chest,
+  } satisfies EquipmentDefinition,
 } as Record<string, ItemDefinition>);
 
 export default items;
