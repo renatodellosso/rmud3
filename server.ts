@@ -1,11 +1,22 @@
 import { createServer } from "http";
 import { parse } from "url";
 import next from "next";
+import { Server } from "socket.io";
 
 const port = parseInt(process.env.PORT || "3000", 10);
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
+const io = new Server<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  InterServerEvents,
+  SocketData
+>({
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
 
 app.prepare().then(() => {
   createServer((req, res) => {
@@ -19,3 +30,9 @@ app.prepare().then(() => {
     }`
   );
 });
+
+io.on("connection", (socket) => {
+  console.log("a user connected");
+});
+
+io.listen(4000);
