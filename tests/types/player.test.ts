@@ -1,5 +1,5 @@
 import { PlayerInstance } from "lib/types/player";
-import { OmitType } from "lib/types/utilstypes";
+import { OmitType } from "lib/types/types";
 import { restoreFieldsAndMethods } from "lib/utils";
 import { ObjectId } from "bson";
 import { ItemTag } from "lib/types/item";

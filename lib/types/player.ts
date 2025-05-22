@@ -1,7 +1,7 @@
 import { ObjectId } from "bson";
 import { CreatureInstance } from "./creature";
 import Inventory from "./Inventory";
-import { AbilityScore, CannotDirectlyCreateInstanceError } from "./utilstypes";
+import { AbilityScore, CannotDirectlyCreateInstanceError } from "./types";
 import { EquipmentDefinition, ItemInstance, ItemTag } from "./item";
 import Ability from "./Ability";
 import items from "lib/gamedata/items";

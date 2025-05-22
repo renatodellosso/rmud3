@@ -1,8 +1,6 @@
 import { MongoClient, Db } from "mongodb";
 import dotenv from "dotenv";
 
-var mongoDb;
-
 export async function getMongoClient(): Promise<Db> {
   const mongoDb = (globalThis as any as { mongoDb: Db | undefined }).mongoDb;
   if (mongoDb) {

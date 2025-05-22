@@ -13,6 +13,9 @@ export async function verifyPassword(
   return argon2.verify(hash, password);
 }
 
+/**
+ * Does not actually add the account to the database.
+ */
 export async function createAccount(
   email: string,
   username: string,
