@@ -13,27 +13,20 @@ export type CreatureDefinition = {
 };
 
 export class CreatureInstance {
-  _id: ObjectId;
+  _id: ObjectId = new ObjectId();
 
-  definitionId: keyof typeof creatures;
+  definitionId: keyof typeof creatures =
+    undefined as unknown as keyof typeof creatures;
 
-  name: string;
-  location: keyof typeof locations;
+  name: string = undefined as unknown as string;
+  location: keyof typeof locations =
+    undefined as unknown as keyof typeof locations;
 
-  health: number;
+  health: number = undefined as unknown as number;
 
-  canActAt: Date;
+  canActAt: Date = new Date();
 
-  constructor() {
-    this._id = undefined as unknown as ObjectId;
-    this.definitionId = undefined as unknown as keyof typeof creatures;
-    this.name = undefined as unknown as string;
-    this.location = undefined as unknown as keyof typeof locations;
-
-    this.health = undefined as unknown as number;
-
-    this.canActAt = undefined as unknown as Date;
-  }
+  constructor() {}
 
   getAbilityScore(score: AbilityScore) {
     return creatures[this.definitionId].abilityScores[score];

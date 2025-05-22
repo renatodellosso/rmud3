@@ -8,32 +8,24 @@ import items from "lib/gamedata/items";
 import { ConsumableHotbar, EquipmentHotbar } from "./Hotbar";
 
 export class PlayerInstance extends CreatureInstance {
-  progressId: ObjectId;
+  progressId: ObjectId = undefined as unknown as ObjectId;
 
-  definitionId: "player";
+  definitionId: "player" = "player";
 
-  abilityScores: { [score in AbilityScore]: number };
+  abilityScores: { [score in AbilityScore]: number } = {
+    [AbilityScore.Strength]: 0,
+    [AbilityScore.Constitution]: 0,
+    [AbilityScore.Intelligence]: 0,
+  };
 
-  xp: number;
+  xp: number = 0;
 
-  inventory: Inventory;
-  equipment: EquipmentHotbar;
-  consumables: ConsumableHotbar;
+  inventory: Inventory = new DirectInventory();
+  equipment: EquipmentHotbar = new EquipmentHotbar();
+  consumables: ConsumableHotbar = new ConsumableHotbar();
 
   constructor() {
     super();
-
-    this.progressId = undefined as unknown as ObjectId;
-    this.definitionId = "player";
-    this.abilityScores = undefined as unknown as {
-      [score in AbilityScore]: number;
-    };
-    this.xp = 0;
-
-    // Things we actually need
-    this.inventory = new DirectInventory();
-    this.equipment = new EquipmentHotbar();
-    this.consumables = new ConsumableHotbar();
   }
 
   getMaxHealth(): number {

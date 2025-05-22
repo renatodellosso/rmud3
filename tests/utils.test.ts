@@ -1,4 +1,5 @@
 import { ItemInstance } from "lib/types/item";
+import { PlayerInstance } from "lib/types/player";
 import { areItemInstancesEqual, restoreFieldsAndMethods } from "lib/utils";
 
 describe(restoreFieldsAndMethods.name, () => {
@@ -71,12 +72,39 @@ describe(restoreFieldsAndMethods.name, () => {
     const obj = {} as any as TestClass;
     const prototype = TestClass.prototype;
 
-    console.log(prototype.nested);
-
     restoreFieldsAndMethods(obj, new TestClass());
 
     expect(obj.nested.methodB).toBeDefined();
     expect(obj.nested.methodB).toBe(NestedClass.prototype.methodB);
+  });
+
+  test("Works on PlayerInstance", () => {
+    const player: Partial<PlayerInstance> = {
+      equipment: {
+        items: [
+          {
+            definitionId: "equipment1",
+            amount: 1,
+          } as ItemInstance,
+        ],
+      },
+    } as any;
+    const prototype = new PlayerInstance();
+
+    restoreFieldsAndMethods(player, prototype);
+
+    expect(player.getMaxHealth).toBeDefined();
+    expect(player.getMaxHealth).toBe(prototype.getMaxHealth);
+    expect(player.getAbilityScore).toBeDefined();
+    expect(player.getAbilityScore).toBe(prototype.getAbilityScore);
+    expect(player.getAbilities).toBeDefined();
+    expect(player.getAbilities).toBe(prototype.getAbilities);
+
+    expect(player.equipment?.canEquip).toBeDefined();
+    expect(player.equipment?.canEquip).toBe(prototype.equipment.canEquip);
+
+    expect(player.consumables?.canEquip).toBeDefined();
+    expect(player.consumables?.canEquip).toBe(prototype.consumables.canEquip);
   });
 });
 
