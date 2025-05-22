@@ -15,5 +15,6 @@ export async function getMongoClient(): Promise<Db> {
 
   const db: Db = client.db(process.env.DB_NAME);
 
+  (globalThis as any as { mongoDb: Db | undefined }).mongoDb = db;
   return db;
 }

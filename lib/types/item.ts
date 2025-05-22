@@ -17,27 +17,35 @@ export type ItemInstance = {
 
 export enum ItemTag {
   Equipment = "Equipment",
+  Consumable = "Consumable",
 }
 
-export type EquipmentDefinition = Omit<
-  ItemDefinition,
-  "tags" | "definitionId"
-> & {
-  tags: [ItemTag.Equipment, ...ItemTag[]]; // Ensure Equipment always has the Equipment tag
-  slot?: EquipmentSlot;
+export interface ActivatableItemDefinition {
   getAbilities?: OptionalFunc<Ability[], [CreatureInstance, ItemInstance]>;
-  getMaxHealth?: OptionalFunc<number, [CreatureInstance, ItemInstance]>;
-  abilityScores?: {
-    [score in AbilityScore]:
-      | OptionalFunc<number, [CreatureInstance, ItemInstance]>
-      | undefined;
-  };
   /**
    * Undefined defaults to true
    */
   canEquip?: (player: CreatureInstance) => boolean;
-};
+}
+
+export type EquipmentDefinition = ActivatableItemDefinition &
+  Omit<ItemDefinition, "tags" | "definitionId"> & {
+    tags: [ItemTag.Equipment, ...ItemTag[]]; // Ensure Equipment always has the Equipment tag
+    slot?: EquipmentSlot;
+    getMaxHealth?: OptionalFunc<number, [CreatureInstance, ItemInstance]>;
+    abilityScores?: {
+      [score in AbilityScore]:
+        | OptionalFunc<number, [CreatureInstance, ItemInstance]>
+        | undefined;
+    };
+  };
 
 export enum EquipmentSlot {
   Chest = "Chest",
 }
+
+export type ConsumableDefinition = ActivatableItemDefinition &
+  Omit<ItemDefinition, "tags" | "definitionId"> & {
+    tags: [ItemTag.Consumable, ...ItemTag[]]; // Ensure Consumable always has the Consumable tag
+    getMaxUses?: OptionalFunc<number, [CreatureInstance, ItemInstance]>;
+  };

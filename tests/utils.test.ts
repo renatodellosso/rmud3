@@ -55,6 +55,29 @@ describe(restoreFieldsAndMethods.name, () => {
     expect(obj.methodA).toBeDefined();
     expect(obj.methodA).toBe(prototype.methodA);
   });
+
+  test("Works on nested classes", () => {
+    class NestedClass {
+      methodB() {}
+    }
+
+    class TestClass {
+      nested: NestedClass = {} as any as NestedClass;
+      constructor() {
+        this.nested = new NestedClass();
+      }
+    }
+
+    const obj = {} as any as TestClass;
+    const prototype = TestClass.prototype;
+
+    console.log(prototype.nested);
+
+    restoreFieldsAndMethods(obj, new TestClass());
+
+    expect(obj.nested.methodB).toBeDefined();
+    expect(obj.nested.methodB).toBe(NestedClass.prototype.methodB);
+  });
 });
 
 describe(areItemInstancesEqual.name, () => {

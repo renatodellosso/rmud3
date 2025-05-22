@@ -19,6 +19,19 @@ export function restoreFieldsAndMethods<T extends object>(
       (rObj[key] === undefined && rPrototype[key] !== undefined)
     ) {
       rObj[key] = rPrototype[key];
+    } else if (
+      typeof rObj[key] === "object" &&
+      typeof rPrototype[key] === "object"
+    ) {
+      // If the property is an object, recursively restore fields and methods
+      restoreFieldsAndMethods(rObj[key], rPrototype[key]);
+    } else if (Array.isArray(rObj[key]) && Array.isArray(rPrototype[key])) {
+      // If the property is an array, recursively restore fields and methods for each element
+      for (let i = 0; i < rObj[key].length; i++) {
+        if (rPrototype[key][i]) {
+          restoreFieldsAndMethods(rObj[key][i], rPrototype[key][i]);
+        }
+      }
     }
   }
 }

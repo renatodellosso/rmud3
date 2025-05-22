@@ -1,31 +1,45 @@
 import { ObjectId } from "bson";
 import { CreatureInstance } from "./creature";
-import Inventory from "./Inventory";
+import Inventory, { DirectInventory } from "./Inventory";
 import { AbilityScore, CannotDirectlyCreateInstanceError } from "./types";
 import { EquipmentDefinition, ItemInstance, ItemTag } from "./item";
 import Ability from "./Ability";
 import items from "lib/gamedata/items";
+import { ConsumableHotbar, EquipmentHotbar } from "./Hotbar";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId;
-
-  inventory: Inventory;
 
   definitionId: "player";
 
   abilityScores: { [score in AbilityScore]: number };
 
-  equipment: ItemInstance[];
+  xp: number;
+
+  inventory: Inventory;
+  equipment: EquipmentHotbar;
+  consumables: ConsumableHotbar;
 
   constructor() {
-    throw new CannotDirectlyCreateInstanceError(PlayerInstance.name);
     super();
+
+    this.progressId = undefined as unknown as ObjectId;
+    this.definitionId = "player";
+    this.abilityScores = undefined as unknown as {
+      [score in AbilityScore]: number;
+    };
+    this.xp = 0;
+
+    // Things we actually need
+    this.inventory = new DirectInventory();
+    this.equipment = new EquipmentHotbar();
+    this.consumables = new ConsumableHotbar();
   }
 
   getMaxHealth(): number {
     let val = super.getMaxHealth();
 
-    for (const equipment of this.equipment) {
+    for (const equipment of this.equipment.items) {
       const def = items[equipment.definitionId] as EquipmentDefinition;
       if (!def.getMaxHealth) continue;
 
@@ -42,7 +56,7 @@ export class PlayerInstance extends CreatureInstance {
   getAbilityScore(score: AbilityScore) {
     let val = this.abilityScores[score] + super.getAbilityScore(score);
 
-    for (const equipment of this.equipment) {
+    for (const equipment of this.equipment.items) {
       const def = items[equipment.definitionId] as EquipmentDefinition;
       if (!def.abilityScores || !def.abilityScores[score]) continue;
 
@@ -59,7 +73,9 @@ export class PlayerInstance extends CreatureInstance {
   getAbilities(): Ability[] {
     const abilities = super.getAbilities();
 
-    for (const equipment of this.equipment) {
+    for (const equipment of this.equipment.items.concat(
+      this.consumables.items
+    )) {
       const def = items[equipment.definitionId] as EquipmentDefinition;
       if (Array.isArray(def.getAbilities)) {
         abilities.push(...def.getAbilities);
@@ -68,59 +84,6 @@ export class PlayerInstance extends CreatureInstance {
       }
     }
     return abilities;
-  }
-
-  getMaxEquipment(): number {
-    return 3;
-  }
-
-  canEquip(item: ItemInstance): boolean {
-    if (this.equipment.includes(item)) return false;
-
-    if (!items[item.definitionId].tags.includes(ItemTag.Equipment))
-      return false;
-    if (this.equipment.length >= this.getMaxEquipment()) return false;
-
-    if ((items[item.definitionId] as EquipmentDefinition).slot) {
-      const sameSlot = this.equipment.find(
-        (i) =>
-          (items[i.definitionId] as EquipmentDefinition).slot &&
-          (items[i.definitionId] as EquipmentDefinition).slot ===
-            (items[item.definitionId] as EquipmentDefinition).slot
-      );
-
-      if (sameSlot) return false;
-    }
-
-    const def = items[item.definitionId] as EquipmentDefinition;
-    if (def.canEquip && typeof def.canEquip === "function") {
-      return def.canEquip(this);
-    }
-
-    return true;
-  }
-
-  /**
-   * @returns whether the item was successfully equipped
-   */
-  equip(item: ItemInstance): boolean {
-    if (!this.canEquip(item)) return false;
-
-    this.equipment.push(item);
-    return true;
-  }
-
-  /**
-   * @param item The item to unequip. Checks equality by reference.
-   * @returns whether the item was successfully unequipped
-   */
-  unequip(item: ItemInstance): boolean {
-    const index = this.equipment.findIndex((i) => i === item);
-
-    if (index === -1) return false;
-
-    this.equipment.splice(index, 1);
-    return true;
   }
 }
 

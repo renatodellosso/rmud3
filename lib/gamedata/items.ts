@@ -1,4 +1,5 @@
 import {
+  ConsumableDefinition,
   EquipmentDefinition,
   EquipmentSlot,
   ItemDefinition,
@@ -37,6 +38,12 @@ const items = Object.freeze({
     weight: 1,
     slot: EquipmentSlot.Chest,
   } satisfies EquipmentDefinition,
+  consumable1: {
+    name: "Test Consumable",
+    tags: [ItemTag.Consumable],
+    description: "This is a test consumable.",
+    weight: 1,
+  } satisfies ConsumableDefinition,
 } as Record<string, ItemDefinition>);
 
 export default items;

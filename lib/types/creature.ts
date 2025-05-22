@@ -25,7 +25,14 @@ export class CreatureInstance {
   canActAt: Date;
 
   constructor() {
-    throw new CannotDirectlyCreateInstanceError(CreatureInstance.name);
+    this._id = undefined as unknown as ObjectId;
+    this.definitionId = undefined as unknown as keyof typeof creatures;
+    this.name = undefined as unknown as string;
+    this.location = undefined as unknown as keyof typeof locations;
+
+    this.health = undefined as unknown as number;
+
+    this.canActAt = undefined as unknown as Date;
   }
 
   getAbilityScore(score: AbilityScore) {
