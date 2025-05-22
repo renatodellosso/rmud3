@@ -1,4 +1,4 @@
-import { AbilityScore } from "lib/types/utilstypes";
+import { AbilityScore } from "lib/types/types";
 import { CreatureDefinition } from "../types/creature";
 
 const creatures = Object.freeze({

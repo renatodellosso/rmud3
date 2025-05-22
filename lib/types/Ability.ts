@@ -1,6 +1,6 @@
 import { CreatureInstance } from "./creature";
 import { Targetable } from "./types";
-import { OptionalFunc } from "./utilstypes";
+import { OptionalFunc } from "./types";
 
 type Ability = {
   name: string;
