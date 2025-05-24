@@ -1,7 +1,8 @@
 import { ObjectId } from "bson";
 import Session from "./types/Session";
+import { getSingleton } from "./utils";
 
-class SessionManager {
+export class SessionManager {
   private sessions: Map<ObjectId, Session>;
 
   constructor() {
@@ -29,8 +30,9 @@ class SessionManager {
   }
 }
 
-if (!(globalThis as any).sessionManager) {
-  (globalThis as any).sessionManager = new SessionManager();
-}
+const getSessionManager = getSingleton<SessionManager>(
+  "sessionManager",
+  () => new SessionManager()
+);
 
-export default (globalThis as any).sessionManager;
+export default getSessionManager;

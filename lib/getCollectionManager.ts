@@ -1,4 +1,4 @@
-import { Db, OptionalId, Document } from "mongodb";
+import { Db, OptionalId, Document, Filter } from "mongodb";
 import { ObjectId } from "bson";
 import NodeCache from "node-cache";
 import CollectionId from "./types/CollectionId";
@@ -21,7 +21,7 @@ export class CachedCollection<T extends OptionalId<Document>> {
     return this.db.collection(this.id);
   }
 
-  async getCachedData(key: ObjectId): Promise<T | null> {
+  async get(key: ObjectId): Promise<T | null> {
     const cachedData = this.cache.get<T>(key.toString());
     if (cachedData) {
       return cachedData;
@@ -37,7 +37,25 @@ export class CachedCollection<T extends OptionalId<Document>> {
     return null;
   }
 
-  async insertData(data: T): Promise<ObjectId> {
+  async find(query: Partial<T> | Filter<Document>): Promise<T[]> {
+    const cachedData = this.cache.keys().map((key) => this.cache.get<T>(key));
+    const cachedResults = cachedData.filter((data) =>
+      Object.entries(query).every(([k, v]) => data && data[k] === v)
+    );
+
+    if (cachedResults.length > 0) {
+      return cachedResults as T[];
+    }
+
+    const collection = this.getCollection();
+
+    const cursor = collection.find(query);
+    const results: T[] = [];
+
+    return results;
+  }
+
+  async upsert(data: T): Promise<ObjectId> {
     const collection = this.getCollection();
     const result = await collection.updateOne({ _id: data._id }, data, {
       upsert: true,
@@ -49,6 +67,10 @@ export class CachedCollection<T extends OptionalId<Document>> {
     }
 
     throw new Error("Insert failed");
+  }
+
+  async setInCache(key: ObjectId, data: T): Promise<void> {
+    this.cache.set(key.toString(), data);
   }
 }
 
