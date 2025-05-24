@@ -1,6 +1,10 @@
 import { ItemInstance } from "lib/types/item";
 import { PlayerInstance } from "lib/types/player";
-import { areItemInstancesEqual, restoreFieldsAndMethods } from "lib/utils";
+import {
+  areItemInstancesEqual,
+  getSingleton,
+  restoreFieldsAndMethods,
+} from "lib/utils";
 
 describe(restoreFieldsAndMethods.name, () => {
   test("restores methods from prototype to object", () => {
@@ -163,5 +167,51 @@ describe(areItemInstancesEqual.name, () => {
     };
 
     expect(areItemInstancesEqual(item1, item2, false)).toBe(true);
+  });
+});
+
+describe(getSingleton.name, () => {
+  beforeEach(() => {
+    // Clear the singleton cache before each test
+    (globalThis as any).singletons = {};
+  });
+
+  test("returns the same instance for the same name", () => {
+    const instance1 = getSingleton("test", () => {
+      return { value: 1 };
+    });
+
+    const instance2 = getSingleton("test", () => {
+      return { value: 2 };
+    });
+
+    expect(instance1).toBe(instance2);
+    expect(instance1.value).toBe(1);
+  });
+
+  test("returns different instances for different names", () => {
+    const instance1 = getSingleton("test1", () => {
+      return { value: 1 };
+    });
+
+    const instance2 = getSingleton("test2", () => {
+      return { value: 2 };
+    });
+
+    expect(instance1).not.toBe(instance2);
+    expect(instance1.value).toBe(1);
+    expect(instance2.value).toBe(2);
+  });
+
+  test("does not run setter function if instance already exists", () => {
+    const setter = jest.fn(() => {
+      return { value: 1 };
+    });
+
+    const instance1 = getSingleton("test", setter);
+    const instance2 = getSingleton("test", setter);
+
+    expect(instance1).toBe(instance2);
+    expect(setter).toHaveBeenCalledTimes(1);
   });
 });

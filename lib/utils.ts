@@ -66,3 +66,19 @@ export function areItemInstancesEqual(
 
   return true;
 }
+
+export function getSingleton<T>(name: string, setter: () => T): T {
+  if (!(globalThis as any).singletons) {
+    (globalThis as any).singletons = {} as Record<string, any>;
+  }
+
+  const singletons = (globalThis as any).singletons as any as Record<
+    string,
+    any
+  >;
+
+  if (!singletons[name]) {
+    singletons[name] = setter();
+  }
+  return singletons[name];
+}

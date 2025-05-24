@@ -1,20 +1,17 @@
 import { MongoClient, Db } from "mongodb";
 import dotenv from "dotenv";
+import { getSingleton } from "./utils";
 
 export async function getMongoClient(): Promise<Db> {
-  const mongoDb = (globalThis as any as { mongoDb: Db | undefined }).mongoDb;
-  if (mongoDb) {
-    return mongoDb;
-  }
+  return getSingleton<Db>("mongoDb", async () => {
+    dotenv.config();
 
-  dotenv.config();
+    const client: MongoClient = new MongoClient(process.env.MONGODB_URI!);
 
-  const client: MongoClient = new MongoClient(process.env.MONGODB_URI!);
+    await client.connect();
 
-  await client.connect();
+    const db: Db = client.db(process.env.DB_NAME);
 
-  const db: Db = client.db(process.env.DB_NAME);
-
-  (globalThis as any as { mongoDb: Db | undefined }).mongoDb = db;
-  return db;
+    return db;
+  });
 }
