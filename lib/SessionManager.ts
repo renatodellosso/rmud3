@@ -30,9 +30,7 @@ export class SessionManager {
   }
 }
 
-const getSessionManager = getSingleton<SessionManager>(
-  "sessionManager",
-  () => new SessionManager()
-);
+const getSessionManager = () =>
+  getSingleton<SessionManager>("sessionManager", () => new SessionManager());
 
 export default getSessionManager;

@@ -1,9 +1,6 @@
-import "styles/global.css";
+"use client";
 
-export const metadata = {
-  title: "RMUD3",
-  description: "Renato's Multi-User Dungeon 3",
-};
+import "styles/global.css";
 
 export default function RootLayout({
   children,

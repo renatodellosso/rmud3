@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { getSingleton } from "./utils";
 
 export async function getMongoClient(): Promise<Db> {
-  return getSingleton<Db>("mongoDb", async () => {
+  return getSingleton<Promise<Db>>("mongoDb", async () => {
     dotenv.config();
 
     const client: MongoClient = new MongoClient(process.env.MONGODB_URI!);
