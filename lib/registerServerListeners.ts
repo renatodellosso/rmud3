@@ -1,6 +1,5 @@
 import { Server, Socket } from "socket.io";
 import { signIn } from "./auth";
-import { getSingleton } from "./utils";
 import getCollectionManager from "./getCollectionManager";
 import getSessionManager from "./SessionManager";
 import { getMongoClient } from "./getMongoClient";

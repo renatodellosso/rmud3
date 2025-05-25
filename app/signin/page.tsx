@@ -8,7 +8,7 @@ export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function signIn(form: FormData) {
+  function signIn() {
     if (typeof email !== "string" || typeof password !== "string") {
       return;
     }

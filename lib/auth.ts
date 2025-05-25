@@ -38,7 +38,7 @@ export async function canCreateAccount(
   }
 
   const existingAccounts = await collectionManager
-    .getCollection<Account>(CollectionId.Accounts)
+    .getCollection(CollectionId.Accounts)
     .find({ $or: [{ email }, { username }] });
 
   return existingAccounts.length === 0;
@@ -54,7 +54,7 @@ export async function createAccount(
     return null;
   }
 
-  const accountCollection = collectionManager.getCollection<Account>(
+  const accountCollection = collectionManager.getCollection(
     CollectionId.Accounts
   );
 
@@ -80,7 +80,7 @@ export async function signIn(
   email: string,
   password: string
 ): Promise<ObjectId | null> {
-  const accountCollection = collectionManager.getCollection<Account>(
+  const accountCollection = collectionManager.getCollection(
     CollectionId.Accounts
   );
 
