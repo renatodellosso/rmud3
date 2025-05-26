@@ -8,7 +8,7 @@ export type Dungeon = {
 };
 
 export type FloorInstance = {
-  definitionId: keyof typeof locations;
+  definition: FloorDefinition;
   locations: (DungeonLocation | undefined)[][];
   size: [number, number];
   offset: Point;
@@ -27,6 +27,7 @@ export type FloorDefinition = {
    * How likely a second floor is to be generated on the same depth.
    */
   blendChance: number;
+  visualizerColor: string;
 };
 
 export type FloorGenerationOptions = {

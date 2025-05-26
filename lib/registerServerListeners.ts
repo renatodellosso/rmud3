@@ -13,6 +13,8 @@ import { EJSON, ObjectId } from "bson";
 import CollectionId from "./types/CollectionId";
 import { PlayerSave } from "./types/types";
 import { PlayerInstance, PlayerProgress } from "lib/types/player";
+import { getSingleton } from "./utils";
+import generateDungeon from "./dungeongeneration/generateDungeon";
 
 export default function registerServerListeners(
   io: Server<

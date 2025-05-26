@@ -7,6 +7,7 @@ import {
   FloorInstance,
 } from "./types";
 import { Point } from "lib/types/types";
+import { getLocationId, mapFloor } from "./utils";
 
 export default function generateDungeon(): Dungeon {
   const dungeon: Dungeon = {
@@ -18,27 +19,43 @@ export default function generateDungeon(): Dungeon {
     [0, 0], // Starting point for the first floor
   ];
 
-  const maxDepth = Math.max(...Object.values(floors).map(floor => floor.depth));
+  const maxDepth = Math.max(
+    ...Object.values(floors).map((floor) => floor.depth)
+  );
+  if (maxDepth < 0) {
+    throw new Error("No valid floor definitions found.");
+  }
 
   for (let depth = 0; depth <= maxDepth; depth++) {
-    startingPoints = generateDepth(dungeon, depth, startingPoints);
+    // Generate all floors at this depth
+    const newStartingPoints = generateDepth(dungeon, depth, startingPoints);
+
+    if (depth > 0) {
+      // Connect the current floor to the previous one
+      connectFloors(dungeon, depth, startingPoints);
+    }
+
+    startingPoints = newStartingPoints;
   }
 
   return dungeon;
 }
 
-function generateDepth(dungeon: Dungeon, depth: number, startingPoints: Point[]): Point[] {
+function generateDepth(
+  dungeon: Dungeon,
+  depth: number,
+  startingPoints: Point[]
+): Point[] {
   const definitions: FloorDefinition[] = generateFloorDefinitionArray(depth);
 
-  const floors = assignFloorStartingPoints(
-    definitions,
-    startingPoints
-  );
+  const floors = assignFloorStartingPoints(definitions, startingPoints);
 
   // Generate each floor
   const newStartingPoints: Point[] = [];
 
   for (const floor of floors) {
+    if (floor.startingPoints.length === 0) continue;
+
     const { floorInstance, rooms } = generateFloor(
       dungeon,
       floor.definition,
@@ -54,49 +71,60 @@ function generateDepth(dungeon: Dungeon, depth: number, startingPoints: Point[])
   return newStartingPoints;
 }
 
+function connectFloors(dungeon: Dungeon, lowerDepth: number, points: Point[]) {
+  for (const point of points) {
+    const lowerRoom = dungeon.locations[lowerDepth][point[0]][point[1]];
+    const upperRoom = dungeon.locations[lowerDepth - 1][point[0]][point[1]];
+
+    if (!lowerRoom || !upperRoom) {
+      throw new Error(
+        `Rooms not found at ${point.join(", ")} for connection at depths: ${
+          lowerDepth - 1
+        }-${lowerDepth}`
+      );
+    }
+
+    lowerRoom.exits.add(upperRoom.id);
+    upperRoom.exits.add(lowerRoom.id);
+  }
+}
+
 function generateFloorDefinitionArray(depth: number): FloorDefinition[] {
-  const definitions: FloorDefinition[] = [];
+  const definitions: Set<FloorDefinition> = new Set(); // Use a Set to avoid duplicates
   let blendChance = 1;
 
   while (chance(blendChance)) {
     const definition = selectFloorDefinition(depth);
 
-    definitions.push(definition);
+    definitions.add(definition);
     blendChance *= definition.blendChance;
   }
 
-  return definitions;
+  return Array.from(definitions);
 }
 
 function selectFloorDefinition(depth: number): FloorDefinition {
   let totalWeight = 0;
 
-  const floorDefinitions = Object.entries(floors)
-    .filter(([_, floor]) => floor.depth === depth)
-    .map(([id, floor]) => ({
-      id,
-      definition: floor,
-    }))
+  const floorDefinitions = Object.values(floors)
+    .filter((floor) => floor.depth === depth)
     .reduce((table, curr) => {
-      totalWeight += curr.definition.appearanceWeight;
+      totalWeight += curr.appearanceWeight;
 
       if (table.length === 0) {
         return [
           {
-            weight: curr.definition.appearanceWeight,
-            id: curr.id,
-            definition: curr.definition,
+            weight: curr.appearanceWeight,
+            definition: curr,
           },
         ];
       }
 
       return table.concat({
-        weight:
-          table[table.length - 1].weight + curr.definition.appearanceWeight,
-        id: curr.id,
-        definition: curr.definition,
+        weight: table[table.length - 1].weight + curr.appearanceWeight,
+        definition: curr,
       });
-    }, [] as { weight: number; id: keyof typeof floors; definition: FloorDefinition }[]);
+    }, [] as { weight: number; definition: FloorDefinition }[]);
 
   const randomValue = Math.random() * totalWeight;
   for (const floor of floorDefinitions) {
@@ -158,29 +186,38 @@ function assignFloorStartingPoints(
   return floors;
 }
 
-
 function generateFloor(
   dungeon: Dungeon,
   definition: FloorDefinition,
   startingPoints: Point[],
   depth: number
 ): { floorInstance: FloorInstance; rooms: DungeonLocation[] } {
-  const { locations, dimensions, offsetStartingPoints } =
-    initLocationArrays(dungeon, depth, definition, startingPoints);
+  if (startingPoints.length === 0) {
+    throw new Error(
+      `No starting points provided for floor: ${definition.name}`
+    );
+  }
+
+  const { locations, dimensions, offsetStartingPoints } = initLocationArrays(
+    dungeon,
+    depth,
+    definition,
+    startingPoints
+  );
 
   const floorInstance: FloorInstance = {
-    definitionId: definition.name.toLowerCase() as keyof typeof floors,
+    definition,
     locations,
     size: dimensions,
     offset: [
       Math.min(...startingPoints.map((point) => point[0])),
       Math.min(...startingPoints.map((point) => point[1])),
-    ]
+    ],
   };
 
   dungeon.floors.push(floorInstance);
 
-  const roomsToExpand = initStartingPoints(
+  const roomsToExpand = initStartingRooms(
     dungeon,
     depth,
     floorInstance,
@@ -188,19 +225,20 @@ function generateFloor(
     startingPoints
   );
 
-  const rooms = generateFloorLayout(
-    dungeon, floorInstance, roomsToExpand
-  );
+  const rooms = generateFloorLayout(dungeon, floorInstance, roomsToExpand);
 
   return { floorInstance, rooms };
 }
 
-function generateExits(floor: FloorInstance, rooms: DungeonLocation[]): Point[] {
-  const exitRange = floors[floor.definitionId].generationOptions.exitCount;
+function generateExits(
+  floor: FloorInstance,
+  rooms: DungeonLocation[]
+): Point[] {
+  const exitRange = floor.definition.generationOptions.exitCount;
   const exitCount = randInRangeInt(exitRange[0], exitRange[1]);
 
   const startingPoints: Point[] = [];
-  const availablePoints: Point[] = [...rooms.map(room => room.floorCoords)];
+  const availablePoints: Point[] = [...rooms.map((room) => room.globalCoords)];
   for (let i = 0; i < exitCount; i++) {
     if (availablePoints.length === 0) {
       break; // No more available points to choose from
@@ -212,6 +250,12 @@ function generateExits(floor: FloorInstance, rooms: DungeonLocation[]): Point[] 
   }
 
   if (startingPoints.length === 0) {
+    console.warn(
+      "Rooms:",
+      rooms.map((room) => room.globalCoords),
+      "Exit Count:",
+      exitCount
+    );
     throw new Error("No starting points generated for the floor.");
   }
 
@@ -292,10 +336,14 @@ function initLocationArrays(
   return { locations, dimensions, offsetStartingPoints };
 }
 
-function generateRoom(dungeon: Dungeon, floor: FloorInstance, globalCoords: Point) {
+function generateRoom(
+  dungeon: Dungeon,
+  floor: FloorInstance,
+  globalCoords: Point
+) {
   const location: DungeonLocation = {
-    id: `dungeon-${floors[floor.definitionId].name.toLowerCase().replace(" ", "")}-${globalCoords.join("-")}`,
-    name: `${floors[floor.definitionId].name} Room - ${globalCoords.join(", ")}`,
+    id: getLocationId(floor, globalCoords),
+    name: `${floor.definition.name} Room - ${globalCoords.join(", ")}`,
     creatures: [],
     floor,
     globalCoords: globalCoords,
@@ -303,19 +351,20 @@ function generateRoom(dungeon: Dungeon, floor: FloorInstance, globalCoords: Poin
       globalCoords[0] - floor.offset[0],
       globalCoords[1] - floor.offset[1],
     ],
-    exits: [],
+    exits: new Set(),
   };
+
+  floor.locations[location.floorCoords[0]][location.floorCoords[1]] = location;
+  dungeon.locations[floor.definition.depth][location.globalCoords[0]][
+    location.globalCoords[1]
+  ] = location;
 
   return location;
 }
 
-function expand2DArray(
-  array: any[][],
-  newDimensions: [number, number]
-) {
-  const newArray: any[][] = Array.from(
-    { length: newDimensions[0] },
-    () => Array.from({ length: newDimensions[1] }, () => undefined)
+function expand2DArray(array: any[][], newDimensions: [number, number]) {
+  const newArray: any[][] = Array.from({ length: newDimensions[0] }, () =>
+    Array.from({ length: newDimensions[1] }, () => undefined)
   );
 
   for (let i = 0; i < array.length; i++) {
@@ -329,35 +378,54 @@ function expand2DArray(
   return newArray;
 }
 
-function initStartingPoints(dungeon: Dungeon, depth: number, 
-  floorInstance: FloorInstance, offsetStartingPoints: Point[], nonOffsetStartingPoints: Point[]): DungeonLocation[] {
-    const roomsToExpand: DungeonLocation[] = [];
+function initStartingRooms(
+  dungeon: Dungeon,
+  depth: number,
+  floorInstance: FloorInstance,
+  offsetStartingPoints: Point[],
+  nonOffsetStartingPoints: Point[]
+): DungeonLocation[] {
+  if (offsetStartingPoints.length !== nonOffsetStartingPoints.length) {
+    throw new Error(
+      `Offset starting points and non-offset starting points must have the same length. Got ${offsetStartingPoints.length} and ${nonOffsetStartingPoints.length}.`
+    );
+  }
 
-    // Initialize locations with starting points
-    for (let i = 0; i < offsetStartingPoints.length; i++) {
-      const offsetPoint = offsetStartingPoints[i];
-      const nonOffsetPoint = nonOffsetStartingPoints[i];
-  
-      if (dungeon.locations[depth][nonOffsetPoint[0]][nonOffsetPoint[1]])
-        continue; // Skip if the location is already defined
-      else dungeon.locations[depth][nonOffsetPoint[0]][nonOffsetPoint[1]] = generateRoom(
-        dungeon,
-        floorInstance,
-        nonOffsetPoint,
+  if (offsetStartingPoints.length === 0) {
+    throw new Error(
+      `No starting points provided for floor ${floorInstance.definition.name} at depth ${depth}.`
+    );
+  }
+
+  const roomsToExpand: DungeonLocation[] = [];
+
+  // Initialize locations with starting points
+  for (let i = 0; i < offsetStartingPoints.length; i++) {
+    const offsetPoint = offsetStartingPoints[i];
+    const nonOffsetPoint = nonOffsetStartingPoints[i];
+
+    if (!dungeon.locations[depth][nonOffsetPoint[0]][nonOffsetPoint[1]])
+      dungeon.locations[depth][nonOffsetPoint[0]][nonOffsetPoint[1]] =
+        generateRoom(dungeon, floorInstance, nonOffsetPoint);
+
+    const room = dungeon.locations[depth][nonOffsetPoint[0]][nonOffsetPoint[1]];
+
+    if (!room) {
+      throw new Error(
+        `Failed to generate or find room at ${nonOffsetPoint.join(", ")}`
       );
-  
-      const room = dungeon.locations[depth][nonOffsetPoint[0]][nonOffsetPoint[1]];
-  
-      if (!room) {
-        throw new Error(
-          `Failed to generate room at ${nonOffsetPoint.join(", ")}`
-        );
-      }
-  
-      floorInstance.locations[offsetPoint[0]][offsetPoint[1]] = room;
-  
-      roomsToExpand.push(room);
     }
+
+    floorInstance.locations[offsetPoint[0]][offsetPoint[1]] = room;
+
+    roomsToExpand.push(room);
+  }
+
+  if (roomsToExpand.length === 0) {
+    throw new Error(
+      `No starting rooms generated for floor ${floorInstance.definition.name} at depth ${depth}.`
+    );
+  }
 
   return roomsToExpand;
 }
@@ -365,20 +433,32 @@ function initStartingPoints(dungeon: Dungeon, depth: number,
 function generateFloorLayout(
   dungeon: Dungeon,
   floorInstance: FloorInstance,
-  roomsToExpand: DungeonLocation[]
+  startingRooms: DungeonLocation[],
+  retries: number = 5,
+  lowerRoomCountBy = 0
 ): DungeonLocation[] {
-  const options = floors[floorInstance.definitionId].generationOptions;
-  const depth = floors[floorInstance.definitionId].depth;
+  if (startingRooms.length === 0) {
+    throw new Error(
+      `No starting rooms provided for floor ${floorInstance.definition.name} at depth ${floorInstance.offset[0]}.`
+    );
+  }
 
+  const options = floorInstance.definition.generationOptions;
+  const depth = floorInstance.definition.depth;
+
+  const roomsToExpand: DungeonLocation[] = [...startingRooms];
   const rooms: DungeonLocation[] = [...roomsToExpand];
 
-  const roomCount = randInRangeInt(
-    options.roomCount[0],
-    options.roomCount[1]
-  );
+  const roomCount =
+    randInRangeInt(options.roomCount[0], options.roomCount[1]) -
+    lowerRoomCountBy;
 
-  while (rooms.length < roomCount && rooms) {
-    const room = rooms[0];
+  while (rooms.length < roomCount && roomsToExpand.length > 0) {
+    const room = roomsToExpand.shift();
+
+    if (!room) {
+      throw new Error("No room available to expand.");
+    }
 
     const adjacentPoints: Point[] = [
       [room.floorCoords[0] - 1, room.floorCoords[1]],
@@ -397,27 +477,32 @@ function generateFloorLayout(
 
     const emptyAdjacentPoints = validAdjacentPoints.filter(
       (point) =>
-        !dungeon.locations[depth][floorInstance.offset[0] + point[0]][floorInstance.offset[1] + point[1]]
+        !dungeon.locations[depth][floorInstance.offset[0] + point[0]][
+          floorInstance.offset[1] + point[1]
+        ]
     );
 
     const filledAdjacentPoints = validAdjacentPoints.filter(
       (point) =>
-        dungeon.locations[depth][floorInstance.offset[0] + point[0]][floorInstance.offset[1] + point[1]]
+        dungeon.locations[depth][floorInstance.offset[0] + point[0]][
+          floorInstance.offset[1] + point[1]
+        ] &&
+        !room.exits.has(
+          dungeon.locations[depth][floorInstance.offset[0] + point[0]][
+            floorInstance.offset[1] + point[1]
+          ]!.id
+        )
     );
-    
+
     for (const point of emptyAdjacentPoints) {
       if (chance(options.roomChance)) {
-        const newRoom = generateRoom(
-          dungeon,
-          floorInstance,
-          [
-            point[0] + floorInstance.offset[0],
-            point[1] + floorInstance.offset[1],
-          ]
-        );
+        const newRoom = generateRoom(dungeon, floorInstance, [
+          point[0] + floorInstance.offset[0],
+          point[1] + floorInstance.offset[1],
+        ]);
 
-        newRoom.exits.push(room.id);
-        room.exits.push(newRoom.id);
+        newRoom.exits.add(room.id);
+        room.exits.add(newRoom.id);
 
         rooms.push(newRoom);
       }
@@ -425,24 +510,44 @@ function generateFloorLayout(
 
     for (const point of filledAdjacentPoints) {
       if (chance(options.connectionChance)) {
-        const existingRoom = dungeon.locations[depth][floorInstance.offset[0] + point[0]][floorInstance.offset[1] + point[1]];
-        
+        const existingRoom =
+          dungeon.locations[depth][floorInstance.offset[0] + point[0]][
+            floorInstance.offset[1] + point[1]
+          ];
+
         if (!existingRoom) {
           throw new Error(
-            `No existing room found at ${point.join(", ")} for connection when one should exist.`
+            `No existing room found at ${point.join(
+              ", "
+            )} for connection when one should exist.`
           );
         }
 
-        existingRoom.exits.push(room.id);
-        room.exits.push(existingRoom.id);
+        existingRoom.exits.add(room.id);
+        room.exits.add(existingRoom.id);
       }
     }
   }
 
   // Retry if we didn't generate enough rooms
-  if (rooms.length < roomCount) {
-    return generateFloorLayout(dungeon, floorInstance, rooms);
+  if (rooms.length < roomCount && retries > 0) {
+    return generateFloorLayout(
+      dungeon,
+      floorInstance,
+      rooms,
+      retries - 1,
+      rooms.length
+    );
   }
+
+  if (rooms.length == 0)
+    throw new Error(
+      `No rooms generated for floor ${
+        floorInstance.definition.name
+      } at depth ${depth}. Map:\n${mapFloor(
+        dungeon.locations[depth]
+      )}\nStarting Points: ${startingRooms}`
+    );
 
   return rooms;
 }

@@ -4,7 +4,7 @@ const locations = {
   test: {
     name: "Test Location",
     creatures: [],
-    exits: [],
+    exits: new Set(),
   },
 } as Record<string, Location>;
 

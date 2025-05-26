@@ -1,6 +1,7 @@
 import { ObjectId } from "bson";
 import Session from "./Session";
 import { PlayerSave, SerializedEJSON } from "./types";
+import { Dungeon } from "lib/dungeongeneration/types";
 
 export interface ServerToClientEvents {
   hello: () => void;

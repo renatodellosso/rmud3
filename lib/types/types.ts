@@ -5,7 +5,7 @@ export type LocationId = keyof typeof locations | `dungeon-${string}`;
 export type Location = {
   name: string;
   creatures: CreatureInstance[];
-  exits: LocationId[];
+  exits: Set<LocationId>;
 };
 
 export type Targetable = CreatureInstance | Location;
