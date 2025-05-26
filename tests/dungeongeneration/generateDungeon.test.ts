@@ -1,7 +1,10 @@
 import floors from "lib/dungeongeneration/Floors";
 import generateDungeon from "lib/dungeongeneration/generateDungeon";
 import { Dungeon, FloorInstance } from "lib/dungeongeneration/types";
-import { floorDefinitionToId } from "lib/dungeongeneration/utils";
+import {
+  floorDefinitionToId,
+  getCoordsFromId,
+} from "lib/dungeongeneration/utils";
 
 describe(generateDungeon.name, () => {
   const TRIALS = 1000;
@@ -80,6 +83,31 @@ describe(generateDungeon.name, () => {
             location.floor.locations = undefined as any;
             expect(location.globalCoords).toBeDefined();
             expect(location.floorCoords).toBeDefined();
+          }
+        }
+      }
+    }
+  });
+
+  testRepeated("should generate rooms with only adjacent exits", () => {
+    const dungeon = breakCirclularRefs(generateDungeon());
+    for (const floor of dungeon.floors) {
+      for (const row of floor.locations) {
+        for (const location of row) {
+          if (!location) continue;
+
+          const exits = Array.from(location.exits);
+          expect(exits.length).toBeLessThanOrEqual(6); // Max 4 exits
+
+          for (const exit of exits) {
+            const exitCoords = getCoordsFromId(exit);
+            const dx = Math.abs(exitCoords.coords[0] - location.floorCoords[0]);
+            const dy = Math.abs(exitCoords.coords[1] - location.floorCoords[1]);
+            const dz = Math.abs(
+              exitCoords.depth - location.floor.definition.depth
+            );
+
+            expect(dx + dy + dz).toBe(1); // Exits must be adjacent
           }
         }
       }

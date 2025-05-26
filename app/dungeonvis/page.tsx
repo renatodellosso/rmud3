@@ -1,13 +1,8 @@
 "use client";
 
-import {
-  Dungeon,
-  DungeonLocation,
-  FloorInstance,
-} from "lib/dungeongeneration/types";
+import { Dungeon } from "lib/dungeongeneration/types";
 import { useEffect, useRef, useState } from "react";
 import generateDungeon from "lib/dungeongeneration/generateDungeon";
-import floors from "lib/dungeongeneration/Floors";
 import { getCoordsFromId as getCoordsFromLocationId } from "lib/dungeongeneration/utils";
 
 export default function DungeonVis() {
