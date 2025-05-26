@@ -2,11 +2,13 @@ import { CreatureInstance } from "./creature";
 
 export type Location = {
   name: string;
+  creatures: CreatureInstance[];
 };
 
 export type Targetable = CreatureInstance | Location;
 
 import { restoreFieldsAndMethods } from "../utils";
+import { PlayerInstance, PlayerProgress } from "./player";
 
 export class CannotDirectlyCreateInstanceError extends Error {
   constructor(className: string) {
@@ -38,3 +40,10 @@ type FlagExcludedType<Base, Type> = {
 type AllowedNames<Base, Type> = FlagExcludedType<Base, Type>[keyof Base];
 
 export type OmitType<Base, Type> = Pick<Base, AllowedNames<Base, Type>>;
+
+export type SerializedEJSON<T> = string;
+
+export type PlayerSave = {
+  instance: PlayerInstance;
+  progress: PlayerProgress;
+};

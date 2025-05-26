@@ -9,7 +9,9 @@ import {
   InterServerEvents,
   SocketData,
 } from "./types/socketiotypes";
-import { ObjectId } from "bson";
+import { EJSON, ObjectId } from "bson";
+import CollectionId from "./types/CollectionId";
+import { PlayerSave } from "./types/types";
 
 export default function registerServerListeners(
   io: Server<
@@ -80,7 +82,7 @@ function registerSocketListeners(
     const session = sessionManager.createSession(accountOrError._id);
 
     console.log("Sign up successful! User:", email, "Session ID:", session._id);
-    socket.data.sessionId = session._id;
+    socket.data.session = session;
     callback(session._id.toString(), undefined);
   });
 
@@ -100,7 +102,70 @@ function registerSocketListeners(
       return;
     }
 
-    socket.data.sessionId = session._id;
+    socket.data.session = session;
     callback(true);
+  });
+
+  socket.on("getSaves", async (callback) => {
+    if (!socket.data.session) {
+      console.error("No session set for socket");
+      callback(EJSON.stringify([]));
+      return;
+    }
+
+    const db = await getMongoClient();
+    const collectionManager = getCollectionManager(db);
+
+    const accounts = await collectionManager
+      .getCollection(CollectionId.Accounts)
+      .findWithOneFilter({
+        _id: socket.data.session.accountId,
+      });
+
+    if (!accounts) {
+      console.error("No account found for session:", socket.data.session._id);
+      callback(EJSON.stringify([]));
+      return;
+    }
+
+    const account = accounts[0];
+
+    const progresses = await collectionManager
+      .getCollection(CollectionId.PlayerProgresses)
+      .find(
+        {
+          _id: { $in: account.playerProgresses },
+        },
+        undefined
+      );
+
+    const instances = await collectionManager
+      .getCollection(CollectionId.PlayerInstances)
+      .find(
+        {
+          _id: { $in: progresses.map((progress) => progress._id) },
+        },
+        undefined
+      );
+
+    const saves = progresses
+      .map((progress) => {
+        const instance = instances.find(
+          (instance) => instance._id.toString() === progress._id.toString()
+        );
+
+        if (!instance) {
+          console.error("No instance found for progress:", progress._id);
+          return undefined;
+        }
+
+        return {
+          instance,
+          progress,
+        };
+      })
+      .filter((save: PlayerSave | undefined) => save !== undefined);
+
+    callback(EJSON.stringify(saves));
   });
 }

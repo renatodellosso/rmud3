@@ -1,4 +1,6 @@
 import { ObjectId } from "bson";
+import Session from "./Session";
+import { PlayerSave, SerializedEJSON } from "./types";
 
 export interface ServerToClientEvents {
   hello: () => void;
@@ -24,6 +26,7 @@ export interface ClientToServerEvents {
     sessionId: string,
     callback: (success: boolean) => void
   ) => void;
+  getSaves: (callback: (saves: SerializedEJSON<PlayerSave[]>) => void) => void;
 }
 
 export interface InterServerEvents {
@@ -31,5 +34,5 @@ export interface InterServerEvents {
 }
 
 export interface SocketData {
-  sessionId: ObjectId | undefined;
+  session: Session | undefined;
 }

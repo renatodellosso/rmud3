@@ -41,7 +41,7 @@ export default function SignUp() {
       (sessionId: string | undefined, error: string | undefined) => {
         setSubmitting(false);
         if (sessionId) {
-          window.location.href = "/play";
+          window.location.href = "/selectSave";
           localStorage.setItem("sessionId", sessionId);
         } else {
           setError(error || "Unknown error");

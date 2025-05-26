@@ -21,7 +21,8 @@ export class SessionManager {
     return session;
   }
 
-  public getSession(sessionId: ObjectId): Session | undefined {
+  public getSession(sessionId: ObjectId | undefined): Session | undefined {
+    if (!sessionId) return undefined;
     return this.sessions.get(sessionId.toString());
   }
 

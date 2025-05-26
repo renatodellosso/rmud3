@@ -23,7 +23,7 @@ export default function SignIn() {
     socket.emit("signIn", email, password, (sessionId: string | undefined) => {
       setSubmitting(false);
       if (sessionId) {
-        window.location.href = "/play";
+        window.location.href = "/selectSave";
         localStorage.setItem("sessionId", sessionId);
       } else {
         setError("Invalid email or password");
