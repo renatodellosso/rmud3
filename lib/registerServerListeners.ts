@@ -123,7 +123,7 @@ function registerSocketListeners(
         _id: socket.data.session.accountId,
       });
 
-    if (!accounts) {
+    if (!accounts || accounts.length === 0) {
       console.error("No account found for session:", socket.data.session._id);
       callback(EJSON.stringify([]));
       return;
@@ -179,24 +179,26 @@ function registerSocketListeners(
     const db = await getMongoClient();
     const collectionManager = getCollectionManager(db);
 
-    const accountsCollection = await collectionManager
-      .getCollection(CollectionId.Accounts);
+    const accountsCollection = await collectionManager.getCollection(
+      CollectionId.Accounts
+    );
 
-    const accounts = await accountsCollection
-      .findWithOneFilter({
-        _id: socket.data.session.accountId,
-      });
+    const accounts = await accountsCollection.findWithOneFilter({
+      _id: socket.data.session.accountId,
+    });
 
-    if (!accounts) {
+    if (!accounts || accounts.length === 0) {
       console.error("No account found for session:", socket.data.session._id);
       return;
     }
 
-    const progressesCollection = await collectionManager
-      .getCollection(CollectionId.PlayerProgresses);
+    const progressesCollection = await collectionManager.getCollection(
+      CollectionId.PlayerProgresses
+    );
 
-    const instancesCollection = await collectionManager
-      .getCollection(CollectionId.PlayerInstances);
+    const instancesCollection = await collectionManager.getCollection(
+      CollectionId.PlayerInstances
+    );
 
     const instance: PlayerInstance = new PlayerInstance();
 
@@ -204,7 +206,7 @@ function registerSocketListeners(
 
     const progress: PlayerProgress = {
       _id: new ObjectId(),
-      playerInstanceId: instance._id
+      playerInstanceId: instance._id,
     };
 
     instancesCollection.upsert(instance);
@@ -215,5 +217,5 @@ function registerSocketListeners(
     account.playerProgresses.push(progress._id);
 
     accountsCollection.upsert(account);
-  })
+  });
 }
