@@ -12,6 +12,12 @@ interface ClientToServerEvents {
      */
     callback: (sessionId: string | undefined) => void
   ) => void;
+  signUp: (
+    email: string,
+    username: string,
+    password: string,
+    callback: (sessionId: string | undefined, error: string | undefined) => void
+  ) => void;
 }
 
 interface InterServerEvents {

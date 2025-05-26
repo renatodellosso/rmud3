@@ -16,42 +16,55 @@ export async function verifyPassword(
   return argon2.verify(hash, password);
 }
 
+/**
+ * @returns true if the account can be created, or an error message if it cannot.
+ */
 export async function canCreateAccount(
   collectionManager: CollectionManager,
   email: string,
   username: string
 ) {
   if (email.length < 5 || username.length < 3) {
-    return false;
+    return "Email and username must be at least 5 and 3 characters long, respectively.";
   }
 
   if (username.length > 20 || email.length > 50) {
-    return false;
+    return "Email and username must be at most 50 and 20 characters long, respectively.";
   }
 
   if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-    return false;
+    return "Username can only contain letters, numbers, and underscores.";
   }
 
   if (!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(email)) {
-    return false;
+    return "Email is not valid.";
   }
 
-  const existingAccounts = await collectionManager
-    .getCollection(CollectionId.Accounts)
-    .find({ $or: [{ email }, { username }] });
+  const collection = collectionManager.getCollection(CollectionId.Accounts);
 
-  return existingAccounts.length === 0;
+  const existingAccounts = (
+    await collection.find({ $or: [{ email }, { username }] }, undefined)
+  )
+    .concat(await collection.find(undefined, { email }))
+    .concat(await collection.find(undefined, { username }));
+
+  return existingAccounts.length === 0
+    ? true
+    : "Email or username already exists.";
 }
 
+/**
+ * @returns the account if it was created, or an error message if it was not.
+ */
 export async function createAccount(
   collectionManager: CollectionManager,
   email: string,
   username: string,
   password: string
-): Promise<Account | null> {
-  if (!(await canCreateAccount(collectionManager, email, username))) {
-    return null;
+): Promise<Account | string> {
+  const canCreate = await canCreateAccount(collectionManager, email, username);
+  if (canCreate !== true) {
+    return canCreate;
   }
 
   const accountCollection = collectionManager.getCollection(
@@ -84,7 +97,7 @@ export async function signIn(
     CollectionId.Accounts
   );
 
-  const accounts = await accountCollection.find({ email });
+  const accounts = await accountCollection.findWithOneFilter({ email });
 
   if (accounts.length === 0) {
     return null;

@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { signIn } from "./auth";
+import { createAccount, signIn } from "./auth";
 import getCollectionManager from "./getCollectionManager";
 import getSessionManager from "./SessionManager";
 import { getMongoClient } from "./getMongoClient";
@@ -49,5 +49,30 @@ function registerSocketListeners(
       console.log("Sign in failed! User:", email);
       callback(undefined);
     }
+  });
+
+  socket.on("signUp", async (email, username, password, callback) => {
+    const db = await getMongoClient();
+    const collectionManager = getCollectionManager(db);
+
+    const accountOrError = await createAccount(
+      collectionManager,
+      email,
+      username,
+      password
+    );
+
+    if (typeof accountOrError === "string") {
+      console.log("Sign up failed! User:", email, "Error:", accountOrError);
+      callback(undefined, accountOrError);
+      return;
+    }
+
+    const sessionManager = getSessionManager();
+
+    const sessionId = sessionManager.createSession(accountOrError._id);
+
+    console.log("Sign up successful! User:", email);
+    callback(sessionId.toString(), undefined);
   });
 }

@@ -1,4 +1,4 @@
-import { Db, OptionalId, Document, Filter } from "mongodb";
+import { Db, OptionalId, Document, Filter, WithId } from "mongodb";
 import { ObjectId } from "bson";
 import NodeCache from "node-cache";
 import CollectionId, { CollectionIdToType } from "./types/CollectionId";
@@ -6,7 +6,7 @@ import Account from "./types/Account";
 import { PlayerInstance, PlayerProgress } from "./types/player";
 import { getSingleton } from "./utils";
 
-export class CachedCollection<T extends OptionalId<Document>> {
+export class CachedCollection<T extends WithId<Document>> {
   private cache: NodeCache;
   private db: Db | undefined;
   private id: CollectionId;
@@ -37,22 +37,35 @@ export class CachedCollection<T extends OptionalId<Document>> {
     return null;
   }
 
-  async find(query: Partial<T> | Filter<Document>): Promise<T[]> {
-    const cachedData = this.cache.keys().map((key) => this.cache.get<T>(key));
-    const cachedResults = cachedData.filter((data) =>
-      Object.entries(query).every(([k, v]) => data && data[k] === v)
-    );
+  async find(
+    mongoFilter: Filter<T> | undefined,
+    cacheFilter: Partial<T> | undefined
+  ): Promise<T[]> {
+    if (cacheFilter) {
+      const cachedData = this.cache.keys().map((key) => this.cache.get<T>(key));
+      const cachedResults = cachedData.filter((data) =>
+        Object.entries(cacheFilter).every(([k, v]) => data && data[k] === v)
+      );
 
-    if (cachedResults.length > 0) {
-      return cachedResults as T[];
+      if (cachedResults.length > 0) {
+        return cachedResults as T[];
+      }
+    }
+
+    if (!mongoFilter) {
+      return [];
     }
 
     const collection = this.getCollection();
 
-    const cursor = collection?.find(query);
-    const results: T[] = [];
+    const cursor = collection?.find(mongoFilter as Filter<Document>);
+    const results: T[] = cursor ? ((await cursor.toArray()) as T[]) : [];
 
     return results;
+  }
+
+  async findWithOneFilter(filter: Filter<T> & Partial<T>): Promise<T[]> {
+    return this.find(filter, filter);
   }
 
   async upsert(data: T): Promise<ObjectId> {
@@ -67,9 +80,15 @@ export class CachedCollection<T extends OptionalId<Document>> {
       return data._id;
     }
 
-    const result = await collection?.updateOne({ _id: data._id }, data, {
-      upsert: true,
-    });
+    const result = await collection?.updateOne(
+      { _id: data._id },
+      {
+        $set: data,
+      },
+      {
+        upsert: true,
+      }
+    );
 
     if (result.acknowledged && result.upsertedId) {
       this.cache.set(result.upsertedId.toString(), data);

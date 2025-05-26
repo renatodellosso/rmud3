@@ -7,21 +7,23 @@ export default function SignIn() {
   const [submitting, setSubmitting] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   function signIn() {
     if (typeof email !== "string" || typeof password !== "string") {
-      return;
+      return setError("One or more fields are not strings");
     }
 
     setSubmitting(true);
+    setError("");
 
     socket.emit("signIn", email, password, (sessionId: string | undefined) => {
       setSubmitting(false);
       if (sessionId) {
-        window.location.href = "/";
+        window.location.href = "/play";
         localStorage.setItem("sessionId", sessionId);
       } else {
-        alert("Invalid email or password");
+        setError("Invalid email or password");
       }
     });
   }
@@ -56,6 +58,7 @@ export default function SignIn() {
             Sign In
           </button>
         </form>
+        {error && <p className="text-red-500">{error}</p>}
       </div>
     </div>
   );
