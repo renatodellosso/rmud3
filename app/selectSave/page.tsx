@@ -3,7 +3,7 @@
 import { socket } from "lib/socket";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { EJSON } from "bson";
+import { EJSON, ObjectId } from "bson";
 import { PlayerSave, SerializedEJSON } from "lib/types/types";
 
 function PlayerSaveCard({ save }: { save: PlayerSave }) {
@@ -33,6 +33,10 @@ export default function SelectSave() {
     });
   }, []);
 
+  function createNewSave() {
+    socket.emit("createNewSave");
+  }
+
   return (
     <div className="h-screen flex flex-col">
       <Link href="/" className="text-3xl text-white font-bold">
@@ -44,7 +48,7 @@ export default function SelectSave() {
           {saves.map((save) => (
             <PlayerSaveCard key={save.instance._id.toString()} save={save} />
           ))}
-          <button className="grow">New Game</button>
+          <button onClick={createNewSave} className="grow">New Save</button>
         </div>
       </div>
     </div>

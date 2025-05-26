@@ -12,6 +12,7 @@ import {
 import { EJSON, ObjectId } from "bson";
 import CollectionId from "./types/CollectionId";
 import { PlayerSave } from "./types/types";
+import { PlayerInstance, PlayerProgress } from "lib/types/player";
 
 export default function registerServerListeners(
   io: Server<
@@ -168,4 +169,51 @@ function registerSocketListeners(
 
     callback(EJSON.stringify(saves));
   });
+
+  socket.on("createNewSave", async () => {
+    if (!socket.data.session) {
+      console.error("No session set for socket");
+      return;
+    }
+
+    const db = await getMongoClient();
+    const collectionManager = getCollectionManager(db);
+
+    const accountsCollection = await collectionManager
+      .getCollection(CollectionId.Accounts);
+
+    const accounts = await accountsCollection
+      .findWithOneFilter({
+        _id: socket.data.session.accountId,
+      });
+
+    if (!accounts) {
+      console.error("No account found for session:", socket.data.session._id);
+      return;
+    }
+
+    const progressesCollection = await collectionManager
+      .getCollection(CollectionId.PlayerProgresses);
+
+    const instancesCollection = await collectionManager
+      .getCollection(CollectionId.PlayerInstances);
+
+    const instance: PlayerInstance = new PlayerInstance();
+
+    instance._id = new ObjectId();
+
+    const progress: PlayerProgress = {
+      _id: new ObjectId(),
+      playerInstanceId: instance._id
+    };
+
+    instancesCollection.upsert(instance);
+    progressesCollection.upsert(progress);
+
+    const account = accounts[0];
+
+    account.playerProgresses.push(progress._id);
+
+    accountsCollection.upsert(account);
+  })
 }

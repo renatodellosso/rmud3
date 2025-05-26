@@ -27,6 +27,7 @@ export interface ClientToServerEvents {
     callback: (success: boolean) => void
   ) => void;
   getSaves: (callback: (saves: SerializedEJSON<PlayerSave[]>) => void) => void;
+  createNewSave: () => void;
 }
 
 export interface InterServerEvents {
