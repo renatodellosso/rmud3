@@ -95,7 +95,7 @@ export default function SignUp() {
             className="py-1 px-2"
           />
           <button type="submit" disabled={submitting} className="py-1 px-2">
-            Sign In
+            Sign Up
           </button>
         </form>
         {error && <p className="text-red-500">{error}</p>}
