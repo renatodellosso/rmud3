@@ -65,7 +65,7 @@ export default function SignIn() {
             Sign In
           </button>
           <button onClick={switchToSignUp} className="py-1 px-2">
-            Don't Have Account
+            I Don't Have An Account
           </button>
         </form>
         {error && <p className="text-red-500">{error}</p>}
