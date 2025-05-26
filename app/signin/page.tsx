@@ -31,6 +31,10 @@ export default function SignIn() {
     });
   }
 
+  function switchToSignUp() {
+    window.location.href = "/signup";
+  }
+
   return (
     <div className="h-screen flex flex-col">
       <Link href="/" className="text-3xl text-white font-bold">
@@ -59,6 +63,9 @@ export default function SignIn() {
           />
           <button type="submit" disabled={submitting} className="py-1 px-2">
             Sign In
+          </button>
+          <button onClick={switchToSignUp} className="py-1 px-2">
+            Don't Have Account
           </button>
         </form>
         {error && <p className="text-red-500">{error}</p>}
