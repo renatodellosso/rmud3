@@ -90,9 +90,9 @@ export class CachedCollection<T extends WithId<Document>> {
       }
     );
 
-    if (result.acknowledged && result.upsertedId) {
-      this.cache.set(result.upsertedId.toString(), data);
-      return result.upsertedId;
+    if (result.acknowledged) {
+      this.cache.set(data._id.toString(), data);
+      return data._id;
     }
 
     throw new Error("Insert failed");
