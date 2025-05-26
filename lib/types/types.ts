@@ -1,14 +1,18 @@
 import { CreatureInstance } from "./creature";
 
+export type LocationId = keyof typeof locations | `dungeon-${string}`;
+
 export type Location = {
   name: string;
   creatures: CreatureInstance[];
+  exits: LocationId[];
 };
 
 export type Targetable = CreatureInstance | Location;
 
 import { restoreFieldsAndMethods } from "../utils";
 import { PlayerInstance, PlayerProgress } from "./player";
+import locations from "lib/gamedata/locations";
 
 export class CannotDirectlyCreateInstanceError extends Error {
   constructor(className: string) {
@@ -47,3 +51,6 @@ export type PlayerSave = {
   instance: PlayerInstance;
   progress: PlayerProgress;
 };
+
+export type Point = [number, number];
+export type Range = [number, number];
