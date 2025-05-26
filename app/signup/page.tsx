@@ -1,9 +1,12 @@
 "use client";
 
+import useRedirectIfSessionIdIsPresent from "lib/hooks/useRedirectIfSessionIdIsPresent";
 import { socket } from "lib/socket";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function SignUp() {
+  useRedirectIfSessionIdIsPresent();
   const [submitting, setSubmitting] = useState(false);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -49,9 +52,9 @@ export default function SignUp() {
 
   return (
     <div className="h-screen flex flex-col">
-      <div>
-        <h1 className="text-3xl text-white font-bold">RMUD3</h1>
-      </div>
+      <Link href="/" className="text-3xl text-white font-bold">
+        RMUD3
+      </Link>
       <div className="grow flex flex-col justify-center items-center">
         <form action={signUp} className="flex flex-col gap-2">
           <h1 className="text-xl w-full text-center">Sign Up</h1>

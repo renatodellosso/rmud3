@@ -1,8 +1,10 @@
-interface ServerToClientEvents {
+import { ObjectId } from "bson";
+
+export interface ServerToClientEvents {
   hello: () => void;
 }
 
-interface ClientToServerEvents {
+export interface ClientToServerEvents {
   hello: () => void;
   signIn: (
     email: string,
@@ -18,10 +20,16 @@ interface ClientToServerEvents {
     password: string,
     callback: (sessionId: string | undefined, error: string | undefined) => void
   ) => void;
+  setSessionId: (
+    sessionId: string,
+    callback: (success: boolean) => void
+  ) => void;
 }
 
-interface InterServerEvents {
+export interface InterServerEvents {
   ping: () => void;
 }
 
-interface SocketData {}
+export interface SocketData {
+  sessionId: ObjectId | undefined;
+}

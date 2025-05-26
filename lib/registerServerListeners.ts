@@ -3,6 +3,13 @@ import { createAccount, signIn } from "./auth";
 import getCollectionManager from "./getCollectionManager";
 import getSessionManager from "./SessionManager";
 import { getMongoClient } from "./getMongoClient";
+import {
+  ClientToServerEvents,
+  ServerToClientEvents,
+  InterServerEvents,
+  SocketData,
+} from "./types/socketiotypes";
+import { ObjectId } from "bson";
 
 export default function registerServerListeners(
   io: Server<
@@ -43,7 +50,7 @@ function registerSocketListeners(
     );
 
     if (sessionId) {
-      console.log("Sign in successful! User:", email);
+      console.log("Sign in successful! User:", email, "Session ID:", sessionId);
       callback(sessionId.toString());
     } else {
       console.log("Sign in failed! User:", email);
@@ -70,9 +77,30 @@ function registerSocketListeners(
 
     const sessionManager = getSessionManager();
 
-    const sessionId = sessionManager.createSession(accountOrError._id);
+    const session = sessionManager.createSession(accountOrError._id);
 
-    console.log("Sign up successful! User:", email);
-    callback(sessionId.toString(), undefined);
+    console.log("Sign up successful! User:", email, "Session ID:", session._id);
+    socket.data.sessionId = session._id;
+    callback(session._id.toString(), undefined);
+  });
+
+  socket.on("setSessionId", (sessionId, callback) => {
+    if (!sessionId) {
+      console.error("No session ID provided");
+      callback(false);
+      return;
+    }
+
+    const sessionManager = getSessionManager();
+    const session = sessionManager.getSession(new ObjectId(sessionId));
+
+    if (!session) {
+      console.error("Invalid session ID:", sessionId);
+      callback(false);
+      return;
+    }
+
+    socket.data.sessionId = session._id;
+    callback(true);
   });
 }

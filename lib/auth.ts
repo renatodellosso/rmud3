@@ -113,6 +113,6 @@ export async function signIn(
 
   accountCollection.setInCache(account._id, account);
 
-  const sessionId = sessionManager.createSession(account._id);
-  return sessionId._id;
+  const session = sessionManager.createSession(account._id);
+  return session._id;
 }

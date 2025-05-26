@@ -3,10 +3,10 @@ import Session from "./types/Session";
 import { getSingleton } from "./utils";
 
 export class SessionManager {
-  private sessions: Map<ObjectId, Session>;
+  private sessions: Map<string, Session>;
 
   constructor() {
-    this.sessions = new Map<ObjectId, Session>();
+    this.sessions = new Map<string, Session>();
   }
 
   public createSession(accountId: ObjectId): Session {
@@ -17,16 +17,16 @@ export class SessionManager {
       playerInstanceId: undefined,
     };
 
-    this.sessions.set(session._id, session);
+    this.sessions.set(session._id.toString(), session);
     return session;
   }
 
   public getSession(sessionId: ObjectId): Session | undefined {
-    return this.sessions.get(sessionId);
+    return this.sessions.get(sessionId.toString());
   }
 
   public deleteSession(sessionId: ObjectId): boolean {
-    return this.sessions.delete(sessionId);
+    return this.sessions.delete(sessionId.toString());
   }
 }
 
