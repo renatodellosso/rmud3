@@ -82,3 +82,15 @@ export function getSingleton<T>(name: string, setter: () => T): T {
   }
   return singletons[name];
 }
+
+export function randInRangeInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export function randInRangeFloat(min: number, max: number): number {
+  return Math.random() * (max - min) + min;
+}
+
+export function chance(percentage: number): boolean {
+  return Math.random() < percentage;
+}
