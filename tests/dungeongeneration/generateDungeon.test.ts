@@ -7,7 +7,7 @@ import {
 } from "lib/dungeongeneration/utils";
 
 describe(generateDungeon.name, () => {
-  const TRIALS = 1000;
+  const TRIALS = 3000;
   const ROOM_COUNT = [5, 100];
 
   function testRepeated(name: string, func: () => void) {
@@ -37,12 +37,18 @@ describe(generateDungeon.name, () => {
 
     expect(dungeon.floors.length).toBeGreaterThan(0);
 
-    const depths = new Set(
-      dungeon.floors.map((floor) => floor.definition.depths)
+    const depths = new Set(dungeon.floors.map((floor) => floor.depth));
+
+    const maxDepth = Math.max(
+      ...Object.values(floors)
+        .map((floor) => floor.depths)
+        .flat()
     );
-    const expectedDepths = new Set(
-      Object.values(floors).map((floor) => floor.depths)
-    );
+
+    const expectedDepths: number[] = [];
+    for (let i = 0; i <= maxDepth; i++) {
+      expectedDepths.push(i);
+    }
 
     expect(Array.from(depths)).toEqual(Array.from(expectedDepths));
   });
@@ -108,9 +114,7 @@ describe(generateDungeon.name, () => {
             const dy = Math.abs(
               exitCoords.coords[1] - location.globalCoords[1]
             );
-            const dz = Math.abs(
-              exitCoords.depth - location.floor.depth
-            );
+            const dz = Math.abs(exitCoords.depth - location.floor.depth);
 
             expect(dx + dy + dz).toBe(1); // Exits must be adjacent
           }

@@ -142,7 +142,7 @@ export default function DungeonVis() {
                     .length
                 }
               </div>
-              <div>Depth: {floor.definition.depths}</div>
+              <div>Depth: {floor.depth}</div>
             </li>
           ))}
         </ul>
