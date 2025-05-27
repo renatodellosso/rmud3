@@ -130,7 +130,7 @@ export default function DungeonVis() {
                   Floor {index + 1}: {floor.definition.name}
                 </h3>
                 <button
-                  onClick={() => setSelectedFloor(floor.definition.depths)}
+                  onClick={() => setSelectedFloor(floor.depth)}
                 >
                   View
                 </button>

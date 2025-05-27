@@ -105,8 +105,18 @@ describe(generateDungeon.name, () => {
             const dy = Math.abs(
               exitCoords.coords[1] - location.globalCoords[1]
             );
+
+            console.log("exit x: ", exitCoords.coords[0], "exit y: ", exitCoords.coords[1]);
+            
+            console.log(
+              "location x: ",
+              location.globalCoords[0],
+              "location y: ",
+              location.globalCoords[1]
+            );
+
             const dz = Math.abs(
-              exitCoords.depth - location.floor.definition.depths
+              exitCoords.depth - location.floor.depth
             );
 
             expect(dx + dy + dz).toBe(1); // Exits must be adjacent

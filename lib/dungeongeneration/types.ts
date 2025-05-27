@@ -10,6 +10,7 @@ export type Dungeon = {
 export type FloorInstance = {
   definition: FloorDefinition;
   locations: (DungeonLocation | undefined)[][];
+  depth: number;
   size: [number, number];
   offset: Point;
 };

@@ -204,6 +204,7 @@ function generateFloor(
   const floorInstance: FloorInstance = {
     definition,
     locations,
+    depth,
     size: dimensions,
     offset: [
       Math.min(...startingPoints.map((point) => point[0])),

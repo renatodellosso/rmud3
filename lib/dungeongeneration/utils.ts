@@ -48,20 +48,26 @@ export function getLocationId(
 ): LocationId {
   return `dungeon-${floorDefinitionToId(floor.definition)}-${globalCoords.join(
     "-"
-  )}`;
+  )}-${floor.depth}`;
 }
 
 export function getCoordsFromId(id: LocationId) {
   const parts = id.split("-");
-  if (parts.length < 4) {
+  if (parts.length < 5) {
     throw new Error(`Invalid LocationId: ${id}`);
   }
 
   const definitionId = parts[1] as keyof typeof floors;
-  const coords = parts.slice(2).map(Number);
+  const coords = parts.slice(2, 3).map(Number);
+
+  if (coords.length !== 2) {
+    throw new Error(`Invalid LocationId: ${id}`);
+  }
+
+  console.log("coords: " + coords);
 
   return {
-    depth: floors[definitionId].depths,
+    depth: +parts[4],
     coords: coords as Point,
   };
 }
