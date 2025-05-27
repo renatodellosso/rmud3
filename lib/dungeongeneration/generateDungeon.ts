@@ -296,6 +296,35 @@ function generateFloorDimensionsAndOffsetStartingPoints(
       ] as Point
   );
 
+  // Offset points randomly within the floor dimensions
+  const offsetX =
+    width - maxWidthBetweenStartingPoints
+      ? randInRangeInt(0, width - maxWidthBetweenStartingPoints - 1)
+      : 0;
+  const offsetY =
+    length - maxLengthBetweenStartingPoints
+      ? randInRangeInt(0, length - maxLengthBetweenStartingPoints - 1)
+      : 0;
+
+  for (const point of offsetStartingPoints) {
+    point[0] += offsetX;
+    point[1] += offsetY;
+
+    // Verify that the offset points are within the dimensions
+    if (
+      point[0] < 0 ||
+      point[1] < 0 ||
+      point[0] >= dimensions[0] ||
+      point[1] >= dimensions[1]
+    ) {
+      throw new Error(
+        `Offset starting point ${point.join(
+          ", "
+        )} is out of bounds for dimensions ${dimensions.join(", ")}.`
+      );
+    }
+  }
+
   return { dimensions, offsetStartingPoints };
 }
 
