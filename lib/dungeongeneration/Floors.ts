@@ -46,6 +46,51 @@ const floors: Record<string, FloorDefinition> = {
       exitCount: [4, 5],
     },
   },
+  fungalCaverns: {
+    name: "Fungal Caverns",
+    depth: 2,
+    appearanceWeight: 1.2,
+    blendChance: 0.3,
+    visualizerColor: "#228B22",
+    generationOptions: {
+      roomChance: 0.8,
+      connectionChance: 0.6,
+      width: [12, 18],
+      length: [12, 18],
+      roomCount: [30, 60],
+      exitCount: [5, 6],
+    },
+  },
+  mines: {
+    name: "Mines",
+    depth: 2,
+    appearanceWeight: 1.6,
+    blendChance: 0.5,
+    visualizerColor: "#A9A9A9",
+    generationOptions: {
+      roomChance: 0.6,
+      connectionChance: 0.4,
+      width: [10, 16],
+      length: [10, 16],
+      roomCount: [20, 40],
+      exitCount: [3, 4],
+    },
+  },
+  ruins: {
+    name: "Ruins",
+    depth: 2,
+    appearanceWeight: 1.1,
+    blendChance: 0.2,
+    visualizerColor: "#B8860B",
+    generationOptions: {
+      roomChance: 0.5,
+      connectionChance: 0.3,
+      width: [14, 20],
+      length: [14, 20],
+      roomCount: [35, 70],
+      exitCount: [6, 7],
+    },
+  },
 };
 
 export default floors;

@@ -73,15 +73,11 @@ function generateDepth(
 
 function connectFloors(dungeon: Dungeon, lowerDepth: number, points: Point[]) {
   for (const point of points) {
-    const lowerRoom = dungeon.locations[lowerDepth][point[0]][point[1]];
-    const upperRoom = dungeon.locations[lowerDepth - 1][point[0]][point[1]];
+    const lowerRoom = dungeon.locations[lowerDepth][point[0]]?.[point[1]];
+    const upperRoom = dungeon.locations[lowerDepth - 1][point[0]]?.[point[1]];
 
     if (!lowerRoom || !upperRoom) {
-      throw new Error(
-        `Rooms not found at ${point.join(", ")} for connection at depths: ${
-          lowerDepth - 1
-        }-${lowerDepth}`
-      );
+      continue;
     }
 
     lowerRoom.exits.add(upperRoom.id);
@@ -462,45 +458,59 @@ function generateFloorLayout(
     }
 
     const adjacentPoints: Point[] = [
-      [room.floorCoords[0] - 1, room.floorCoords[1]],
-      [room.floorCoords[0] + 1, room.floorCoords[1]],
-      [room.floorCoords[0], room.floorCoords[1] - 1],
-      [room.floorCoords[0], room.floorCoords[1] + 1],
+      [room.globalCoords[0] - 1, room.globalCoords[1]],
+      [room.globalCoords[0] + 1, room.globalCoords[1]],
+      [room.globalCoords[0], room.globalCoords[1] - 1],
+      [room.globalCoords[0], room.globalCoords[1] + 1],
     ];
 
-    const validAdjacentPoints = adjacentPoints.filter(
-      (point) =>
-        point[0] >= 0 &&
-        point[1] >= 0 &&
-        point[0] < floorInstance.size[0] &&
-        point[1] < floorInstance.size[1]
-    );
+    const validAdjacentPoints = adjacentPoints
+      .filter(
+        (point) =>
+          // In global bounds
+          point[0] >= 0 &&
+          point[1] >= 0 &&
+          point[0] < dungeon.locations[depth].length &&
+          point[1] < dungeon.locations[depth][point[0]].length
+      )
+      .filter(
+        (point) =>
+          // In floor bounds
+          point[0] - floorInstance.offset[0] >= 0 &&
+          point[1] - floorInstance.offset[1] >= 0 &&
+          point[0] - floorInstance.offset[0] < floorInstance.size[0] &&
+          point[1] - floorInstance.offset[1] < floorInstance.size[1]
+      );
 
     const emptyAdjacentPoints = validAdjacentPoints.filter(
-      (point) =>
-        !dungeon.locations[depth][floorInstance.offset[0] + point[0]][
-          floorInstance.offset[1] + point[1]
-        ]
+      (point) => !dungeon.locations[depth][point[0]][point[1]]
     );
 
     const filledAdjacentPoints = validAdjacentPoints.filter(
       (point) =>
-        dungeon.locations[depth][floorInstance.offset[0] + point[0]][
-          floorInstance.offset[1] + point[1]
-        ] &&
-        !room.exits.has(
-          dungeon.locations[depth][floorInstance.offset[0] + point[0]][
-            floorInstance.offset[1] + point[1]
-          ]!.id
-        )
+        dungeon.locations[depth][point[0]][point[1]] &&
+        !room.exits.has(dungeon.locations[depth][point[0]][point[1]]!.id)
     );
 
     for (const point of emptyAdjacentPoints) {
       if (chance(options.roomChance)) {
         const newRoom = generateRoom(dungeon, floorInstance, depth, [
-          point[0] + floorInstance.offset[0],
-          point[1] + floorInstance.offset[1],
+          point[0],
+          point[1],
         ]);
+
+        const posDist =
+          Math.abs(newRoom.globalCoords[0] - room.globalCoords[0]) +
+          Math.abs(newRoom.globalCoords[1] - room.globalCoords[1]);
+        if (posDist > 1) {
+          throw new Error(
+            `New room at ${newRoom.globalCoords.join(
+              ", "
+            )} is not adjacent to the existing room at ${room.globalCoords.join(
+              ", "
+            )}.`
+          );
+        }
 
         newRoom.exits.add(room.id);
         room.exits.add(newRoom.id);
@@ -511,16 +521,26 @@ function generateFloorLayout(
 
     for (const point of filledAdjacentPoints) {
       if (chance(options.connectionChance)) {
-        const existingRoom =
-          dungeon.locations[depth][floorInstance.offset[0] + point[0]][
-            floorInstance.offset[1] + point[1]
-          ];
+        const existingRoom = dungeon.locations[depth][point[0]][point[1]];
 
         if (!existingRoom) {
           throw new Error(
             `No existing room found at ${point.join(
               ", "
             )} for connection when one should exist.`
+          );
+        }
+
+        const posDist =
+          Math.abs(existingRoom.globalCoords[0] - room.globalCoords[0]) +
+          Math.abs(existingRoom.globalCoords[1] - room.globalCoords[1]);
+        if (posDist > 1) {
+          throw new Error(
+            `New room at ${existingRoom.globalCoords.join(
+              ", "
+            )} is not adjacent to the existing room at ${room.globalCoords.join(
+              ", "
+            )}.`
           );
         }
 

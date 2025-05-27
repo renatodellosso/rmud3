@@ -101,8 +101,10 @@ describe(generateDungeon.name, () => {
 
           for (const exit of exits) {
             const exitCoords = getCoordsFromId(exit);
-            const dx = Math.abs(exitCoords.coords[0] - location.floorCoords[0]);
-            const dy = Math.abs(exitCoords.coords[1] - location.floorCoords[1]);
+            const dx = Math.abs(exitCoords.coords[0] - location.globalCoords[0]);
+            const dy = Math.abs(
+              exitCoords.coords[1] - location.globalCoords[1]
+            );
             const dz = Math.abs(
               exitCoords.depth - location.floor.definition.depths
             );
