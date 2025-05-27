@@ -61,7 +61,7 @@ export function getCoordsFromId(id: LocationId) {
   const coords = parts.slice(2).map(Number);
 
   return {
-    depth: floors[definitionId].depth,
+    depth: floors[definitionId].depths,
     coords: coords as Point,
   };
 }

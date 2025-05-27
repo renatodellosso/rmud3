@@ -3,7 +3,7 @@ import { FloorDefinition } from "./types";
 const floors: Record<string, FloorDefinition> = {
   sewers: {
     name: "Sewers",
-    depth: 0,
+    depths: [0],
     appearanceWeight: 1,
     blendChance: 0,
     visualizerColor: "#2F4F4F",
@@ -18,7 +18,7 @@ const floors: Record<string, FloorDefinition> = {
   },
   catacombs: {
     name: "Catacombs",
-    depth: 1,
+    depths: [1],
     appearanceWeight: 1.5,
     blendChance: 0.4,
     visualizerColor: "#8B4513",
@@ -33,7 +33,7 @@ const floors: Record<string, FloorDefinition> = {
   },
   caves: {
     name: "Caves",
-    depth: 1,
+    depths: [0, 1],
     appearanceWeight: 1,
     blendChance: 0.4,
     visualizerColor: "#4682B4",

@@ -38,10 +38,10 @@ describe(generateDungeon.name, () => {
     expect(dungeon.floors.length).toBeGreaterThan(0);
 
     const depths = new Set(
-      dungeon.floors.map((floor) => floor.definition.depth)
+      dungeon.floors.map((floor) => floor.definition.depths)
     );
     const expectedDepths = new Set(
-      Object.values(floors).map((floor) => floor.depth)
+      Object.values(floors).map((floor) => floor.depths)
     );
 
     expect(Array.from(depths)).toEqual(Array.from(expectedDepths));
@@ -106,7 +106,7 @@ describe(generateDungeon.name, () => {
               exitCoords.coords[1] - location.globalCoords[1]
             );
             const dz = Math.abs(
-              exitCoords.depth - location.floor.definition.depth
+              exitCoords.depth - location.floor.definition.depths
             );
 
             expect(dx + dy + dz).toBe(1); // Exits must be adjacent
