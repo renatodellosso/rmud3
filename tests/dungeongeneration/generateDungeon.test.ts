@@ -91,6 +91,7 @@ describe(generateDungeon.name, () => {
 
   testRepeated("should generate rooms with only adjacent exits", () => {
     const dungeon = breakCirclularRefs(generateDungeon());
+
     for (const floor of dungeon.floors) {
       for (const row of floor.locations) {
         for (const location of row) {
@@ -101,20 +102,12 @@ describe(generateDungeon.name, () => {
 
           for (const exit of exits) {
             const exitCoords = getCoordsFromId(exit);
-            const dx = Math.abs(exitCoords.coords[0] - location.globalCoords[0]);
+            const dx = Math.abs(
+              exitCoords.coords[0] - location.globalCoords[0]
+            );
             const dy = Math.abs(
               exitCoords.coords[1] - location.globalCoords[1]
             );
-
-            console.log("exit x: ", exitCoords.coords[0], "exit y: ", exitCoords.coords[1]);
-            
-            console.log(
-              "location x: ",
-              location.globalCoords[0],
-              "location y: ",
-              location.globalCoords[1]
-            );
-
             const dz = Math.abs(
               exitCoords.depth - location.floor.depth
             );

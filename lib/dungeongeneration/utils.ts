@@ -58,13 +58,11 @@ export function getCoordsFromId(id: LocationId) {
   }
 
   const definitionId = parts[1] as keyof typeof floors;
-  const coords = parts.slice(2, 3).map(Number);
+  const coords = parts.slice(2, 4).map(Number);
 
   if (coords.length !== 2) {
     throw new Error(`Invalid LocationId: ${id}`);
   }
-
-  console.log("coords: " + coords);
 
   return {
     depth: +parts[4],
