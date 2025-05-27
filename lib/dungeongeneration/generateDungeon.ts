@@ -20,7 +20,9 @@ export default function generateDungeon(): Dungeon {
   ];
 
   const maxDepth = Math.max(
-    ...Object.values(floors).map((floor) => Math.max(...Object.values(floor.depths).map((depth) => depth)))
+    ...Object.values(floors).map((floor) =>
+      Math.max(...Object.values(floor.depths).map((depth) => depth))
+    )
   );
   if (maxDepth < 0) {
     throw new Error("No valid floor definitions found.");
@@ -222,7 +224,12 @@ function generateFloor(
     startingPoints
   );
 
-  const rooms = generateFloorLayout(dungeon, depth, floorInstance, roomsToExpand);
+  const rooms = generateFloorLayout(
+    dungeon,
+    depth,
+    floorInstance,
+    roomsToExpand
+  );
 
   return { floorInstance, rooms };
 }
@@ -263,13 +270,15 @@ function generateFloorDimensionsAndOffsetStartingPoints(
   definition: FloorDefinition,
   startingPoints: Point[]
 ): { dimensions: [number, number]; offsetStartingPoints: Point[] } {
+  const minStartingX = Math.min(...startingPoints.map((point) => point[0]));
+  const minStartingY = Math.min(...startingPoints.map((point) => point[1]));
+
+  // Add 1 because we  need to include the starting point itself
   const maxWidthBetweenStartingPoints =
-    Math.max(...startingPoints.map((point) => point[0])) -
-    Math.min(...startingPoints.map((point) => point[0]));
+    Math.max(...startingPoints.map((point) => point[0])) - minStartingX + 1;
 
   const maxLengthBetweenStartingPoints =
-    Math.max(...startingPoints.map((point) => point[1])) -
-    Math.min(...startingPoints.map((point) => point[1]));
+    Math.max(...startingPoints.map((point) => point[1])) - minStartingY + 1;
 
   const width = Math.max(
     randInRangeInt(
@@ -290,11 +299,7 @@ function generateFloorDimensionsAndOffsetStartingPoints(
 
   // Offset starting points to ensure they fit within the generated floor dimensions
   const offsetStartingPoints = startingPoints.map(
-    (point) =>
-      [
-        point[0] - Math.min(...startingPoints.map((p) => p[0])),
-        point[1] - Math.min(...startingPoints.map((p) => p[1])),
-      ] as Point
+    (point) => [point[0] - minStartingX, point[1] - minStartingY] as Point
   );
 
   // Offset points randomly within the floor dimensions
@@ -321,7 +326,11 @@ function generateFloorDimensionsAndOffsetStartingPoints(
       throw new Error(
         `Offset starting point ${point.join(
           ", "
-        )} is out of bounds for dimensions ${dimensions.join(", ")}.`
+        )} is out of bounds for dimensions ${dimensions.join(", ")}.
+        Random offset: (${offsetX}, ${offsetY})
+        Max width between starting points: ${maxWidthBetweenStartingPoints}
+        Max length between starting points: ${maxLengthBetweenStartingPoints}
+        Starting points: ${startingPoints.join(", ")}`
       );
     }
   }
@@ -382,9 +391,8 @@ function generateRoom(
   };
 
   floor.locations[location.floorCoords[0]][location.floorCoords[1]] = location;
-  dungeon.locations[depth][location.globalCoords[0]][
-    location.globalCoords[1]
-  ] = location;
+  dungeon.locations[depth][location.globalCoords[0]][location.globalCoords[1]] =
+    location;
 
   return location;
 }
