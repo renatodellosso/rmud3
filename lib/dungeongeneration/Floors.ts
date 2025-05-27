@@ -48,7 +48,7 @@ const floors: Record<string, FloorDefinition> = {
   },
   fungalCaverns: {
     name: "Fungal Caverns",
-    depth: 2,
+    depths: [2],
     appearanceWeight: 1.2,
     blendChance: 0.3,
     visualizerColor: "#228B22",
@@ -63,7 +63,7 @@ const floors: Record<string, FloorDefinition> = {
   },
   mines: {
     name: "Mines",
-    depth: 2,
+    depths: [2],
     appearanceWeight: 1.6,
     blendChance: 0.5,
     visualizerColor: "#A9A9A9",
@@ -78,7 +78,7 @@ const floors: Record<string, FloorDefinition> = {
   },
   ruins: {
     name: "Ruins",
-    depth: 2,
+    depths: [2],
     appearanceWeight: 1.1,
     blendChance: 0.2,
     visualizerColor: "#B8860B",
