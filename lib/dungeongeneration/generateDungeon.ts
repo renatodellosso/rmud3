@@ -5,6 +5,7 @@ import {
   DungeonLocation,
   FloorDefinition,
   FloorInstance,
+  MissingRoomsError,
 } from "./types";
 import { Point } from "lib/types/types";
 import { getLocationId, mapFloor } from "./utils";
@@ -38,9 +39,33 @@ export default function generateDungeon(): Dungeon {
     }
 
     startingPoints = newStartingPoints;
+
+    throwIfRoomsMissing(
+      `${generateDungeon.name} falsely claimed to have generated rooms at depth ${depth}.`,
+      dungeon,
+      depth,
+      startingPoints
+    );
   }
 
   return dungeon;
+}
+
+function throwIfRoomsMissing(
+  msg: string,
+  dungeon: Dungeon,
+  depth: number,
+  points: Point[]
+): void {
+  const missingRooms = points.filter(
+    (point) =>
+      !dungeon.locations[depth][point[0]] ||
+      !dungeon.locations[depth][point[0]][point[1]]
+  );
+
+  if (missingRooms.length === 0) return;
+
+  throw new MissingRoomsError(msg, missingRooms);
 }
 
 function generateDepth(
@@ -62,13 +87,43 @@ function generateDepth(
       dungeon,
       floor.definition,
       floor.startingPoints,
-      depth
+      depth,
+      newStartingPoints
+    );
+
+    throwIfRoomsMissing(
+      `${generateFloor.name} deleted old starting rooms at depth ${depth} for floor ${floor.definition.name}.`,
+      dungeon,
+      depth,
+      newStartingPoints
+    );
+
+    throwIfRoomsMissing(
+      `${generateFloor.name} falsely claimed to have generated rooms at depth ${depth} for floor ${floor.definition.name}.`,
+      dungeon,
+      depth,
+      rooms.map((room) => room.globalCoords)
     );
 
     // Generate exits for the floor
-    const exits = generateExits(floorInstance, rooms);
+    const exits = selectExits(floorInstance, rooms);
+
+    throwIfRoomsMissing(
+      `${selectExits.name} falsely claimed to have generated exits at depth ${depth} for floor ${floor.definition.name}.`,
+      dungeon,
+      depth,
+      exits
+    );
+
     newStartingPoints.push(...exits);
   }
+
+  throwIfRoomsMissing(
+    `${generateDepth.name} falsely claimed to have generated rooms at depth ${depth}.`,
+    dungeon,
+    depth,
+    newStartingPoints
+  );
 
   return newStartingPoints;
 }
@@ -79,7 +134,9 @@ function connectFloors(dungeon: Dungeon, lowerDepth: number, points: Point[]) {
     const upperRoom = dungeon.locations[lowerDepth - 1][point[0]]?.[point[1]];
 
     if (!lowerRoom || !upperRoom) {
-      continue;
+      throw new Error(
+        `Cannot connect floors at depth ${lowerDepth} for point ${point}. One of the rooms is undefined. Lower Room: ${lowerRoom}, Upper Room: ${upperRoom}`
+      );
     }
 
     lowerRoom.exits.add(upperRoom.id);
@@ -188,7 +245,8 @@ function generateFloor(
   dungeon: Dungeon,
   definition: FloorDefinition,
   startingPoints: Point[],
-  depth: number
+  depth: number,
+  existingStartingPoints: Point[] = []
 ): { floorInstance: FloorInstance; rooms: DungeonLocation[] } {
   if (startingPoints.length === 0) {
     throw new Error(
@@ -200,7 +258,64 @@ function generateFloor(
     dungeon,
     depth,
     definition,
-    startingPoints
+    startingPoints,
+    existingStartingPoints
+  );
+
+  const outOfBoundsOffsetStartingPoints = offsetStartingPoints.filter(
+    (point) =>
+      point[0] < 0 ||
+      point[1] < 0 ||
+      point[0] >= dimensions[0] ||
+      point[1] >= dimensions[1]
+  );
+  if (outOfBoundsOffsetStartingPoints.length) {
+    throw new Error(
+      `Offset starting points are out of bounds for floor ${
+        definition.name
+      } at depth ${depth}. Floor Dimensions: ${dimensions}, Out of bounds points: ${outOfBoundsOffsetStartingPoints.join(
+        ", "
+      )}`
+    );
+  }
+
+  const outOfBoundsNonOffsetStartingPoints = startingPoints.filter(
+    (point) =>
+      point[0] < 0 ||
+      point[1] < 0 ||
+      point[0] >= dungeon.locations[depth].length ||
+      point[1] >= dungeon.locations[depth][point[0]].length
+  );
+  if (outOfBoundsNonOffsetStartingPoints.length) {
+    throw new Error(
+      `Non-offset starting points are out of bounds for floor ${
+        definition.name
+      } at depth ${depth}. Dungeon Dimensions: (${
+        dungeon.locations[depth].length
+      }, ${
+        dungeon.locations[depth][0]?.length
+      }), Out of bounds points: ${outOfBoundsNonOffsetStartingPoints.join(
+        ", "
+      )}`
+    );
+  }
+
+  // Check if locations matches the dimensions
+  if (
+    !locations ||
+    locations.length !== dimensions[0] ||
+    !locations.every((row) => row.length === dimensions[1])
+  ) {
+    throw new Error(
+      `Locations array does not match the expected dimensions. Expected: ${dimensions}, Actual: ${locations.length}x${locations[0]?.length}`
+    );
+  }
+
+  throwIfRoomsMissing(
+    `${initLocationArrays.name} deleted existing starting points at depth ${depth} for floor ${definition.name}.`,
+    dungeon,
+    depth,
+    existingStartingPoints
   );
 
   const floorInstance: FloorInstance = {
@@ -231,13 +346,17 @@ function generateFloor(
     roomsToExpand
   );
 
+  throwIfRoomsMissing(
+    `${generateFloorLayout.name} falsely claimed to have generated rooms at depth ${depth} for floor ${definition.name}.`,
+    dungeon,
+    depth,
+    rooms.map((room) => room.globalCoords)
+  );
+
   return { floorInstance, rooms };
 }
 
-function generateExits(
-  floor: FloorInstance,
-  rooms: DungeonLocation[]
-): Point[] {
+function selectExits(floor: FloorInstance, rooms: DungeonLocation[]): Point[] {
   const exitRange = floor.definition.generationOptions.exitCount;
   const exitCount = randInRangeInt(exitRange[0], exitRange[1]);
 
@@ -254,12 +373,6 @@ function generateExits(
   }
 
   if (startingPoints.length === 0) {
-    console.warn(
-      "Rooms:",
-      rooms.map((room) => room.globalCoords),
-      "Exit Count:",
-      exitCount
-    );
     throw new Error("No starting points generated for the floor.");
   }
 
@@ -273,7 +386,7 @@ function generateFloorDimensionsAndOffsetStartingPoints(
   const minStartingX = Math.min(...startingPoints.map((point) => point[0]));
   const minStartingY = Math.min(...startingPoints.map((point) => point[1]));
 
-  // Add 1 because we  need to include the starting point itself
+  // Add 1 because we need to include the starting point itself
   const maxWidthBetweenStartingPoints =
     Math.max(...startingPoints.map((point) => point[0])) - minStartingX + 1;
 
@@ -342,7 +455,8 @@ function initLocationArrays(
   dungeon: Dungeon,
   depth: number,
   definition: FloorDefinition,
-  startingPoints: Point[]
+  startingPoints: Point[],
+  existingStartingPoints: Point[] = []
 ): {
   locations: (DungeonLocation | undefined)[][];
   dimensions: [number, number];
@@ -350,6 +464,13 @@ function initLocationArrays(
 } {
   const { dimensions, offsetStartingPoints } =
     generateFloorDimensionsAndOffsetStartingPoints(definition, startingPoints);
+
+  throwIfRoomsMissing(
+    `${generateFloorDimensionsAndOffsetStartingPoints.name} deleted existing starting points at depth ${depth} for floor ${definition.name}.`,
+    dungeon,
+    depth,
+    existingStartingPoints
+  );
 
   // Initialize the locations array for the floor
   const locations: (DungeonLocation | undefined)[][] = Array.from(
@@ -364,9 +485,37 @@ function initLocationArrays(
 
   // Expand the dungeon locations array to accommodate the new floor
   dungeon.locations[depth] = expand2DArray(dungeon.locations[depth], [
-    dimensions[0] + Math.min(...startingPoints.map((p) => p[0])),
-    dimensions[1] + Math.min(...startingPoints.map((p) => p[1])),
+    dimensions[0] + Math.min(...startingPoints.map((point) => point[0])),
+    dimensions[1] + Math.min(...startingPoints.map((point) => point[1])),
   ]);
+
+  throwIfRoomsMissing(
+    `${expand2DArray.name} deleted existing starting points at depth ${depth} for floor ${definition.name}.`,
+    dungeon,
+    depth,
+    existingStartingPoints
+  );
+
+  const outOfBoundsNonOffsetStartingPoints = startingPoints.filter(
+    (point) =>
+      point[0] < 0 ||
+      point[1] < 0 ||
+      point[0] >= dungeon.locations[depth].length ||
+      point[1] >= dungeon.locations[depth][point[0]].length
+  );
+  if (outOfBoundsNonOffsetStartingPoints.length) {
+    throw new Error(
+      `Non-offset starting points are out of bounds for floor ${
+        definition.name
+      } at depth ${depth}. Dungeon Dimensions: (${
+        dungeon.locations[depth].length
+      }, ${
+        dungeon.locations[depth][0]?.length
+      }), Out of bounds points: ${outOfBoundsNonOffsetStartingPoints.join(
+        ", "
+      )}`
+    );
+  }
 
   return { locations, dimensions, offsetStartingPoints };
 }
@@ -397,16 +546,27 @@ function generateRoom(
   return location;
 }
 
-function expand2DArray(array: any[][], newDimensions: [number, number]) {
-  const newArray: any[][] = Array.from({ length: newDimensions[0] }, () =>
-    Array.from({ length: newDimensions[1] }, () => undefined)
+/**
+ * @param array cannot be jagged
+ */
+export function expand2DArray(array: any[][], newDimensions: [number, number]) {
+  // Check if the orignal array encompasses the new dimensions
+  if (array.length >= newDimensions[0] && array[0].length >= newDimensions[1]) {
+    return array; // No need to expand
+  }
+
+  const newArray: any[][] = Array.from(
+    { length: Math.max(array.length, newDimensions[0]) },
+    () =>
+      Array.from(
+        { length: Math.max(array[0]?.length ?? 0, newDimensions[1]) },
+        () => undefined
+      )
   );
 
   for (let i = 0; i < array.length; i++) {
     for (let j = 0; j < array[i].length; j++) {
-      if (i < newDimensions[0] && j < newDimensions[1]) {
-        newArray[i][j] = array[i][j];
-      }
+      newArray[i][j] = array[i][j];
     }
   }
 
@@ -461,6 +621,13 @@ function initStartingRooms(
       `No starting rooms generated for floor ${floorInstance.definition.name} at depth ${depth}.`
     );
   }
+
+  throwIfRoomsMissing(
+    `${initStartingRooms.name} falsely claimed to have generated rooms at depth ${depth} for floor ${floorInstance.definition.name}.`,
+    dungeon,
+    depth,
+    roomsToExpand.map((room) => room.globalCoords)
+  );
 
   return roomsToExpand;
 }

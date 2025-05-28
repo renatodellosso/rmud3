@@ -49,3 +49,14 @@ export type DungeonLocation = Location & {
   globalCoords: Point;
   floorCoords: Point;
 };
+
+export class MissingRoomsError extends Error {
+  constructor(msg: string, public missingRooms: Point[]) {
+    super(
+      `${msg} Missing Rooms: ${missingRooms
+        .map((p) => `(${p[0]}, ${p[1]})`)
+        .join(", ")}`
+    );
+    this.name = "MissingRoomsError";
+  }
+}

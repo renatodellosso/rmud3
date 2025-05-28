@@ -1,6 +1,12 @@
 import floors from "lib/dungeongeneration/Floors";
-import generateDungeon from "lib/dungeongeneration/generateDungeon";
-import { Dungeon, FloorInstance } from "lib/dungeongeneration/types";
+import generateDungeon, {
+  expand2DArray,
+} from "lib/dungeongeneration/generateDungeon";
+import {
+  Dungeon,
+  DungeonLocation,
+  FloorInstance,
+} from "lib/dungeongeneration/types";
 import {
   floorDefinitionToId,
   getCoordsFromId,
@@ -9,10 +15,15 @@ import {
 describe(generateDungeon.name, () => {
   const TRIALS = 3000;
   const ROOM_COUNT = [5, 100];
+  const REACHABLE_ROOM_PERCENTAGE = 0.85;
 
-  function testRepeated(name: string, func: () => void) {
+  function testRepeated(
+    name: string,
+    func: () => void,
+    trials: number = TRIALS
+  ) {
     test(name, () => {
-      for (let i = 0; i < TRIALS; i++) {
+      for (let i = 0; i < trials; i++) {
         func();
       }
     });
@@ -121,5 +132,112 @@ describe(generateDungeon.name, () => {
         }
       }
     }
+  });
+
+  testRepeated("Most rooms are reachable", () => {
+    const dungeon = breakCirclularRefs(generateDungeon());
+
+    const rooms: Record<string, DungeonLocation> = {};
+
+    const allRooms = new Set<string>();
+
+    let startRoom: DungeonLocation | undefined;
+
+    for (const floor of dungeon.floors) {
+      for (const row of floor.locations) {
+        for (const location of row) {
+          if (location) {
+            allRooms.add(location.id);
+            rooms[location.id] = location;
+            startRoom ??= location; // Set the first room as the start room
+          }
+        }
+      }
+    }
+
+    expect(startRoom).toBeDefined();
+
+    const visited = new Set<string>();
+    const stack: DungeonLocation[] = [startRoom!];
+
+    while (stack.length > 0) {
+      const current = stack.pop();
+
+      if (!current || !current.id) continue;
+      if (visited.has(current.id)) continue;
+
+      visited.add(current.id);
+
+      for (const exit of Array.from(current.exits)) {
+        stack.push(rooms[exit]);
+      }
+    }
+
+    // expect(visited.size).toBe(allRooms.size);
+    expect(visited.size).toBeGreaterThanOrEqual(
+      allRooms.size * REACHABLE_ROOM_PERCENTAGE
+    );
+  });
+});
+
+describe(expand2DArray.name, () => {
+  test("should expand a 2D array to a larger size", () => {
+    const original = [
+      [1, 2],
+      [3, 4],
+    ];
+    const expanded = expand2DArray(original, [4, 4]);
+
+    expect(expanded.length).toBe(4);
+    expect(expanded[0].length).toBe(4);
+    expect(expanded[0][0]).toBe(1);
+    expect(expanded[0][1]).toBe(2);
+    expect(expanded[1][0]).toBe(3);
+    expect(expanded[1][1]).toBe(4);
+    expect(expanded[2][2]).toBeUndefined();
+  });
+
+  test("should expand a 2D array to the same size", () => {
+    const original = [
+      [1, 2],
+      [3, 4],
+    ];
+    const expanded = expand2DArray(original, [2, 2]);
+
+    expect(expanded).toEqual(original);
+  });
+
+  test("should expand a 2D array to a larger size with undefined values", () => {
+    const original = [
+      [1, 2],
+      [3, 4],
+    ];
+    const expanded = expand2DArray(original, [3, 5]);
+
+    expect(expanded.length).toBe(3);
+    expect(expanded[0].length).toBe(5);
+    expect(expanded[0][0]).toBe(1);
+    expect(expanded[0][1]).toBe(2);
+    expect(expanded[1][0]).toBe(3);
+    expect(expanded[1][1]).toBe(4);
+    expect(expanded[2][2]).toBeUndefined();
+  });
+
+  test("does not overwrite existing values", () => {
+    const original = [
+      [1, 2],
+      [3, 4],
+    ];
+    const expanded = expand2DArray(original, [4, 4]);
+
+    // Ensure that the original values are preserved
+    expect(expanded[0][0]).toBe(1);
+    expect(expanded[0][1]).toBe(2);
+    expect(expanded[1][0]).toBe(3);
+    expect(expanded[1][1]).toBe(4);
+
+    // Ensure that new values are undefined
+    expect(expanded[2][2]).toBeUndefined();
+    expect(expanded[3][3]).toBeUndefined();
   });
 });

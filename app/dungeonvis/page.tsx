@@ -91,19 +91,26 @@ export default function DungeonVis() {
             continue;
           }
 
-          // Draw line to the exit room
-          const exitRoom = floor[exitCoords.coords[0]][exitCoords.coords[1]];
-          if (exitRoom) {
-            const exitX = exitCoords.coords[1] * roomWidth + 5 + roomWidth / 2; // Center the exit
-            const exitY =
-              exitCoords.coords[0] * roomHeight + 5 + roomHeight / 2; // Center the exit
+          try {
+            // Draw line to the exit room
+            const exitRoom = floor[exitCoords.coords[0]][exitCoords.coords[1]];
+            if (exitRoom) {
+              const exitX =
+                exitCoords.coords[1] * roomWidth + 5 + roomWidth / 2; // Center the exit
+              const exitY =
+                exitCoords.coords[0] * roomHeight + 5 + roomHeight / 2; // Center the exit
 
-            ctx.strokeStyle = "blue";
+              ctx.strokeStyle = "blue";
 
-            ctx.beginPath();
-            ctx.moveTo(x + roomWidth / 2, y + roomHeight / 2);
-            ctx.lineTo(exitX, exitY);
-            ctx.stroke();
+              ctx.beginPath();
+              ctx.moveTo(x + roomWidth / 2, y + roomHeight / 2);
+              ctx.lineTo(exitX, exitY);
+              ctx.stroke();
+            }
+          } catch (error) {
+            console.error("Error drawing exit connection:", error);
+            ctx.fillStyle = "red";
+            ctx.fillText("Error", x + roomWidth / 2 - 10, y + roomHeight / 2);
           }
         }
       });
@@ -129,9 +136,7 @@ export default function DungeonVis() {
                 <h3>
                   Floor {index + 1}: {floor.definition.name}
                 </h3>
-                <button
-                  onClick={() => setSelectedFloor(floor.depth)}
-                >
+                <button onClick={() => setSelectedFloor(floor.depth)}>
                   View
                 </button>
               </div>
