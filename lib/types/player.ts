@@ -11,7 +11,7 @@ import { EquipmentDefinition, ItemInstance, ItemTag } from "./item";
 import Ability from "./Ability";
 import items from "lib/gamedata/items";
 import { ConsumableHotbar, EquipmentHotbar } from "./Hotbar";
-import { restoreFieldsAndMethods } from "lib/utils";
+import { getFromOptionalFunc, restoreFieldsAndMethods } from "lib/utils";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -41,11 +41,7 @@ export class PlayerInstance extends CreatureInstance {
       const def = items[equipment.definitionId] as EquipmentDefinition;
       if (!def.getMaxHealth) continue;
 
-      if (typeof def.getMaxHealth === "function") {
-        val += def.getMaxHealth(this, equipment);
-      } else {
-        val += def.getMaxHealth;
-      }
+      val += getFromOptionalFunc(def.getMaxHealth, this, equipment);
     }
 
     return val;
@@ -58,16 +54,7 @@ export class PlayerInstance extends CreatureInstance {
       const def = items[equipment.definitionId] as EquipmentDefinition;
       if (!def.abilityScores || !def.abilityScores[score]) continue;
 
-      if (typeof def.abilityScores[score] === "function") {
-        val += (
-          def.abilityScores[score] as (
-            instance: CreatureInstance,
-            equipment: ItemInstance
-          ) => number
-        )(this, equipment);
-      } else {
-        val += def.abilityScores[score] as number;
-      }
+      val += getFromOptionalFunc(def.abilityScores[score], this, equipment);
     }
 
     return val;
@@ -80,11 +67,9 @@ export class PlayerInstance extends CreatureInstance {
       this.consumables.items
     )) {
       const def = items[equipment.definitionId] as EquipmentDefinition;
-      if (Array.isArray(def.getAbilities)) {
-        abilities.push(...def.getAbilities);
-      } else if (typeof def.getAbilities === "function") {
-        abilities.push(...def.getAbilities(this, equipment));
-      }
+      if (!def.getAbilities) continue;
+
+      abilities.push(...getFromOptionalFunc(def.getAbilities, this, equipment));
     }
     return abilities;
   }

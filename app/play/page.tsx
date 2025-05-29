@@ -1,5 +1,6 @@
 "use client";
 
+import PrimaryMenu from "@/components/menus/PrimaryMenu";
 import useGameState from "lib/hooks/useGameState";
 import useRedirectIfSessionIdIsNotPresent from "lib/hooks/useRedirectIfSessionIdIsNotPresent";
 
@@ -21,7 +22,7 @@ export default function Play() {
 
   return (
     <div className="flex items-center justify-center h-screen">
-      {gameState.messages}
+      <PrimaryMenu gameState={gameState} />
     </div>
   );
 }

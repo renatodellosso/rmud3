@@ -1,4 +1,5 @@
 import { ItemInstance } from "./types/item";
+import { OptionalFunc } from "./types/types";
 
 /**
  * Copies all properties from the prototype to the object if they are not already defined.
@@ -115,4 +116,14 @@ export function randInRangeFloat(min: number, max: number): number {
 
 export function chance(percentage: number): boolean {
   return Math.random() < percentage;
+}
+
+export function getFromOptionalFunc<TReturn, TArgs extends any[]>(
+  func: OptionalFunc<TReturn, TArgs>,
+  ...args: TArgs
+): TReturn {
+  if (typeof func !== "function") {
+    return func as TReturn;
+  }
+  return (func as Function)(...args);
 }

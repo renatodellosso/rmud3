@@ -13,6 +13,28 @@ export default function useGameState(): GameState | undefined {
       setGameState(parsedGameState);
     });
 
+    socket.on("addMessage", (message: string) => {
+      console.log("Received new message:", message);
+
+      // Append the new message to the existing messages
+      setGameState((prevState) => {
+        if (!prevState) {
+          console.error("Game state is not initialized.");
+          return undefined;
+        }
+        return {
+          ...prevState,
+          messages: [...prevState!.messages, message],
+        };
+      });
+    });
+
+    return () => {
+      socket.off("setGameState");
+    };
+  });
+
+  useEffect(() => {
     socket.emit(
       "setSessionId",
       localStorage.getItem("sessionId")!,
@@ -27,11 +49,7 @@ export default function useGameState(): GameState | undefined {
         socket.emit("requestGameState");
       }
     );
-
-    return () => {
-      socket.off("setGameState");
-    };
-  });
+  }, [socket]);
 
   return gameState;
 }

@@ -1,26 +1,11 @@
-import { Socket } from "socket.io";
-import {
-  ClientToServerEvents,
-  InterServerEvents,
-  ServerToClientEvents,
-  SocketData,
-} from "./types/socketiotypes";
 import { getSingleton } from "./utils";
 import { ObjectId } from "bson";
+import { TypedSocket } from "./types/socketioserverutils";
 
 const getSocketsByPlayerInstanceIds = () =>
   getSingleton(
     "socketsByPlayerInstanceIds",
-    () =>
-      new Map<
-        string,
-        Socket<
-          ServerToClientEvents,
-          ClientToServerEvents,
-          InterServerEvents,
-          SocketData
-        >
-      >()
+    () => new Map<string, TypedSocket>()
   );
 
 export default getSocketsByPlayerInstanceIds;
@@ -29,14 +14,6 @@ export function getSocket(instanceId: ObjectId) {
   return getSocketsByPlayerInstanceIds()?.get(instanceId.toString());
 }
 
-export function setSocket(
-  instanceId: ObjectId,
-  socket: Socket<
-    ServerToClientEvents,
-    ClientToServerEvents,
-    InterServerEvents,
-    SocketData
-  >
-) {
+export function setSocket(instanceId: ObjectId, socket: TypedSocket) {
   getSocketsByPlayerInstanceIds()?.set(instanceId.toString(), socket);
 }

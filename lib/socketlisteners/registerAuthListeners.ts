@@ -12,15 +12,9 @@ import { PlayerSave } from "lib/types/types";
 import { EJSON, ObjectId } from "bson";
 import { Socket } from "socket.io";
 import getSocketsByPlayerInstanceIds from "lib/getSocketsByPlayerInstanceIds";
+import { TypedSocket } from "lib/types/socketioserverutils";
 
-export default function registerAuthListeners(
-  socket: Socket<
-    ClientToServerEvents,
-    ServerToClientEvents,
-    InterServerEvents,
-    SocketData
-  >
-) {
+export default function registerAuthListeners(socket: TypedSocket) {
   socket.on("signIn", async (email, password, callback) => {
     const db = await getMongoClient();
 

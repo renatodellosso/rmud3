@@ -1,11 +1,11 @@
-import { ObjectId } from "bson";
+import { LocationId } from "./Location";
 import Session from "./Session";
 import { GameState, PlayerSave, SerializedEJSON } from "./types";
-import { Dungeon } from "lib/dungeongeneration/types";
 
 export interface ServerToClientEvents {
   hello: () => void;
   setGameState: (gameState: SerializedEJSON<GameState>) => void;
+  addMessage: (message: string) => void;
 }
 
 export interface ClientToServerEvents {
@@ -32,6 +32,7 @@ export interface ClientToServerEvents {
   createNewSave: () => void;
   selectSave: (progressId: string) => void;
   requestGameState: () => void;
+  move: (newLocationId: LocationId) => void;
 }
 
 export interface InterServerEvents {
@@ -40,5 +41,4 @@ export interface InterServerEvents {
 
 export interface SocketData {
   session: Session | undefined;
-  messages: string[];
 }

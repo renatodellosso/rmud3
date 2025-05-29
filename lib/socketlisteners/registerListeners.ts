@@ -8,15 +8,9 @@ import {
 import registerAuthListeners from "./registerAuthListeners";
 import registerGameListeners from "./registerGameListeners";
 import registerSaveListeners from "./registerSaveListeners";
+import { TypedServer, TypedSocket } from "lib/types/socketioserverutils";
 
-export default function registerListeners(
-  io: Server<
-    ClientToServerEvents,
-    ServerToClientEvents,
-    InterServerEvents,
-    SocketData
-  >
-) {
+export default function registerListeners(io: TypedServer) {
   io.on("connection", (socket) => {
     console.log("New connection!");
 
@@ -24,14 +18,7 @@ export default function registerListeners(
   });
 }
 
-function registerSocketListeners(
-  socket: Socket<
-    ClientToServerEvents,
-    ServerToClientEvents,
-    InterServerEvents,
-    SocketData
-  >
-) {
+function registerSocketListeners(socket: TypedSocket) {
   socket.on("hello", () => {
     console.log("Hello from client!");
     socket.emit("hello");

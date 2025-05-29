@@ -44,7 +44,6 @@ export type FloorGenerationOptions = {
 };
 
 export class DungeonLocation extends Location {
-  id: LocationId;
   floor: FloorInstance;
   globalCoords: Point;
   floorCoords: Point;

@@ -15,6 +15,7 @@ export class SessionManager {
       accountId,
       playerProgressId: undefined,
       playerInstanceId: undefined,
+      messages: [],
     };
 
     this.sessions.set(session._id.toString(), session);

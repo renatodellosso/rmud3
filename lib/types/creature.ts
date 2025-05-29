@@ -3,6 +3,7 @@ import creatures from "../gamedata/creatures";
 import locations from "../gamedata/locations";
 import { AbilityScore, CannotDirectlyCreateInstanceError } from "./types";
 import Ability from "./Ability";
+import { LocationId } from "./Location";
 
 export type CreatureDefinition = {
   name: string;
@@ -45,5 +46,21 @@ export class CreatureInstance {
     abilities.push(...(creatures[this.definitionId].intrinsicAbilities ?? []));
 
     return abilities;
+  }
+
+  move(newLocationId: LocationId) {
+    if (!locations[newLocationId]) {
+      throw new Error(`Invalid location ID: ${newLocationId}`);
+    }
+
+    const currentLocation = locations[this.location];
+    if (!currentLocation.exits.has(newLocationId)) {
+      throw new Error(
+        `Cannot move to ${newLocationId} from ${this.location}. No exit available.`
+      );
+    }
+
+    currentLocation.exit(this);
+    const newLocation = locations[newLocationId];
   }
 }

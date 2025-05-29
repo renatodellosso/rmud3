@@ -20,14 +20,10 @@ import {
 import getSocketsByPlayerInstanceIds, {
   setSocket,
 } from "lib/getSocketsByPlayerInstanceIds";
+import { TypedSocket } from "lib/types/socketioserverutils";
 
 function startPlaySession(
-  socket: Socket<
-    ServerToClientEvents,
-    ClientToServerEvents,
-    InterServerEvents,
-    SocketData
-  >,
+  socket: TypedSocket,
   instance: PlayerInstance,
   progress: PlayerProgress
 ) {
@@ -40,14 +36,7 @@ function startPlaySession(
   spawnPlayer(playerManager, instance, progress);
 }
 
-export default function registerSaveListeners(
-  socket: Socket<
-    ClientToServerEvents,
-    ServerToClientEvents,
-    InterServerEvents,
-    SocketData
-  >
-) {
+export default function registerSaveListeners(socket: TypedSocket) {
   socket.on("getSaves", async (callback) => {
     if (!socket.data.session) {
       console.error("No session set for socket");

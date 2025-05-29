@@ -5,6 +5,7 @@ type Session = {
   accountId: ObjectId;
   playerProgressId: ObjectId | undefined;
   playerInstanceId: ObjectId | undefined;
+  messages: string[];
 };
 
 export default Session;

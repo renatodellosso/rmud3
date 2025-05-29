@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import registerListeners from "lib/socketlisteners/registerListeners";
 import { getSingleton } from "lib/utils";
 import generateDungeon from "lib/dungeongeneration/generateDungeon";
+import { TypedServer } from "./lib/types/socketioserverutils";
 import {
   ClientToServerEvents,
   InterServerEvents,
@@ -25,12 +26,7 @@ const handle = app.getRequestHandler();
 const io = getSingleton(
   "io",
   () =>
-    new Server<
-      ClientToServerEvents,
-      ServerToClientEvents,
-      InterServerEvents,
-      SocketData
-    >({
+    new TypedServer({
       cors: {
         origin: "http://localhost:3000",
       },
