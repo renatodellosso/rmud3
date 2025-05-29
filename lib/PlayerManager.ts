@@ -18,7 +18,7 @@ export class PlayerManager {
       return undefined;
     }
 
-    const progress = this.progresses.get(instance._id.toString());
+    const progress = this.progresses.get(instance.progressId.toString());
 
     if (!progress) {
       return undefined;
@@ -36,7 +36,7 @@ export class PlayerManager {
       return undefined;
     }
 
-    const instance = this.instances.get(progress._id.toString());
+    const instance = this.instances.get(progress.playerInstanceId.toString());
 
     if (!instance) {
       return undefined;
@@ -82,16 +82,14 @@ const getPlayerManager = () =>
 export default getPlayerManager;
 
 export function spawnPlayer(
+  playerManager: PlayerManager,
   instance: PlayerInstance,
   progress: PlayerProgress
 ): void {
-  const playerManager = getPlayerManager();
-
   const existingInstance = playerManager.getPlayerByInstanceId(instance._id);
 
   if (existingInstance) {
     console.warn(`Player instance with ID ${instance._id} already exists.`);
-
     return;
   }
 

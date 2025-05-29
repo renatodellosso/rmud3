@@ -46,6 +46,7 @@ export default function SelectSave() {
 
   function createNewSave() {
     socket.emit("createNewSave");
+    location.href = "/play";
   }
 
   return (

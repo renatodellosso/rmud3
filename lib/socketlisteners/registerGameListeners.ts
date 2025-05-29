@@ -6,13 +6,9 @@ import {
   InterServerEvents,
   SocketData,
 } from "lib/types/socketiotypes";
-import { GameState, PlayerSave } from "lib/types/types";
+import { GameState } from "lib/types/types";
 import { Socket } from "socket.io";
-import { EJSON, ObjectId } from "bson";
-import getCollectionManager from "lib/getCollectionManager";
-import { getMongoClient } from "lib/getMongoClient";
-import CollectionId from "lib/types/CollectionId";
-import { PlayerInstance, PlayerProgress } from "lib/types/player";
+import { EJSON } from "bson";
 
 export default function registerGameListeners(
   socket: Socket<
@@ -36,11 +32,14 @@ export default function registerGameListeners(
     }
 
     const player = playerManager.getPlayerByInstanceId(
-      socket.data.session?.playerInstanceId
+      socket.data.session!.playerInstanceId
     );
 
     if (!player) {
-      console.error("Player not found when requesting game state.");
+      console.error(
+        "Player not found when requesting game state. Player ID:",
+        socket.data.session?.playerInstanceId
+      );
       return;
     }
 

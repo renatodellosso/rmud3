@@ -1,11 +1,17 @@
 import { ObjectId } from "bson";
 import { CreatureInstance } from "./creature";
 import Inventory, { DirectInventory } from "./Inventory";
-import { AbilityScore, CannotDirectlyCreateInstanceError } from "./types";
+import {
+  AbilityScore,
+  CannotDirectlyCreateInstanceError,
+  OmitType,
+  PlayerSave,
+} from "./types";
 import { EquipmentDefinition, ItemInstance, ItemTag } from "./item";
 import Ability from "./Ability";
 import items from "lib/gamedata/items";
 import { ConsumableHotbar, EquipmentHotbar } from "./Hotbar";
+import { restoreFieldsAndMethods } from "lib/utils";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -87,3 +93,34 @@ export type PlayerProgress = {
 
   playerInstanceId: ObjectId;
 };
+
+export function getDefaultPlayerAndProgress(): PlayerSave {
+  const instance: OmitType<PlayerInstance, Function> = {
+    _id: new ObjectId(),
+    name: "Player",
+    location: "docks",
+    progressId: new ObjectId(),
+    definitionId: "player",
+    abilityScores: {
+      Strength: 0,
+      Constitution: 0,
+      Intelligence: 0,
+    },
+    xp: 0,
+    inventory: new DirectInventory(),
+    equipment: new EquipmentHotbar(),
+    consumables: new ConsumableHotbar(),
+    health: 0,
+    canActAt: new Date(),
+  };
+
+  const progress: PlayerProgress = {
+    _id: instance.progressId,
+    playerInstanceId: instance._id,
+  };
+
+  return {
+    instance: instance as PlayerInstance,
+    progress,
+  };
+}

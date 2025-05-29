@@ -12,7 +12,28 @@ import { EJSON, ObjectId } from "bson";
 import getCollectionManager from "lib/getCollectionManager";
 import { getMongoClient } from "lib/getMongoClient";
 import CollectionId from "lib/types/CollectionId";
-import { PlayerInstance, PlayerProgress } from "lib/types/player";
+import {
+  getDefaultPlayerAndProgress,
+  PlayerInstance,
+  PlayerProgress,
+} from "lib/types/player";
+
+function startPlaySession(
+  socket: Socket<
+    ServerToClientEvents,
+    ClientToServerEvents,
+    InterServerEvents,
+    SocketData
+  >,
+  instance: PlayerInstance,
+  progress: PlayerProgress
+) {
+  const playerManager = getPlayerManager();
+  
+  spawnPlayer(playerManager, instance, progress);
+  socket.data.session!.playerInstanceId = instance._id;
+  socket.data.session!.playerProgressId = progress._id;
+}
 
 export default function registerSaveListeners(
   socket: Socket<
@@ -107,6 +128,8 @@ export default function registerSaveListeners(
       return;
     }
 
+    const account = accounts[0];
+
     const progressesCollection = await collectionManager.getCollection(
       CollectionId.PlayerProgresses
     );
@@ -115,23 +138,17 @@ export default function registerSaveListeners(
       CollectionId.PlayerInstances
     );
 
-    const instance: PlayerInstance = new PlayerInstance();
-
-    instance._id = new ObjectId();
-
-    const progress: PlayerProgress = {
-      _id: new ObjectId(),
-      playerInstanceId: instance._id,
-    };
+    const { instance, progress } = getDefaultPlayerAndProgress();
+    instance.name = account!.username;
 
     instancesCollection.upsert(instance);
     progressesCollection.upsert(progress);
 
-    const account = accounts[0];
-
     account.playerProgresses.push(progress._id);
 
     accountsCollection.upsert(account);
+
+    startPlaySession(socket, instance, progress);
   });
 
   socket.on("selectSave", async (strProgressId: string) => {
@@ -193,8 +210,6 @@ export default function registerSaveListeners(
       return;
     }
 
-    spawnPlayer(instance, progress);
-    socket.data.session!.playerInstanceId = instance._id;
-    socket.data.session!.playerProgressId = progress._id;
+    startPlaySession(socket, instance, progress);
   });
 }

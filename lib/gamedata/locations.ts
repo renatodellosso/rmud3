@@ -1,8 +1,8 @@
 import { Location } from "../types/types";
 
 const locations = {
-  test: {
-    name: "Test Location",
+  docks: {
+    name: "Docks",
     creatures: [],
     exits: new Set(),
   },
