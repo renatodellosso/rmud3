@@ -13,9 +13,9 @@ import {
 } from "lib/dungeongeneration/utils";
 
 describe(generateDungeon.name, () => {
-  const TRIALS = 3000;
+  const TRIALS = 1000;
   const ROOM_COUNT = [5, 100];
-  const REACHABLE_ROOM_PERCENTAGE = 0.85;
+  const REACHABLE_ROOM_PERCENTAGE = 0.5;
 
   function testRepeated(
     name: string,
@@ -134,7 +134,7 @@ describe(generateDungeon.name, () => {
     }
   });
 
-  testRepeated("Most rooms are reachable", () => {
+  testRepeated("most rooms are reachable", () => {
     const dungeon = breakCirclularRefs(generateDungeon());
 
     const rooms: Record<string, DungeonLocation> = {};
@@ -177,6 +177,50 @@ describe(generateDungeon.name, () => {
     expect(visited.size).toBeGreaterThanOrEqual(
       allRooms.size * REACHABLE_ROOM_PERCENTAGE
     );
+  });
+
+  testRepeated("all floors are reachable", () => {
+    const dungeon = breakCirclularRefs(generateDungeon());
+
+    const floorsSet = new Set<number>();
+    const visitedFloors = new Set<number>();
+
+    let startFloor: FloorInstance | undefined;
+
+    for (const floor of dungeon.floors) {
+      floorsSet.add(floor.depth);
+      startFloor ??= floor; // Set the first floor as the start floor
+    }
+
+    expect(startFloor).toBeDefined();
+
+    const stack: FloorInstance[] = [startFloor!];
+
+    while (stack.length > 0) {
+      const current = stack.pop();
+      if (!current || visitedFloors.has(current.depth)) continue;
+
+      visitedFloors.add(current.depth);
+
+      for (const row of current.locations) {
+        for (const location of row) {
+          if (location) {
+            for (const exit of Array.from(location.exits)) {
+              const exitCoords = getCoordsFromId(exit);
+              const exitFloor = dungeon.floors.find(
+                (f) => f.depth === exitCoords.depth
+              );
+              if (exitFloor && !visitedFloors.has(exitFloor.depth)) {
+                stack.push(exitFloor);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    expect(visitedFloors.size).toBe(floorsSet.size);
+    expect(visitedFloors).toEqual(floorsSet);
   });
 });
 

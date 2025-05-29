@@ -3,7 +3,7 @@ import { parse } from "url";
 import next from "next";
 import { Server } from "socket.io";
 import dotenv from "dotenv";
-import registerServerListeners from "lib/registerServerListeners";
+import registerListeners from "lib/socketlisteners/registerListeners";
 import { getSingleton } from "lib/utils";
 import generateDungeon from "lib/dungeongeneration/generateDungeon";
 import {
@@ -31,6 +31,9 @@ const io = new Server<
   cors: {
     origin: "http://localhost:3000",
   },
+  connectionStateRecovery: {
+    maxDisconnectionDuration: 10000, // 10 seconds
+  }
 });
 
 app.prepare().then(() => {
@@ -46,7 +49,7 @@ app.prepare().then(() => {
   );
 });
 
-registerServerListeners(io);
+registerListeners(io);
 
 io.listen(socketPort);
 console.log(`> Socket.io server listening at http://localhost:${socketPort}`);

@@ -1,6 +1,7 @@
 import { PlayerInstance, PlayerProgress } from "./types/player";
 import { ObjectId } from "bson";
 import { getSingleton } from "./utils";
+import locations from "./gamedata/locations";
 
 export class PlayerManager {
   instances: Map<string, PlayerInstance>;
@@ -79,3 +80,22 @@ const getPlayerManager = () =>
   getSingleton<PlayerManager>("playerManager", () => new PlayerManager());
 
 export default getPlayerManager;
+
+export function spawnPlayer(
+  instance: PlayerInstance,
+  progress: PlayerProgress
+): void {
+  const playerManager = getPlayerManager();
+
+  const existingInstance = playerManager.getPlayerByInstanceId(instance._id);
+
+  if (existingInstance) {
+    console.warn(`Player instance with ID ${instance._id} already exists.`);
+
+    return;
+  }
+
+  playerManager.addPlayer(instance, progress);
+
+  locations[instance.location].creatures.push(instance);
+}

@@ -101,11 +101,11 @@ export default function SignUp() {
           <button type="submit" disabled={submitting} className="py-1 px-2">
             Sign Up
           </button>
-          <button onClick={switchToSignIn} className="py-1 px-2">
-            I Already Have An Account
-          </button>
         </form>
         {error && <p className="text-red-500">{error}</p>}
+        <button onClick={switchToSignIn} className="mt-6 py-1 px-2">
+          I Already Have An Account
+        </button>
       </div>
     </div>
   );

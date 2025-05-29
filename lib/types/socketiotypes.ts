@@ -1,10 +1,11 @@
 import { ObjectId } from "bson";
 import Session from "./Session";
-import { PlayerSave, SerializedEJSON } from "./types";
+import { GameState, PlayerSave, SerializedEJSON } from "./types";
 import { Dungeon } from "lib/dungeongeneration/types";
 
 export interface ServerToClientEvents {
   hello: () => void;
+  setGameState: (gameState: SerializedEJSON<GameState>) => void;
 }
 
 export interface ClientToServerEvents {
@@ -29,6 +30,8 @@ export interface ClientToServerEvents {
   ) => void;
   getSaves: (callback: (saves: SerializedEJSON<PlayerSave[]>) => void) => void;
   createNewSave: () => void;
+  selectSave: (progressId: string) => void;
+  requestGameState: () => void;
 }
 
 export interface InterServerEvents {

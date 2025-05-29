@@ -64,11 +64,11 @@ export default function SignIn() {
           <button type="submit" disabled={submitting} className="py-1 px-2">
             Sign In
           </button>
-          <button onClick={switchToSignUp} className="py-1 px-2">
-            I Don't Have An Account
-          </button>
         </form>
         {error && <p className="text-red-500">{error}</p>}
+        <button onClick={switchToSignUp} className="mt-6 py-1 px-2">
+          I Don't Have An Account
+        </button>
       </div>
     </div>
   );

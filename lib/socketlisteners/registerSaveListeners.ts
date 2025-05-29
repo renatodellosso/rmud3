@@ -1,37 +1,20 @@
-import { Server, Socket } from "socket.io";
-import { createAccount, signIn } from "./auth";
-import getCollectionManager from "./getCollectionManager";
-import getSessionManager from "./SessionManager";
-import { getMongoClient } from "./getMongoClient";
+import locations from "lib/gamedata/locations";
+import getPlayerManager, { spawnPlayer } from "lib/PlayerManager";
 import {
   ClientToServerEvents,
   ServerToClientEvents,
   InterServerEvents,
   SocketData,
-} from "./types/socketiotypes";
+} from "lib/types/socketiotypes";
+import { GameState, PlayerSave } from "lib/types/types";
+import { Socket } from "socket.io";
 import { EJSON, ObjectId } from "bson";
-import CollectionId from "./types/CollectionId";
-import { PlayerSave } from "./types/types";
+import getCollectionManager from "lib/getCollectionManager";
+import { getMongoClient } from "lib/getMongoClient";
+import CollectionId from "lib/types/CollectionId";
 import { PlayerInstance, PlayerProgress } from "lib/types/player";
-import { getSingleton } from "./utils";
-import generateDungeon from "./dungeongeneration/generateDungeon";
 
-export default function registerServerListeners(
-  io: Server<
-    ClientToServerEvents,
-    ServerToClientEvents,
-    InterServerEvents,
-    SocketData
-  >
-) {
-  io.on("connection", (socket) => {
-    console.log("New connection!");
-
-    registerSocketListeners(socket);
-  });
-}
-
-function registerSocketListeners(
+export default function registerSaveListeners(
   socket: Socket<
     ClientToServerEvents,
     ServerToClientEvents,
@@ -39,76 +22,6 @@ function registerSocketListeners(
     SocketData
   >
 ) {
-  socket.on("hello", () => {
-    console.log("Hello from client!");
-    socket.emit("hello");
-  });
-
-  socket.on("signIn", async (email, password, callback) => {
-    const db = await getMongoClient();
-
-    const sessionId = await signIn(
-      getCollectionManager(db),
-      getSessionManager(),
-      email,
-      password
-    );
-
-    if (sessionId) {
-      console.log("Sign in successful! User:", email, "Session ID:", sessionId);
-      callback(sessionId.toString());
-    } else {
-      console.log("Sign in failed! User:", email);
-      callback(undefined);
-    }
-  });
-
-  socket.on("signUp", async (email, username, password, callback) => {
-    const db = await getMongoClient();
-    const collectionManager = getCollectionManager(db);
-
-    const accountOrError = await createAccount(
-      collectionManager,
-      email,
-      username,
-      password
-    );
-
-    if (typeof accountOrError === "string") {
-      console.log("Sign up failed! User:", email, "Error:", accountOrError);
-      callback(undefined, accountOrError);
-      return;
-    }
-
-    const sessionManager = getSessionManager();
-
-    const session = sessionManager.createSession(accountOrError._id);
-
-    console.log("Sign up successful! User:", email, "Session ID:", session._id);
-    socket.data.session = session;
-    callback(session._id.toString(), undefined);
-  });
-
-  socket.on("setSessionId", (sessionId, callback) => {
-    if (!sessionId) {
-      console.error("No session ID provided");
-      callback(false);
-      return;
-    }
-
-    const sessionManager = getSessionManager();
-    const session = sessionManager.getSession(new ObjectId(sessionId));
-
-    if (!session) {
-      console.error("Invalid session ID:", sessionId);
-      callback(false);
-      return;
-    }
-
-    socket.data.session = session;
-    callback(true);
-  });
-
   socket.on("getSaves", async (callback) => {
     if (!socket.data.session) {
       console.error("No session set for socket");
@@ -146,15 +59,15 @@ function registerSocketListeners(
       .getCollection(CollectionId.PlayerInstances)
       .find(
         {
-          _id: { $in: progresses.map((progress) => progress._id) },
+          _id: { $in: progresses.map((progress) => progress.playerInstanceId) },
         },
         undefined
       );
 
     const saves = progresses
       .map((progress) => {
-        const instance = instances.find(
-          (instance) => instance._id.toString() === progress._id.toString()
+        const instance = instances.find((instance) =>
+          instance._id.equals(progress.playerInstanceId)
         );
 
         if (!instance) {
@@ -219,5 +132,69 @@ function registerSocketListeners(
     account.playerProgresses.push(progress._id);
 
     accountsCollection.upsert(account);
+  });
+
+  socket.on("selectSave", async (strProgressId: string) => {
+    const progressId = new ObjectId(strProgressId);
+
+    const db = await getMongoClient();
+    const collectionManager = getCollectionManager(db);
+
+    const accountsCollection = collectionManager.getCollection(
+      CollectionId.Accounts
+    );
+
+    const account = (
+      await accountsCollection.findWithOneFilter({
+        _id: socket.data.session?.accountId,
+      })
+    )[0];
+
+    if (!account) {
+      console.error("No account found for session:", socket.data.session?._id);
+      return;
+    }
+
+    if (!account.playerProgresses.find((p) => p.equals(progressId))) {
+      console.error(
+        `Progress ID ${progressId} not found in account's player progresses.`
+      );
+      return;
+    }
+
+    const progressesCollection = collectionManager.getCollection(
+      CollectionId.PlayerProgresses
+    );
+    const progress = (
+      await progressesCollection.findWithOneFilter({
+        _id: progressId,
+      })
+    )[0];
+
+    if (!progress) {
+      console.error(`No progress found for ID: ${progressId}`);
+      return;
+    }
+
+    const instancesCollection = collectionManager.getCollection(
+      CollectionId.PlayerInstances
+    );
+
+    const instance = (
+      await instancesCollection.findWithOneFilter({
+        _id: progress.playerInstanceId,
+      })
+    )[0];
+
+    if (!instance) {
+      console.error(
+        `No instance found for player instance ID: ${progress.playerInstanceId}`
+      );
+      return;
+    }
+
+    spawnPlayer(instance, progress);
+    socket.data.session!.playerInstanceId = instance._id;
+    socket.data.session!.playerProgressId = progress._id;
   });
 }

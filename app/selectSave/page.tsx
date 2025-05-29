@@ -3,14 +3,25 @@
 import { socket } from "lib/socket";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { EJSON, ObjectId } from "bson";
+import { EJSON } from "bson";
 import { PlayerSave, SerializedEJSON } from "lib/types/types";
+import useRedirectIfSessionIdIsNotPresent from "lib/hooks/useRedirectIfSessionIdIsNotPresent";
 
 function PlayerSaveCard({ save }: { save: PlayerSave }) {
-  return <button>{save.instance.name}</button>;
+  function selectSave() {
+    socket.emit("selectSave", save.progress._id.toString());
+    location.href = "/play";
+  }
+
+  return (
+    <button onClick={selectSave} className="w-full">
+      Save: {save.instance.name}
+    </button>
+  );
 }
 
 export default function SelectSave() {
+  useRedirectIfSessionIdIsNotPresent();
   const [saves, setSaves] = useState<PlayerSave[]>([]);
 
   useEffect(() => {
@@ -44,11 +55,13 @@ export default function SelectSave() {
       </Link>
       <div className="grow flex flex-col justify-center items-center">
         <h1 className="text-xl text-center">Select a save:</h1>
-        <div className="w-1/4 flex flex-col items-center mt-4">
+        <div className="w-1/4 flex flex-col items-center mt-4 gap-2">
           {saves.map((save) => (
             <PlayerSaveCard key={save.instance._id.toString()} save={save} />
           ))}
-          <button onClick={createNewSave} className="grow">New Save</button>
+          <button onClick={createNewSave} className="w-full mt-6">
+            New Save
+          </button>
         </div>
       </div>
     </div>

@@ -54,3 +54,9 @@ export type PlayerSave = {
 
 export type Point = [number, number];
 export type Range = [number, number];
+
+export type GameState = {
+  self: PlayerInstance;
+  progress: PlayerProgress;
+  location: Location;
+};
