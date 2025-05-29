@@ -40,4 +40,5 @@ export interface InterServerEvents {
 
 export interface SocketData {
   session: Session | undefined;
+  messages: string[];
 }

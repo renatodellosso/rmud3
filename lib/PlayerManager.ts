@@ -77,7 +77,7 @@ export class PlayerManager {
 }
 
 const getPlayerManager = () =>
-  getSingleton<PlayerManager>("playerManager", () => new PlayerManager());
+  getSingleton<PlayerManager>("playerManager", () => new PlayerManager())!;
 
 export default getPlayerManager;
 
@@ -95,5 +95,5 @@ export function spawnPlayer(
 
   playerManager.addPlayer(instance, progress);
 
-  locations[instance.location].creatures.push(instance);
+  locations[instance.location].enter(instance);
 }

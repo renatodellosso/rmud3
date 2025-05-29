@@ -1,5 +1,5 @@
-import locations from "../gamedata/locations";
-import { Range, Location, Point, LocationId } from "../types/types";
+import { Range, Point } from "../types/types";
+import { Location, LocationId } from "../types/Location";
 
 export type Dungeon = {
   locations: (DungeonLocation | undefined)[][][];
@@ -43,12 +43,20 @@ export type FloorGenerationOptions = {
   exitCount: Range;
 };
 
-export type DungeonLocation = Location & {
+export class DungeonLocation extends Location {
   id: LocationId;
   floor: FloorInstance;
   globalCoords: Point;
   floorCoords: Point;
-};
+
+  constructor() {
+    super();
+    this.id = "";
+    this.floor = {} as FloorInstance;
+    this.globalCoords = [0, 0];
+    this.floorCoords = [0, 0];
+  }
+}
 
 export class MissingRoomsError extends Error {
   constructor(msg: string, public missingRooms: Point[]) {

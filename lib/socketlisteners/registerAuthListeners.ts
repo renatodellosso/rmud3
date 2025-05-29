@@ -2,8 +2,6 @@ import { signIn, createAccount } from "lib/auth";
 import getCollectionManager from "lib/getCollectionManager";
 import { getMongoClient } from "lib/getMongoClient";
 import getSessionManager from "lib/SessionManager";
-import CollectionId from "lib/types/CollectionId";
-import { PlayerInstance, PlayerProgress } from "lib/types/player";
 import {
   ClientToServerEvents,
   ServerToClientEvents,
@@ -13,6 +11,7 @@ import {
 import { PlayerSave } from "lib/types/types";
 import { EJSON, ObjectId } from "bson";
 import { Socket } from "socket.io";
+import getSocketsByPlayerInstanceIds from "lib/getSocketsByPlayerInstanceIds";
 
 export default function registerAuthListeners(
   socket: Socket<
@@ -26,7 +25,7 @@ export default function registerAuthListeners(
     const db = await getMongoClient();
 
     const sessionId = await signIn(
-      getCollectionManager(db),
+      getCollectionManager(db)!,
       getSessionManager(),
       email,
       password
@@ -84,6 +83,7 @@ export default function registerAuthListeners(
     }
 
     socket.data.session = session;
+
     callback(true);
   });
 }

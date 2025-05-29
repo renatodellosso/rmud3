@@ -59,9 +59,14 @@ export class PlayerInstance extends CreatureInstance {
       if (!def.abilityScores || !def.abilityScores[score]) continue;
 
       if (typeof def.abilityScores[score] === "function") {
-        val += def.abilityScores[score](this, equipment);
+        val += (
+          def.abilityScores[score] as (
+            instance: CreatureInstance,
+            equipment: ItemInstance
+          ) => number
+        )(this, equipment);
       } else {
-        val += def.abilityScores[score];
+        val += def.abilityScores[score] as number;
       }
     }
 

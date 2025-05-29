@@ -1,4 +1,4 @@
-import { chance, randInRangeInt } from "lib/utils";
+import { chance, randInRangeInt, restoreFieldsAndMethods } from "lib/utils";
 import floors from "./Floors";
 import {
   Dungeon,
@@ -526,18 +526,19 @@ function generateRoom(
   depth: number,
   globalCoords: Point
 ) {
-  const location: DungeonLocation = {
-    id: getLocationId(floor, globalCoords),
-    name: `${floor.definition.name} Room - ${globalCoords.join(", ")}`,
-    creatures: [],
-    floor,
-    globalCoords: globalCoords,
-    floorCoords: [
-      globalCoords[0] - floor.offset[0],
-      globalCoords[1] - floor.offset[1],
-    ],
-    exits: new Set(),
-  };
+  const location: DungeonLocation = restoreFieldsAndMethods(
+    {
+      id: getLocationId(floor, globalCoords),
+      name: `${floor.definition.name} Room - ${globalCoords.join(", ")}`,
+      floor,
+      globalCoords: globalCoords,
+      floorCoords: [
+        globalCoords[0] - floor.offset[0],
+        globalCoords[1] - floor.offset[1],
+      ],
+    },
+    new DungeonLocation()
+  );
 
   floor.locations[location.floorCoords[0]][location.floorCoords[1]] = location;
   dungeon.locations[depth][location.globalCoords[0]][location.globalCoords[1]] =

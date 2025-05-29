@@ -3,8 +3,11 @@ import { ItemInstance } from "./types/item";
 /**
  * Copies all properties from the prototype to the object if they are not already defined.
  */
-export function restoreFieldsAndMethods<T extends object>(obj: T, template: T) {
-  if (!template) return;
+export function restoreFieldsAndMethods<T extends object>(
+  obj: Partial<T>,
+  template: T
+): T {
+  if (!template) return obj as T;
 
   const prototype = Object.getPrototypeOf(template);
   const keys = Object.getOwnPropertyNames(template).concat(
@@ -42,6 +45,8 @@ export function restoreFieldsAndMethods<T extends object>(obj: T, template: T) {
       }
     }
   }
+
+  return obj as T;
 }
 
 /**
@@ -67,7 +72,20 @@ export function areItemInstancesEqual(
   return true;
 }
 
-export function getSingleton<T>(name: string, setter: () => T): T {
+export type SingletonId =
+  | "io"
+  | "dungeon"
+  | "sessionManager"
+  | "collectionManager"
+  | "mongoDb"
+  | "playerManager"
+  | "socketsByPlayerInstanceIds"
+  | "socket";
+
+export function getSingleton<T>(
+  name: SingletonId,
+  setter: (() => T) | undefined = undefined
+): T | undefined {
   if (!(globalThis as any).singletons) {
     (globalThis as any).singletons = {} as Record<string, any>;
   }
@@ -78,6 +96,10 @@ export function getSingleton<T>(name: string, setter: () => T): T {
   >;
 
   if (!singletons[name]) {
+    if (!setter) {
+      return undefined;
+    }
+
     singletons[name] = setter();
   }
   return singletons[name];

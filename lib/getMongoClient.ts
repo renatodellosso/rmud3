@@ -13,5 +13,5 @@ export async function getMongoClient(): Promise<Db> {
     const db: Db = client.db(process.env.DB_NAME);
 
     return db;
-  });
+  })!;
 }

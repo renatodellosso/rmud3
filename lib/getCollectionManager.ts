@@ -137,6 +137,6 @@ export class CollectionManager {
 }
 
 const getCollectionManager = (db: Db | undefined) =>
-  getSingleton("collectionManager", () => new CollectionManager(db));
+  getSingleton("collectionManager", () => new CollectionManager(db))!;
 
 export default getCollectionManager;

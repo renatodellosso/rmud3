@@ -19,7 +19,7 @@ export default function registerGameListeners(
   >
 ) {
   socket.on("requestGameState", () => {
-    const playerManager = getPlayerManager();
+    const playerManager = getPlayerManager()!;
 
     if (
       !socket.data.session?.playerInstanceId ||
@@ -49,6 +49,7 @@ export default function registerGameListeners(
       self: player.instance,
       progress: player.progress,
       location,
+      messages: socket.data.messages,
     };
 
     socket.emit("setGameState", EJSON.stringify(gameState));

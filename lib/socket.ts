@@ -11,4 +11,4 @@ const URL =
 
 export const socket = getSingleton<
   Socket<ServerToClientEvents, ClientToServerEvents>
->("socket", () => io(URL));
+>("socket", () => io(URL))!;

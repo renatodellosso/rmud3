@@ -1,11 +1,13 @@
-import { Location } from "../types/types";
+import { restoreFieldsAndMethods } from "lib/utils";
+import { Location } from "../types/Location";
 
 const locations = {
-  docks: {
-    name: "Docks",
-    creatures: [],
-    exits: new Set(),
-  },
+  docks: restoreFieldsAndMethods(
+    {
+      name: "Docks",
+    },
+    new Location()
+  ),
 } as Record<string, Location>;
 
 export default locations;

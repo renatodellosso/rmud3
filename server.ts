@@ -22,19 +22,23 @@ const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev, turbopack: dev });
 const handle = app.getRequestHandler();
 
-const io = new Server<
-  ClientToServerEvents,
-  ServerToClientEvents,
-  InterServerEvents,
-  SocketData
->({
-  cors: {
-    origin: "http://localhost:3000",
-  },
-  connectionStateRecovery: {
-    maxDisconnectionDuration: 10000, // 10 seconds
-  }
-});
+const io = getSingleton(
+  "io",
+  () =>
+    new Server<
+      ClientToServerEvents,
+      ServerToClientEvents,
+      InterServerEvents,
+      SocketData
+    >({
+      cors: {
+        origin: "http://localhost:3000",
+      },
+      connectionStateRecovery: {
+        maxDisconnectionDuration: 10000, // 10 seconds
+      },
+    })
+)!;
 
 app.prepare().then(() => {
   createServer((req, res) => {

@@ -17,6 +17,9 @@ import {
   PlayerInstance,
   PlayerProgress,
 } from "lib/types/player";
+import getSocketsByPlayerInstanceIds, {
+  setSocket,
+} from "lib/getSocketsByPlayerInstanceIds";
 
 function startPlaySession(
   socket: Socket<
@@ -28,11 +31,13 @@ function startPlaySession(
   instance: PlayerInstance,
   progress: PlayerProgress
 ) {
-  const playerManager = getPlayerManager();
-  
-  spawnPlayer(playerManager, instance, progress);
   socket.data.session!.playerInstanceId = instance._id;
   socket.data.session!.playerProgressId = progress._id;
+
+  setSocket(instance._id, socket);
+
+  const playerManager = getPlayerManager();
+  spawnPlayer(playerManager, instance, progress);
 }
 
 export default function registerSaveListeners(
