@@ -1,7 +1,7 @@
 import { ObjectId } from "bson";
 import creatures from "../gamedata/creatures";
 import { AbilityScore } from "./types";
-import Ability from "./Ability";
+import Ability, { AbilitySource } from "./Ability";
 import { LocationId } from "./Location";
 import locations from "lib/locations";
 
@@ -40,12 +40,15 @@ export class CreatureInstance {
   }
 
   getAbilities() {
-    const abilities: Ability[] = [];
+    const abilities: { ability: Ability; source: AbilitySource }[] = [];
 
-    abilities.push(...(creatures[this.definitionId].intrinsicAbilities ?? []));
+    abilities.push(
+      ...(creatures[this.definitionId].intrinsicAbilities?.map((ability) => ({
+        ability,
+        source: this,
+      })) ?? [])
+    );
 
     return abilities;
   }
-
-  
 }

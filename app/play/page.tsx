@@ -1,15 +1,16 @@
 "use client";
 
+import CombatMenu from "@/components/menus/CombatMenu";
 import PlayerInfoMenu from "@/components/menus/PlayerInfoMenu";
 import PrimaryMenu from "@/components/menus/PrimaryMenu";
 import useGameState from "lib/hooks/useGameState";
 import useRedirectIfSessionIdIsNotPresent from "lib/hooks/useRedirectIfSessionIdIsNotPresent";
-import { GameState } from "lib/types/types";
-import React, { ReactNode } from "react";
+import React from "react";
 
-const menus: Record<string, (props: { gameState: GameState }) => ReactNode> = {
-  "Player Info": PlayerInfoMenu,
-};
+enum Menu {
+  PlayerInfo = "Player Info",
+  Combat = "Combat",
+}
 
 function LoadingGameState() {
   return (
@@ -23,9 +24,9 @@ export default function Play() {
   useRedirectIfSessionIdIsNotPresent();
   const gameState = useGameState();
 
-  const [openMenus, setOpenMenus] = React.useState<(keyof typeof menus)[]>([]);
+  const [openMenus, setOpenMenus] = React.useState<Menu[]>([]);
 
-  function toggleMenu(menuName: keyof typeof menus) {
+  function toggleMenu(menuName: Menu) {
     if (openMenus.includes(menuName)) {
       setOpenMenus(openMenus.filter((name) => name !== menuName));
     } else {
@@ -40,19 +41,20 @@ export default function Play() {
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden">
       <div className="w-full flex border-b border-white">
-        {Object.keys(menus).map((menuName) => (
-          <button
-            onClick={() => toggleMenu(menuName as keyof typeof menus)}
-            key={menuName}
-            className="px-1"
-          >
-            {menuName}
+        {Object.values(Menu).map((name) => (
+          <button onClick={() => toggleMenu(name)} key={name} className="px-1">
+            {name}
           </button>
         ))}
       </div>
       <div className="flex flex-row grow">
         <PrimaryMenu gameState={gameState} />
-        {openMenus.map((menu) => menus[menu]({ gameState }))}
+        {openMenus.includes(Menu.PlayerInfo) && (
+          <PlayerInfoMenu gameState={gameState} />
+        )}
+        {openMenus.includes(Menu.Combat) && (
+          <CombatMenu gameState={gameState} />
+        )}
       </div>
     </div>
   );

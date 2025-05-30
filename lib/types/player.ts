@@ -8,7 +8,7 @@ import {
   PlayerSave,
 } from "./types";
 import { EquipmentDefinition, ItemInstance, ItemTag } from "./item";
-import Ability from "./Ability";
+import Ability, { AbilitySource } from "./Ability";
 import items from "lib/gamedata/items";
 import { ConsumableHotbar, EquipmentHotbar } from "./Hotbar";
 import { getFromOptionalFunc, restoreFieldsAndMethods } from "lib/utils";
@@ -56,7 +56,7 @@ export class PlayerInstance extends CreatureInstance {
     return val;
   }
 
-  getAbilities(): Ability[] {
+  getAbilities(): { ability: Ability, source: AbilitySource }[] {
     const abilities = super.getAbilities();
 
     for (const equipment of this.equipment.items.concat(
@@ -81,7 +81,7 @@ export type PlayerProgress = {
 };
 
 export function getDefaultPlayerAndProgress(): PlayerSave {
-  const instance: OmitType<PlayerInstance, Function> = {
+  const instance: PlayerInstance = {
     _id: new ObjectId(),
     name: "Player",
     location: "docks",
@@ -98,7 +98,14 @@ export function getDefaultPlayerAndProgress(): PlayerSave {
     consumables: new ConsumableHotbar(),
     health: 0,
     canActAt: new Date(),
-  };
+  } as OmitType<PlayerInstance, Function> as PlayerInstance;
+
+  restoreFieldsAndMethods(instance, new PlayerInstance());
+
+  instance.equipment.equip(instance, {
+    definitionId: "rustySword",
+    amount: 1,
+  });
 
   const progress: PlayerProgress = {
     _id: instance.progressId,

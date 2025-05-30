@@ -1,3 +1,4 @@
+import { Abilities } from "lib/types/Ability";
 import {
   ConsumableDefinition,
   EquipmentDefinition,
@@ -5,6 +6,7 @@ import {
   ItemDefinition,
   ItemTag,
 } from "lib/types/item";
+import { DamageType } from "lib/types/types";
 
 const items = Object.freeze({
   test: {
@@ -44,6 +46,25 @@ const items = Object.freeze({
     description: "This is a test consumable.",
     weight: 1,
   } satisfies ConsumableDefinition,
+  rustySword: {
+    name: "Rusty Sword",
+    tags: [ItemTag.Equipment],
+    description: "A rusty old sword, not very effective.",
+    weight: 3,
+    getAbilities: (creature, item) =>
+      [
+        Abilities.attack(
+          "Rusty Slash",
+          "A basic slash attack with the rusty sword.",
+          1,
+          1,
+          DamageType.Slashing
+        ),
+      ].map((ability) => ({
+        ability,
+        source: item,
+      })),
+  } satisfies EquipmentDefinition,
 } as Record<string, ItemDefinition>);
 
 export default items;

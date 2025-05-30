@@ -1,6 +1,5 @@
 import useActionBar from "lib/hooks/useActionBar";
 import { GameState } from "lib/types/types";
-import { act } from "react-dom/test-utils";
 
 export default function PrimaryActionBar({
   gameState,

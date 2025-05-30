@@ -26,7 +26,7 @@ export default function useActionBar(gameState: GameState) {
 
     switch (actionState) {
       case ActionState.Base:
-        if (gameState.exits.length) {
+        if (gameState.location.exits.length) {
           newActions.push({
             text: "Move",
             action: () => setActionState(ActionState.Move),
@@ -37,7 +37,7 @@ export default function useActionBar(gameState: GameState) {
       case ActionState.Move:
         newActions.push(backToBaseAction);
 
-        gameState.exits.forEach((exit) => {
+        gameState.location.exits.forEach((exit) => {
           newActions.push({
             text: `Go to ${exit.name}`,
             action: () => {

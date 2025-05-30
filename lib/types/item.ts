@@ -1,5 +1,5 @@
 import items from "../gamedata/items";
-import Ability from "./Ability";
+import Ability, { AbilitySource } from "./Ability";
 import { CreatureInstance } from "./creature";
 import { AbilityScore, OptionalFunc } from "./types";
 
@@ -21,7 +21,10 @@ export enum ItemTag {
 }
 
 export interface ActivatableItemDefinition {
-  getAbilities?: OptionalFunc<Ability[], [CreatureInstance, ItemInstance]>;
+  getAbilities?: OptionalFunc<
+    { ability: Ability; source: AbilitySource }[],
+    [CreatureInstance, ItemInstance]
+  >;
   /**
    * Undefined defaults to true
    */

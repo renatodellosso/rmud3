@@ -1,5 +1,5 @@
 import { ItemInstance } from "./types/item";
-import { OptionalFunc } from "./types/types";
+import { OptionalFunc, Targetable } from "./types/types";
 
 /**
  * Copies all properties from the prototype to the object if they are not already defined.
@@ -127,4 +127,20 @@ export function getFromOptionalFunc<TReturn, TArgs extends any[]>(
     return func as TReturn;
   }
   return (func as Function)(...args);
+}
+
+export function getTargetId(target: Targetable): string {
+  if ("_id" in target) {
+    return target._id.toString();
+  }
+
+  if ("id" in target) {
+    return target.id.toString();
+  }
+
+  if ("name" in target) {
+    return (target as any).name;
+  }
+
+  throw new Error(`Cannot get target ID from target: ${target}`);
 }

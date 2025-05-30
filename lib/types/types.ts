@@ -1,5 +1,5 @@
 import { CreatureInstance } from "./creature";
-import { Location } from "./Location";
+import { Location, LocationId } from "./Location";
 import { restoreFieldsAndMethods } from "../utils";
 import { PlayerInstance, PlayerProgress } from "./player";
 
@@ -48,13 +48,21 @@ export type Range = [number, number];
 
 export type ExitData = {
   name: string;
-  id: string;
+  id: LocationId;
 };
 
 export type GameState = {
   self: PlayerInstance;
   progress: PlayerProgress;
-  location: Location;
+  location: Omit<Location, "creatures" | "exits"> & {
+    creatures: CreatureInstance[];
+    exits: ExitData[];
+  };
   messages: string[];
-  exits: ExitData[];
 };
+
+export enum DamageType {
+  Slashing = "Slashing",
+  Piercing = "Piercing",
+  Bludgeoning = "Bludgeoning",
+}

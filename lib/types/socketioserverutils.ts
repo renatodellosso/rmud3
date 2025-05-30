@@ -123,8 +123,6 @@ export function updateGameState(socket: TypedSocket) {
 
   const location = locations[player.instance.location];
 
-  const exits = Array.from(location.exits).map(getExitData);
-
   const gameState: GameState = {
     self: player.instance,
     progress: player.progress,
@@ -136,11 +134,10 @@ export function updateGameState(socket: TypedSocket) {
         location.description,
         player.instance as PlayerInstance
       ),
-      creatures: location.creatures,
-      exits: location.exits,
+      creatures: Array.from(location.creatures),
+      exits: Array.from(location.exits).map(getExitData),
     },
     messages: socket.data.session!.messages,
-    exits,
   };
 
   socket.emit("setGameState", EJSON.stringify(gameState));

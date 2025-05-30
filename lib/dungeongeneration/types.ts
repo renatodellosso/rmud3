@@ -50,7 +50,7 @@ export class DungeonLocation extends Location {
 
   constructor() {
     super();
-    this.id = "";
+    this.id = undefined as any;
     this.floor = {} as FloorInstance;
     this.globalCoords = [0, 0];
     this.floorCoords = [0, 0];

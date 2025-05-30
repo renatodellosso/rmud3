@@ -7,15 +7,15 @@ export abstract class Hotbar {
   items: ItemInstance[] = [];
 
   abstract getCapacity(player: PlayerInstance): number;
-  
-  canEquip(item: ItemInstance, player: PlayerInstance): boolean {
+
+  canEquip(player: PlayerInstance, item: ItemInstance): boolean {
     return (
       this.items.length < this.getCapacity(player) && !this.items.includes(item)
     );
   }
 
-  equip(item: ItemInstance, player: PlayerInstance): boolean {
-    if (this.canEquip(item, player)) {
+  equip(player: PlayerInstance, item: ItemInstance): boolean {
+    if (this.canEquip(player, item)) {
       this.items.push(item);
       return true;
     }
@@ -37,8 +37,8 @@ export class EquipmentHotbar extends Hotbar {
     return 4; // Example capacity
   }
 
-  canEquip(item: ItemInstance, player: PlayerInstance): boolean {
-    if (!super.canEquip(item, player)) return false;
+  canEquip(player: PlayerInstance, item: ItemInstance): boolean {
+    if (!super.canEquip(player, item)) return false;
 
     const def = items[item.definitionId] as EquipmentDefinition;
     if (!def.tags.includes(ItemTag.Equipment)) return false;
@@ -54,8 +54,8 @@ export class ConsumableHotbar extends Hotbar {
     return 3; // Example capacity
   }
 
-  canEquip(item: ItemInstance, player: PlayerInstance): boolean {
-    if (!super.canEquip(item, player)) return false;
+  canEquip(player: PlayerInstance, item: ItemInstance): boolean {
+    if (!super.canEquip(player, item)) return false;
 
     const def = items[item.definitionId] as EquipmentDefinition;
     if (!def.tags.includes(ItemTag.Consumable)) return false;
