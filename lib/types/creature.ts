@@ -1,9 +1,9 @@
 import { ObjectId } from "bson";
 import creatures from "../gamedata/creatures";
-import locations from "../gamedata/locations";
-import { AbilityScore, CannotDirectlyCreateInstanceError } from "./types";
+import { AbilityScore } from "./types";
 import Ability from "./Ability";
 import { LocationId } from "./Location";
+import locations from "lib/locations";
 
 export type CreatureDefinition = {
   name: string;
@@ -20,8 +20,7 @@ export class CreatureInstance {
     undefined as unknown as keyof typeof creatures;
 
   name: string = undefined as unknown as string;
-  location: keyof typeof locations =
-    undefined as unknown as keyof typeof locations;
+  location: LocationId = undefined as unknown as LocationId;
 
   health: number = undefined as unknown as number;
 
@@ -48,19 +47,5 @@ export class CreatureInstance {
     return abilities;
   }
 
-  move(newLocationId: LocationId) {
-    if (!locations[newLocationId]) {
-      throw new Error(`Invalid location ID: ${newLocationId}`);
-    }
-
-    const currentLocation = locations[this.location];
-    if (!currentLocation.exits.has(newLocationId)) {
-      throw new Error(
-        `Cannot move to ${newLocationId} from ${this.location}. No exit available.`
-      );
-    }
-
-    currentLocation.exit(this);
-    const newLocation = locations[newLocationId];
-  }
+  
 }

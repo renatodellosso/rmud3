@@ -7,12 +7,9 @@ import registerListeners from "lib/socketlisteners/registerListeners";
 import { getSingleton } from "lib/utils";
 import generateDungeon from "lib/dungeongeneration/generateDungeon";
 import { TypedServer } from "./lib/types/socketioserverutils";
-import {
-  ClientToServerEvents,
-  InterServerEvents,
-  ServerToClientEvents,
-  SocketData,
-} from "lib/types/socketiotypes";
+import rawLocations, { addRawLocations } from "lib/gamedata/rawLocations";
+import { Location } from "lib/types/Location";
+import locations from "lib/locations";
 
 dotenv.config();
 
@@ -59,3 +56,5 @@ getSingleton("dungeon", () => {
   console.log("Generated dungeon!");
   return dungeon;
 });
+
+addRawLocations(locations);

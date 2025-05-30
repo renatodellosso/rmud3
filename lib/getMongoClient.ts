@@ -1,6 +1,7 @@
 import { MongoClient, Db } from "mongodb";
 import dotenv from "dotenv";
 import { getSingleton } from "./utils";
+import { PlayerInstance } from "./types/player";
 
 export async function getMongoClient(): Promise<Db> {
   return getSingleton<Promise<Db>>("mongoDb", async () => {

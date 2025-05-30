@@ -7,12 +7,17 @@ export default function useGameState(): GameState | undefined {
   const [gameState, setGameState] = useState<GameState>();
 
   useEffect(() => {
+    console.log("Socket ID:", socket.id);
+
+    socket.onAny((eventName: string, ...args: any[]) => {
+      console.log(`Received event: ${eventName}`, args);
+    });
+
     socket.on("setGameState", (newGameState: SerializedEJSON<GameState>) => {
       const parsedGameState: GameState = EJSON.parse(newGameState);
       console.log("Received game state:", parsedGameState);
       setGameState(parsedGameState);
     });
-
     socket.on("addMessage", (message: string) => {
       console.log("Received new message:", message);
 
@@ -31,6 +36,8 @@ export default function useGameState(): GameState | undefined {
 
     return () => {
       socket.off("setGameState");
+      socket.off("addMessage");
+      socket.offAny();
     };
   });
 

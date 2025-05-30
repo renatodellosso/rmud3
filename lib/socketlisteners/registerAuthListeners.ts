@@ -2,17 +2,9 @@ import { signIn, createAccount } from "lib/auth";
 import getCollectionManager from "lib/getCollectionManager";
 import { getMongoClient } from "lib/getMongoClient";
 import getSessionManager from "lib/SessionManager";
-import {
-  ClientToServerEvents,
-  ServerToClientEvents,
-  InterServerEvents,
-  SocketData,
-} from "lib/types/socketiotypes";
-import { PlayerSave } from "lib/types/types";
-import { EJSON, ObjectId } from "bson";
-import { Socket } from "socket.io";
-import getSocketsByPlayerInstanceIds from "lib/getSocketsByPlayerInstanceIds";
+import { ObjectId } from "bson";
 import { TypedSocket } from "lib/types/socketioserverutils";
+import getSocketsByPlayerInstanceIds from "lib/getSocketsByPlayerInstanceIds";
 
 export default function registerAuthListeners(socket: TypedSocket) {
   socket.on("signIn", async (email, password, callback) => {
@@ -77,6 +69,13 @@ export default function registerAuthListeners(socket: TypedSocket) {
     }
 
     socket.data.session = session;
+
+    if (socket.data.session.playerInstanceId) {
+      getSocketsByPlayerInstanceIds()?.set(
+        socket.data.session.playerInstanceId.toString(),
+        socket
+      );
+    }
 
     callback(true);
   });

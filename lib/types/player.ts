@@ -30,10 +30,6 @@ export class PlayerInstance extends CreatureInstance {
   equipment: EquipmentHotbar = new EquipmentHotbar();
   consumables: ConsumableHotbar = new ConsumableHotbar();
 
-  constructor() {
-    super();
-  }
-
   getMaxHealth(): number {
     let val = super.getMaxHealth();
 
@@ -54,7 +50,7 @@ export class PlayerInstance extends CreatureInstance {
       const def = items[equipment.definitionId] as EquipmentDefinition;
       if (!def.abilityScores || !def.abilityScores[score]) continue;
 
-      val += getFromOptionalFunc(def.abilityScores[score], this, equipment);
+      val += getFromOptionalFunc(def.abilityScores[score]!, this, equipment);
     }
 
     return val;

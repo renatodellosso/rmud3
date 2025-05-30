@@ -1,7 +1,11 @@
 import { PlayerInstance, PlayerProgress } from "./types/player";
 import { ObjectId } from "bson";
-import { getSingleton } from "./utils";
-import locations from "./gamedata/locations";
+import { getSingleton, restoreFieldsAndMethods } from "./utils";
+import locations from "./locations";
+import { enterLocation } from "./locationutils";
+import getCollectionManager from "./getCollectionManager";
+import CollectionId from "./types/CollectionId";
+import { getMongoClient } from "./getMongoClient";
 
 export class PlayerManager {
   instances: Map<string, PlayerInstance>;
@@ -93,7 +97,31 @@ export function spawnPlayer(
     return;
   }
 
+  restoreFieldsAndMethods(instance, new PlayerInstance());
+
   playerManager.addPlayer(instance, progress);
 
-  locations[instance.location].enter(instance);
+  enterLocation(instance, locations[instance.location]);
+}
+
+export async function savePlayer(instance: PlayerInstance) {
+  console.log(
+    `Saving player instance with ID ${instance._id} and progress ID ${instance.progressId}`
+  );
+
+  const progress = getPlayerManager().progresses.get(
+    instance.progressId.toString()
+  );
+
+  const db = await getMongoClient();
+  const collectionManager = getCollectionManager(db);
+  const instanceCollection = collectionManager.getCollection(
+    CollectionId.PlayerInstances
+  );
+  const progressCollection = collectionManager.getCollection(
+    CollectionId.PlayerProgresses
+  );
+
+  instanceCollection.upsert(instance);
+  progressCollection.upsert(progress!);
 }

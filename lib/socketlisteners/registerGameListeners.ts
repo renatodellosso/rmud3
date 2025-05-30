@@ -1,3 +1,4 @@
+import { moveCreature } from "lib/creatureutils";
 import { LocationId } from "lib/types/Location";
 import {
   getPlayer,
@@ -13,6 +14,6 @@ export default function registerGameListeners(socket: TypedSocket) {
   socket.on("move", (exitId: LocationId) => {
     const player = getPlayer(socket);
 
-    
+    moveCreature(player.instance, exitId);
   });
 }

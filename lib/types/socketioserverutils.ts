@@ -6,12 +6,14 @@ import {
   SocketData,
 } from "./socketiotypes";
 import { getSingleton } from "lib/utils";
-import locations from "lib/gamedata/locations";
+import locations from "lib/locations";
 import getPlayerManager from "lib/PlayerManager";
 import { ExitData, GameState } from "./types";
 import { EJSON } from "bson";
 import Session from "./Session";
 import { socket } from "../socket";
+import { restoreFieldsAndMethods } from "../utils";
+import { PlayerInstance } from "./player";
 
 export type TypedSocket = Socket<
   ClientToServerEvents,
@@ -66,7 +68,7 @@ export async function sendMsgToRoom(roomId: string, msg: string) {
   );
 }
 
-export function sendMsgToPlayer(socket: TypedSocket, msg: string) {
+export function sendMsgToSocket(socket: TypedSocket, msg: string) {
   if (!socket.data.session) {
     console.warn(
       `Socket ${socket.id} does not have a session. Message not added to session.`

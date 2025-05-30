@@ -1,4 +1,4 @@
-import locations from "lib/gamedata/locations";
+import locations from "lib/locations";
 import getPlayerManager, { spawnPlayer } from "lib/PlayerManager";
 import {
   ClientToServerEvents,

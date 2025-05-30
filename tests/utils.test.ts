@@ -110,6 +110,26 @@ describe(restoreFieldsAndMethods.name, () => {
     expect(player.consumables?.canEquip).toBeDefined();
     expect(player.consumables?.canEquip).toBe(prototype.consumables.canEquip);
   });
+
+  test("restores methods from superclass", () => {
+    class SuperClass {
+      methodSuper() {}
+    }
+
+    class SubClass extends SuperClass {
+      methodSub() {}
+    }
+
+    const obj = {} as any as SubClass;
+    const prototype = SubClass.prototype;
+
+    restoreFieldsAndMethods(obj, prototype);
+
+    expect(obj.methodSuper).toBeDefined();
+    expect(obj.methodSuper).toBe(SuperClass.prototype.methodSuper);
+    expect(obj.methodSub).toBeDefined();
+    expect(obj.methodSub).toBe(prototype.methodSub);
+  });
 });
 
 describe(areItemInstancesEqual.name, () => {
@@ -177,30 +197,30 @@ describe(getSingleton.name, () => {
   });
 
   test("returns the same instance for the same name", () => {
-    const instance1 = getSingleton("test", () => {
+    const instance1 = getSingleton("test" as any, () => {
       return { value: 1 };
     });
 
-    const instance2 = getSingleton("test", () => {
+    const instance2 = getSingleton("test" as any, () => {
       return { value: 2 };
     });
 
     expect(instance1).toBe(instance2);
-    expect(instance1.value).toBe(1);
+    expect(instance1?.value).toBe(1);
   });
 
   test("returns different instances for different names", () => {
-    const instance1 = getSingleton("test1", () => {
+    const instance1 = getSingleton("test1" as any, () => {
       return { value: 1 };
     });
 
-    const instance2 = getSingleton("test2", () => {
+    const instance2 = getSingleton("test2" as any, () => {
       return { value: 2 };
     });
 
     expect(instance1).not.toBe(instance2);
-    expect(instance1.value).toBe(1);
-    expect(instance2.value).toBe(2);
+    expect(instance1?.value).toBe(1);
+    expect(instance2?.value).toBe(2);
   });
 
   test("does not run setter function if instance already exists", () => {
@@ -208,8 +228,8 @@ describe(getSingleton.name, () => {
       return { value: 1 };
     });
 
-    const instance1 = getSingleton("test", setter);
-    const instance2 = getSingleton("test", setter);
+    const instance1 = getSingleton("test" as any, setter);
+    const instance2 = getSingleton("test" as any, setter);
 
     expect(instance1).toBe(instance2);
     expect(setter).toHaveBeenCalledTimes(1);

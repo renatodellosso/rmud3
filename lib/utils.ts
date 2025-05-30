@@ -81,7 +81,8 @@ export type SingletonId =
   | "mongoDb"
   | "playerManager"
   | "socketsByPlayerInstanceIds"
-  | "socket";
+  | "socket"
+  | "locations";
 
 export function getSingleton<T>(
   name: SingletonId,
