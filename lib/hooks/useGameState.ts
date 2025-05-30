@@ -2,6 +2,8 @@ import { socket } from "lib/socket";
 import { GameState, SerializedEJSON } from "lib/types/types";
 import { useEffect, useState } from "react";
 import { EJSON } from "bson";
+import { restoreFieldsAndMethods } from "lib/utils";
+import { PlayerInstance } from "lib/types/player";
 
 export default function useGameState(): GameState | undefined {
   const [gameState, setGameState] = useState<GameState>();
@@ -16,8 +18,12 @@ export default function useGameState(): GameState | undefined {
     socket.on("setGameState", (newGameState: SerializedEJSON<GameState>) => {
       const parsedGameState: GameState = EJSON.parse(newGameState);
       console.log("Received game state:", parsedGameState);
+
+      restoreFieldsAndMethods(parsedGameState.self, new PlayerInstance());
+
       setGameState(parsedGameState);
     });
+
     socket.on("addMessage", (message: string) => {
       console.log("Received new message:", message);
 
