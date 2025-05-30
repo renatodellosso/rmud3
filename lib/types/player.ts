@@ -56,7 +56,7 @@ export class PlayerInstance extends CreatureInstance {
     return val;
   }
 
-  getAbilities(): { ability: Ability, source: AbilitySource }[] {
+  getAbilities(): { ability: Ability; source: AbilitySource }[] {
     const abilities = super.getAbilities();
 
     for (const equipment of this.equipment.items.concat(
@@ -65,7 +65,14 @@ export class PlayerInstance extends CreatureInstance {
       const def = items[equipment.definitionId] as EquipmentDefinition;
       if (!def.getAbilities) continue;
 
-      abilities.push(...getFromOptionalFunc(def.getAbilities, this, equipment));
+      abilities.push(
+        ...getFromOptionalFunc(def.getAbilities, this, equipment).map(
+          (ability) => ({
+            ability,
+            source: equipment,
+          })
+        )
+      );
     }
     return abilities;
   }

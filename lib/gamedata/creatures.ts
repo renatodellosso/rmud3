@@ -20,6 +20,15 @@ const creatures = Object.freeze({
       [AbilityScore.Intelligence]: 10,
     },
   },
+  trainingDummy: {
+    name: "Training Dummy",
+    health: 1000000000,
+    abilityScores: {
+      [AbilityScore.Strength]: 0,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 0,
+    },
+  },
 } as Record<string, CreatureDefinition>);
 
 export default creatures;

@@ -7,6 +7,7 @@ export type LocationId =
   | "docks"
   | "town-square"
   | "dungeon-entrance"
+  | "training-ground"
   | `dungeon-${string}`;
 
 export class Location {

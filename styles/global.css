@@ -55,6 +55,34 @@ code {
     Bitstream Vera Sans Mono, Courier New, monospace;
 }
 
-button, input {
+button,
+input {
   @apply border-1 border-white hover:bg-gray-600 active:bg-gray-700 disabled:bg-gray-800;
+}
+
+.animate-shake-on-hover:hover:not(:disabled) {
+  animation: shake 1s infinite;
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, -1px, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(1px, 1px, 0);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-2px, 2px, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(2px, -2px, 0);
+  }
 }

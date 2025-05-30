@@ -1,8 +1,9 @@
 import items from "lib/gamedata/items";
-import { CreatureInstance } from "./creature";
+import { CreatureInstance, CreatureDefinition } from "./creature";
 import { ItemInstance } from "./item";
 import { DamageType, Targetable } from "./types";
 import { OptionalFunc } from "./types";
+import creatures from "lib/gamedata/creatures";
 
 export type AbilitySource = ItemInstance | CreatureInstance;
 
@@ -53,14 +54,25 @@ export namespace CanTarget {
     creature: CreatureInstance,
     target: Targetable
   ): boolean {
-    return creature !== target;
+    if (!("definitionId" in target) || !("name" in creature)) {
+      return false;
+    }
+
+    return (
+      target.definitionId !== creature.definitionId ||
+      target.name !== creature.name
+    );
   }
 
   export function isCreature(
     creature: CreatureInstance,
     target: Targetable
   ): boolean {
-    return target instanceof CreatureInstance;
+    if (!("definitionId" in target)) {
+      return false;
+    }
+
+    return target.definitionId in creatures;
   }
 }
 

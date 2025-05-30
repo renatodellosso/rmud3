@@ -9,7 +9,7 @@ describe(EquipmentHotbar.name, () => {
       const item = { definitionId: "equipment1", amount: 1 };
 
       hotbar.items = [];
-      expect(hotbar.canEquip(item, player)).toBe(true);
+      expect(hotbar.canEquip(player, item)).toBe(true);
     });
 
     test("returns false if the item is already in the hotbar", () => {
@@ -18,7 +18,7 @@ describe(EquipmentHotbar.name, () => {
       const item = { definitionId: "equipment1", amount: 1 };
 
       hotbar.items = [item];
-      expect(hotbar.canEquip(item, player)).toBe(false);
+      expect(hotbar.canEquip(player, item)).toBe(false);
     });
   });
 
@@ -29,7 +29,7 @@ describe(EquipmentHotbar.name, () => {
       const item = { definitionId: "equipment1", amount: 1 };
 
       hotbar.items = [];
-      expect(hotbar.equip(item, player)).toBe(true);
+      expect(hotbar.equip(player, item)).toBe(true);
       expect(hotbar.items).toContain(item);
     });
 
@@ -39,7 +39,7 @@ describe(EquipmentHotbar.name, () => {
       const item = { definitionId: "equipment1", amount: 1 };
 
       hotbar.items = [item];
-      expect(hotbar.equip(item, player)).toBe(false);
+      expect(hotbar.equip(player, item)).toBe(false);
     });
   });
 
@@ -72,7 +72,7 @@ describe(ConsumableHotbar.name, () => {
       const item = { definitionId: "consumable1", amount: 1 };
 
       hotbar.items = [];
-      expect(hotbar.canEquip(item, player)).toBe(true);
+      expect(hotbar.canEquip(player, item)).toBe(true);
     });
 
     test("returns false if the item is already in the hotbar", () => {
@@ -81,7 +81,7 @@ describe(ConsumableHotbar.name, () => {
       const item = { definitionId: "consumable1", amount: 1 };
 
       hotbar.items = [item];
-      expect(hotbar.canEquip(item, player)).toBe(false);
+      expect(hotbar.canEquip(player, item)).toBe(false);
     });
   });
 
@@ -92,7 +92,7 @@ describe(ConsumableHotbar.name, () => {
       const item = { definitionId: "consumable1", amount: 1 };
 
       hotbar.items = [];
-      expect(hotbar.equip(item, player)).toBe(true);
+      expect(hotbar.equip(player, item)).toBe(true);
       expect(hotbar.items).toContain(item);
     });
 
@@ -102,7 +102,7 @@ describe(ConsumableHotbar.name, () => {
       const item = { definitionId: "consumable1", amount: 1 };
 
       hotbar.items = [item];
-      expect(hotbar.equip(item, player)).toBe(false);
+      expect(hotbar.equip(player, item)).toBe(false);
     });
   });
 

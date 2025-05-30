@@ -16,4 +16,8 @@ export default function registerGameListeners(socket: TypedSocket) {
 
     moveCreature(player.instance, exitId);
   });
+
+  socket.on("activateAbility", (abilityName: string, sourceName: string, targetIds: string[]) => {
+    const player = getPlayer(socket);
+  });
 }

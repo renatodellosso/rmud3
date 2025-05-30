@@ -21,10 +21,7 @@ export enum ItemTag {
 }
 
 export interface ActivatableItemDefinition {
-  getAbilities?: OptionalFunc<
-    { ability: Ability; source: AbilitySource }[],
-    [CreatureInstance, ItemInstance]
-  >;
+  getAbilities?: OptionalFunc<Ability[], [CreatureInstance, ItemInstance]>;
   /**
    * Undefined defaults to true
    */

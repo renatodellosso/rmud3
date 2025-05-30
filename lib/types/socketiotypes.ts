@@ -33,6 +33,11 @@ export interface ClientToServerEvents {
   selectSave: (progressId: string) => void;
   requestGameState: () => void;
   move: (newLocationId: LocationId) => void;
+  activateAbility: (
+    abilityName: string,
+    sourceName: string,
+    targetIds: string[]
+  ) => void;
 }
 
 export interface InterServerEvents {

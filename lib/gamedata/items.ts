@@ -51,19 +51,15 @@ const items = Object.freeze({
     tags: [ItemTag.Equipment],
     description: "A rusty old sword, not very effective.",
     weight: 3,
-    getAbilities: (creature, item) =>
-      [
-        Abilities.attack(
-          "Rusty Slash",
-          "A basic slash attack with the rusty sword.",
-          1,
-          1,
-          DamageType.Slashing
-        ),
-      ].map((ability) => ({
-        ability,
-        source: item,
-      })),
+    getAbilities: (creature, item) => [
+      Abilities.attack(
+        "Rusty Slash",
+        "A basic slash attack with the rusty sword.",
+        1,
+        1,
+        DamageType.Slashing
+      ),
+    ],
   } satisfies EquipmentDefinition,
 } as Record<string, ItemDefinition>);
 
