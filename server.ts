@@ -10,6 +10,8 @@ import { TypedServer } from "./lib/types/socketioserverutils";
 import rawLocations, { addRawLocations } from "lib/gamedata/rawLocations";
 import { Location } from "lib/types/Location";
 import locations from "lib/locations";
+import { DungeonLocation } from "lib/dungeongeneration/types";
+import { setupLocations } from "lib/startup";
 
 dotenv.config();
 
@@ -51,10 +53,4 @@ registerListeners(io);
 io.listen(socketPort);
 console.log(`> Socket.io server listening at http://localhost:${socketPort}`);
 
-getSingleton("dungeon", () => {
-  const dungeon = generateDungeon();
-  console.log("Generated dungeon!");
-  return dungeon;
-});
-
-addRawLocations(locations);
+setupLocations();

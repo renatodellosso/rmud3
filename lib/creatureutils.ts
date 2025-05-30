@@ -27,4 +27,8 @@ export function moveCreature(
   if (creature.definitionId === "player") {
     savePlayer(creature as PlayerInstance);
   }
+
+  console.log(
+    `Creature ${creature.name} moved from ${currentLocation.name} to ${creature.location}.`
+  );
 }

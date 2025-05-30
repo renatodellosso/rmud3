@@ -3,7 +3,11 @@ import { CreatureInstance } from "./creature";
 import { PlayerInstance } from "./player";
 import { OptionalFunc } from "./types";
 
-export type LocationId = "docks" | "townSquare" | `dungeon-${string}`;
+export type LocationId =
+  | "docks"
+  | "town-square"
+  | "dungeon-entrance"
+  | `dungeon-${string}`;
 
 export class Location {
   id: LocationId;

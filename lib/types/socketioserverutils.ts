@@ -5,7 +5,7 @@ import {
   ServerToClientEvents,
   SocketData,
 } from "./socketiotypes";
-import { getSingleton } from "lib/utils";
+import { getFromOptionalFunc, getSingleton } from "lib/utils";
 import locations from "lib/locations";
 import getPlayerManager from "lib/PlayerManager";
 import { ExitData, GameState } from "./types";
@@ -14,6 +14,7 @@ import Session from "./Session";
 import { socket } from "../socket";
 import { restoreFieldsAndMethods } from "../utils";
 import { PlayerInstance } from "./player";
+import { LocationId } from "./Location";
 
 export type TypedSocket = Socket<
   ClientToServerEvents,
@@ -33,7 +34,7 @@ export function getIo() {
   return getSingleton<TypedServer>("io");
 }
 
-function addMsgToSession(session: Session, msg: string) {
+export function addMsgToSession(session: Session, msg: string) {
   if (!session.messages) {
     session.messages = [];
   }
@@ -81,7 +82,7 @@ export function sendMsgToSocket(socket: TypedSocket, msg: string) {
   console.log(`Message sent to player ${socket.id}: ${msg}`);
 }
 
-export function getExitData(locationId: string): ExitData {
+export function getExitData(locationId: LocationId): ExitData {
   const location = locations[locationId];
 
   return {
@@ -127,7 +128,17 @@ export function updateGameState(socket: TypedSocket) {
   const gameState: GameState = {
     self: player.instance,
     progress: player.progress,
-    location,
+    location: {
+      // Leave out floor from dungeon locations
+      id: location.id,
+      name: location.name,
+      description: getFromOptionalFunc(
+        location.description,
+        player.instance as PlayerInstance
+      ),
+      creatures: location.creatures,
+      exits: location.exits,
+    },
     messages: socket.data.session!.messages,
     exits,
   };

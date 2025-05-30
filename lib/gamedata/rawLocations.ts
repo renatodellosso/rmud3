@@ -8,14 +8,21 @@ const rawLocations: Partial<OmitType<Location, Function>>[] = [
     name: "Docks",
     description:
       "You stand on a rickety dock, the dark waves splashing around you.",
-    exits: new Set<LocationId>(["townSquare"]),
+    exits: new Set<LocationId>(["town-square"]),
   },
   {
-    id: "townSquare",
+    id: "town-square",
     name: "Town Square",
     description:
       "You are in the center of a quiet town square. A small fire flickers in the center, casting shadows on the dirt streets.",
-    exits: new Set<LocationId>(["docks"]),
+    exits: new Set<LocationId>(["docks", "dungeon-entrance"]),
+  },
+  {
+    id: "dungeon-entrance",
+    name: "Dungeon Entrance",
+    description:
+      "You stand before a dark, foreboding entrance to a dungeon. The air is thick with the smell of damp stone and moss.",
+    exits: new Set<LocationId>(["town-square"]),
   },
 ];
 

@@ -3,7 +3,12 @@ import locations from "./locations";
 import { CreatureInstance } from "./types/creature";
 import { Location, LocationId } from "./types/Location";
 import { PlayerInstance } from "./types/player";
-import { sendMsgToRoom, sendMsgToSocket } from "./types/socketioserverutils";
+import {
+  addMsgToSession,
+  sendMsgToRoom,
+  sendMsgToSocket,
+  updateGameState,
+} from "./types/socketioserverutils";
 import { getFromOptionalFunc } from "./utils";
 
 export function enterLocation(creature: CreatureInstance, location: Location) {
@@ -30,11 +35,13 @@ export function enterLocation(creature: CreatureInstance, location: Location) {
       `${creature.name} has entered ${location.name}.`
     ).then(() => {
       if (location.description) {
-        sendMsgToSocket(
-          socket,
+        addMsgToSession(
+          socket.data.session!,
           getFromOptionalFunc(location.description, creature as PlayerInstance)
         );
       }
+
+      updateGameState(socket);
     });
   }
 }

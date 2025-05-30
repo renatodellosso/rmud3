@@ -1,9 +1,9 @@
 import { getSingleton } from "./utils";
-import { Location } from "./types/Location";
+import { Location, LocationId } from "./types/Location";
 
 const locations = getSingleton(
   "locations",
-  () => ({} as Record<string, Location>)
+  () => ({} as Record<LocationId, Location>)
 )!;
 
 export default locations;

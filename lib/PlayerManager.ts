@@ -101,6 +101,14 @@ export function spawnPlayer(
 
   playerManager.addPlayer(instance, progress);
 
+  // Move player outside the dungeon
+  if (
+    instance.location.startsWith("dungeon-") &&
+    instance.location !== "dungeon-entrance"
+  ) {
+    instance.location = "dungeon-entrance";
+  }
+
   enterLocation(instance, locations[instance.location]);
 }
 
