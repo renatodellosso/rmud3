@@ -1,5 +1,4 @@
 import { AbilityScore, GameState } from "lib/types/types";
-import { EJSON } from "bson";
 
 export default function PlayerInfoMenu({
   gameState: { self },

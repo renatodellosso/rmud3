@@ -142,3 +142,17 @@ export function updateGameState(socket: TypedSocket) {
 
   socket.emit("setGameState", EJSON.stringify(gameState));
 }
+
+export function updateGameStateForRoom(roomId: string) {
+  const io = getIo();
+  if (!io) return;
+
+  const room = io.to(roomId);
+  const sockets = room.fetchSockets();
+
+  sockets.then((sockets) => {
+    for (const socket of sockets) {
+      updateGameState(socket as any as TypedSocket);
+    }
+  });
+}

@@ -4,7 +4,7 @@ import Ability, {
   getAbilitySourceName,
 } from "lib/types/Ability";
 import { GameState, Targetable } from "lib/types/types";
-import { useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { getFromOptionalFunc, getTargetId } from "../../lib/utils";
 import { socket } from "lib/socket";
 
@@ -15,11 +15,12 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
     source: AbilitySource;
   }>();
   const [targetCount, setTargetCount] = useState<number>(1);
+  const activateButtonRef = useRef<HTMLButtonElement>(null);
 
   function toggleTarget(target: Targetable) {
     setTargets((prevTargets) =>
-      prevTargets.includes(target)
-        ? prevTargets.filter((t) => t !== target)
+      prevTargets.map(getTargetId).includes(getTargetId(target))
+        ? prevTargets.filter((t) => getTargetId(t) !== getTargetId(target))
         : [...prevTargets, target]
     );
   }
@@ -29,23 +30,6 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
       ability,
       source,
     });
-
-    for (const target of targets) {
-      console.log(
-        "Target:",
-        target,
-        "Ability:",
-        ability.name,
-        "Source:",
-        source,
-        "Can target:",
-        getFromOptionalFunc(ability.canTarget, gameState.self, target, source),
-        "Is Not Self:",
-        CanTarget.notSelf(gameState.self, target),
-        "Is Creature:",
-        CanTarget.isCreature(gameState.self, target)
-      );
-    }
 
     setTargets((prev) =>
       prev.filter((t) =>
@@ -59,7 +43,12 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   }
 
   function activateAbility() {
-    if (!selectedAbility) return;
+    console.log("Activating ability:", selectedAbility?.ability.name);
+    if (!selectedAbility) {
+      console.warn("No ability selected for activation.");
+      return;
+    }
+
     if (targets.length !== targetCount) {
       console.warn(
         `Cannot activate ${selectedAbility.ability.name}: expected ${targetCount} targets, but got ${targets.length}`
@@ -82,6 +71,17 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
     );
   }
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!activateButtonRef.current) return;
+
+      activateButtonRef.current.disabled =
+        gameState.self.canActAt > new Date() || targets.length !== targetCount;
+    }, 25);
+
+    return () => clearInterval(interval);
+  }, [gameState, targets, targetCount]);
+
   return (
     <div key="CombatMenu" className="border w-1/4 flex flex-col gap-2">
       <h2 className="text-xl">Combat</h2>
@@ -95,7 +95,8 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
               key={creature._id.toString()}
               onClick={() => toggleTarget(creature)}
               className={`px-1 ${
-                targets.includes(creature) && "bg-red-500 animate-pulse"
+                targets.map(getTargetId).includes(getTargetId(creature)) &&
+                "bg-red-500 animate-pulse"
               }`}
               disabled={
                 selectedAbility?.ability.canTarget &&
@@ -107,7 +108,7 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
                 )
               }
             >
-              {creature.name}
+              {creature.name} ({creature.health}/{creature.getMaxHealth()})
             </button>
           ))}
         </div>
@@ -134,9 +135,9 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
       </div>
       {selectedAbility && (
         <button
-          disabled={targets.length !== targetCount}
           onClick={activateAbility}
-          className="w-full px-2 py-1 animate-shake-on-hover"
+          ref={activateButtonRef}
+          className="w-full px-2 py-1 animate-shake-on-hover not-disabled:animate-pulse"
         >
           Activate {selectedAbility?.ability.name}
           {targets.length ? (

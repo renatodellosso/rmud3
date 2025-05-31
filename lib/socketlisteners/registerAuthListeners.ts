@@ -5,6 +5,7 @@ import getSessionManager from "lib/SessionManager";
 import { ObjectId } from "bson";
 import { TypedSocket } from "lib/types/socketioserverutils";
 import getSocketsByPlayerInstanceIds from "lib/getSocketsByPlayerInstanceIds";
+import getPlayerManager from "lib/PlayerManager";
 
 export default function registerAuthListeners(socket: TypedSocket) {
   socket.on("signIn", async (email, password, callback) => {
@@ -75,6 +76,21 @@ export default function registerAuthListeners(socket: TypedSocket) {
         socket.data.session.playerInstanceId.toString(),
         socket
       );
+
+      const playerManager = getPlayerManager();
+      const player = playerManager?.getPlayerByInstanceId(
+        socket.data.session.playerInstanceId
+      );
+
+      if (!player) {
+        console.error(
+          `No player found for instance ID: ${socket.data.session.playerInstanceId}`
+        );
+        callback(false);
+        return;
+      }
+
+      socket.join(player.instance.location);
     }
 
     callback(true);

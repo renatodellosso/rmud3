@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { EJSON } from "bson";
 import { restoreFieldsAndMethods } from "lib/utils";
 import { PlayerInstance } from "lib/types/player";
+import { CreatureInstance } from "lib/types/creature";
 
 export default function useGameState(): GameState | undefined {
   const [gameState, setGameState] = useState<GameState>();
@@ -20,6 +21,9 @@ export default function useGameState(): GameState | undefined {
       console.log("Received game state:", parsedGameState);
 
       restoreFieldsAndMethods(parsedGameState.self, new PlayerInstance());
+      for (const creature of parsedGameState.location.creatures) {
+        restoreFieldsAndMethods(creature, new CreatureInstance());
+      }
 
       setGameState(parsedGameState);
     });

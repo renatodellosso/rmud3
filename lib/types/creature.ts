@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
 import creatures from "../gamedata/creatures";
-import { AbilityScore } from "./types";
+import { AbilityScore, DamageType } from "./types";
 import Ability, { AbilitySource } from "./Ability";
 import { LocationId } from "./Location";
 import locations from "lib/locations";
@@ -25,8 +25,23 @@ export class CreatureInstance {
   health: number = undefined as unknown as number;
 
   canActAt: Date = new Date();
+  lastActedAt: Date = new Date();
 
-  constructor() {}
+  constructor(
+    definitionId: keyof typeof creatures = undefined as any,
+    locationId: LocationId = undefined as any
+  ) {
+    this.definitionId = definitionId;
+    this.location = locationId;
+
+    const definition = creatures[definitionId];
+    if (!definition) {
+      return;
+    }
+
+    this.name = definition.name;
+    this.health = definition.health;
+  }
 
   getAbilityScore(score: AbilityScore) {
     return creatures[this.definitionId].abilityScores[score];
@@ -50,5 +65,13 @@ export class CreatureInstance {
     );
 
     return abilities;
+  }
+
+  takeDamage(amount: number, type: DamageType): number {
+    amount = Math.min(Math.max(amount, 0), this.health);
+
+    this.health -= amount;
+
+    return amount;
   }
 }

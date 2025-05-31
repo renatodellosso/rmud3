@@ -4,6 +4,7 @@ import { ItemInstance } from "./item";
 import { DamageType, Targetable } from "./types";
 import { OptionalFunc } from "./types";
 import creatures from "lib/gamedata/creatures";
+import { sendMsgToRoom } from "./socketioserverutils";
 
 export type AbilitySource = ItemInstance | CreatureInstance;
 
@@ -19,7 +20,14 @@ type Ability = {
     boolean,
     [CreatureInstance, Targetable, AbilitySource]
   >;
-  activate: OptionalFunc<void, [CreatureInstance, Targetable[], AbilitySource]>;
+  /**
+   * @returns the message to send to the room
+   */
+  activate: (
+    creature: CreatureInstance,
+    targets: Targetable[],
+    source: AbilitySource
+  ) => string;
 };
 
 export default Ability;
@@ -91,16 +99,20 @@ export namespace Abilities {
       getTargetCount: 1,
       canTarget: CanTarget.and(CanTarget.notSelf, CanTarget.isCreature),
       activate: (creature: CreatureInstance, targets: Targetable[]) => {
-        if (targets.length !== 0) {
+        if (targets.length !== 1) {
           throw new Error(
             `Expected exactly one target for ability ${name}, but got ${targets.length}.`
           );
         }
+
         const target = targets[0] as CreatureInstance;
         console.log(
           `${creature.name} attacks ${target.name} for ${damage} ${damageType}!`
         );
-        // target.takeDamage(damage, damageType);
+
+        const damageDealt = target.takeDamage(damage, damageType);
+
+        return `${creature.name} hit ${target.name} for ${damageDealt} ${damageType} using ${name}!`;
       },
     };
   }
