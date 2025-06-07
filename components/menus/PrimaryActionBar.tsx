@@ -3,13 +3,15 @@ import { GameState } from "lib/types/types";
 
 export default function PrimaryActionBar({
   gameState,
+  className,
 }: {
   gameState: GameState;
+  className?: string;
 }) {
   const actions = useActionBar(gameState);
 
   return (
-    <div className="border-t flex">
+    <div className={`border-t flex ${className}`}>
       {actions.map((action, index) => (
         <button
           key={index}

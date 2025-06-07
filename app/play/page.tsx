@@ -39,15 +39,15 @@ export default function Play() {
   }
 
   return (
-    <div className="h-screen w-screen flex flex-col overflow-hidden">
-      <div className="w-full flex border-b border-white">
+    <div className="h-screen w-screen overflow-hidden">
+      <div className="h-1/30 w-full flex border-b border-white">
         {Object.values(Menu).map((name) => (
           <button onClick={() => toggleMenu(name)} key={name} className="px-1">
             {name}
           </button>
         ))}
       </div>
-      <div className="flex flex-row grow">
+      <div className="flex flex-row h-29/30">
         <PrimaryMenu gameState={gameState} />
         {openMenus.includes(Menu.PlayerInfo) && (
           <PlayerInfoMenu gameState={gameState} />

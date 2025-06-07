@@ -15,14 +15,20 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
     source: AbilitySource;
   }>();
   const [targetCount, setTargetCount] = useState<number>(1);
-  const activateButtonRef = useRef<HTMLButtonElement>(null);
+  const [canAct, setCanAct] = useState<boolean>(true);
 
   function toggleTarget(target: Targetable) {
-    setTargets((prevTargets) =>
-      prevTargets.map(getTargetId).includes(getTargetId(target))
-        ? prevTargets.filter((t) => getTargetId(t) !== getTargetId(target))
-        : [...prevTargets, target]
-    );
+    const newTargets = targets.includes(target)
+      ? targets.filter((t) => t !== target)
+      : [...targets, target];
+
+    if (newTargets.length !== targetCount) {
+      setTargets(newTargets);
+      return;
+    }
+
+    activateAbility(newTargets);
+    setTargets([]);
   }
 
   function selectAbility(ability: Ability, source: AbilitySource) {
@@ -42,7 +48,7 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
     );
   }
 
-  function activateAbility() {
+  function activateAbility(targets: Targetable[]) {
     console.log("Activating ability:", selectedAbility?.ability.name);
     if (!selectedAbility) {
       console.warn("No ability selected for activation.");
@@ -72,47 +78,18 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   }
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (!activateButtonRef.current) return;
-
-      activateButtonRef.current.disabled =
-        gameState.self.canActAt > new Date() || targets.length !== targetCount;
-    }, 25);
+    const interval = setInterval(
+      () => setCanAct(gameState.self.canActAt <= new Date()),
+      25
+    );
 
     return () => clearInterval(interval);
-  }, [gameState, targets, targetCount]);
+  }, [gameState]);
 
   return (
     <div key="CombatMenu" className="border w-1/4 flex flex-col gap-2">
       <h2 className="text-xl">Combat</h2>
-      <div>
-        <h3>
-          Targets ({targets.length}/{targetCount})
-        </h3>
-        <div className="flex gap-1">
-          {Array.from(gameState.location.creatures).map((creature) => (
-            <button
-              key={creature._id.toString()}
-              onClick={() => toggleTarget(creature)}
-              className={`px-1 ${
-                targets.map(getTargetId).includes(getTargetId(creature)) &&
-                "bg-red-500 animate-pulse"
-              }`}
-              disabled={
-                selectedAbility?.ability.canTarget &&
-                !getFromOptionalFunc(
-                  selectedAbility?.ability.canTarget,
-                  gameState.self,
-                  creature,
-                  selectedAbility?.source
-                )
-              }
-            >
-              {creature.name} ({creature.health}/{creature.getMaxHealth()})
-            </button>
-          ))}
-        </div>
-      </div>
+
       <div>
         <h3>Abilities</h3>
         <div>
@@ -133,20 +110,38 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
           ))}
         </div>
       </div>
-      {selectedAbility && (
-        <button
-          onClick={activateAbility}
-          ref={activateButtonRef}
-          className="w-full px-2 py-1 animate-shake-on-hover not-disabled:animate-pulse"
-        >
-          Activate {selectedAbility?.ability.name}
-          {targets.length ? (
-            ` on ${targets.map((t) => t.name).join(", ")}`
-          ) : (
-            <></>
-          )}
-        </button>
-      )}
+      <div>
+        <h3>
+          Targets ({targets.length}/{targetCount})
+        </h3>
+        <div className="flex gap-1">
+          {Array.from(gameState.location.creatures).map((creature) => (
+            <button
+              key={creature._id.toString()}
+              onClick={() => toggleTarget(creature)}
+              className={`px-1 ${
+                targets.map(getTargetId).includes(getTargetId(creature)) &&
+                "bg-red-500 animate-pulse"
+              } ${
+                targets.length === targetCount - 1 && "animate-shake-on-hover"
+              }`}
+              disabled={
+                !selectedAbility ||
+                (selectedAbility?.ability.canTarget &&
+                  !getFromOptionalFunc(
+                    selectedAbility?.ability.canTarget,
+                    gameState.self,
+                    creature,
+                    selectedAbility?.source
+                  )) ||
+                !canAct
+              }
+            >
+              {creature.name} ({creature.health}/{creature.getMaxHealth()})
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
