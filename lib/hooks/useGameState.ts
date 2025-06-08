@@ -18,13 +18,18 @@ export default function useGameState(): GameState | undefined {
 
     socket.on("setGameState", (newGameState: SerializedEJSON<GameState>) => {
       const parsedGameState: GameState = EJSON.parse(newGameState);
-      console.log("Received game state:", parsedGameState);
 
       restoreFieldsAndMethods(parsedGameState.self, new PlayerInstance());
       for (const creature of parsedGameState.location.creatures) {
-        restoreFieldsAndMethods(creature, new CreatureInstance());
+        restoreFieldsAndMethods(
+          creature,
+          creature.definitionId === "player"
+            ? new PlayerInstance()
+            : new CreatureInstance()
+        );
       }
 
+      console.log("Received game state:", parsedGameState);
       setGameState(parsedGameState);
     });
 

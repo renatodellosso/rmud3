@@ -1,3 +1,4 @@
+import { CreatureInstance } from "lib/types/creature";
 import { ItemInstance } from "lib/types/item";
 import { PlayerInstance } from "lib/types/player";
 import {
@@ -74,12 +75,36 @@ describe(restoreFieldsAndMethods.name, () => {
     }
 
     const obj = {} as any as TestClass;
-    const prototype = TestClass.prototype;
 
     restoreFieldsAndMethods(obj, new TestClass());
 
     expect(obj.nested.methodB).toBeDefined();
     expect(obj.nested.methodB).toBe(NestedClass.prototype.methodB);
+  });
+
+  test("Works on CreatureInstance", () => {
+    const creature: Partial<CreatureInstance> = {
+      equipment: {
+        items: [
+          {
+            definitionId: "equipment1",
+            amount: 1,
+          } as ItemInstance,
+        ],
+      },
+    } as any;
+    const prototype = new CreatureInstance();
+
+    restoreFieldsAndMethods(creature, prototype);
+
+    expect(creature.getMaxHealth).toBeDefined();
+    expect(creature.getMaxHealth).toBe(prototype.getMaxHealth);
+    expect(creature.getAbilityScore).toBeDefined();
+    expect(creature.getAbilityScore).toBe(prototype.getAbilityScore);
+    expect(creature.getAbilities).toBeDefined();
+    expect(creature.getAbilities).toBe(prototype.getAbilities);
+    expect(creature.takeDamage).toBeDefined();
+    expect(creature.takeDamage).toBe(prototype.takeDamage);
   });
 
   test("Works on PlayerInstance", () => {
@@ -103,6 +128,8 @@ describe(restoreFieldsAndMethods.name, () => {
     expect(player.getAbilityScore).toBe(prototype.getAbilityScore);
     expect(player.getAbilities).toBeDefined();
     expect(player.getAbilities).toBe(prototype.getAbilities);
+    expect(player.takeDamage).toBeDefined();
+    expect(player.takeDamage).toBe(prototype.takeDamage);
 
     expect(player.equipment?.canEquip).toBeDefined();
     expect(player.equipment?.canEquip).toBe(prototype.equipment.canEquip);
@@ -113,11 +140,22 @@ describe(restoreFieldsAndMethods.name, () => {
 
   test("restores methods from superclass", () => {
     class SuperClass {
-      methodSuper() {}
+      methodSuper() {
+        return 1;
+      }
+
+      methodSuperOnly() {
+        return 4;
+      }
     }
 
     class SubClass extends SuperClass {
-      methodSub() {}
+      methodSuper() {
+        return 2;
+      }
+      methodSub() {
+        return 3;
+      }
     }
 
     const obj = {} as any as SubClass;
@@ -126,9 +164,12 @@ describe(restoreFieldsAndMethods.name, () => {
     restoreFieldsAndMethods(obj, prototype);
 
     expect(obj.methodSuper).toBeDefined();
-    expect(obj.methodSuper).toBe(SuperClass.prototype.methodSuper);
     expect(obj.methodSub).toBeDefined();
-    expect(obj.methodSub).toBe(prototype.methodSub);
+    expect(obj.methodSuperOnly).toBeDefined();
+
+    expect(obj.methodSuper()).toBe(2);
+    expect(obj.methodSub()).toBe(3);
+    expect(obj.methodSuperOnly()).toBe(4);
   });
 });
 

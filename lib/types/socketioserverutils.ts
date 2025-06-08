@@ -11,8 +11,6 @@ import getPlayerManager from "lib/PlayerManager";
 import { ExitData, GameState } from "./types";
 import { EJSON } from "bson";
 import Session from "./Session";
-import { socket } from "../socket";
-import { restoreFieldsAndMethods } from "../utils";
 import { PlayerInstance } from "./player";
 import { LocationId } from "./Location";
 

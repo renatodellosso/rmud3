@@ -11,9 +11,21 @@ export function restoreFieldsAndMethods<T extends object>(
   if (!template) return obj as T;
 
   const prototype = Object.getPrototypeOf(template);
-  const keys = Object.getOwnPropertyNames(template).concat(
-    prototype ? Object.getOwnPropertyNames(prototype) : []
+  const keySet = new Set(
+    Object.getOwnPropertyNames(template).concat(
+      prototype ? Object.getOwnPropertyNames(prototype) : []
+    )
   );
+
+  let superPrototype = Object.getPrototypeOf(prototype);
+  while (superPrototype && superPrototype !== Object.prototype) {
+    Object.getOwnPropertyNames(superPrototype).forEach((name) =>
+      keySet.add(name)
+    );
+    superPrototype = Object.getPrototypeOf(superPrototype);
+  }
+
+  const keys = Array.from(keySet);
 
   // Cast to Record<string, any> to avoid TypeScript errors
   const rObj = obj as Record<string, any>;
@@ -26,24 +38,30 @@ export function restoreFieldsAndMethods<T extends object>(
   }
 
   for (const key of keys) {
-    if (
-      (!(key in obj) && key in template) ||
-      (rObj[key] === undefined && rPrototype[key] !== undefined)
-    ) {
-      rObj[key] = rPrototype[key];
-    } else if (
-      typeof rObj[key] === "object" &&
-      typeof rPrototype[key] === "object"
-    ) {
-      // If the property is an object, recursively restore fields and methods
-      restoreFieldsAndMethods(rObj[key], rPrototype[key]);
-    } else if (Array.isArray(rObj[key]) && Array.isArray(rPrototype[key])) {
-      // If the property is an array, recursively restore fields and methods for each element
-      for (let i = 0; i < rObj[key].length; i++) {
-        if (rPrototype[key][i]) {
-          restoreFieldsAndMethods(rObj[key][i], rPrototype[key][i]);
+    try {
+      if (key === "__proto__") continue;
+
+      if (
+        (!(key in obj) && key in template) ||
+        (rObj[key] === undefined && rPrototype[key] !== undefined)
+      ) {
+        rObj[key] = rPrototype[key];
+      } else if (
+        typeof rObj[key] === "object" &&
+        typeof rPrototype[key] === "object"
+      ) {
+        // If the property is an object, recursively restore fields and methods
+        restoreFieldsAndMethods(rObj[key], rPrototype[key]);
+      } else if (Array.isArray(rObj[key]) && Array.isArray(rPrototype[key])) {
+        // If the property is an array, recursively restore fields and methods for each element
+        for (let i = 0; i < rObj[key].length; i++) {
+          if (rPrototype[key][i]) {
+            restoreFieldsAndMethods(rObj[key][i], rPrototype[key][i]);
+          }
         }
       }
+    } catch (e) {
+      throw new Error(`Error restoring key "${key}": ${e}`);
     }
   }
 

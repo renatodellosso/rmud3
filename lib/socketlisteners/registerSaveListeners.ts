@@ -124,11 +124,11 @@ export default function registerSaveListeners(socket: TypedSocket) {
 
     const account = accounts[0];
 
-    const progressesCollection = await collectionManager.getCollection(
+    const progressesCollection = collectionManager.getCollection(
       CollectionId.PlayerProgresses
     );
 
-    const instancesCollection = await collectionManager.getCollection(
+    const instancesCollection = collectionManager.getCollection(
       CollectionId.PlayerInstances
     );
 

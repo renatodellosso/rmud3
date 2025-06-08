@@ -1,9 +1,8 @@
 import { ObjectId } from "bson";
 import creatures from "../gamedata/creatures";
 import { AbilityScore, DamageType } from "./types";
-import Ability, { AbilitySource } from "./Ability";
+import Ability, { AbilitySource, AbilityWithSource } from "./Ability";
 import { LocationId } from "./Location";
-import locations from "lib/locations";
 
 export type CreatureDefinition = {
   name: string;
@@ -11,6 +10,10 @@ export type CreatureDefinition = {
   health: number;
   abilityScores: { [score in AbilityScore]: number };
   intrinsicAbilities?: Ability[];
+  /**
+   * @param deltaTime in seconds
+   */
+  tick?: (creature: CreatureInstance, deltaTime: number) => void;
 };
 
 export class CreatureInstance {
@@ -55,7 +58,7 @@ export class CreatureInstance {
   }
 
   getAbilities() {
-    const abilities: { ability: Ability; source: AbilitySource }[] = [];
+    const abilities: AbilityWithSource[] = [];
 
     abilities.push(
       ...(creatures[this.definitionId].intrinsicAbilities?.map((ability) => ({

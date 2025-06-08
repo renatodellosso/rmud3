@@ -1,4 +1,3 @@
-import { Abilities } from "lib/types/Ability";
 import {
   ConsumableDefinition,
   EquipmentDefinition,
@@ -6,6 +5,7 @@ import {
   ItemDefinition,
   ItemTag,
 } from "lib/types/item";
+import * as Abilities from "lib/gamedata/Abilities";
 import { DamageType } from "lib/types/types";
 
 const items = Object.freeze({

@@ -1,19 +1,16 @@
 import Ability, {
   AbilitySource,
-  CanTarget,
+  AbilityWithSource,
   getAbilitySourceName,
 } from "lib/types/Ability";
 import { GameState, Targetable } from "lib/types/types";
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { getFromOptionalFunc, getTargetId } from "../../lib/utils";
 import { socket } from "lib/socket";
 
 export default function CombatMenu({ gameState }: { gameState: GameState }) {
   const [targets, setTargets] = useState<Targetable[]>([]);
-  const [selectedAbility, setSelectedAbility] = useState<{
-    ability: Ability;
-    source: AbilitySource;
-  }>();
+  const [selectedAbility, setSelectedAbility] = useState<AbilityWithSource>();
   const [targetCount, setTargetCount] = useState<number>(1);
   const [canAct, setCanAct] = useState<boolean>(true);
 
@@ -85,6 +82,8 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
 
     return () => clearInterval(interval);
   }, [gameState]);
+
+  console.log(gameState);
 
   return (
     <div key="CombatMenu" className="border w-1/4 flex flex-col gap-2">

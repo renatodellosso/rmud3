@@ -1,5 +1,26 @@
-import { AbilityScore } from "lib/types/types";
-import { CreatureDefinition } from "../types/creature";
+import { AbilityScore, DamageType } from "lib/types/types";
+import { CreatureDefinition, CreatureInstance } from "../types/creature";
+import { AbilityWithSource } from "lib/types/Ability";
+import * as Abilities from "lib/gamedata/Abilities";
+
+// Only import on server side
+let activateAbilityOnTick: (
+    instance: CreatureInstance,
+    deltaTime: number,
+    abilitySelector: (
+      creature: CreatureInstance
+    ) => AbilityWithSource | undefined,
+    skipIfLocationIsEmpty?: boolean
+  ) => void,
+  selectRandomAbility: (
+    creature: CreatureInstance
+  ) => AbilityWithSource | undefined;
+
+if (typeof window === "undefined")
+  import("lib/creatureutils").then((creatureutils) => {
+    activateAbilityOnTick = creatureutils.activateAbilityOnTick;
+    selectRandomAbility = creatureutils.selectRandomAbility;
+  });
 
 const creatures = Object.freeze({
   test: {
@@ -28,6 +49,21 @@ const creatures = Object.freeze({
       [AbilityScore.Constitution]: 0,
       [AbilityScore.Intelligence]: 0,
     },
+    intrinsicAbilities: [
+      {
+        name: "Taunt",
+        getDescription: () => "Taunts all enemies in the room.",
+        getCooldown: () => 1,
+        getTargetCount: () => 0,
+        canTarget: () => false,
+        activate: (creature) => {
+          return `${creature.name} taunts everyone in the room!`;
+        },
+      },
+      Abilities.attack("Slap", "Slap an enemy.", 2, 1, DamageType.Bludgeoning),
+    ],
+    tick: (creature, delta) =>
+      activateAbilityOnTick(creature, delta, selectRandomAbility),
   },
 } as Record<string, CreatureDefinition>);
 

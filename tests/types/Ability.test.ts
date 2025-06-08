@@ -1,4 +1,4 @@
-import { CanTarget } from "lib/types/Ability";
+import * as CanTarget from "lib/gamedata/CanTarget";
 import { CreatureInstance } from "lib/types/creature";
 
 describe("CanTarget", () => {

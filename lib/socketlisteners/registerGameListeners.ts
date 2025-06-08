@@ -7,6 +7,7 @@ import {
   TypedSocket,
   updateGameState,
 } from "lib/types/socketioserverutils";
+import { Targetable } from "lib/types/types";
 
 export default function registerGameListeners(socket: TypedSocket) {
   socket.on("requestGameState", () => {
@@ -57,7 +58,7 @@ export default function registerGameListeners(socket: TypedSocket) {
             }
           }
         })
-        .filter((t) => t !== undefined);
+        .filter((t) => t != undefined) as Targetable[];
 
       // Find source
       const source = abilities.find(

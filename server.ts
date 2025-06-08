@@ -1,17 +1,12 @@
 import { createServer } from "http";
 import { parse } from "url";
 import next from "next";
-import { Server } from "socket.io";
 import dotenv from "dotenv";
 import registerListeners from "lib/socketlisteners/registerListeners";
 import { getSingleton } from "lib/utils";
-import generateDungeon from "lib/dungeongeneration/generateDungeon";
 import { TypedServer } from "./lib/types/socketioserverutils";
-import rawLocations, { addRawLocations } from "lib/gamedata/rawLocations";
-import { Location } from "lib/types/Location";
-import locations from "lib/locations";
-import { DungeonLocation } from "lib/dungeongeneration/types";
 import { setupLocations } from "lib/startup";
+import { startTicking } from "lib/TickManager";
 
 dotenv.config();
 
@@ -54,3 +49,4 @@ io.listen(socketPort);
 console.log(`> Socket.io server listening at http://localhost:${socketPort}`);
 
 setupLocations();
+startTicking();
