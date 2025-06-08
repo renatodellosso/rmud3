@@ -1,13 +1,12 @@
+import { getIo } from "./ClientFriendlyIo";
 import { getSocket } from "./getSocketsByPlayerInstanceIds";
-import locations from "./locations";
 import { CreatureInstance } from "./types/creature";
-import { Location, LocationId } from "./types/Location";
+import { Location } from "./types/Location";
 import { PlayerInstance } from "./types/player";
 import {
   addMsgToSession,
-  sendMsgToRoom,
+  sendMsgToRoomServerOnly,
   sendMsgToSocket,
-  updateGameState,
 } from "./types/socketioserverutils";
 import { getFromOptionalFunc } from "./utils";
 
@@ -20,28 +19,23 @@ export function enterLocation(creature: CreatureInstance, location: Location) {
   creature.location = location.id;
 
   if (creature.definitionId === "player") {
-    const socket = getSocket(creature._id);
-    if (!socket) {
-      console.warn(
-        `No socket found for player ${creature.name} (${creature._id}). Cannot enter location.`
-      );
-      return;
-    }
+    const io = getIo();
+    const playerId = creature._id.toString();
 
-    socket.join(location.id);
+    io.joinRoom(location.id, playerId);
 
-    sendMsgToRoom(
+    io.sendMsgToRoom(
       location.name,
       `${creature.name} has entered ${location.name}.`
     ).then(() => {
       if (location.description) {
-        addMsgToSession(
-          socket.data.session!,
+        io.sendMsgToPlayer(
+          playerId,
           getFromOptionalFunc(location.description, creature as PlayerInstance)
         );
       }
 
-      updateGameState(socket);
+      io.updateGameState(playerId);
     });
   }
 }
@@ -53,20 +47,19 @@ export function exitLocation(creature: CreatureInstance, location: Location) {
 
   location.creatures.delete(creature);
 
+  const io = getIo();
+
   if (creature.definitionId === "player") {
-    const socket = getSocket(creature._id);
-    if (!socket) {
-      console.warn(
-        `No socket found for player ${creature.name} (${creature._id}). Cannot exit location.`
-      );
-      return;
-    }
+    io.leaveRoom(location.id, creature._id.toString());
 
-    socket.leave(location.id);
-
-    sendMsgToRoom(
-      location.name,
-      `${creature.name} has left ${location.name}.`
-    ).then(() => sendMsgToSocket(socket, `You have left ${location.name}.`));
+    io.sendMsgToPlayer(
+      creature._id.toString(),
+      `You have left ${location.name}.`
+    );
   }
+
+  io.sendMsgToRoom(
+    location.name,
+    `${creature.name} has left ${location.name}.`
+  );
 }

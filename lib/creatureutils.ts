@@ -1,16 +1,12 @@
 import locations from "./locations";
 import { enterLocation, exitLocation } from "./locationutils";
-import { savePlayer } from "./PlayerManager";
 import Ability, { AbilitySource, AbilityWithSource } from "./types/Ability";
 import { CreatureInstance } from "./types/creature";
 import { LocationId } from "./types/Location";
 import { PlayerInstance } from "./types/player";
-import {
-  sendMsgToRoom,
-  updateGameStateForRoom,
-} from "./types/socketioserverutils";
 import { Targetable } from "./types/types";
-import { getFromOptionalFunc } from "./utils";
+import { getFromOptionalFunc, savePlayer } from "./utils";
+import { getIo } from "./ClientFriendlyIo";
 
 export function moveCreature(
   creature: CreatureInstance,
@@ -58,8 +54,8 @@ export function activateAbility(
       getFromOptionalFunc(ability.getCooldown, creature, source)
   );
 
-  sendMsgToRoom(location.id, msg);
-  updateGameStateForRoom(location.id);
+  getIo().sendMsgToRoom(location.id, msg);
+  getIo().updateGameStateForRoom(location.id);
 }
 
 export function selectRandomAbility(

@@ -13,6 +13,8 @@ import { EJSON } from "bson";
 import Session from "./Session";
 import { PlayerInstance } from "./player";
 import { LocationId } from "./Location";
+import ClientFriendlyIo from "lib/ClientFriendlyIo";
+import getSocketsByPlayerInstanceIds from "lib/getSocketsByPlayerInstanceIds";
 
 export type TypedSocket = Socket<
   ClientToServerEvents,
@@ -43,7 +45,7 @@ export function addMsgToSession(session: Session, msg: string) {
   }
 }
 
-export async function sendMsgToRoom(roomId: string, msg: string) {
+export async function sendMsgToRoomServerOnly(roomId: string, msg: string) {
   const io = getIo();
   if (!io) return;
 
@@ -72,12 +74,14 @@ export function sendMsgToSocket(socket: TypedSocket, msg: string) {
     console.warn(
       `Socket ${socket.id} does not have a session. Message not added to session.`
     );
-    return;
+    return Promise.resolve();
   }
 
   addMsgToSession(socket.data.session, msg);
   socket.emit("addMessage", msg);
   console.log(`Message sent to player ${socket.id}: ${msg}`);
+
+  return Promise.resolve();
 }
 
 export function getExitData(locationId: LocationId): ExitData {
@@ -139,18 +143,124 @@ export function updateGameState(socket: TypedSocket) {
   };
 
   socket.emit("setGameState", EJSON.stringify(gameState));
+
+  return Promise.resolve();
 }
 
-export function updateGameStateForRoom(roomId: string) {
+export async function updateGameStateForRoom(roomId: string) {
   const io = getIo();
-  if (!io) return;
+  if (!io) return Promise.resolve();
 
   const room = io.to(roomId);
-  const sockets = room.fetchSockets();
+  const sockets = await room.fetchSockets();
 
-  sockets.then((sockets) => {
-    for (const socket of sockets) {
-      updateGameState(socket as any as TypedSocket);
+  return Promise.all(
+    sockets.map((s) => updateGameState(s as any as TypedSocket))
+  ).then(() => {});
+}
+
+export class Io implements ClientFriendlyIo {
+  sendMsgToRoom(room: string, msg: string) {
+    return sendMsgToRoomServerOnly(room, msg);
+  }
+
+  sendMsgToPlayer(playerId: string, msg: string) {
+    const socketMap = getSocketsByPlayerInstanceIds();
+    if (!socketMap) {
+      throw new Error("SocketsByPlayerInstanceIds not initialized");
     }
-  });
+
+    const socket = socketMap.get(playerId);
+
+    if (!socket) {
+      throw new Error(`Socket for player ${playerId} not found`);
+    }
+
+    return sendMsgToSocket(socket, msg);
+  }
+
+  updateGameState(playerId: string) {
+    const socketMap = getSocketsByPlayerInstanceIds();
+    if (!socketMap) {
+      throw new Error("SocketsByPlayerInstanceIds not initialized");
+    }
+
+    const socket = socketMap.get(playerId);
+
+    if (!socket) {
+      throw new Error(`Socket for player ${playerId} not found`);
+    }
+
+    return updateGameState(socket as any as TypedSocket);
+  }
+
+  updateGameStateForRoom(roomId: string) {
+    return updateGameStateForRoom(roomId);
+  }
+
+  joinRoom(roomId: string, playerId: string) {
+    const io = getIo();
+    if (!io) return Promise.resolve();
+
+    const socketMap = getSocketsByPlayerInstanceIds();
+    if (!socketMap) {
+      throw new Error("SocketsByPlayerInstanceIds not initialized");
+    }
+
+    const socketId = socketMap.get(playerId)?.id;
+    if (!socketId) {
+      console.warn(
+        `Socket for player ${playerId} not found. Cannot join room.`
+      );
+      return Promise.resolve();
+    }
+
+    const socket = io.sockets.sockets.get(socketId);
+    if (!socket) {
+      console.warn(`Socket ${socketId} not found. Cannot join room ${roomId}.`);
+      return Promise.resolve();
+    }
+
+    const result = socket.join(roomId);
+
+    if (result instanceof Promise) {
+      return result;
+    }
+
+    return Promise.resolve(result);
+  }
+
+  leaveRoom(roomId: string, playerId: string) {
+    const io = getIo();
+    if (!io) return Promise.resolve();
+
+    const socketMap = getSocketsByPlayerInstanceIds();
+    if (!socketMap) {
+      throw new Error("SocketsByPlayerInstanceIds not initialized");
+    }
+
+    const socketId = socketMap.get(playerId)?.id;
+    if (!socketId) {
+      console.warn(
+        `Socket for player ${playerId} not found. Cannot leave room.`
+      );
+      return Promise.resolve();
+    }
+
+    const socket = io.sockets.sockets.get(socketId);
+    if (!socket) {
+      console.warn(
+        `Socket ${socketId} not found. Cannot leave room ${roomId}.`
+      );
+      return Promise.resolve();
+    }
+
+    const result = socket.leave(roomId);
+
+    if (result instanceof Promise) {
+      return result;
+    }
+
+    return Promise.resolve(result);
+  }
 }

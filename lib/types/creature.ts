@@ -1,9 +1,10 @@
 import { ObjectId } from "bson";
 import creatures from "../gamedata/creatures";
 import { AbilityScore, DamageType } from "./types";
-import Ability, { AbilitySource, AbilityWithSource } from "./Ability";
+import Ability, { AbilityWithSource } from "./Ability";
 import { LocationId } from "./Location";
 import locations from "lib/locations";
+import { getIo } from "lib/ClientFriendlyIo";
 
 export type CreatureDefinition = {
   name: string;
@@ -79,9 +80,11 @@ export class CreatureInstance {
     return amount;
   }
 
-  die(instance: CreatureInstance) {
+  die() {
     const location = locations[this.location];
 
     location.creatures.delete(this);
+
+    getIo().sendMsgToRoom(location.id, `${this.name} has died.`);
   }
 }

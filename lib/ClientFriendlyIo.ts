@@ -1,0 +1,42 @@
+import { updateGameState, Io } from "./types/socketioserverutils";
+export default interface ClientFriendlyIo {
+  sendMsgToRoom(room: string, msg: string): Promise<void>;
+  sendMsgToPlayer(playerId: string, msg: string): Promise<void>;
+  updateGameState(playerId: string): Promise<void>;
+  updateGameStateForRoom(roomId: string): Promise<void>;
+  joinRoom(roomId: string, playerId: string): Promise<void>;
+  leaveRoom(roomId: string, playerId: string): Promise<void>;
+}
+
+export class DisabledIo implements ClientFriendlyIo {
+  sendMsgToRoom(room: string, msg: string): Promise<void> {
+    return Promise.resolve();
+  }
+  sendMsgToPlayer(playerId: string, msg: string): Promise<void> {
+    return Promise.resolve();
+  }
+  updateGameState(playerId: string): Promise<void> {
+    return Promise.resolve();
+  }
+  updateGameStateForRoom(roomId: string): Promise<void> {
+    return Promise.resolve();
+  }
+  joinRoom(roomId: string, playerId: string): Promise<void> {
+    return Promise.resolve();
+  }
+  leaveRoom(roomId: string, playerId: string): Promise<void> {
+    return Promise.resolve();
+  }
+}
+
+export function getIo(): ClientFriendlyIo {
+  if (typeof window === "undefined") {
+    // Server-side
+    const type = require("./types/socketioserverutils").Io;
+
+    return new type();
+  } else {
+    // Client-side
+    return new DisabledIo();
+  }
+}

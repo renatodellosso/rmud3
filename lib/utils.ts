@@ -1,4 +1,5 @@
 import { ItemInstance } from "./types/item";
+import { PlayerInstance } from "./types/player";
 import { OptionalFunc, Targetable } from "./types/types";
 
 /**
@@ -161,4 +162,19 @@ export function getTargetId(target: Targetable): string {
   }
 
   throw new Error(`Cannot get target ID from target: ${target}`);
+}
+
+export function importOnlyOnServer<T extends object>(filePath: string, obj: T) {
+  if (typeof window !== "undefined") {
+    return;
+  }
+
+  import(filePath).then((module) => {
+    Object.assign(obj, module);
+  });
+}
+
+export function savePlayer(player: PlayerInstance) {
+  if (typeof window === "undefined")
+    require("./PlayerManager").savePlayerServerOnly(player);
 }

@@ -112,7 +112,7 @@ export function spawnPlayer(
   enterLocation(instance, locations[instance.location]);
 }
 
-export async function savePlayer(instance: PlayerInstance) {
+export async function savePlayerServerOnly(instance: PlayerInstance) {
   console.log(
     `Saving player instance with ID ${instance._id} and progress ID ${instance.progressId}`
   );

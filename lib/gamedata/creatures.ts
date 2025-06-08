@@ -1,27 +1,8 @@
 import { AbilityScore, DamageType } from "lib/types/types";
-import { CreatureDefinition, CreatureInstance } from "../types/creature";
-import { AbilityWithSource } from "lib/types/Ability";
+import { CreatureDefinition } from "../types/creature";
 import * as Abilities from "lib/gamedata/Abilities";
 import * as CanTarget from "lib/gamedata/CanTarget";
-
-// Only import on server side
-let activateAbilityOnTick: (
-    instance: CreatureInstance,
-    deltaTime: number,
-    abilitySelector: (
-      creature: CreatureInstance
-    ) => AbilityWithSource | undefined,
-    skipIfLocationIsEmpty?: boolean
-  ) => void,
-  selectRandomAbility: (
-    creature: CreatureInstance
-  ) => AbilityWithSource | undefined;
-
-if (typeof window === "undefined")
-  import("lib/creatureutils").then((creatureutils) => {
-    activateAbilityOnTick = creatureutils.activateAbilityOnTick;
-    selectRandomAbility = creatureutils.selectRandomAbility;
-  });
+import { activateAbilityOnTick, selectRandomAbility } from "lib/creatureutils";
 
 const creatures = Object.freeze({
   test: {
