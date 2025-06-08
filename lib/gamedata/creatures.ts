@@ -2,6 +2,7 @@ import { AbilityScore, DamageType } from "lib/types/types";
 import { CreatureDefinition, CreatureInstance } from "../types/creature";
 import { AbilityWithSource } from "lib/types/Ability";
 import * as Abilities from "lib/gamedata/Abilities";
+import * as CanTarget from "lib/gamedata/CanTarget";
 
 // Only import on server side
 let activateAbilityOnTick: (
@@ -60,7 +61,9 @@ const creatures = Object.freeze({
           return `${creature.name} taunts everyone in the room!`;
         },
       },
-      Abilities.attack("Slap", "Slap an enemy.", 2, 1, DamageType.Bludgeoning),
+      Abilities.attack("Slap", "Slap an enemy.", 2, 1, DamageType.Bludgeoning, [
+        CanTarget.isPlayer,
+      ]),
     ],
     tick: (creature, delta) =>
       activateAbilityOnTick(creature, delta, selectRandomAbility),

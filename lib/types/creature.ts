@@ -3,6 +3,7 @@ import creatures from "../gamedata/creatures";
 import { AbilityScore, DamageType } from "./types";
 import Ability, { AbilitySource, AbilityWithSource } from "./Ability";
 import { LocationId } from "./Location";
+import locations from "lib/locations";
 
 export type CreatureDefinition = {
   name: string;
@@ -76,5 +77,11 @@ export class CreatureInstance {
     this.health -= amount;
 
     return amount;
+  }
+
+  die(instance: CreatureInstance) {
+    const location = locations[this.location];
+
+    location.creatures.delete(this);
   }
 }

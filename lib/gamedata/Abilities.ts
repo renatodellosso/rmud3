@@ -8,14 +8,22 @@ export function attack(
   getDescription: OptionalFunc<string, CreatureInstance>,
   getCooldown: OptionalFunc<number, CreatureInstance>,
   damage: number,
-  damageType: DamageType
+  damageType: DamageType,
+  targetRestrictions?: ((
+    creature: CreatureInstance,
+    target: Targetable
+  ) => boolean)[]
 ): Ability {
   return {
     name,
     getDescription,
     getCooldown,
     getTargetCount: 1,
-    canTarget: CanTarget.and(CanTarget.notSelf, CanTarget.isCreature),
+    canTarget: CanTarget.and(
+      CanTarget.notSelf,
+      CanTarget.isCreature,
+      ...(targetRestrictions ?? [])
+    ),
     activate: (creature: CreatureInstance, targets: Targetable[]) => {
       if (targets.length !== 1) {
         throw new Error(

@@ -28,3 +28,13 @@ export function isCreature(
 ): boolean {
   return "definitionId" in target && "health" in target;
 }
+
+export function isPlayer(
+  creature: CreatureInstance,
+  target: Targetable
+): boolean {
+  return (
+    isCreature(creature, target) &&
+    (target as CreatureInstance).definitionId === "player"
+  );
+}
