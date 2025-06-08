@@ -2,7 +2,6 @@ import { PlayerInstance, PlayerProgress } from "./types/player";
 import { ObjectId } from "bson";
 import { getSingleton, restoreFieldsAndMethods } from "./utils";
 import locations from "./locations";
-import { enterLocation } from "./locationutils";
 import getCollectionManager from "./getCollectionManager";
 import CollectionId from "./types/CollectionId";
 import { getMongoClient } from "./getMongoClient";
@@ -109,7 +108,7 @@ export function spawnPlayer(
     instance.location = "dungeon-entrance";
   }
 
-  enterLocation(instance, locations[instance.location]);
+  locations[instance.location].enter(instance);
 }
 
 export async function savePlayerServerOnly(instance: PlayerInstance) {

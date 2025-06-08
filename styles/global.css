@@ -108,3 +108,7 @@ input {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.flash-border {
+  transition: border-color 0.15s ease-out;
+}

@@ -4,6 +4,7 @@ import Inventory, { DirectInventory } from "./Inventory";
 import {
   AbilityScore,
   CannotDirectlyCreateInstanceError,
+  DamageType,
   OmitType,
   PlayerSave,
 } from "./types";
@@ -12,6 +13,8 @@ import Ability, { AbilitySource, AbilityWithSource } from "./Ability";
 import items from "lib/gamedata/items";
 import { ConsumableHotbar, EquipmentHotbar } from "./Hotbar";
 import { getFromOptionalFunc, restoreFieldsAndMethods } from "lib/utils";
+import locations from "lib/locations";
+import { getIo } from "lib/ClientFriendlyIo";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -75,6 +78,20 @@ export class PlayerInstance extends CreatureInstance {
       );
     }
     return abilities;
+  }
+
+  takeDamage(amount: number, type: DamageType): number {
+    const damageTaken = super.takeDamage(amount, type);
+
+    getIo().emit(this._id.toString(), "tookDamage", damageTaken);
+
+    return damageTaken;
+  }
+
+  die(): void {
+    super.die();
+
+    locations["docks"].enter(this);
   }
 }
 

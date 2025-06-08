@@ -82,7 +82,6 @@ export class CreatureInstance {
 
   die() {
     const location = locations[this.location];
-
     location.creatures.delete(this);
 
     getIo().sendMsgToRoom(location.id, `${this.name} has died.`);

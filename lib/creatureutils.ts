@@ -1,5 +1,4 @@
 import locations from "./locations";
-import { enterLocation, exitLocation } from "./locationutils";
 import Ability, { AbilitySource, AbilityWithSource } from "./types/Ability";
 import { CreatureInstance } from "./types/creature";
 import { LocationId } from "./types/Location";
@@ -23,9 +22,9 @@ export function moveCreature(
     );
   }
 
-  exitLocation(creature, currentLocation);
+  currentLocation.exit(creature);
   const newLocation = locations[newLocationId];
-  enterLocation(creature, newLocation);
+  newLocation.enter(creature);
 
   if (creature.definitionId === "player") {
     savePlayer(creature as PlayerInstance);

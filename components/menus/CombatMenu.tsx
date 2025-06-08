@@ -83,8 +83,6 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
     return () => clearInterval(interval);
   }, [gameState]);
 
-  console.log(gameState);
-
   return (
     <div key="CombatMenu" className="border w-1/4 flex flex-col gap-2">
       <h2 className="text-xl">Combat</h2>

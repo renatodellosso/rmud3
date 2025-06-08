@@ -54,7 +54,7 @@ export type ExitData = {
 export type GameState = {
   self: PlayerInstance;
   progress: PlayerProgress;
-  location: Omit<Location, "creatures" | "exits"> & {
+  location: OmitType<Omit<Location, "creatures" | "exits">, Function> & {
     creatures: CreatureInstance[];
     exits: ExitData[];
   };

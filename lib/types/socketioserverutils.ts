@@ -30,7 +30,7 @@ export class TypedServer extends Server<
   SocketData
 > {}
 
-export function getIo() {
+export function getRawIoSingleton() {
   return getSingleton<TypedServer>("io");
 }
 
@@ -46,7 +46,7 @@ export function addMsgToSession(session: Session, msg: string) {
 }
 
 export async function sendMsgToRoomServerOnly(roomId: string, msg: string) {
-  const io = getIo();
+  const io = getRawIoSingleton();
   if (!io) return;
 
   const room = io.to(roomId);
@@ -148,7 +148,7 @@ export function updateGameState(socket: TypedSocket) {
 }
 
 export async function updateGameStateForRoom(roomId: string) {
-  const io = getIo();
+  const io = getRawIoSingleton();
   if (!io) return Promise.resolve();
 
   const room = io.to(roomId);
@@ -199,7 +199,7 @@ export class Io implements ClientFriendlyIo {
   }
 
   joinRoom(roomId: string, playerId: string) {
-    const io = getIo();
+    const io = getRawIoSingleton();
     if (!io) return Promise.resolve();
 
     const socketMap = getSocketsByPlayerInstanceIds();
@@ -231,7 +231,7 @@ export class Io implements ClientFriendlyIo {
   }
 
   leaveRoom(roomId: string, playerId: string) {
-    const io = getIo();
+    const io = getRawIoSingleton();
     if (!io) return Promise.resolve();
 
     const socketMap = getSocketsByPlayerInstanceIds();
@@ -262,5 +262,21 @@ export class Io implements ClientFriendlyIo {
     }
 
     return Promise.resolve(result);
+  }
+
+  emit(playerId: string, event: keyof ServerToClientEvents, ...args: any[]) {
+    const socketMap = getSocketsByPlayerInstanceIds();
+    if (!socketMap) {
+      throw new Error("SocketsByPlayerInstanceIds not initialized");
+    }
+
+    const socket = socketMap.get(playerId);
+
+    if (!socket) {
+      throw new Error(`Socket for player ${playerId} not found`);
+    }
+
+    socket.emit(event, ...args as any);
+    return Promise.resolve();
   }
 }
