@@ -18,9 +18,9 @@ const creatures = Object.freeze({
     name: "Player",
     health: 10,
     abilityScores: {
-      [AbilityScore.Strength]: 10,
-      [AbilityScore.Constitution]: 10,
-      [AbilityScore.Intelligence]: 10,
+      [AbilityScore.Strength]: 0,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 0,
     },
   },
   trainingDummy: {

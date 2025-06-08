@@ -92,12 +92,7 @@ export class PlayerInstance extends CreatureInstance {
   die(): void {
     super.die();
 
-    locations["docks"].enter(this);
-
-    const io = getIo();
-    io.emit(this._id.toString(), "died");
-    io.clearMessages(this._id.toString());
-    io.updateGameState(this._id.toString());
+    respawn(this);
   }
 }
 
@@ -149,4 +144,17 @@ export function getDefaultPlayerAndProgress(): PlayerSave {
     instance: instance as PlayerInstance,
     progress,
   };
+}
+
+function respawn(player: PlayerInstance) {
+  const io = getIo();
+
+  io.emit(player._id.toString(), "died");
+
+  setTimeout(() => {
+    io.clearMessages(player._id.toString());
+    player.health = player.getMaxHealth();
+    locations["docks"].enter(player);
+    io.updateGameState(player._id.toString());
+  }, 1250);
 }
