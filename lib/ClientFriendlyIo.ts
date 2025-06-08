@@ -12,6 +12,7 @@ export default interface ClientFriendlyIo {
     event: keyof ServerToClientEvents,
     ...args: any[]
   ): Promise<void>;
+  clearMessages(playerId: string): Promise<void>;
 }
 
 export class DisabledIo implements ClientFriendlyIo {
@@ -38,6 +39,9 @@ export class DisabledIo implements ClientFriendlyIo {
     event: keyof ServerToClientEvents,
     ...args: any[]
   ): Promise<void> {
+    return Promise.resolve();
+  }
+  clearMessages(playerId: string): Promise<void> {
     return Promise.resolve();
   }
 }

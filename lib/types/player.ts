@@ -83,7 +83,8 @@ export class PlayerInstance extends CreatureInstance {
   takeDamage(amount: number, type: DamageType): number {
     const damageTaken = super.takeDamage(amount, type);
 
-    getIo().emit(this._id.toString(), "tookDamage", damageTaken);
+    if (this.health > 0 && damageTaken > 0)
+      getIo().emit(this._id.toString(), "tookDamage", damageTaken);
 
     return damageTaken;
   }
@@ -92,6 +93,11 @@ export class PlayerInstance extends CreatureInstance {
     super.die();
 
     locations["docks"].enter(this);
+
+    const io = getIo();
+    io.emit(this._id.toString(), "died");
+    io.clearMessages(this._id.toString());
+    io.updateGameState(this._id.toString());
   }
 }
 

@@ -77,6 +77,10 @@ export class CreatureInstance {
 
     this.health -= amount;
 
+    if (this.health <= 0) {
+      this.die();
+    }
+
     return amount;
   }
 

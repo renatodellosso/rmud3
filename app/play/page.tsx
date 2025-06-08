@@ -3,7 +3,7 @@
 import CombatMenu from "@/components/menus/CombatMenu";
 import PlayerInfoMenu from "@/components/menus/PlayerInfoMenu";
 import PrimaryMenu from "@/components/menus/PrimaryMenu";
-import useFlashOnDamage from "lib/hooks/useFlashOnDamage";
+import useAnimations from "lib/hooks/useAnimations";
 import useGameState from "lib/hooks/useGameState";
 import useRedirectIfSessionIdIsNotPresent from "lib/hooks/useRedirectIfSessionIdIsNotPresent";
 import React from "react";
@@ -24,7 +24,7 @@ function LoadingGameState() {
 export default function Play() {
   useRedirectIfSessionIdIsNotPresent();
   const gameState = useGameState();
-  useFlashOnDamage();
+  useAnimations();
 
   const [openMenus, setOpenMenus] = React.useState<Menu[]>([]);
 

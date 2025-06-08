@@ -7,6 +7,7 @@ export interface ServerToClientEvents {
   setGameState: (gameState: SerializedEJSON<GameState>) => void;
   addMessage: (message: string) => void;
   tookDamage: (amount: number) => void;
+  died: () => void;
 }
 
 export interface ClientToServerEvents {

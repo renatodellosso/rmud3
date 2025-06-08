@@ -109,6 +109,10 @@ input {
   background: #555;
 }
 
-.flash-border {
+.damage-animation {
   transition: border-color 0.15s ease-out;
+}
+
+.death-animation {
+  transition: opacity 2.5s ease-in-out;
 }
