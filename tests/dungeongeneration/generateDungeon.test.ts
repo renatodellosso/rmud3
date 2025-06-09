@@ -1,7 +1,7 @@
 import floors from "lib/dungeongeneration/Floors";
-import generateDungeon, {
+import generateDungeonLayout, {
   expand2DArray,
-} from "lib/dungeongeneration/generateDungeon";
+} from "lib/dungeongeneration/generateDungeonLayout";
 import {
   Dungeon,
   DungeonLocation,
@@ -12,7 +12,7 @@ import {
   getCoordsFromId,
 } from "lib/dungeongeneration/utils";
 
-describe(generateDungeon.name, () => {
+describe(generateDungeonLayout.name, () => {
   const TRIALS = 1000;
   const ROOM_COUNT = [5, 100];
   const REACHABLE_ROOM_PERCENTAGE = 0.5;
@@ -44,7 +44,7 @@ describe(generateDungeon.name, () => {
   }
 
   testRepeated("should generate a dungeon with a floor for every depth", () => {
-    const dungeon = breakCirclularRefs(generateDungeon());
+    const dungeon = breakCirclularRefs(generateDungeonLayout());
 
     expect(dungeon.floors.length).toBeGreaterThan(0);
 
@@ -65,7 +65,7 @@ describe(generateDungeon.name, () => {
   });
 
   testRepeated("should generate floors with valid definitions", () => {
-    const dungeon = breakCirclularRefs(generateDungeon());
+    const dungeon = breakCirclularRefs(generateDungeonLayout());
     for (const floor of dungeon.floors) {
       expect(floor.definition).toBeDefined();
       expect(floors[floorDefinitionToId(floor.definition)]).toBeDefined();
@@ -73,9 +73,9 @@ describe(generateDungeon.name, () => {
   });
 
   testRepeated("should floors with valid numbers of locations", () => {
-    const dungeon = breakCirclularRefs(generateDungeon());
+    const dungeon = breakCirclularRefs(generateDungeonLayout());
     for (const floor of dungeon.floors) {
-      const range = floor.definition.generationOptions.roomCount;
+      const range = floor.definition.layoutGenerationOptions.roomCount;
 
       expect(floor.locations.length).toBeGreaterThanOrEqual(
         Math.min(range[0], ROOM_COUNT[0])
@@ -87,7 +87,7 @@ describe(generateDungeon.name, () => {
   });
 
   testRepeated("should generate floors with valid locations", () => {
-    const dungeon = breakCirclularRefs(generateDungeon());
+    const dungeon = breakCirclularRefs(generateDungeonLayout());
     for (const floor of dungeon.floors) {
       expect(floor.locations.length).toBeGreaterThan(0);
       for (const row of floor.locations) {
@@ -107,7 +107,7 @@ describe(generateDungeon.name, () => {
   });
 
   testRepeated("should generate rooms with only adjacent exits", () => {
-    const dungeon = breakCirclularRefs(generateDungeon());
+    const dungeon = breakCirclularRefs(generateDungeonLayout());
 
     for (const floor of dungeon.floors) {
       for (const row of floor.locations) {
@@ -135,7 +135,7 @@ describe(generateDungeon.name, () => {
   });
 
   testRepeated("most rooms are reachable", () => {
-    const dungeon = breakCirclularRefs(generateDungeon());
+    const dungeon = breakCirclularRefs(generateDungeonLayout());
 
     const rooms: Record<string, DungeonLocation> = {};
 
@@ -180,7 +180,7 @@ describe(generateDungeon.name, () => {
   });
 
   testRepeated("all floors are reachable", () => {
-    const dungeon = breakCirclularRefs(generateDungeon());
+    const dungeon = breakCirclularRefs(generateDungeonLayout());
 
     const floorsSet = new Set<number>();
     const visitedFloors = new Set<number>();

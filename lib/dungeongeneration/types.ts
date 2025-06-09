@@ -1,5 +1,6 @@
-import { Range, Point } from "../types/types";
+import { Range, Point, WeightedTable } from "../types/types";
 import { Location, LocationId } from "../types/Location";
+import creatures from "lib/gamedata/creatures";
 
 export type Dungeon = {
   locations: (DungeonLocation | undefined)[][][];
@@ -26,21 +27,27 @@ export type FloorDefinition = {
    * Higher values mean more likely.
    */
   appearanceWeight: number;
-  generationOptions: FloorGenerationOptions;
   /**
    * How likely a second floor is to be generated on the same depth.
    */
   blendChance: number;
   visualizerColor: string;
+  layoutGenerationOptions: FloorLayoutGenerationOptions;
+  populationOptions: FloorPopulationOptions;
 };
 
-export type FloorGenerationOptions = {
+export type FloorLayoutGenerationOptions = {
   roomChance: number;
   connectionChance: number;
   width: Range;
   length: Range;
   roomCount: Range;
   exitCount: Range;
+};
+
+export type FloorPopulationOptions = {
+  encounterChance: number;
+  encounters: WeightedTable<Encounter>;
 };
 
 export class DungeonLocation extends Location {
@@ -67,3 +74,10 @@ export class MissingRoomsError extends Error {
     this.name = "MissingRoomsError";
   }
 }
+
+export type Encounter =
+  | {
+      creature: keyof typeof creatures;
+      amount: Range | number;
+    }[]
+  | keyof typeof creatures;

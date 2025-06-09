@@ -2,8 +2,9 @@
 
 import { Dungeon } from "lib/dungeongeneration/types";
 import { useEffect, useRef, useState } from "react";
-import generateDungeon from "lib/dungeongeneration/generateDungeon";
+import generateDungeonLayout from "lib/dungeongeneration/generateDungeonLayout";
 import { getCoordsFromId as getCoordsFromLocationId } from "lib/dungeongeneration/utils";
+import generateDungeon from "lib/dungeongeneration/generateDungeon";
 
 export default function DungeonVis() {
   const [dungeon, setDungeon] = useState<Dungeon>();
@@ -13,6 +14,7 @@ export default function DungeonVis() {
 
   useEffect(() => {
     const dungeon = generateDungeon();
+    console.log("Generated Dungeon:", dungeon);
     setDungeon(dungeon);
   }, []);
 
@@ -47,7 +49,11 @@ export default function DungeonVis() {
         if (!room) return; // Skip if room is undefined
 
         ctx.fillStyle = "black";
-        ctx.fillText(room.name, x, y + roomHeight / 2);
+        ctx.fillText(
+          `(${room.creatures.size}) ${room.name}`,
+          x,
+          y + roomHeight / 2
+        );
 
         // Draw connections
         for (const exit of Array.from(room.exits)) {
@@ -124,7 +130,7 @@ export default function DungeonVis() {
   return (
     <div>
       <h1 className="text-xl">Dungeon Visualization</h1>
-      <button onClick={() => setDungeon(generateDungeon())}>
+      <button onClick={() => setDungeon(generateDungeonLayout())}>
         Regenerate Dungeon
       </button>
       <div>

@@ -1,4 +1,5 @@
-import { FloorDefinition } from "./types";
+import { WeightedTable } from "lib/types/types";
+import { Encounter, FloorDefinition } from "./types";
 
 const floors: Record<string, FloorDefinition> = {
   sewers: {
@@ -7,13 +8,38 @@ const floors: Record<string, FloorDefinition> = {
     appearanceWeight: 1,
     blendChance: 0,
     visualizerColor: "#2F4F4F",
-    generationOptions: {
+    layoutGenerationOptions: {
       roomChance: 0.5,
       connectionChance: 0.3,
       width: [10, 15],
       length: [10, 15],
       roomCount: [15, 30],
       exitCount: [2, 3],
+    },
+    populationOptions: {
+      encounterChance: 0.6,
+      encounters: new WeightedTable<Encounter>([
+        {
+          item: "skeleton",
+          amount: [1, 3],
+          weight: 1,
+        },
+        {
+          item: "zombie",
+          amount: 1,
+          weight: 0.8,
+        },
+        {
+          item: [
+            {
+              creature: "zombie",
+              amount: [1, 2],
+            },
+          ],
+          amount: [1, 2],
+          weight: 0.2,
+        },
+      ]),
     },
   },
   catacombs: {
@@ -22,13 +48,17 @@ const floors: Record<string, FloorDefinition> = {
     appearanceWeight: 1.5,
     blendChance: 0.4,
     visualizerColor: "#8B4513",
-    generationOptions: {
+    layoutGenerationOptions: {
       roomChance: 0.6,
       connectionChance: 0.4,
       width: [6, 12],
       length: [6, 12],
       roomCount: [20, 40],
       exitCount: [3, 4],
+    },
+    populationOptions: {
+      encounterChance: 0,
+      encounters: new WeightedTable([]),
     },
   },
   caves: {
@@ -37,13 +67,17 @@ const floors: Record<string, FloorDefinition> = {
     appearanceWeight: 1,
     blendChance: 0.4,
     visualizerColor: "#4682B4",
-    generationOptions: {
+    layoutGenerationOptions: {
       roomChance: 0.7,
       connectionChance: 0.5,
       width: [8, 14],
       length: [8, 14],
       roomCount: [25, 50],
       exitCount: [4, 5],
+    },
+    populationOptions: {
+      encounterChance: 0,
+      encounters: new WeightedTable([]),
     },
   },
   fungalCaverns: {
@@ -52,13 +86,17 @@ const floors: Record<string, FloorDefinition> = {
     appearanceWeight: 1.2,
     blendChance: 0.3,
     visualizerColor: "#228B22",
-    generationOptions: {
+    layoutGenerationOptions: {
       roomChance: 0.8,
       connectionChance: 0.6,
       width: [12, 18],
       length: [12, 18],
       roomCount: [30, 60],
       exitCount: [5, 6],
+    },
+    populationOptions: {
+      encounterChance: 0,
+      encounters: new WeightedTable([]),
     },
   },
   mines: {
@@ -67,13 +105,17 @@ const floors: Record<string, FloorDefinition> = {
     appearanceWeight: 1.6,
     blendChance: 0.5,
     visualizerColor: "#A9A9A9",
-    generationOptions: {
+    layoutGenerationOptions: {
       roomChance: 0.6,
       connectionChance: 0.4,
       width: [10, 16],
       length: [10, 16],
       roomCount: [20, 40],
       exitCount: [3, 4],
+    },
+    populationOptions: {
+      encounterChance: 0,
+      encounters: new WeightedTable([]),
     },
   },
   ruins: {
@@ -82,13 +124,17 @@ const floors: Record<string, FloorDefinition> = {
     appearanceWeight: 1.1,
     blendChance: 0.2,
     visualizerColor: "#B8860B",
-    generationOptions: {
+    layoutGenerationOptions: {
       roomChance: 0.5,
       connectionChance: 0.3,
       width: [14, 20],
       length: [14, 20],
       roomCount: [35, 70],
       exitCount: [6, 7],
+    },
+    populationOptions: {
+      encounterChance: 0,
+      encounters: new WeightedTable([]),
     },
   },
 };
