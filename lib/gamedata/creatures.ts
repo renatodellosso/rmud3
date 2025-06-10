@@ -16,7 +16,7 @@ const creatures = Object.freeze({
   },
   player: {
     name: "Player",
-    health: 10,
+    health: 20,
     abilityScores: {
       [AbilityScore.Strength]: 0,
       [AbilityScore.Constitution]: 0,

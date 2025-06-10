@@ -1,6 +1,7 @@
 "use client";
 
 import CombatMenu from "@/components/menus/CombatMenu";
+import LocationMenu from "@/components/menus/LocationMenu";
 import PlayerInfoMenu from "@/components/menus/PlayerInfoMenu";
 import PrimaryMenu from "@/components/menus/PrimaryMenu";
 import useAnimations from "lib/hooks/useAnimations";
@@ -11,6 +12,7 @@ import React from "react";
 enum Menu {
   PlayerInfo = "Player Info",
   Combat = "Combat",
+  Location = "Location",
 }
 
 function LoadingGameState() {
@@ -56,6 +58,9 @@ export default function Play() {
         )}
         {openMenus.includes(Menu.Combat) && (
           <CombatMenu gameState={gameState} />
+        )}
+        {openMenus.includes(Menu.Location) && (
+          <LocationMenu gameState={gameState} />
         )}
       </div>
     </div>

@@ -15,7 +15,7 @@ export default function PrimaryActionBar({
       {actions.map((action, index) => (
         <button
           key={index}
-          className="grow px-2 py-1"
+          className="grow text-wrap"
           onClick={() => {
             action.action();
           }}
