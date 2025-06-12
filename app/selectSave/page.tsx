@@ -80,7 +80,7 @@ export default function SelectSave() {
             onChange={(e) => setSaveName(e.target.value)}
             className="w-full mt-6"
           />
-          <button onClick={createNewSave} className="w-full mt-6">
+          <button onClick={createNewSave} className="w-full">
             Create New Save
           </button>
           {error && <p className="text-red-500">{error}</p>}
