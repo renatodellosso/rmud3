@@ -31,7 +31,7 @@ export interface ClientToServerEvents {
     callback: (success: boolean) => void
   ) => void;
   getSaves: (callback: (saves: SerializedEJSON<PlayerSave[]>) => void) => void;
-  createNewSave: () => void;
+  createNewSave: (saveName: string) => void;
   selectSave: (progressId: string) => void;
   requestGameState: () => void;
   move: (newLocationId: LocationId) => void;

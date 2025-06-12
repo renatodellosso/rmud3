@@ -15,7 +15,7 @@ function PlayerSaveCard({ save }: { save: PlayerSave }) {
 
   return (
     <button onClick={selectSave} className="w-full">
-      Save: {save.instance.name}
+      {save.instance.saveName}
     </button>
   );
 }
@@ -23,6 +23,9 @@ function PlayerSaveCard({ save }: { save: PlayerSave }) {
 export default function SelectSave() {
   useRedirectIfSessionIdIsNotPresent();
   const [saves, setSaves] = useState<PlayerSave[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [saveName, setSaveName] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const sessionId = localStorage.getItem("sessionId");
@@ -45,7 +48,15 @@ export default function SelectSave() {
   }, []);
 
   function createNewSave() {
-    socket.emit("createNewSave");
+    if (typeof saveName !== "string") {
+      setError("Save name must be a string");
+      return;
+    }
+
+    setSubmitting(true);
+    setError("");
+
+    socket.emit("createNewSave", saveName);
     location.href = "/play";
   }
 
@@ -60,9 +71,19 @@ export default function SelectSave() {
           {saves.map((save) => (
             <PlayerSaveCard key={save.instance._id.toString()} save={save} />
           ))}
+          <input
+            type="text"
+            name="save name"
+            placeholder="New Save Name"
+            disabled={submitting}
+            value={saveName}
+            onChange={(e) => setSaveName(e.target.value)}
+            className="w-full mt-6"
+          />
           <button onClick={createNewSave} className="w-full mt-6">
-            New Save
+            Create New Save
           </button>
+          {error && <p className="text-red-500">{error}</p>}
         </div>
       </div>
     </div>

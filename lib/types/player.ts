@@ -21,6 +21,8 @@ export class PlayerInstance extends CreatureInstance {
 
   definitionId: "player" = "player";
 
+  saveName: string = undefined as unknown as string;
+
   abilityScores: { [score in AbilityScore]: number } = {
     [AbilityScore.Strength]: 0,
     [AbilityScore.Constitution]: 0,
@@ -109,6 +111,7 @@ export function getDefaultPlayerAndProgress(): PlayerSave {
   const instance: PlayerInstance = {
     _id: new ObjectId(),
     name: "Player",
+    saveName: "save",
     location: "docks",
     progressId: new ObjectId(),
     definitionId: "player",

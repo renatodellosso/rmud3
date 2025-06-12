@@ -100,7 +100,7 @@ export default function registerSaveListeners(socket: TypedSocket) {
     callback(EJSON.stringify(saves));
   });
 
-  socket.on("createNewSave", async () => {
+  socket.on("createNewSave", async (saveName) => {
     if (!socket.data.session) {
       console.error("No session set for socket");
       return;
@@ -134,6 +134,7 @@ export default function registerSaveListeners(socket: TypedSocket) {
 
     const { instance, progress } = getDefaultPlayerAndProgress();
     instance.name = account!.username;
+    instance.saveName = saveName;
 
     instancesCollection.upsert(instance);
     progressesCollection.upsert(progress);
