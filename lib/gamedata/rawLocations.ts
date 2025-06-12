@@ -30,7 +30,7 @@ const rawLocations: Partial<OmitType<Location, Function>>[] = [
     name: "Training Ground",
     description:
       "You are in what might generously be called a training ground. A worn out straw dummy sulks in the corner.",
-    exits: new Set<LocationId>(["town-square"]),
+    exits: new Set<LocationId>(["dungeon-entrance"]),
     creatures: new Set<CreatureInstance>([
       new CreatureInstance("trainingDummy", "training-ground"),
     ]),
