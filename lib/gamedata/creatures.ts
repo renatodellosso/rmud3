@@ -42,7 +42,7 @@ const creatures = Object.freeze({
           return `${creature.name} taunts everyone in the room!`;
         },
       },
-      Abilities.attack("Slap", "Slap an enemy.", 2, 1, DamageType.Bludgeoning, [
+      Abilities.attack("Slap", "Slap an enemy.", 0.5, 10, DamageType.Bludgeoning, [
         CanTarget.isPlayer,
       ]),
     ],
