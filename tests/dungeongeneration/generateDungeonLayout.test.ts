@@ -222,6 +222,20 @@ describe(generateDungeonLayout.name, () => {
     expect(visitedFloors.size).toBe(floorsSet.size);
     expect(visitedFloors).toEqual(floorsSet);
   });
+
+  testRepeated("No room exits to itself", () => {
+    const dungeon = breakCirclularRefs(generateDungeonLayout());
+
+    for (const floor of dungeon.floors) {
+      for (const row of floor.locations) {
+        for (const location of row) {
+          if (location) {
+            expect(location.exits.has(location.id)).toBe(false);
+          }
+        }
+      }
+    }
+  });
 });
 
 describe(expand2DArray.name, () => {
