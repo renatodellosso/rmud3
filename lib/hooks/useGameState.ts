@@ -20,7 +20,7 @@ export default function useGameState(): GameState | undefined {
       const parsedGameState: GameState = EJSON.parse(newGameState);
 
       restoreFieldsAndMethods(parsedGameState.self, new PlayerInstance());
-      for (const creature of parsedGameState.location.creatures) {
+      for (const creature of parsedGameState.location.entities) {
         restoreFieldsAndMethods(
           creature,
           creature.definitionId === "player"

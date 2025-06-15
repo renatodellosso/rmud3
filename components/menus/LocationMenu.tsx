@@ -6,11 +6,16 @@ export default function LocationMenu({ gameState }: { gameState: GameState }) {
     <div key="Location" className="border w-1/6 flex flex-col gap-2">
       <h1 className="text-xl">{gameState.location.name}</h1>
       <div>
-        <h2 className="text-lg">Creatures</h2>
+        <h2 className="text-lg">Entities</h2>
         <ul>
-          {gameState.location.creatures.map((creature) => (
-            <li key={creature._id.toString()}>
-              {creature.name} ({creature.health}/{creature.getMaxHealth()})
+          {gameState.location.entities.map((entity) => (
+            <li key={entity._id.toString()}>
+              {entity.name}{" "}
+              {"health" in entity && "getMaxHealth" in entity && (
+                <>
+                  ({entity.health}/{(entity.getMaxHealth as () => number)()})
+                </>
+              )}
             </li>
           ))}
         </ul>

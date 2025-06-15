@@ -1,60 +1,46 @@
 import { ObjectId } from "bson";
-import creatures from "../gamedata/creatures";
-import { AbilityScore, DamageType } from "./types";
-import Ability, { AbilityWithSource } from "./Ability";
+import entities from "../gamedata/entities";
+import { AbilityScore, DamageType, Targetable } from "./types";
+import Ability, { AbilitySource, AbilityWithSource } from "./Ability";
 import { LocationId } from "./Location";
 import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";
+import { EntityDefinition, EntityInstance } from "./entity";
+import { getFromOptionalFunc } from "lib/utils";
 
-export type CreatureDefinition = {
-  name: string;
-
+export type CreatureDefinition = EntityDefinition & {
   health: number;
   abilityScores: { [score in AbilityScore]: number };
   intrinsicAbilities?: Ability[];
-  /**
-   * @param deltaTime in seconds
-   */
-  tick?: (creature: CreatureInstance, deltaTime: number) => void;
 };
 
-export class CreatureInstance {
-  _id: ObjectId = new ObjectId();
-
-  definitionId: keyof typeof creatures =
-    undefined as unknown as keyof typeof creatures;
-
-  name: string = undefined as unknown as string;
-  location: LocationId = undefined as unknown as LocationId;
-
+export class CreatureInstance extends EntityInstance {
   health: number = undefined as unknown as number;
 
   canActAt: Date = new Date();
   lastActedAt: Date = new Date();
 
   constructor(
-    definitionId: keyof typeof creatures = undefined as any,
+    definitionId: keyof typeof entities = undefined as any,
     locationId: LocationId = undefined as any
   ) {
-    this.definitionId = definitionId;
-    this.location = locationId;
+    super(definitionId, locationId);
 
-    const definition = creatures[definitionId];
+    const definition = entities[definitionId];
     if (!definition) {
       return;
     }
 
-    this.name = definition.name;
     this.health = definition.health;
   }
 
   getAbilityScore(score: AbilityScore) {
-    return creatures[this.definitionId].abilityScores[score];
+    return entities[this.definitionId].abilityScores[score];
   }
 
   getMaxHealth() {
     return (
-      creatures[this.definitionId].health +
+      entities[this.definitionId].health +
       5 * this.getAbilityScore(AbilityScore.Constitution)
     );
   }
@@ -63,7 +49,7 @@ export class CreatureInstance {
     const abilities: AbilityWithSource[] = [];
 
     abilities.push(
-      ...(creatures[this.definitionId].intrinsicAbilities?.map((ability) => ({
+      ...(entities[this.definitionId].intrinsicAbilities?.map((ability) => ({
         ability,
         source: this,
       })) ?? [])
@@ -86,8 +72,29 @@ export class CreatureInstance {
 
   die() {
     const location = locations[this.location];
-    location.creatures.delete(this);
+    location.entities.delete(this);
 
     getIo().sendMsgToRoom(location.id, `${this.name} has died.`);
+  }
+
+  activateAbility(
+    ability: Ability,
+    targets: Targetable[],
+    source: AbilitySource
+  ) {
+    const msg = ability.activate(this, targets, source);
+
+    const location = locations[this.location];
+
+    this.lastActedAt = new Date();
+    this.canActAt = new Date();
+
+    this.canActAt.setSeconds(
+      this.canActAt.getSeconds() +
+        getFromOptionalFunc(ability.getCooldown, this, source)
+    );
+
+    getIo().sendMsgToRoom(location.id, msg);
+    getIo().updateGameStateForRoom(location.id);
   }
 }

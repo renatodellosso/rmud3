@@ -1,61 +1,8 @@
 import locations from "./locations";
-import Ability, { AbilitySource, AbilityWithSource } from "./types/Ability";
+import { AbilityWithSource } from "./types/Ability";
 import { CreatureInstance } from "./types/creature";
-import { LocationId } from "./types/Location";
-import { PlayerInstance } from "./types/player";
 import { Targetable } from "./types/types";
-import { getFromOptionalFunc, savePlayer } from "./utils";
-import { getIo } from "./ClientFriendlyIo";
-
-export function moveCreature(
-  creature: CreatureInstance,
-  newLocationId: LocationId
-) {
-  if (!locations[newLocationId]) {
-    throw new Error(`Invalid location ID: ${newLocationId}`);
-  }
-
-  const currentLocation = locations[creature.location];
-  if (!currentLocation.exits.has(newLocationId)) {
-    throw new Error(
-      `Cannot move to ${newLocationId} from ${creature.location}. No exit available.`
-    );
-  }
-
-  currentLocation.exit(creature);
-  const newLocation = locations[newLocationId];
-  newLocation.enter(creature);
-
-  if (creature.definitionId === "player") {
-    savePlayer(creature as PlayerInstance);
-  }
-
-  console.log(
-    `Creature ${creature.name} moved from ${currentLocation.name} to ${creature.location}.`
-  );
-}
-
-export function activateAbility(
-  ability: Ability,
-  creature: CreatureInstance,
-  targets: Targetable[],
-  source: AbilitySource
-) {
-  const msg = ability.activate(creature, targets, source);
-
-  const location = locations[creature.location];
-
-  creature.lastActedAt = new Date();
-  creature.canActAt = new Date();
-
-  creature.canActAt.setSeconds(
-    creature.canActAt.getSeconds() +
-      getFromOptionalFunc(ability.getCooldown, creature, source)
-  );
-
-  getIo().sendMsgToRoom(location.id, msg);
-  getIo().updateGameStateForRoom(location.id);
-}
+import { getFromOptionalFunc } from "./utils";
 
 export function selectRandomAbility(
   creature: CreatureInstance
@@ -81,7 +28,7 @@ export function getValidTargets(
 ): Targetable[] {
   const location = locations[creature.location];
   const potentialTargets = (
-    Array.from(location.creatures) as Targetable[]
+    Array.from(location.entities) as Targetable[]
   ).concat(location);
 
   return potentialTargets.filter((target) =>
@@ -133,7 +80,7 @@ export function activateAbilityOnTick(
 
   const location = locations[instance.location];
 
-  if (skipIfLocationIsEmpty && location.creatures.size <= 1) {
+  if (skipIfLocationIsEmpty && location.entities.size <= 1) {
     return;
   }
 
@@ -143,5 +90,5 @@ export function activateAbilityOnTick(
   }
 
   const targets = selectRandomTargets(instance, ability);
-  activateAbility(ability.ability, instance, targets, ability.source);
+  instance.activateAbility(ability.ability, targets, ability.source);
 }

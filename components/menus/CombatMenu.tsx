@@ -89,12 +89,12 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
 
       <div>
         <h3>Abilities</h3>
-        <div>
+        <div className="flex flex-col gap-1">
           {gameState.self.getAbilities().map((ability) => (
             <button
               key={ability.ability.name}
               onClick={() => selectAbility(ability.ability, ability.source)}
-              className={`px-1 ${
+              className={`w-full px-1 ${
                 selectedAbility?.ability.name === ability.ability.name &&
                 selectedAbility?.source.definitionId ===
                   ability.source.definitionId
@@ -111,13 +111,13 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
         <h3>
           Targets ({targets.length}/{targetCount})
         </h3>
-        <div className="flex gap-1">
-          {Array.from(gameState.location.creatures).map((creature) => (
+        <div className="flex flex-col gap-1">
+          {Array.from(gameState.location.entities).map((entity) => (
             <button
-              key={creature._id.toString()}
-              onClick={() => toggleTarget(creature)}
-              className={`px-1 ${
-                targets.map(getTargetId).includes(getTargetId(creature)) &&
+              key={entity._id.toString()}
+              onClick={() => toggleTarget(entity)}
+              className={`w-full px-1 ${
+                targets.map(getTargetId).includes(getTargetId(entity)) &&
                 "bg-red-500 animate-pulse"
               } ${
                 targets.length === targetCount - 1 && "animate-shake-on-hover"
@@ -128,13 +128,18 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
                   !getFromOptionalFunc(
                     selectedAbility?.ability.canTarget,
                     gameState.self,
-                    creature,
+                    entity,
                     selectedAbility?.source
                   )) ||
                 !canAct
               }
             >
-              {creature.name} ({creature.health}/{creature.getMaxHealth()})
+              {entity.name}{" "}
+              {"health" in entity && "getMaxHealth" in entity && (
+                <>
+                  ({entity.health}/{(entity.getMaxHealth as () => number)()})
+                </>
+              )}
             </button>
           ))}
         </div>

@@ -136,7 +136,7 @@ export function updateGameState(socket: TypedSocket) {
         location.description,
         player.instance as PlayerInstance
       ),
-      creatures: Array.from(location.creatures),
+      entities: Array.from(location.entities),
       exits: Array.from(location.exits).map(getExitData),
     },
     messages: socket.data.session!.messages,

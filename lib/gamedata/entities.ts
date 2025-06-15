@@ -2,9 +2,9 @@ import { AbilityScore, DamageType } from "lib/types/types";
 import { CreatureDefinition } from "../types/creature";
 import * as Abilities from "lib/gamedata/Abilities";
 import * as CanTarget from "lib/gamedata/CanTarget";
-import { activateAbilityOnTick, selectRandomAbility } from "lib/creatureutils";
+import { activateAbilityOnTick, selectRandomAbility } from "lib/entityutils";
 
-const creatures = Object.freeze({
+const entities = Object.freeze({
   test: {
     name: "Test Creature",
     health: 10,
@@ -42,9 +42,14 @@ const creatures = Object.freeze({
           return `${creature.name} taunts everyone in the room!`;
         },
       },
-      Abilities.attack("Slap", "Slap an enemy.", 0.5, 10, DamageType.Bludgeoning, [
-        CanTarget.isPlayer,
-      ]),
+      Abilities.attack(
+        "Slap",
+        "Slap an enemy.",
+        0.5,
+        3,
+        DamageType.Bludgeoning,
+        [CanTarget.isPlayer]
+      ),
     ],
     tick: (creature, delta) =>
       activateAbilityOnTick(creature, delta, selectRandomAbility),
@@ -88,4 +93,4 @@ const creatures = Object.freeze({
   },
 } as Record<string, CreatureDefinition>);
 
-export default creatures;
+export default entities;

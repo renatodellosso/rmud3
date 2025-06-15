@@ -17,8 +17,8 @@ export default function populateDungeon(dungeon: Dungeon) {
         for (let i = 0; i < encounter.amount; i++) {
           if (typeof encounter.item === "string") {
             const creature = new CreatureInstance(encounter.item, location.id);
-            dungeon.locations[floor.depth][x][y]?.creatures.add(creature);
-            
+            dungeon.locations[floor.depth][x][y]?.entities.add(creature);
+
             continue;
           }
 
@@ -37,7 +37,7 @@ export default function populateDungeon(dungeon: Dungeon) {
                 location.id
               );
 
-              dungeon.locations[floor.depth][x][y]?.creatures.add(creature);
+              dungeon.locations[floor.depth][x][y]?.entities.add(creature);
             }
           }
         }

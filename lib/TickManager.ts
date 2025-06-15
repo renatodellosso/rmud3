@@ -1,4 +1,4 @@
-import creatures from "./gamedata/creatures";
+import entities from "./gamedata/entities";
 import { CreatureInstance } from "./types/creature";
 import { getSingleton } from "./utils";
 
@@ -23,13 +23,13 @@ export function startTicking() {
     const toTick: CreatureInstance[] = [];
 
     for (const location of Object.values(locations)) {
-      for (const creature of location.creatures) {
+      for (const creature of location.entities) {
         toTick.push(creature);
       }
     }
 
     for (const creature of toTick) {
-      creatures[creature.definitionId].tick?.(creature, delta);
+      entities[creature.definitionId].tick?.(creature, delta);
     }
   }, TICK_INTERVAL);
 }

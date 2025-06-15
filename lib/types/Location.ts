@@ -4,6 +4,7 @@ import { CreatureInstance } from "./creature";
 import { PlayerInstance } from "./player";
 import { OptionalFunc } from "./types";
 import { getIo } from "lib/ClientFriendlyIo";
+import { EntityInstance } from "./entity";
 
 export type LocationId =
   | "docks"
@@ -16,36 +17,36 @@ export class Location {
   id: LocationId;
   name: string;
   description?: OptionalFunc<string, [PlayerInstance]>;
-  creatures: Set<CreatureInstance>;
+  entities: Set<EntityInstance>;
   exits: Set<LocationId>;
 
   constructor() {
     this.id = "" as LocationId;
     this.name = "";
-    this.creatures = new Set<CreatureInstance>();
+    this.entities = new Set<CreatureInstance>();
     this.exits = new Set<LocationId>();
   }
 
-  enter(creature: CreatureInstance) {
-    console.log(`Creature ${creature.name} is entering location ${this.name}.`);
+  enter(entity: EntityInstance) {
+    console.log(`Creature ${entity.name} is entering location ${this.name}.`);
 
-    this.creatures.add(creature);
-    creature.location = this.id;
+    this.entities.add(entity);
+    entity.location = this.id;
 
-    if (creature.definitionId === "player") {
+    if (entity.definitionId === "player") {
       const io = getIo();
-      const playerId = creature._id.toString();
+      const playerId = entity._id.toString();
 
       io.joinRoom(this.id, playerId);
 
       io.sendMsgToRoom(
         this.name,
-        `${creature.name} has entered ${this.name}.`
+        `${entity.name} has entered ${this.name}.`
       ).then(() => {
         if (this.description) {
           io.sendMsgToPlayer(
             playerId,
-            getFromOptionalFunc(this.description, creature as PlayerInstance)
+            getFromOptionalFunc(this.description, entity as PlayerInstance)
           );
         }
 
@@ -54,22 +55,22 @@ export class Location {
     }
   }
 
-  exit(creature: CreatureInstance) {
-    console.log(`Creature ${creature.name} is exiting location ${this.name}.`);
+  exit(entity: EntityInstance) {
+    console.log(`Creature ${entity.name} is exiting location ${this.name}.`);
 
-    this.creatures.delete(creature);
+    this.entities.delete(entity);
 
     const io = getIo();
 
-    if (creature.definitionId === "player") {
-      io.leaveRoom(this.id, creature._id.toString());
+    if (entity.definitionId === "player") {
+      io.leaveRoom(this.id, entity._id.toString());
 
       io.sendMsgToPlayer(
-        creature._id.toString(),
+        entity._id.toString(),
         `You have left ${this.name}.`
       );
     }
 
-    io.sendMsgToRoom(this.name, `${creature.name} has left ${this.name}.`);
+    io.sendMsgToRoom(this.name, `${entity.name} has left ${this.name}.`);
   }
 }

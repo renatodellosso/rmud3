@@ -2,8 +2,9 @@ import { CreatureInstance } from "./creature";
 import { Location, LocationId } from "./Location";
 import { randInRangeInt, restoreFieldsAndMethods } from "../utils";
 import { PlayerInstance, PlayerProgress } from "./player";
+import { EntityInstance } from "./entity";
 
-export type Targetable = CreatureInstance | Location;
+export type Targetable = EntityInstance | Location;
 
 export class CannotDirectlyCreateInstanceError extends Error {
   constructor(className: string) {
@@ -54,8 +55,8 @@ export type ExitData = {
 export type GameState = {
   self: PlayerInstance;
   progress: PlayerProgress;
-  location: OmitType<Omit<Location, "creatures" | "exits">, Function> & {
-    creatures: CreatureInstance[];
+  location: OmitType<Omit<Location, "entities" | "exits">, Function> & {
+    entities: EntityInstance[];
     exits: ExitData[];
   };
   messages: string[];

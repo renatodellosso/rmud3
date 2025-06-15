@@ -50,7 +50,7 @@ export default function DungeonVis() {
 
         ctx.fillStyle = "black";
         ctx.fillText(
-          `(${room.creatures.size}) ${room.name}`,
+          `(${room.entities.size}) ${room.name}`,
           x,
           y + roomHeight / 2
         );

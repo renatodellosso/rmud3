@@ -1,4 +1,3 @@
-import { activateAbility, moveCreature } from "lib/creatureutils";
 import locations from "lib/locations";
 import { getAbilitySourceName } from "lib/types/Ability";
 import { LocationId } from "lib/types/Location";
@@ -17,7 +16,7 @@ export default function registerGameListeners(socket: TypedSocket) {
   socket.on("move", (exitId: LocationId) => {
     const player = getPlayer(socket);
 
-    moveCreature(player.instance, exitId);
+    player.instance.move(exitId);
   });
 
   socket.on(
@@ -52,7 +51,7 @@ export default function registerGameListeners(socket: TypedSocket) {
             return location;
           }
 
-          for (const creature of Array.from(location.creatures)) {
+          for (const creature of Array.from(location.entities)) {
             if (creature._id.equals(id)) {
               return creature;
             }
@@ -71,8 +70,7 @@ export default function registerGameListeners(socket: TypedSocket) {
         );
         return;
       }
-
-      activateAbility(ability.ability, player.instance, targets, source);
+      player.instance.activateAbility(ability.ability, targets, source);
     }
   );
 }
