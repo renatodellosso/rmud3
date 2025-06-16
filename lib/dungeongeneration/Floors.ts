@@ -57,8 +57,29 @@ const floors: Record<string, FloorDefinition> = {
       exitCount: [3, 4],
     },
     populationOptions: {
-      encounterChance: 0,
-      encounters: new WeightedTable([]),
+      encounterChance: 0.5,
+      encounters: new WeightedTable<Encounter>([
+        {
+          item: "skeleton",
+          amount: [1, 3],
+          weight: 1,
+        },
+        {
+          item: "zombie",
+          amount: 1,
+          weight: 0.8,
+        },
+        {
+          item: [
+            {
+              creature: "zombie",
+              amount: [1, 2],
+            },
+          ],
+          amount: [1, 2],
+          weight: 0.2,
+        },
+      ]),
     },
   },
   caves: {
@@ -76,8 +97,29 @@ const floors: Record<string, FloorDefinition> = {
       exitCount: [4, 5],
     },
     populationOptions: {
-      encounterChance: 0,
-      encounters: new WeightedTable([]),
+      encounterChance: 0.5,
+      encounters: new WeightedTable<Encounter>([
+        {
+          item: "skeleton",
+          amount: [1, 3],
+          weight: 1,
+        },
+        {
+          item: "zombie",
+          amount: 1,
+          weight: 0.8,
+        },
+        {
+          item: [
+            {
+              creature: "zombie",
+              amount: [1, 2],
+            },
+          ],
+          amount: [1, 2],
+          weight: 0.2,
+        },
+      ]),
     },
   },
   fungalCaverns: {

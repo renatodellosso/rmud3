@@ -3,6 +3,8 @@ import { Dungeon } from "./types";
 import { CreatureInstance } from "lib/types/creature";
 
 export default function populateDungeon(dungeon: Dungeon) {
+  let creatureCount = 0;
+
   for (const floor of dungeon.floors) {
     for (let x = 0; x < floor.size[0]; x++) {
       for (let y = 0; y < floor.size[1]; y++) {
@@ -19,6 +21,7 @@ export default function populateDungeon(dungeon: Dungeon) {
             const creature = new CreatureInstance(encounter.item, location.id);
             dungeon.locations[floor.depth][x][y]?.entities.add(creature);
 
+            creatureCount++;
             continue;
           }
 
@@ -36,12 +39,15 @@ export default function populateDungeon(dungeon: Dungeon) {
                 creatureGroup.creature,
                 location.id
               );
-
               dungeon.locations[floor.depth][x][y]?.entities.add(creature);
+
+              creatureCount++;
             }
           }
         }
       }
     }
   }
+
+  console.log(`Populated dungeon with ${creatureCount} creatures.`);
 }

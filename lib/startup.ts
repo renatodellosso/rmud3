@@ -13,16 +13,6 @@ export function setupLocations() {
     return dungeon;
   })!;
 
-  for (const layer of dungeon.locations) {
-    for (const row of layer) {
-      for (const loc of row) {
-        if (loc) {
-          locations[loc.id] = loc;
-        }
-      }
-    }
-  }
-
   let dungeonStart: DungeonLocation | undefined = undefined;
   for (let x = 0; x < dungeon.locations[0].length; x++) {
     for (let y = 0; y < dungeon.locations[0][x].length; y++) {
