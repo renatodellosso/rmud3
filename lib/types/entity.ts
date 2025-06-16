@@ -1,30 +1,28 @@
-import entities from "lib/gamedata/entities";
+import entities, { EntityId } from "lib/gamedata/entities";
 import { ObjectId } from "bson";
-import type { CreatureInstance } from "./creature";
-import { LocationId } from "./Location";
 import locations from "lib/locations";
 import { savePlayer } from "lib/utils";
 import { PlayerInstance } from "./player";
+import { LocationId } from "lib/gamedata/rawLocations";
 
 export type EntityDefinition = {
   name: string;
   /**
    * @param deltaTime in seconds
    */
-  tick?: (creature: CreatureInstance, deltaTime: number) => void;
+  tick?: (creature: EntityInstance, deltaTime: number) => void;
 };
 
 export class EntityInstance {
   _id: ObjectId = new ObjectId();
 
-  definitionId: keyof typeof entities =
-    undefined as unknown as keyof typeof entities;
+  definitionId: EntityId = undefined as unknown as EntityId;
 
   name: string = undefined as unknown as string;
   location: LocationId = undefined as unknown as LocationId;
 
   constructor(
-    definitionId: keyof typeof entities = undefined as any,
+    definitionId: EntityId = undefined as any,
     locationId: LocationId = undefined as any
   ) {
     this.location = locationId;

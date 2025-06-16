@@ -1,12 +1,11 @@
-import { ObjectId } from "bson";
-import entities from "../gamedata/entities";
+import entities, { EntityId } from "../gamedata/entities";
 import { AbilityScore, DamageType, Targetable } from "./types";
 import Ability, { AbilitySource, AbilityWithSource } from "./Ability";
-import { LocationId } from "./Location";
 import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";
 import { EntityDefinition, EntityInstance } from "./entity";
 import { getFromOptionalFunc } from "lib/utils";
+import { LocationId } from "lib/gamedata/rawLocations";
 
 export type CreatureDefinition = EntityDefinition & {
   health: number;
@@ -21,7 +20,7 @@ export class CreatureInstance extends EntityInstance {
   lastActedAt: Date = new Date();
 
   constructor(
-    definitionId: keyof typeof entities = undefined as any,
+    definitionId: EntityId = undefined as any,
     locationId: LocationId = undefined as any
   ) {
     super(definitionId, locationId);

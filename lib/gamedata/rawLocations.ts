@@ -1,7 +1,15 @@
 import { OmitType } from "lib/types/types";
-import { Location, LocationId } from "../types/Location";
+import { Location } from "../types/Location";
 import { restoreFieldsAndMethods } from "lib/utils";
 import { CreatureInstance } from "lib/types/creature";
+import { EntityInstance } from "lib/types/entity";
+
+export type LocationId =
+  | "docks"
+  | "town-square"
+  | "dungeon-entrance"
+  | "training-ground"
+  | `dungeon-${string}`;
 
 const rawLocations: Partial<OmitType<Location, Function>>[] = [
   {
@@ -31,7 +39,7 @@ const rawLocations: Partial<OmitType<Location, Function>>[] = [
     description:
       "You are in what might generously be called a training ground. A worn out straw dummy sulks in the corner.",
     exits: new Set<LocationId>(["dungeon-entrance"]),
-    entities: new Set<CreatureInstance>([
+    entities: new Set<EntityInstance>([
       new CreatureInstance("trainingDummy", "training-ground"),
     ]),
   },

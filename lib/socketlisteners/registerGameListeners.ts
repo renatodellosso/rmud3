@@ -1,6 +1,6 @@
 import locations from "lib/locations";
 import { getAbilitySourceName } from "lib/types/Ability";
-import { LocationId } from "lib/types/Location";
+import { LocationId } from "lib/gamedata/rawLocations";
 import {
   getPlayer,
   TypedSocket,

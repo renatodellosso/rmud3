@@ -1,5 +1,6 @@
 import { getSingleton } from "./utils";
-import { Location, LocationId } from "./types/Location";
+import { Location } from "./types/Location";
+import { LocationId } from "./gamedata/rawLocations";
 
 const locations = getSingleton(
   "locations",

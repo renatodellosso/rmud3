@@ -1,4 +1,4 @@
-import { LocationId } from "./Location";
+import { LocationId } from "lib/gamedata/rawLocations";
 import Session from "./Session";
 import { GameState, PlayerSave, SerializedEJSON } from "./types";
 

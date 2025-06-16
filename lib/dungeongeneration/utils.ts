@@ -1,7 +1,7 @@
 import { Point } from "lib/types/types";
 import { DungeonLocation, FloorDefinition, FloorInstance } from "./types";
 import floors from "./Floors";
-import { LocationId } from "lib/types/Location";
+import { LocationId } from "lib/gamedata/rawLocations";
 
 export function mapFloor(floor: (DungeonLocation | undefined)[][]): string {
   let map = "";

@@ -5,13 +5,7 @@ import { PlayerInstance } from "./player";
 import { OptionalFunc } from "./types";
 import { getIo } from "lib/ClientFriendlyIo";
 import { EntityInstance } from "./entity";
-
-export type LocationId =
-  | "docks"
-  | "town-square"
-  | "dungeon-entrance"
-  | "training-ground"
-  | `dungeon-${string}`;
+import { LocationId } from "lib/gamedata/rawLocations";
 
 export class Location {
   id: LocationId;

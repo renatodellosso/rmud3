@@ -86,7 +86,6 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   return (
     <div key="CombatMenu" className="border w-1/6 flex flex-col gap-2">
       <h2 className="text-xl">Combat</h2>
-
       <div>
         <h3>Abilities</h3>
         <div className="flex flex-col gap-1">

@@ -1,8 +1,8 @@
-import { CreatureInstance } from "./creature";
-import { Location, LocationId } from "./Location";
+import { Location } from "./Location";
 import { randInRangeInt, restoreFieldsAndMethods } from "../utils";
 import { PlayerInstance, PlayerProgress } from "./player";
 import { EntityInstance } from "./entity";
+import { LocationId } from "lib/gamedata/rawLocations";
 
 export type Targetable = EntityInstance | Location;
 
