@@ -25,7 +25,7 @@ type Ability = {
     creature: CreatureInstance,
     targets: Targetable[],
     source: AbilitySource
-  ) => string;
+  ) => void;
 };
 
 export default Ability;

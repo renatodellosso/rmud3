@@ -81,7 +81,7 @@ export class CreatureInstance extends EntityInstance {
     targets: Targetable[],
     source: AbilitySource
   ) {
-    const msg = ability.activate(this, targets, source);
+    ability.activate(this, targets, source);
 
     const location = locations[this.location];
 
@@ -93,7 +93,6 @@ export class CreatureInstance extends EntityInstance {
         getFromOptionalFunc(ability.getCooldown, this, source)
     );
 
-    getIo().sendMsgToRoom(location.id, msg);
     getIo().updateGameStateForRoom(location.id);
   }
 }
