@@ -22,7 +22,7 @@ export function attack(
     getTargetCount: 1,
     canTarget: CanTarget.and(
       CanTarget.notSelf,
-      CanTarget.isCreature,
+      CanTarget.isTargetACreature,
       ...(targetRestrictions ?? [])
     ),
     activate: (creature: CreatureInstance, targets: Targetable[]) => {

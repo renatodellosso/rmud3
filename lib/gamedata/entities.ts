@@ -3,15 +3,18 @@ import { CreatureDefinition, CreatureInstance } from "../types/creature";
 import * as Abilities from "lib/gamedata/Abilities";
 import * as CanTarget from "lib/gamedata/CanTarget";
 import { activateAbilityOnTick, selectRandomAbility } from "lib/entityutils";
+import { EntityDefinition, EntityInstance } from "lib/types/entity";
 
-export type EntityId =
+export type CreatureId =
   | "test"
   | "player"
   | "trainingDummy"
   | "zombie"
   | "skeleton";
 
-const entities = Object.freeze({
+export type EntityId = CreatureId | "corpse";
+
+const entities: Record<EntityId, EntityDefinition> = {
   test: {
     name: "Test Creature",
     health: 10,
@@ -20,7 +23,7 @@ const entities = Object.freeze({
       [AbilityScore.Constitution]: 10,
       [AbilityScore.Intelligence]: 10,
     },
-  },
+  } as CreatureDefinition,
   player: {
     name: "Player",
     health: 20,
@@ -29,7 +32,7 @@ const entities = Object.freeze({
       [AbilityScore.Constitution]: 0,
       [AbilityScore.Intelligence]: 0,
     },
-  },
+  } as CreatureDefinition,
   trainingDummy: {
     name: "Training Dummy",
     health: 1000000000,
@@ -64,7 +67,7 @@ const entities = Object.freeze({
         delta,
         selectRandomAbility
       ),
-  },
+  } as CreatureDefinition,
   zombie: {
     name: "Zombie",
     health: 20,
@@ -84,7 +87,7 @@ const entities = Object.freeze({
         delta,
         selectRandomAbility
       ),
-  },
+  } as CreatureDefinition,
   skeleton: {
     name: "Skeleton",
     health: 15,
@@ -109,7 +112,10 @@ const entities = Object.freeze({
         delta,
         selectRandomAbility
       ),
+  } as CreatureDefinition,
+  corpse: {
+    name: "Corpse",
   },
-} as Record<EntityId, CreatureDefinition>);
+};
 
 export default entities;

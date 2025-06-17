@@ -12,7 +12,7 @@ export function notSelf(
   creature: CreatureInstance,
   target: Targetable
 ): boolean {
-  if (!isCreature(creature, target)) {
+  if (!isTargetACreature(creature, target)) {
     return true;
   }
 
@@ -22,10 +22,10 @@ export function notSelf(
   return !cSelf._id.equals(cTarget._id);
 }
 
-export function isCreature(
+export function isTargetACreature(
   creature: CreatureInstance,
   target: Targetable
-): boolean {
+): target is CreatureInstance {
   return "definitionId" in target && "health" in target;
 }
 
@@ -34,7 +34,7 @@ export function isPlayer(
   target: Targetable
 ): boolean {
   return (
-    isCreature(creature, target) &&
+    isTargetACreature(creature, target) &&
     (target as CreatureInstance).definitionId === "player"
   );
 }

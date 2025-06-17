@@ -1,4 +1,4 @@
-import entities, { EntityId } from "../gamedata/entities";
+import entities, { CreatureId, EntityId } from "../gamedata/entities";
 import { AbilityScore, DamageType, Targetable } from "./types";
 import Ability, { AbilitySource, AbilityWithSource } from "./Ability";
 import locations from "lib/locations";
@@ -20,27 +20,30 @@ export class CreatureInstance extends EntityInstance {
   lastActedAt: Date = new Date();
 
   constructor(
-    definitionId: EntityId = undefined as any,
+    definitionId: CreatureId = undefined as any,
     locationId: LocationId = undefined as any
   ) {
     super(definitionId, locationId);
 
-    const definition = entities[definitionId];
+    const definition = this.getDef();
     if (!definition) {
       return;
     }
 
-    this.health = definition.health;
+    this.health = this.getMaxHealth();
+  }
+
+  getDef() {
+    return entities[this.definitionId] as CreatureDefinition;
   }
 
   getAbilityScore(score: AbilityScore) {
-    return entities[this.definitionId].abilityScores[score];
+    return this.getDef().abilityScores[score];
   }
 
   getMaxHealth() {
     return (
-      entities[this.definitionId].health +
-      5 * this.getAbilityScore(AbilityScore.Constitution)
+      this.getDef().health + 5 * this.getAbilityScore(AbilityScore.Constitution)
     );
   }
 
@@ -48,7 +51,7 @@ export class CreatureInstance extends EntityInstance {
     const abilities: AbilityWithSource[] = [];
 
     abilities.push(
-      ...(entities[this.definitionId].intrinsicAbilities?.map((ability) => ({
+      ...(this.getDef().intrinsicAbilities?.map((ability) => ({
         ability,
         source: this,
       })) ?? [])
@@ -73,7 +76,14 @@ export class CreatureInstance extends EntityInstance {
     const location = locations[this.location];
     location.entities.delete(this);
 
-    getIo().sendMsgToRoom(location.id, `${this.name} has died.`);
+    const io = getIo();
+    io.sendMsgToRoom(location.id, `${this.name} has died.`);
+
+    const corpse = new EntityInstance("corpse", this.location);
+    location.entities.add(corpse);
+    corpse.name = `${this.name}'s Corpse`;
+
+    io.updateGameStateForRoom(location.id);
   }
 
   activateAbility(

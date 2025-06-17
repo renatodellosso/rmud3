@@ -7,6 +7,8 @@ import { GameState, Targetable } from "lib/types/types";
 import { useEffect, useState } from "react";
 import { getFromOptionalFunc, getTargetId } from "../../lib/utils";
 import { socket } from "lib/socket";
+import { CreatureInstance } from "lib/types/creature";
+import { isTargetACreature } from "lib/gamedata/CanTarget";
 
 export default function CombatMenu({ gameState }: { gameState: GameState }) {
   const [targets, setTargets] = useState<Targetable[]>([]);
@@ -134,7 +136,7 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
               }
             >
               {entity.name}{" "}
-              {"health" in entity && "getMaxHealth" in entity && (
+              {isTargetACreature(undefined as any, entity) && (
                 <>
                   ({entity.health}/{(entity.getMaxHealth as () => number)()})
                 </>

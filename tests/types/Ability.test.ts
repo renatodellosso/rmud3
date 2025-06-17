@@ -30,16 +30,16 @@ describe("CanTarget", () => {
     });
   });
 
-  describe(CanTarget.isCreature.name, () => {
+  describe(CanTarget.isTargetACreature.name, () => {
     test("returns true for a CreatureInstance", () => {
       const creature = new CreatureInstance();
-      expect(CanTarget.isCreature(creature, creature)).toBe(true);
+      expect(CanTarget.isTargetACreature(creature, creature)).toBe(true);
     });
 
     test("returns false for a non-CreatureInstance", () => {
       const nonCreature = { name: "Not a creature" };
       expect(
-        CanTarget.isCreature(new CreatureInstance(), nonCreature as any)
+        CanTarget.isTargetACreature(new CreatureInstance(), nonCreature as any)
       ).toBe(false);
     });
   });

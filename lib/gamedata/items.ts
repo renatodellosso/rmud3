@@ -56,7 +56,7 @@ const items = Object.freeze({
         "Rusty Slash",
         "A basic slash attack with the rusty sword.",
         1,
-        1,
+        5,
         DamageType.Slashing
       ),
     ],

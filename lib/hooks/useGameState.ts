@@ -5,6 +5,9 @@ import { EJSON } from "bson";
 import { restoreFieldsAndMethods } from "lib/utils";
 import { PlayerInstance } from "lib/types/player";
 import { CreatureInstance } from "lib/types/creature";
+import { isTargetACreature } from "lib/gamedata/CanTarget";
+import { EntityInstance } from "lib/types/entity";
+import { CreatureId } from "lib/gamedata/entities";
 
 export default function useGameState(): GameState | undefined {
   const [gameState, setGameState] = useState<GameState>();
@@ -25,7 +28,9 @@ export default function useGameState(): GameState | undefined {
           creature,
           creature.definitionId === "player"
             ? new PlayerInstance()
-            : new CreatureInstance()
+            : isTargetACreature(parsedGameState.self, creature)
+            ? new CreatureInstance(creature.definitionId as CreatureId)
+            : new EntityInstance(creature.definitionId)
         );
       }
 
