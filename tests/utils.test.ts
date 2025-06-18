@@ -1,4 +1,4 @@
-import { CreatureInstance } from "lib/types/creature";
+import { CreatureInstance } from "lib/types/entities/creature";
 import { ItemInstance } from "lib/types/item";
 import { PlayerInstance } from "lib/types/player";
 import {

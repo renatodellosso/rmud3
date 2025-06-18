@@ -1,7 +1,7 @@
 import { OmitType } from "lib/types/types";
 import { Location } from "../types/Location";
 import { restoreFieldsAndMethods } from "lib/utils";
-import { CreatureInstance } from "lib/types/creature";
+import { CreatureInstance } from "lib/types/entities/creature";
 import { EntityInstance } from "lib/types/entity";
 
 export type LocationId =

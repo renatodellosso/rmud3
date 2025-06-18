@@ -1,9 +1,9 @@
-import entities, { CreatureId, EntityId } from "../gamedata/entities";
-import { AbilityScore, DamageType, Targetable } from "./types";
-import Ability, { AbilitySource, AbilityWithSource } from "./Ability";
+import entities, { CreatureId, EntityId } from "lib/gamedata/entities";
+import { AbilityScore, DamageType, Targetable } from "lib/types/types";
+import Ability, { AbilitySource, AbilityWithSource } from "lib/types/Ability";
 import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";
-import { EntityDefinition, EntityInstance } from "./entity";
+import { EntityDefinition, EntityInstance } from "lib/types/entity";
 import { getFromOptionalFunc } from "lib/utils";
 import { LocationId } from "lib/gamedata/rawLocations";
 
@@ -79,9 +79,12 @@ export class CreatureInstance extends EntityInstance {
     const io = getIo();
     io.sendMsgToRoom(location.id, `${this.name} has died.`);
 
-    const corpse = new EntityInstance("corpse", this.location);
+    const corpse = new EntityInstance(
+      "container",
+      this.location,
+      `${this.name}'s Corpse`
+    );
     location.entities.add(corpse);
-    corpse.name = `${this.name}'s Corpse`;
 
     io.updateGameStateForRoom(location.id);
   }

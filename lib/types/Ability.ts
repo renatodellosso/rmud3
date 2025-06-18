@@ -1,5 +1,5 @@
 import items from "lib/gamedata/items";
-import { CreatureInstance } from "./creature";
+import { CreatureInstance } from "./entities/creature";
 import { ItemInstance } from "./item";
 import { DamageType, Targetable } from "./types";
 import { OptionalFunc } from "./types";

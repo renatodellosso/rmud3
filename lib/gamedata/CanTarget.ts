@@ -1,4 +1,4 @@
-import { CreatureInstance } from "lib/types/creature";
+import { CreatureInstance } from "lib/types/entities/creature";
 import { Targetable } from "lib/types/types";
 
 export function and(

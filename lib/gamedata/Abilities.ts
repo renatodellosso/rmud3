@@ -1,5 +1,5 @@
 import Ability from "lib/types/Ability";
-import { CreatureInstance } from "lib/types/creature";
+import { CreatureInstance } from "lib/types/entities/creature";
 import { OptionalFunc, DamageType, Targetable } from "lib/types/types";
 import * as CanTarget from "lib/gamedata/CanTarget";
 import { getIo } from "lib/ClientFriendlyIo";

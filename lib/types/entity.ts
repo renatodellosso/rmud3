@@ -23,9 +23,11 @@ export class EntityInstance {
 
   constructor(
     definitionId: EntityId = undefined as any,
-    locationId: LocationId = undefined as any
+    locationId: LocationId = undefined as any,
+    name: string = undefined as any
   ) {
     this.location = locationId;
+    this.name = name;
 
     this.definitionId = definitionId;
     const definition = entities[definitionId];
@@ -33,7 +35,7 @@ export class EntityInstance {
       return;
     }
 
-    this.name = definition.name;
+    this.name ??= definition.name;
   }
 
   move(newLocationId: LocationId) {

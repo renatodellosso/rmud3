@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { EJSON } from "bson";
 import { restoreFieldsAndMethods } from "lib/utils";
 import { PlayerInstance } from "lib/types/player";
-import { CreatureInstance } from "lib/types/creature";
+import { CreatureInstance } from "lib/types/entities/creature";
 import { isTargetACreature } from "lib/gamedata/CanTarget";
 import { EntityInstance } from "lib/types/entity";
 import { CreatureId } from "lib/gamedata/entities";

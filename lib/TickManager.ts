@@ -1,5 +1,5 @@
 import entities from "./gamedata/entities";
-import { CreatureInstance } from "./types/creature";
+import { CreatureInstance } from "./types/entities/creature";
 import { getSingleton } from "./utils";
 
 const TICK_INTERVAL = 1000; // 1 second

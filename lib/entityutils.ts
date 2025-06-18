@@ -1,6 +1,6 @@
 import locations from "./locations";
 import { AbilityWithSource } from "./types/Ability";
-import { CreatureInstance } from "./types/creature";
+import { CreatureInstance } from "./types/entities/creature";
 import { Targetable } from "./types/types";
 import { getFromOptionalFunc } from "./utils";
 

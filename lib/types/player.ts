@@ -1,5 +1,5 @@
 import { ObjectId } from "bson";
-import { CreatureInstance } from "./creature";
+import { CreatureInstance } from "./entities/creature";
 import Inventory, { DirectInventory } from "./Inventory";
 import {
   AbilityScore,

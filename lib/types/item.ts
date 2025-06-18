@@ -1,6 +1,6 @@
 import items from "../gamedata/items";
 import Ability, { AbilitySource } from "./Ability";
-import { CreatureInstance } from "./creature";
+import { CreatureInstance } from "./entities/creature";
 import { AbilityScore, OptionalFunc } from "./types";
 
 export type ItemDefinition = {

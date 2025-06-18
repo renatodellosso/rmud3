@@ -1,6 +1,6 @@
 // import locations from "lib/locations";
 import { getFromOptionalFunc } from "lib/utils";
-import { CreatureInstance } from "./creature";
+import { CreatureInstance } from "./entities/creature";
 import { PlayerInstance } from "./player";
 import { OptionalFunc } from "./types";
 import { getIo } from "lib/ClientFriendlyIo";
@@ -59,10 +59,7 @@ export class Location {
     if (entity.definitionId === "player") {
       io.leaveRoom(this.id, entity._id.toString());
 
-      io.sendMsgToPlayer(
-        entity._id.toString(),
-        `You have left ${this.name}.`
-      );
+      io.sendMsgToPlayer(entity._id.toString(), `You have left ${this.name}.`);
     }
 
     io.sendMsgToRoom(this.name, `${entity.name} has left ${this.name}.`);

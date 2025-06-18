@@ -1,5 +1,8 @@
 import { AbilityScore, DamageType } from "lib/types/types";
-import { CreatureDefinition, CreatureInstance } from "../types/creature";
+import {
+  CreatureDefinition,
+  CreatureInstance,
+} from "../types/entities/creature";
 import * as Abilities from "lib/gamedata/Abilities";
 import * as CanTarget from "lib/gamedata/CanTarget";
 import { activateAbilityOnTick, selectRandomAbility } from "lib/entityutils";
@@ -12,7 +15,7 @@ export type CreatureId =
   | "zombie"
   | "skeleton";
 
-export type EntityId = CreatureId | "corpse";
+export type EntityId = CreatureId | "container";
 
 const entities: Record<EntityId, EntityDefinition> = {
   test: {
@@ -113,8 +116,8 @@ const entities: Record<EntityId, EntityDefinition> = {
         selectRandomAbility
       ),
   } as CreatureDefinition,
-  corpse: {
-    name: "Corpse",
+  container: {
+    name: "Container",
   },
 };
 

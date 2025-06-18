@@ -7,7 +7,7 @@ import { GameState, Targetable } from "lib/types/types";
 import { useEffect, useState } from "react";
 import { getFromOptionalFunc, getTargetId } from "../../lib/utils";
 import { socket } from "lib/socket";
-import { CreatureInstance } from "lib/types/creature";
+import { CreatureInstance } from "lib/types/entities/creature";
 import { isTargetACreature } from "lib/gamedata/CanTarget";
 
 export default function CombatMenu({ gameState }: { gameState: GameState }) {
