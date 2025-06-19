@@ -30,6 +30,10 @@ export default interface Inventory {
 export class DirectInventory implements Inventory {
   items: ItemInstance[] = [];
 
+  constructor(items: ItemInstance[] = []) {
+    this.items = items;
+  }
+
   add(item: ItemInstance) {
     const existingItem = this.items.find((i) => areItemInstancesEqual(i, item));
 
