@@ -1,16 +1,22 @@
 import entities, { CreatureId, EntityId } from "lib/gamedata/entities";
-import { AbilityScore, DamageType, Targetable } from "lib/types/types";
+import { AbilityScore, DamageType, Targetable, WeightedTable } from "lib/types/types";
 import Ability, { AbilitySource, AbilityWithSource } from "lib/types/Ability";
 import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";
 import { EntityDefinition, EntityInstance } from "lib/types/entity";
 import { getFromOptionalFunc } from "lib/utils";
 import { LocationId } from "lib/gamedata/rawLocations";
+import { ContainerInstance } from "./container";
+import Inventory, { DirectInventory } from '../Inventory';
+import { ItemInstance } from '../item';
+import { ItemId } from "lib/gamedata/items";
 
 export type CreatureDefinition = EntityDefinition & {
   health: number;
   abilityScores: { [score in AbilityScore]: number };
   intrinsicAbilities?: Ability[];
+  maxDrops: number;
+  lootTable: WeightedTable<ItemId>;
 };
 
 export class CreatureInstance extends EntityInstance {
@@ -79,10 +85,23 @@ export class CreatureInstance extends EntityInstance {
     const io = getIo();
     io.sendMsgToRoom(location.id, `${this.name} has died.`);
 
-    const corpse = new EntityInstance(
+    let items: ItemInstance[] = [];
+
+    for (let i = 0; i < this.getDef().maxDrops; i++) {
+      const drop = this.getDef().lootTable.roll();
+
+      const item: ItemInstance = {definitionId: drop.item, amount: drop.amount};
+
+      items.push(item);
+    }
+
+    const inventory = new DirectInventory(items);
+
+    const corpse = new ContainerInstance(
       "container",
       this.location,
-      `${this.name}'s Corpse`
+      `${this.name}'s Corpse`,
+      inventory
     );
     location.entities.add(corpse);
 

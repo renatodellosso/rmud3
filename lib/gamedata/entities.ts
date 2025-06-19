@@ -1,4 +1,4 @@
-import { AbilityScore, DamageType } from "lib/types/types";
+import { AbilityScore, DamageType, WeightedTable } from "lib/types/types";
 import {
   CreatureDefinition,
   CreatureInstance,
@@ -6,7 +6,8 @@ import {
 import * as Abilities from "lib/gamedata/Abilities";
 import * as CanTarget from "lib/gamedata/CanTarget";
 import { activateAbilityOnTick, selectRandomAbility } from "lib/entityutils";
-import { EntityDefinition, EntityInstance } from "lib/types/entity";
+import { EntityDefinition } from "lib/types/entity";
+import { ItemId } from "./items";
 import { getIo } from "lib/ClientFriendlyIo";
 import craftingInteraction from "./interactions/craftingInteraction";
 import Recipe, { RecipeGroup } from "lib/types/Recipe";
@@ -29,6 +30,8 @@ const entities: Record<EntityId, EntityDefinition> = {
       [AbilityScore.Constitution]: 10,
       [AbilityScore.Intelligence]: 10,
     },
+    maxDrops: 1,
+    lootTable: new WeightedTable<ItemId>([]),
   } as CreatureDefinition,
   player: {
     name: "Player",
@@ -67,6 +70,8 @@ const entities: Record<EntityId, EntityDefinition> = {
         [CanTarget.isPlayer]
       ),
     ],
+    maxDrops: 1,
+    lootTable: new WeightedTable<ItemId>([]),
     tick: (creature, delta) =>
       activateAbilityOnTick(
         creature as CreatureInstance,
@@ -87,6 +92,8 @@ const entities: Record<EntityId, EntityDefinition> = {
         CanTarget.isPlayer,
       ]),
     ],
+    maxDrops: 2,
+    lootTable: new WeightedTable<ItemId>([]),
     tick: (creature, delta) =>
       activateAbilityOnTick(
         creature as CreatureInstance,
@@ -112,6 +119,19 @@ const entities: Record<EntityId, EntityDefinition> = {
         [CanTarget.isPlayer]
       ),
     ],
+    maxDrops: 3,
+    lootTable: new WeightedTable<ItemId>([
+      {
+        item: "bone",
+        amount: [1, 5],
+        weight: 1,
+      },
+      {
+        item: "skull",
+        amount: [0, 1],
+        weight: 0.2
+      }
+    ]),
     tick: (creature, delta) =>
       activateAbilityOnTick(
         creature as CreatureInstance,
