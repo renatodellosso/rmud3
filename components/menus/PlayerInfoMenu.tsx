@@ -1,3 +1,4 @@
+import XpForNextLevel from "lib/gamedata/XpForNextLevel";
 import { AbilityScore, GameState } from "lib/types/types";
 
 export default function PlayerInfoMenu({
@@ -12,7 +13,8 @@ export default function PlayerInfoMenu({
         HP: {self.health}/{self.getMaxHealth()}
       </div>
       <div>
-        XP: {self.xp.toLocaleString()}
+        Level {self.level} - {self.xp.toLocaleString()}/
+        {XpForNextLevel[self.level].toLocaleString()} XP
       </div>
       <div>
         Ability Scores:

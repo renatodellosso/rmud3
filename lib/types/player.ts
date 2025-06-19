@@ -12,11 +12,16 @@ import { EquipmentDefinition, ItemInstance, ItemTag } from "./item";
 import Ability, { AbilitySource, AbilityWithSource } from "./Ability";
 import items from "lib/gamedata/items";
 import { EquipmentHotbar } from "./Hotbar";
-import { getFromOptionalFunc, restoreFieldsAndMethods } from "lib/utils";
+import {
+  getFromOptionalFunc,
+  restoreFieldsAndMethods,
+  savePlayer,
+} from "lib/utils";
 import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";
 import { LocationId } from "lib/gamedata/rawLocations";
 import { EntityInstance } from "./entity";
+import XpForNextLevel from "lib/gamedata/XpForNextLevel";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -31,6 +36,7 @@ export class PlayerInstance extends CreatureInstance {
     [AbilityScore.Intelligence]: 0,
   };
 
+  level: number = 0;
   xp: number = 0;
 
   inventory: DirectInventory = new DirectInventory();
@@ -112,7 +118,19 @@ export class PlayerInstance extends CreatureInstance {
   addXp(amount: number): void {
     this.xp += amount;
 
-    getIo().sendMsgToPlayer(this._id.toString(), `You gained ${amount} XP!`);
+    const io = getIo();
+    io.sendMsgToPlayer(this._id.toString(), `You gained ${amount} XP!`);
+
+    if (this.xp >= XpForNextLevel[this.level]) {
+      this.level++;
+      io.sendMsgToPlayer(
+        this._id.toString(),
+        `You leveled up! You are now level ${this.level}.`
+      );
+    }
+
+    io.updateGameState(this._id.toString());
+    savePlayer(this);
   }
 
   recalculateMaxWeight() {
