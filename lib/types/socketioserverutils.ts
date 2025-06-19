@@ -15,6 +15,8 @@ import { PlayerInstance } from "./player";
 import ClientFriendlyIo from "lib/ClientFriendlyIo";
 import getSocketsByPlayerInstanceIds from "lib/getSocketsByPlayerInstanceIds";
 import { LocationId } from "lib/gamedata/rawLocations";
+import entities from "lib/gamedata/entities";
+import { EntityInstance } from "./entity";
 
 export type TypedSocket = Socket<
   ClientToServerEvents,
@@ -125,6 +127,21 @@ export function updateGameState(socket: TypedSocket) {
 
   const location = locations[player.instance.location];
 
+  const entityList = Array.from(location.entities) as (EntityInstance & {
+    interactable: boolean;
+  })[];
+
+  for (const entity of entityList) {
+    const def = entities[entity.definitionId];
+
+    entity.interactable =
+      (def.interact &&
+        (def.canInteract
+          ? def.canInteract(entity, player.instance as PlayerInstance)
+          : true)) ??
+      false;
+  }
+
   const gameState: GameState = {
     self: player.instance,
     progress: player.progress,
@@ -136,10 +153,11 @@ export function updateGameState(socket: TypedSocket) {
         location.description,
         player.instance as PlayerInstance
       ),
-      entities: Array.from(location.entities),
+      entities: entityList,
       exits: Array.from(location.exits).map(getExitData),
     },
     messages: socket.data.session!.messages,
+    interactions: socket.data.session!.interactions || [],
   };
 
   socket.emit("setGameState", EJSON.stringify(gameState));

@@ -10,7 +10,18 @@ export type EntityDefinition = {
   /**
    * @param deltaTime in seconds
    */
-  tick?: (creature: EntityInstance, deltaTime: number) => void;
+  tick?: (entity: EntityInstance, deltaTime: number) => void;
+  /**
+   * @param interaction the previous interaction, if any. Will be undefined if this is the first interaction.
+   * @returns the new interaction. Return undefined to end the interaction.
+   */
+  interact?: (
+    entity: EntityInstance,
+    player: PlayerInstance,
+    interaction: Interaction | undefined,
+    action: any
+  ) => Interaction | undefined;
+  canInteract?: (entity: EntityInstance, player: PlayerInstance) => boolean;
 };
 
 export class EntityInstance {
@@ -63,3 +74,10 @@ export class EntityInstance {
     );
   }
 }
+
+export type Interaction = {
+  entityId: ObjectId;
+  type: "logOnly";
+  state: any;
+  actions?: { id: string; text: string }[];
+};

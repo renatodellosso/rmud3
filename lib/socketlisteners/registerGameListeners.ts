@@ -7,6 +7,9 @@ import {
   updateGameState,
 } from "lib/types/socketioserverutils";
 import { Targetable } from "lib/types/types";
+import entities from "lib/gamedata/entities";
+import getSessionManager from "lib/SessionManager";
+import { getIo } from "lib/ClientFriendlyIo";
 
 export default function registerGameListeners(socket: TypedSocket) {
   socket.on("requestGameState", () => {
@@ -73,4 +76,83 @@ export default function registerGameListeners(socket: TypedSocket) {
       player.instance.activateAbility(ability.ability, targets, source);
     }
   );
+
+  socket.on("startInteraction", (entityId: string) => {
+    const player = getPlayer(socket);
+    const entity = Array.from(
+      locations[player.instance.location].entities
+    ).find((e) => e._id.toString() === entityId);
+
+    if (!entity) {
+      throw new Error(
+        `Entity with ID ${entityId} not found in location ${player.instance.location}.`
+      );
+    }
+
+    const def = entities[entity.definitionId];
+
+    if (!def.interact) {
+      throw new Error(
+        `Entity with ID ${entityId} does not have an interact method defined.`
+      );
+    }
+
+    const interaction = def.interact(
+      entity,
+      player.instance,
+      undefined,
+      undefined
+    );
+
+    if (interaction) socket.data.session!.interactions.push(interaction);
+
+    getIo().updateGameState(player.instance._id.toString());
+  });
+
+  socket.on("interact", (entityId: string, action: any) => {
+    const player = getPlayer(socket);
+    const entity = Array.from(
+      locations[player.instance.location].entities
+    ).find((e) => e._id.toString() === entityId);
+
+    const interaction = socket.data.session?.interactions.find(
+      (i) => i.entityId.toString() === entityId
+    );
+
+    if (!entity) {
+      throw new Error(`Entity with ID ${entityId} not found in location.`);
+    }
+
+    if (!interaction) {
+      throw new Error(`No interaction found for entity with ID ${entityId}.`);
+    }
+
+    const def = entities[entity.definitionId];
+    if (!def.interact) {
+      throw new Error(
+        `Entity with ID ${entityId} does not have an interact method defined.`
+      );
+    }
+
+    const newInteraction = def.interact(
+      entity,
+      player.instance,
+      interaction,
+      action
+    );
+
+    if (newInteraction) {
+      const index = socket.data.session!.interactions.findIndex(
+        (i) => i.entityId.toString() === entityId
+      );
+
+      socket.data.session!.interactions[index!] = newInteraction;
+    } else
+      socket.data.session!.interactions =
+        socket.data.session!.interactions.filter(
+          (i) => i.entityId.toString() !== entityId
+        );
+
+    getIo().updateGameState(player.instance._id.toString());
+  });
 }

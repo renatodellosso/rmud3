@@ -7,6 +7,7 @@ import * as Abilities from "lib/gamedata/Abilities";
 import * as CanTarget from "lib/gamedata/CanTarget";
 import { activateAbilityOnTick, selectRandomAbility } from "lib/entityutils";
 import { EntityDefinition, EntityInstance } from "lib/types/entity";
+import { getIo } from "lib/ClientFriendlyIo";
 
 export type CreatureId =
   | "test"
@@ -15,7 +16,7 @@ export type CreatureId =
   | "zombie"
   | "skeleton";
 
-export type EntityId = CreatureId | "container";
+export type EntityId = CreatureId | "container" | "signPost";
 
 const entities: Record<EntityId, EntityDefinition> = {
   test: {
@@ -118,6 +119,72 @@ const entities: Record<EntityId, EntityDefinition> = {
   } as CreatureDefinition,
   container: {
     name: "Container",
+  },
+  signPost: {
+    name: "Sign Post",
+    interact: (entity, player, interaction, action) => {
+      if (!interaction) {
+        interaction = {
+          entityId: entity._id,
+          type: "logOnly",
+          state: undefined,
+          actions: [
+            {
+              id: "readSign",
+              text: "Read Sign",
+            },
+          ],
+        };
+
+        return interaction;
+      }
+
+      if (action === "readSign") {
+        getIo().sendMsgToPlayer(
+          player._id.toString(),
+          "You remember you are illiterate."
+        );
+
+        return {
+          ...interaction,
+          state: undefined,
+          actions: [
+            {
+              id: "readSignAgain",
+              text: "Read Sign Again",
+            },
+            {
+              id: "giveUp",
+              text: "Give Up",
+            },
+          ],
+        };
+      }
+
+      if (action === "readSignAgain") {
+        getIo().sendMsgToPlayer(
+          player._id.toString(),
+          "You still cannot read."
+        );
+
+        return {
+          ...interaction,
+          state: undefined,
+          actions: [
+            {
+              id: "readSignAgain",
+              text: "Read Sign Again",
+            },
+            {
+              id: "giveUp",
+              text: "Give Up",
+            },
+          ],
+        };
+      }
+
+      return undefined;
+    },
   },
 };
 

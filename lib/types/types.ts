@@ -1,7 +1,7 @@
 import { Location } from "./Location";
 import { randInRangeInt, restoreFieldsAndMethods } from "../utils";
 import { PlayerInstance, PlayerProgress } from "./player";
-import { EntityInstance } from "./entity";
+import { EntityInstance, Interaction } from "./entity";
 import { LocationId } from "lib/gamedata/rawLocations";
 
 export type Targetable = EntityInstance | Location;
@@ -56,10 +56,11 @@ export type GameState = {
   self: PlayerInstance;
   progress: PlayerProgress;
   location: OmitType<Omit<Location, "entities" | "exits">, Function> & {
-    entities: EntityInstance[];
+    entities: (EntityInstance & { interactable: boolean })[];
     exits: ExitData[];
   };
   messages: string[];
+  interactions: Interaction[];
 };
 
 export enum DamageType {
@@ -93,6 +94,9 @@ export class WeightedTable<T> {
     }
   }
 
+  /**
+   * Get a random item from the table
+   */
   roll(): { item: T; amount: number } {
     if (this.items.length === 0) {
       throw new Error("Cannot roll on an empty weighted table");
