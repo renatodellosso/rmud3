@@ -4,6 +4,7 @@ import { PlayerInstance } from "lib/types/player";
 import { RecipeGroup } from "lib/types/Recipe";
 
 export default function craftingInteraction(
+  title: string,
   recipes: RecipeGroup
 ): (
   entity: EntityInstance,
@@ -22,6 +23,8 @@ export default function craftingInteraction(
       return {
         entityId: entity._id,
         type: "crafting",
+        title,
+        recipes: recipes.getAllowedRecipes(player),
       };
     }
 

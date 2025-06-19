@@ -17,7 +17,7 @@ import {
   PlayerInstance,
   PlayerProgress,
 } from "lib/types/player";
-import getSocketsByPlayerInstanceIds, {
+import {
   setSocket,
 } from "lib/getSocketsByPlayerInstanceIds";
 import { TypedSocket } from "lib/types/socketioserverutils";
@@ -29,7 +29,6 @@ function startPlaySession(
 ) {
   socket.data.session!.playerInstanceId = instance._id;
   socket.data.session!.playerProgressId = progress._id;
-  socket.data.session!.interactions = [];
 
   setSocket(instance._id, socket);
 

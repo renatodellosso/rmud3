@@ -78,6 +78,14 @@ export default function registerGameListeners(socket: TypedSocket) {
   );
 
   socket.on("startInteraction", (entityId: string) => {
+    if (
+      socket.data.session?.interactions.find(
+        (i) => i.entityId.toString() === entityId
+      )
+    ) {
+      throw new Error(`Interaction with entity ID ${entityId} already exists.`);
+    }
+
     const player = getPlayer(socket);
     const entity = Array.from(
       locations[player.instance.location].entities

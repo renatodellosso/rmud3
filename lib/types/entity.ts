@@ -4,6 +4,7 @@ import locations from "lib/locations";
 import { savePlayer } from "lib/utils";
 import { PlayerInstance } from "./player";
 import { LocationId } from "lib/gamedata/rawLocations";
+import Recipe, { RecipeGroup } from "./Recipe";
 
 export type EntityDefinition = {
   name: string;
@@ -80,4 +81,6 @@ export type Interaction = {
   type: "logOnly" | "crafting";
   state?: any;
   actions?: { id: string; text: string }[];
+  title?: string;
+  recipes?: Recipe[];
 };

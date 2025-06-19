@@ -41,7 +41,7 @@ export interface ClientToServerEvents {
     targetIds: string[]
   ) => void;
   startInteraction: (entityId: string) => void;
-  interact: (entityId: string, action: string) => void;
+  interact: (entityId: string, action: any) => void;
 }
 
 export interface InterServerEvents {

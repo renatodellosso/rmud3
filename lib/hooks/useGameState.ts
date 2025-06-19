@@ -8,10 +8,12 @@ import { CreatureInstance } from "lib/types/entities/creature";
 import { isTargetACreature } from "lib/gamedata/CanTarget";
 import { EntityInstance } from "lib/types/entity";
 import { CreatureId } from "lib/gamedata/entities";
+import Recipe from "lib/types/Recipe";
 
 export default function useGameState(): GameState | undefined {
   const [gameState, setGameState] = useState<GameState>();
 
+  // Log the socket ID and set up event listeners
   useEffect(() => {
     console.log("Socket ID:", socket.id);
 
@@ -22,17 +24,7 @@ export default function useGameState(): GameState | undefined {
     socket.on("setGameState", (newGameState: SerializedEJSON<GameState>) => {
       const parsedGameState: GameState = EJSON.parse(newGameState);
 
-      restoreFieldsAndMethods(parsedGameState.self, new PlayerInstance());
-      for (const creature of parsedGameState.location.entities) {
-        restoreFieldsAndMethods(
-          creature,
-          creature.definitionId === "player"
-            ? new PlayerInstance()
-            : isTargetACreature(parsedGameState.self, creature)
-            ? new CreatureInstance(creature.definitionId as CreatureId)
-            : new EntityInstance(creature.definitionId)
-        );
-      }
+      restoreMethods(parsedGameState);
 
       console.log("Received game state:", parsedGameState);
       setGameState(parsedGameState);
@@ -61,6 +53,7 @@ export default function useGameState(): GameState | undefined {
     };
   });
 
+  // Set the session ID and request the game state
   useEffect(() => {
     socket.emit(
       "setSessionId",
@@ -79,4 +72,26 @@ export default function useGameState(): GameState | undefined {
   }, [socket]);
 
   return gameState;
+}
+
+function restoreMethods(gameState: GameState) {
+  restoreFieldsAndMethods(gameState.self, new PlayerInstance());
+  for (const creature of gameState.location.entities) {
+    restoreFieldsAndMethods(
+      creature,
+      creature.definitionId === "player"
+        ? new PlayerInstance()
+        : isTargetACreature(gameState.self, creature)
+        ? new CreatureInstance(creature.definitionId as CreatureId)
+        : new EntityInstance(creature.definitionId)
+    );
+  }
+
+  for (const interaction of gameState.interactions) {
+    if (interaction.recipes) {
+      for (const recipe of interaction.recipes) {
+        restoreFieldsAndMethods(recipe, new Recipe({}, []));
+      }
+    }
+  }
 }

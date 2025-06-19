@@ -29,7 +29,7 @@ export default class Recipe {
   hasInput(inventory: Inventory): boolean {
     return Object.entries(this.input).every(
       ([itemId, quantity]) =>
-        inventory.getById(itemId as ItemId)?.amount ?? 0 >= quantity
+        inventory.getCountById(itemId as ItemId) >= quantity
     );
   }
 
@@ -56,10 +56,8 @@ export default class Recipe {
     }
 
     for (const [itemId, quantity] of Object.entries(this.input)) {
-      const item = inventory.getById(itemId as ItemId);
-      if (item) {
-        inventory.remove({ ...item, amount: quantity });
-      }
+      const amt = inventory.getCountById(itemId as ItemId);
+      inventory.removeById(itemId as ItemId, amt);
     }
 
     for (const item of this.output) {
@@ -69,11 +67,20 @@ export default class Recipe {
     return true;
   }
 
+  getInputText(): string {
+    return Object.entries(this.input)
+      .map(([itemId, quantity]) => {
+        const itemDef = items[itemId as ItemId];
+        return `${quantity}x ${itemDef.name}`;
+      })
+      .join(", ");
+  }
+
   getOutputText(): string {
     return this.output
       .map((item) => {
         const itemDef = items[item.definitionId];
-        return `${item.amount}x ${itemDef.name}`;
+        return `${itemDef.name} ${item.amount}x`;
       })
       .join(", ");
   }

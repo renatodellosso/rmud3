@@ -54,7 +54,11 @@ export default function useActionBar(gameState: GameState) {
         }
 
         const interactableEntities = gameState.location.entities.filter(
-          (entity) => entity.interactable
+          (entity) =>
+            entity.interactable &&
+            !gameState.interactions.find(
+              (i) => i.entityId.toString() === entity._id.toString()
+            )
         );
 
         if (interactableEntities.length) {

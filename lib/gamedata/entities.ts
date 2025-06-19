@@ -129,8 +129,8 @@ const entities: Record<EntityId, EntityDefinition> = {
       {
         item: "skull",
         amount: [0, 1],
-        weight: 0.2
-      }
+        weight: 0.2,
+      },
     ]),
     tick: (creature, delta) =>
       activateAbilityOnTick(
@@ -211,6 +211,7 @@ const entities: Record<EntityId, EntityDefinition> = {
   anvil: {
     name: "Anvil",
     interact: craftingInteraction(
+      "Crafting at Anvil",
       new RecipeGroup([
         new Recipe(
           {
@@ -219,6 +220,13 @@ const entities: Record<EntityId, EntityDefinition> = {
           },
           "test"
         ),
+        new Recipe(
+          {
+            bone: 1,
+          },
+          { definitionId: "test2", amount: 3 }
+        ),
+        new Recipe({}, "bone"),
       ])
     ),
   },
