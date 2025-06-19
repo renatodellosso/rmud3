@@ -21,10 +21,7 @@ export default function populateDungeon(dungeon: Dungeon) {
 
         for (let i = 0; i < encounter.amount; i++) {
           if (typeof encounter.item === "string") {
-            addEntityToLocation(
-              dungeon.locations[floor.depth][x][y]!,
-              encounter.item as EntityId
-            );
+            addEntityToLocation(location, encounter.item as EntityId);
 
             creatureCount++;
             continue;
@@ -40,10 +37,7 @@ export default function populateDungeon(dungeon: Dungeon) {
                   );
 
             for (let j = 0; j < amount; j++) {
-              addEntityToLocation(
-                dungeon.locations[floor.depth][x][y]!,
-                creatureGroup.creature
-              );
+              addEntityToLocation(location, creatureGroup.creature);
 
               creatureCount++;
             }
