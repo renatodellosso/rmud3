@@ -10,12 +10,12 @@ type ItemGroup = {
 export default class Recipe {
   input: ItemGroup;
   output: ItemInstance[];
-  canCraft?: (player: PlayerInstance) => boolean;
+  isAllowToCraft?: (player: PlayerInstance) => boolean;
 
   constructor(
     input: ItemGroup,
     output: ItemInstance[] | ItemInstance | ItemId,
-    canCraft?: (player: PlayerInstance) => boolean
+    isAllowToCraft?: (player: PlayerInstance) => boolean
   ) {
     this.input = input;
     this.output = Array.isArray(output)
@@ -23,7 +23,7 @@ export default class Recipe {
       : typeof output === "object"
       ? [output]
       : [{ definitionId: output, amount: 1 }];
-    this.canCraft = canCraft;
+    this.isAllowToCraft = isAllowToCraft;
   }
 
   hasInput(inventory: Inventory): boolean {
@@ -79,7 +79,7 @@ export class RecipeGroup {
 
   getCraftableRecipes(player?: PlayerInstance): Recipe[] {
     return player
-      ? this.recipes.filter((r) => r.canCraft?.(player) ?? true)
+      ? this.recipes.filter((r) => r.isAllowToCraft?.(player) ?? true)
       : this.recipes;
   }
 }
