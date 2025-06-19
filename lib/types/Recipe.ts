@@ -2,6 +2,7 @@ import items, { ItemId } from "lib/gamedata/items";
 import { PlayerInstance } from "./player";
 import Inventory from "./Inventory";
 import { ItemInstance } from "./item";
+import { savePlayer } from "lib/utils";
 
 type ItemGroup = {
   [key in ItemId]?: number;
@@ -50,13 +51,12 @@ export default class Recipe {
   /**
    * @returns true if the crafting was successful, false otherwise.
    */
-  craft(inventory: Inventory, player: PlayerInstance): boolean {
+  craft(inventory: Inventory): boolean {
     if (!this.hasInput(inventory) || !this.hasRoomForOutput(inventory)) {
       return false;
     }
 
     for (const [itemId, quantity] of Object.entries(this.input)) {
-      const amt = inventory.getCountById(itemId as ItemId);
       inventory.removeById(itemId as ItemId, quantity);
     }
 

@@ -2,6 +2,7 @@ import { getIo } from "lib/ClientFriendlyIo";
 import { EntityInstance, Interaction } from "lib/types/entity";
 import { PlayerInstance } from "lib/types/player";
 import { RecipeGroup } from "lib/types/Recipe";
+import { savePlayer } from "lib/utils";
 
 export default function craftingInteraction(
   title: string,
@@ -77,6 +78,8 @@ export default function craftingInteraction(
       player._id.toString(),
       `You successfully crafted ${recipe.getOutputText()}.`
     );
+
+    savePlayer(player);
 
     return interaction;
   };
