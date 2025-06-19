@@ -2,6 +2,7 @@ import { Interaction } from "lib/types/entity";
 import Inventory from "../../lib/types/Inventory";
 import { socket } from "lib/socket";
 import items, { ItemId } from "lib/gamedata/items";
+import ItemTooltip from "../ItemTooltip";
 
 export default function CraftingMenu({
   inventory,
@@ -42,14 +43,20 @@ export default function CraftingMenu({
                 {Object.entries(recipe.input).map(([id, amt], index, arr) => (
                   <span key={id}>
                     <span
-                      className={
+                      className={`${
                         inventory.getCountById(id as ItemId) < amt
                           ? "text-red-500"
                           : ""
-                      }
+                      } tooltip`}
                     >
                       {items[id as ItemId].name} x{amt} (
                       {inventory.getCountById(id as ItemId)})
+                      <ItemTooltip
+                        item={{
+                          definitionId: id as ItemId,
+                          amount: amt,
+                        }}
+                      />
                     </span>
                     {index < arr.length - 1 ? ", " : ""}
                   </span>
@@ -57,9 +64,10 @@ export default function CraftingMenu({
               </td>
               <td>
                 {recipe.output.map((item, index) => (
-                  <span key={index}>
+                  <span key={index} className="tooltip">
                     {items[item.definitionId].name} x{item.amount} (
                     {inventory.get(item)?.amount ?? 0})
+                    <ItemTooltip item={item} />
                   </span>
                 ))}
               </td>
