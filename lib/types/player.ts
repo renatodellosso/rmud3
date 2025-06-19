@@ -11,7 +11,7 @@ import {
 import { EquipmentDefinition, ItemInstance, ItemTag } from "./item";
 import Ability, { AbilitySource, AbilityWithSource } from "./Ability";
 import items from "lib/gamedata/items";
-import { ConsumableHotbar, EquipmentHotbar } from "./Hotbar";
+import { EquipmentHotbar } from "./Hotbar";
 import { getFromOptionalFunc, restoreFieldsAndMethods } from "lib/utils";
 import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";
@@ -34,8 +34,6 @@ export class PlayerInstance extends CreatureInstance {
 
   inventory: DirectInventory = new DirectInventory();
   equipment: EquipmentHotbar = new EquipmentHotbar();
-  consumables: ConsumableHotbar = new ConsumableHotbar();
-
   getMaxHealth(): number {
     let val = super.getMaxHealth();
 
@@ -66,7 +64,9 @@ export class PlayerInstance extends CreatureInstance {
     const abilities = super.getAbilities();
 
     for (const equipment of this.equipment.items.concat(
-      this.consumables.items
+      this.inventory.items.filter((item) =>
+        items[item.definitionId].tags.includes(ItemTag.Equipment)
+      )
     )) {
       const def = items[equipment.definitionId] as EquipmentDefinition;
       if (!def.getAbilities) continue;
@@ -135,7 +135,6 @@ export function getDefaultPlayerAndProgress(): PlayerSave {
     xp: 0,
     inventory: new DirectInventory(),
     equipment: new EquipmentHotbar(),
-    consumables: new ConsumableHotbar(),
     health: 0,
     canActAt: new Date(),
     lastActedAt: new Date(),

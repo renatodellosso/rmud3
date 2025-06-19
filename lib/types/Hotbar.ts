@@ -53,20 +53,3 @@ export class EquipmentHotbar extends Hotbar {
     return true;
   }
 }
-
-export class ConsumableHotbar extends Hotbar {
-  getCapacity(player: PlayerInstance): number {
-    return 3; // Example capacity
-  }
-
-  canEquip(player: PlayerInstance, item: ItemInstance): boolean {
-    if (!super.canEquip(player, item)) return false;
-
-    const def = items[item.definitionId] as EquipmentDefinition;
-    if (!def.tags.includes(ItemTag.Consumable)) return false;
-
-    if (def.canEquip && !def.canEquip!(player)) return false;
-
-    return true;
-  }
-}
