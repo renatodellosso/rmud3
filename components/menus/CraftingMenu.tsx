@@ -28,7 +28,7 @@ export default function CraftingMenu({
           Exit
         </button>
       </div>
-      <table>
+      <table className="border-separate border-spacing-y-2">
         <thead>
           <tr>
             <th>Input (in inventory)</th>
