@@ -38,6 +38,7 @@ export class PlayerInstance extends CreatureInstance {
 
   level: number = 0;
   xp: number = 0;
+  abilityScoreIncreases: number = 0;
 
   inventory: DirectInventory = new DirectInventory();
   equipment: EquipmentHotbar = new EquipmentHotbar();
@@ -121,16 +122,20 @@ export class PlayerInstance extends CreatureInstance {
     const io = getIo();
     io.sendMsgToPlayer(this._id.toString(), `You gained ${amount} XP!`);
 
-    if (this.xp >= XpForNextLevel[this.level]) {
-      this.level++;
-      io.sendMsgToPlayer(
-        this._id.toString(),
-        `You leveled up! You are now level ${this.level}.`
-      );
-    }
+    if (this.xp >= XpForNextLevel[this.level]) this.levelUp();
 
     io.updateGameState(this._id.toString());
     savePlayer(this);
+  }
+
+  levelUp() {
+    this.level++;
+    this.abilityScoreIncreases++;
+
+    getIo().sendMsgToPlayer(
+      this._id.toString(),
+      `You leveled up! You are now level ${this.level}.`
+    );
   }
 
   recalculateMaxWeight() {

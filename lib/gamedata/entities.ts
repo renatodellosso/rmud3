@@ -12,7 +12,8 @@ import { getIo } from "lib/ClientFriendlyIo";
 import craftingInteraction from "./interactions/craftingInteraction";
 import Recipe, { RecipeGroup } from "lib/types/Recipe";
 import { ContainerDefinition } from "lib/types/entities/container";
-import containerInteraction from './interactions/containerInteraction';
+import containerInteraction from "./interactions/containerInteraction";
+import { savePlayer } from "lib/utils";
 
 export type CreatureId =
   | "test"
@@ -21,7 +22,12 @@ export type CreatureId =
   | "zombie"
   | "skeleton";
 
-export type EntityId = CreatureId | "container" | "signPost" | "anvil";
+export type EntityId =
+  | CreatureId
+  | "container"
+  | "signPost"
+  | "anvil"
+  | "mystic";
 
 const entities: Record<EntityId, EntityDefinition> = {
   test: {
@@ -254,6 +260,92 @@ const entities: Record<EntityId, EntityDefinition> = {
         new Recipe({}, "bone"),
       ])
     ),
+  },
+  mystic: {
+    name: "Mystic",
+    interact: (entity, player, interaction, action) => {
+      if (player.abilityScoreIncreases <= 0) {
+        getIo().sendMsgToPlayer(
+          player._id.toString(),
+          'The Mystic does not look at you. "Come back when you\'re ready," they say. (You have no ability score increases left.)'
+        );
+        return;
+      }
+
+      if (!interaction) {
+        getIo().sendMsgToPlayer(
+          player._id.toString(),
+          `The mystic looks at you with a knowing gaze and beckons towards the night sky. 
+          You feel a strange energy in the air, as if the stars themselves are waiting for 
+          you to make a choice. You have ${player.abilityScoreIncreases} ability score increases left.`
+        );
+
+        return {
+          entityId: entity._id,
+          type: "logOnly",
+          state: undefined,
+          actions: [
+            {
+              id: "strength",
+              text: "Increase Strength",
+            },
+            {
+              id: "constitution",
+              text: "Increase Constitution",
+            },
+            {
+              id: "intelligence",
+              text: "Increase Intelligence",
+            },
+            {
+              id: "leave",
+              text: "Goodbye",
+            },
+          ],
+        };
+      }
+
+      if (action === "leave") {
+        getIo().sendMsgToPlayer(
+          player._id.toString(),
+          "The mystic stares into the night sky as you leave."
+        );
+        return undefined;
+      }
+
+      let abilityScore: AbilityScore | undefined;
+      switch (action) {
+        case "strength":
+          abilityScore = AbilityScore.Strength;
+          break;
+        case "constitution":
+          abilityScore = AbilityScore.Constitution;
+          break;
+        case "intelligence":
+          abilityScore = AbilityScore.Intelligence;
+          break;
+        default:
+          getIo().sendMsgToPlayer(
+            player._id.toString(),
+            "The mystic looks confused."
+          );
+          return interaction;
+      }
+
+      player.abilityScores[abilityScore] += 1;
+      player.abilityScoreIncreases--;
+
+      getIo().sendMsgToPlayer(
+        player._id.toString(),
+        `The mystic increases your ${abilityScore} by 1. You now have ${player.getAbilityScore(
+          abilityScore
+        )} ${abilityScore}.`
+      );
+
+      getIo().updateGameState(player._id.toString());
+
+      savePlayer(player);
+    },
   },
 };
 
