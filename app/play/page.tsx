@@ -1,6 +1,7 @@
 "use client";
 
 import CombatMenu from "@/components/menus/CombatMenu";
+import ContainerMenu from "@/components/menus/ContainerMenu";
 import CraftingMenu from "@/components/menus/CraftingMenu";
 import InventoryMenu from "@/components/menus/InventoryMenu";
 import LocationMenu from "@/components/menus/LocationMenu";
@@ -78,7 +79,14 @@ export default function Play() {
                 interaction={interaction}
               />
             ) : (
-              <></>
+              interaction.type === "container" ? (
+                <ContainerMenu
+                  key={index}
+                  interaction={interaction}
+                />
+              ) : (
+                <></>
+              )
             )
           )}
       </div>

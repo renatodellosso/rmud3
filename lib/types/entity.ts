@@ -5,6 +5,7 @@ import { savePlayer } from "lib/utils";
 import { PlayerInstance } from "./player";
 import { LocationId } from "lib/gamedata/rawLocations";
 import Recipe, { RecipeGroup } from "./Recipe";
+import Inventory from "./Inventory";
 
 export type EntityDefinition = {
   name: string;
@@ -78,7 +79,7 @@ export class EntityInstance {
 
 export type Interaction = {
   entityId: ObjectId;
-  type: "logOnly" | "crafting";
+  type: "logOnly" | "crafting" | "container";
   state?: any;
   actions?: { id: string; text: string }[];
   title?: string;

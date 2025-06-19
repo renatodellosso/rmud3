@@ -11,8 +11,10 @@ import { DamageType } from "lib/types/types";
 export type ItemId =
   | "test"
   | "test2"
+  | "rmud3ForDummies"
   | "bone"
   | "skull"
+  | "eyeball"
   | "equipment1"
   | "equipment2"
   | "chestplate1"
@@ -32,6 +34,12 @@ const items = Object.freeze({
     description: "This is another test item.",
     weight: 2,
   },
+  rmud3ForDummies: {
+    name: "RMUD3 For Dummies",
+    tags: [],
+    description: "...",
+    weight: 2.5,
+  },
   bone: {
     name: "Bone",
     tags: [],
@@ -43,6 +51,12 @@ const items = Object.freeze({
     tags: [],
     description: "TODO: add a witty description.",
     weight: 1,
+  },
+  eyeball: {
+    name: "Eyeball",
+    tags: [],
+    description: "A squishy eyeball that fell from it's socket",
+    weight: 0.2,
   },
   equipment1: {
     name: "Test Equipment",

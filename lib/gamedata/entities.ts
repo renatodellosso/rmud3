@@ -11,6 +11,8 @@ import { ItemId } from "./items";
 import { getIo } from "lib/ClientFriendlyIo";
 import craftingInteraction from "./interactions/craftingInteraction";
 import Recipe, { RecipeGroup } from "lib/types/Recipe";
+import { ContainerDefinition } from "lib/types/entities/container";
+import containerInteraction from './interactions/containerInteraction';
 
 export type CreatureId =
   | "test"
@@ -31,7 +33,13 @@ const entities: Record<EntityId, EntityDefinition> = {
       [AbilityScore.Intelligence]: 10,
     },
     maxDrops: 1,
-    lootTable: new WeightedTable<ItemId>([]),
+    lootTable: new WeightedTable<ItemId>([
+      {
+        item: "test",
+        amount: [0, 1],
+        weight: 1,
+      },
+    ]),
   } as CreatureDefinition,
   player: {
     name: "Player",
@@ -71,7 +79,13 @@ const entities: Record<EntityId, EntityDefinition> = {
       ),
     ],
     maxDrops: 1,
-    lootTable: new WeightedTable<ItemId>([]),
+    lootTable: new WeightedTable<ItemId>([
+      {
+        item: "rmud3ForDummies",
+        amount: [1, 1],
+        weight: 1,
+      },
+    ]),
     tick: (creature, delta) =>
       activateAbilityOnTick(
         creature as CreatureInstance,
@@ -92,8 +106,14 @@ const entities: Record<EntityId, EntityDefinition> = {
         CanTarget.isPlayer,
       ]),
     ],
-    maxDrops: 2,
-    lootTable: new WeightedTable<ItemId>([]),
+    maxDrops: 1,
+    lootTable: new WeightedTable<ItemId>([
+      {
+        item: "eyeball",
+        amount: [0, 2],
+        weight: 1,
+      },
+    ]),
     tick: (creature, delta) =>
       activateAbilityOnTick(
         creature as CreatureInstance,
@@ -141,7 +161,8 @@ const entities: Record<EntityId, EntityDefinition> = {
   } as CreatureDefinition,
   container: {
     name: "Container",
-  },
+    interact: containerInteraction()
+  } as ContainerDefinition,
   signPost: {
     name: "Sign Post",
     interact: (entity, player, interaction, action) => {
