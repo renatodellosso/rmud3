@@ -37,7 +37,7 @@ export default function CraftingMenu({
         </thead>
         <tbody>
           {interaction.recipes!.map((recipe, index) => (
-            <tr key={index}>
+            <tr key={index} className="hover:bg-gray-900">
               <td>
                 {Object.entries(recipe.input).map(([id, amt], index, arr) => (
                   <span key={id}>
