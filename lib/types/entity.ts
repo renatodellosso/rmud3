@@ -77,7 +77,7 @@ export class EntityInstance {
 
 export type Interaction = {
   entityId: ObjectId;
-  type: "logOnly";
-  state: any;
+  type: "logOnly" | "crafting";
+  state?: any;
   actions?: { id: string; text: string }[];
 };

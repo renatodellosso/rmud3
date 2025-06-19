@@ -68,6 +68,15 @@ export default class Recipe {
 
     return true;
   }
+
+  getOutputText(): string {
+    return this.output
+      .map((item) => {
+        const itemDef = items[item.definitionId];
+        return `${item.amount}x ${itemDef.name}`;
+      })
+      .join(", ");
+  }
 }
 
 export class RecipeGroup {
@@ -77,7 +86,7 @@ export class RecipeGroup {
     this.recipes = recipes;
   }
 
-  getCraftableRecipes(player?: PlayerInstance): Recipe[] {
+  getAllowedRecipes(player?: PlayerInstance): Recipe[] {
     return player
       ? this.recipes.filter((r) => r.isAllowToCraft?.(player) ?? true)
       : this.recipes;

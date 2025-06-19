@@ -1,6 +1,7 @@
 "use client";
 
 import CombatMenu from "@/components/menus/CombatMenu";
+import CraftingMenu from "@/components/menus/CraftingMenu";
 import LocationMenu from "@/components/menus/LocationMenu";
 import PlayerInfoMenu from "@/components/menus/PlayerInfoMenu";
 import PrimaryMenu from "@/components/menus/PrimaryMenu";
@@ -62,6 +63,15 @@ export default function Play() {
         {openMenus.includes(Menu.Location) && (
           <LocationMenu gameState={gameState} />
         )}
+        {gameState.interactions
+          .filter((i) => i.type !== "logOnly")
+          .map((interaction) =>
+            interaction.type === "crafting" ? (
+              <CraftingMenu gameState={gameState} interaction={interaction} />
+            ) : (
+              <></>
+            )
+          )}
       </div>
     </div>
   );

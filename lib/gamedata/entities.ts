@@ -8,6 +8,8 @@ import * as CanTarget from "lib/gamedata/CanTarget";
 import { activateAbilityOnTick, selectRandomAbility } from "lib/entityutils";
 import { EntityDefinition, EntityInstance } from "lib/types/entity";
 import { getIo } from "lib/ClientFriendlyIo";
+import craftingInteraction from "./interactions/craftingInteraction";
+import Recipe, { RecipeGroup } from "lib/types/Recipe";
 
 export type CreatureId =
   | "test"
@@ -16,7 +18,7 @@ export type CreatureId =
   | "zombie"
   | "skeleton";
 
-export type EntityId = CreatureId | "container" | "signPost";
+export type EntityId = CreatureId | "container" | "signPost" | "anvil";
 
 const entities: Record<EntityId, EntityDefinition> = {
   test: {
@@ -185,6 +187,20 @@ const entities: Record<EntityId, EntityDefinition> = {
 
       return undefined;
     },
+  },
+  anvil: {
+    name: "Anvil",
+    interact: craftingInteraction(
+      new RecipeGroup([
+        new Recipe(
+          {
+            test: 1,
+            test2: 1,
+          },
+          "test"
+        ),
+      ])
+    ),
   },
 };
 
