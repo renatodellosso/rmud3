@@ -17,6 +17,7 @@ import getSocketsByPlayerInstanceIds from "lib/getSocketsByPlayerInstanceIds";
 import { LocationId } from "lib/gamedata/rawLocations";
 import entities from "lib/gamedata/entities";
 import { EntityInstance } from "./entity";
+import { CreatureInstance } from "./entities/creature";
 
 export type TypedSocket = Socket<
   ClientToServerEvents,
@@ -127,7 +128,10 @@ export function updateGameState(socket: TypedSocket) {
 
   const location = locations[player.instance.location];
 
-  const entityList = Array.from(location.entities) as (EntityInstance & {
+  // Clone entities to avoid modifying the original objects
+  const entityList = Array.from(location.entities).map((e) =>
+    structuredClone(e)
+  ) as (EntityInstance & {
     interactable: boolean;
   })[];
 
@@ -140,6 +144,8 @@ export function updateGameState(socket: TypedSocket) {
           ? def.canInteract(entity, player.instance as PlayerInstance)
           : true)) ??
       false;
+
+    if (entity instanceof CreatureInstance) entity.prepForGameState();
   }
 
   player.instance.recalculateMaxWeight();

@@ -16,6 +16,7 @@ import { getFromOptionalFunc, restoreFieldsAndMethods } from "lib/utils";
 import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";
 import { LocationId } from "lib/gamedata/rawLocations";
+import { EntityInstance } from "./entity";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -83,8 +84,8 @@ export class PlayerInstance extends CreatureInstance {
     return abilities;
   }
 
-  takeDamage(amount: number, type: DamageType): number {
-    const damageTaken = super.takeDamage(amount, type);
+  takeDamage(amount: number, type: DamageType, source: EntityInstance): number {
+    const damageTaken = super.takeDamage(amount, type, source);
 
     if (this.health > 0 && damageTaken > 0)
       getIo().emit(this._id.toString(), "tookDamage", damageTaken);
