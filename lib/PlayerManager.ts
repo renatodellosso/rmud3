@@ -129,6 +129,8 @@ export async function savePlayerServerOnly(instance: PlayerInstance) {
     CollectionId.PlayerProgresses
   );
 
-  instanceCollection.upsert(instance);
+  const { damagers, ...instanceData } = instance as PlayerInstance;
+
+  instanceCollection.upsert(instanceData as PlayerInstance);
   progressCollection.upsert(progress!);
 }

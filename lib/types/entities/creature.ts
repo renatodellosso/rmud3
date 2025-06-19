@@ -37,7 +37,7 @@ export class CreatureInstance extends EntityInstance {
   /**
    * Maps Entity IDs to the amount of damage they have dealt to this creature.
    */
-  damagers: { [_id: string]: { entity: EntityInstance; damage: number } } = {};
+  damagers: DamagerList = new DamagerList();
 
   constructor(
     definitionId: CreatureId = undefined as any,
@@ -83,10 +83,7 @@ export class CreatureInstance extends EntityInstance {
   takeDamage(amount: number, type: DamageType, source: EntityInstance): number {
     amount = Math.min(Math.max(amount, 0), this.health);
 
-    this.damagers[source._id.toString()] = {
-      entity: source,
-      damage: (this.damagers[source._id.toString()]?.damage ?? 0) + amount,
-    };
+    this.damagers.addDamage(source, amount);
 
     this.health -= amount;
 
@@ -105,6 +102,10 @@ export class CreatureInstance extends EntityInstance {
     io.sendMsgToRoom(location.id, `${this.name} has died.`);
 
     let items: ItemInstance[] = [];
+
+    this.damagers.distributeXp(
+      (entities[this.definitionId] as CreatureDefinition).xpValue
+    );
 
     for (let i = 0; i < this.getDef().maxDrops; i++) {
       const drop = this.getDef().lootTable.roll();
@@ -127,25 +128,7 @@ export class CreatureInstance extends EntityInstance {
     );
     location.entities.add(corpse);
 
-    this.distributeXp();
-
     io.updateGameStateForRoom(location.id);
-  }
-
-  distributeXp() {
-    let totalDamage = 0;
-    Object.values(this.damagers).forEach(
-      ({ damage }) => (totalDamage += damage)
-    );
-
-    if (totalDamage === 0) return;
-
-    const xpPerDamage = this.getDef().xpValue / totalDamage;
-    Object.values(this.damagers).forEach(({ damage, entity }) => {
-      if ("xp" in entity && typeof entity.xp === "number") {
-        entity.xp += Math.floor(damage * xpPerDamage);
-      }
-    });
   }
 
   activateAbility(
@@ -169,6 +152,51 @@ export class CreatureInstance extends EntityInstance {
   }
 
   prepForGameState() {
-    this.damagers = {};
+    this.damagers = new DamagerList();
+  }
+}
+
+class DamagerList {
+  damagers: { [key: string]: { entity: EntityInstance; damage: number } } = {};
+
+  addDamage(entity: EntityInstance, damage: number) {
+    const id = entity._id.toString();
+    if (!this.damagers[id]) {
+      this.damagers[id] = { entity, damage };
+    } else {
+      this.damagers[id].damage += damage;
+    }
+  }
+
+  getTotalDamage() {
+    return Object.values(this.damagers).reduce(
+      (total, { damage }) => total + damage,
+      0
+    );
+  }
+
+  distributeXp(xp: number) {
+    console.log(
+      `Distributing ${xp} XP among ${
+        Object.keys(this.damagers).length
+      } damagers`
+    );
+
+    let totalDamage = this.getTotalDamage();
+
+    if (totalDamage === 0) {
+      return;
+    }
+
+    for (const damager of Object.values(this.damagers)) {
+      const share = (damager.damage / totalDamage) * xp;
+
+      if (
+        "addXp" in damager.entity &&
+        typeof damager.entity.addXp === "function"
+      ) {
+        damager.entity.addXp(share);
+      }
+    }
   }
 }

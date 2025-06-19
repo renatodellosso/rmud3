@@ -110,7 +110,7 @@ const entities: Record<EntityId, EntityDefinition> = {
     health: 15,
     abilityScores: {
       [AbilityScore.Strength]: 4,
-      [AbilityScore.Constitution]: 4,
+      [AbilityScore.Constitution]: 0,
       [AbilityScore.Intelligence]: 1,
     },
     intrinsicAbilities: [

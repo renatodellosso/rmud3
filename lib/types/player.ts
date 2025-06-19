@@ -109,6 +109,12 @@ export class PlayerInstance extends CreatureInstance {
     getIo().clearInteractions(this._id.toString());
   }
 
+  addXp(amount: number): void {
+    this.xp += amount;
+
+    getIo().sendMsgToPlayer(this._id.toString(), `You gained ${amount} XP!`);
+  }
+
   recalculateMaxWeight() {
     this.inventory.maxWeight =
       100 + this.getAbilityScore(AbilityScore.Strength) * 10;

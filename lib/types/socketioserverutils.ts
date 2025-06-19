@@ -115,7 +115,6 @@ export function getPlayer(socket: TypedSocket) {
   const player = playerManager.getPlayerByInstanceId(
     socket.data.session!.playerInstanceId
   );
-
   if (!player) {
     throw new Error(
       `Player with instance ID ${
@@ -157,13 +156,10 @@ export function updateGameState(socket: TypedSocket) {
   player.instance.recalculateMaxWeight();
 
   // Clean up player instance
-  const { damagers, ...copiedInstanceRaw } = player.instance as PlayerInstance;
-  const copiedInstance = copiedInstanceRaw as PlayerInstance;
-  restoreFieldsAndMethods(copiedInstance, new PlayerInstance());
-  copiedInstance.prepForGameState();
+  player.instance.prepForGameState();
 
   const gameState: GameState = {
-    self: copiedInstance,
+    self: player.instance,
     progress: player.progress,
     location: {
       // Leave out floor from dungeon locations
