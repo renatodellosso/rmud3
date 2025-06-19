@@ -27,7 +27,8 @@ export type EntityId =
   | "container"
   | "signPost"
   | "anvil"
-  | "mystic";
+  | "mystic"
+  | "tavernKeeper";
 
 const entities: Record<EntityId, EntityDefinition> = {
   test: {
@@ -345,6 +346,63 @@ const entities: Record<EntityId, EntityDefinition> = {
       getIo().updateGameState(player._id.toString());
 
       savePlayer(player);
+    },
+  },
+  tavernKeeper: {
+    name: "Tavern Keeper",
+    interact: (entity, player, interaction, action) => {
+      if (!interaction) {
+        return {
+          entityId: entity._id,
+          type: "logOnly",
+          state: undefined,
+          actions: [
+            {
+              id: "rent",
+              text: "Rent Room (5 gold, restores health)",
+            },
+            {
+              id: "leave",
+              text: "Leave Tavern",
+            },
+          ],
+        };
+      }
+
+      if (action === "rent") {
+        if (player.inventory.getCountById("money") < 5) {
+          getIo().sendMsgToPlayer(
+            player._id.toString(),
+            "You don't have enough money to rent a room."
+          );
+          return interaction;
+        }
+
+        player.inventory.removeById("money", 5);
+        player.health = player.getMaxHealth();
+
+        savePlayer(player);
+
+        const io = getIo();
+        io.sendMsgToPlayer(
+          player._id.toString(),
+          "\"Here's the key. Room's upstairs,\" the tavern keeper says."
+        );
+        io.sendMsgToPlayer(
+          player._id.toString(),
+          "You rest for several hours. Your health is fully restored."
+        );
+        io.updateGameState(player._id.toString());
+
+        return undefined;
+      }
+
+      if (action === "leave") {
+        getIo().sendMsgToPlayer(player._id.toString(), "You walk away.");
+        return undefined;
+      }
+
+      return interaction;
     },
   },
 };

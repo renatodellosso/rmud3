@@ -19,7 +19,8 @@ export type ItemId =
   | "equipment2"
   | "chestplate1"
   | "consumable1"
-  | "rustySword";
+  | "rustySword"
+  | "money";
 
 const items = Object.freeze({
   test: {
@@ -98,6 +99,12 @@ const items = Object.freeze({
       ),
     ],
   } satisfies EquipmentDefinition,
+  money: {
+    name: "Silver Coin",
+    tags: [],
+    description: "A small silver coin.",
+    weight: 0,
+  },
 } as Record<ItemId, ItemDefinition>);
 
 export default items;
