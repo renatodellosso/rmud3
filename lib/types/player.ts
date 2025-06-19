@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
 import { CreatureInstance } from "./entities/creature";
-import Inventory, { DirectInventory } from "./Inventory";
+import Inventory, { DirectInventory, PlayerDirectInventory } from "./Inventory";
 import {
   AbilityScore,
   CannotDirectlyCreateInstanceError,
@@ -32,7 +32,7 @@ export class PlayerInstance extends CreatureInstance {
 
   xp: number = 0;
 
-  inventory: Inventory = new DirectInventory();
+  inventory: PlayerDirectInventory = new PlayerDirectInventory();
   equipment: EquipmentHotbar = new EquipmentHotbar();
   consumables: ConsumableHotbar = new ConsumableHotbar();
 

@@ -56,8 +56,8 @@ export default function CraftingMenu({
                 ))}
               </td>
               <td>
-                {recipe.output.map((item) => (
-                  <span>
+                {recipe.output.map((item, index) => (
+                  <span key={index}>
                     {items[item.definitionId].name} x{item.amount} (
                     {inventory.get(item)?.amount ?? 0})
                   </span>

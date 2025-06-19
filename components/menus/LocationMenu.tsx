@@ -3,7 +3,7 @@ import { AbilityScore, GameState } from "lib/types/types";
 
 export default function LocationMenu({ gameState }: { gameState: GameState }) {
   return (
-    <div key="Location" className="border w-1/6 flex flex-col gap-2">
+    <div className="border w-1/6 flex flex-col gap-2">
       <h1 className="text-xl">{gameState.location.name}</h1>
       <div>
         <h2 className="text-lg">Entities</h2>

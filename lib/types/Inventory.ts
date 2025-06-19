@@ -1,6 +1,8 @@
 import items, { ItemId } from "../gamedata/items";
 import { ItemInstance } from "./item";
 import { areItemInstancesEqual } from "../utils";
+import { PlayerInstance } from "./player";
+import { AbilityScore } from "./types";
 
 export default interface Inventory {
   /**
@@ -124,5 +126,15 @@ export class DirectInventory implements Inventory {
     return this.items
       .filter((item) => item.definitionId === itemId)
       .reduce((acc, item) => acc + item.amount, 0);
+  }
+}
+
+export class PlayerDirectInventory extends DirectInventory {
+  constructor(items: ItemInstance[] = []) {
+    super(items);
+  }
+
+  getMaxWeightFromPlayer(player: PlayerInstance) {
+    return 100 + player.abilityScores[AbilityScore.Strength] * 10;
   }
 }

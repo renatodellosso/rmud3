@@ -2,6 +2,7 @@
 
 import CombatMenu from "@/components/menus/CombatMenu";
 import CraftingMenu from "@/components/menus/CraftingMenu";
+import InventoryMenu from "@/components/menus/InventoryMenu";
 import LocationMenu from "@/components/menus/LocationMenu";
 import PlayerInfoMenu from "@/components/menus/PlayerInfoMenu";
 import PrimaryMenu from "@/components/menus/PrimaryMenu";
@@ -14,6 +15,7 @@ enum Menu {
   PlayerInfo = "Player Info",
   Combat = "Combat",
   Location = "Location",
+  Inventory = "Inventory",
 }
 
 function LoadingGameState() {
@@ -62,6 +64,9 @@ export default function Play() {
         )}
         {openMenus.includes(Menu.Location) && (
           <LocationMenu gameState={gameState} />
+        )}
+        {openMenus.includes(Menu.Inventory) && (
+          <InventoryMenu self={gameState.self} />
         )}
         {gameState.interactions
           .filter((i) => i.type !== "logOnly")

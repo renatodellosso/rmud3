@@ -6,7 +6,7 @@ export default function PlayerInfoMenu({
   gameState: GameState;
 }) {
   return (
-    <div key="PlayerInfo" className="border w-1/5 flex flex-col gap-2">
+    <div className="border w-1/5 flex flex-col gap-2">
       <h2 className="text-xl">{self.name}</h2>
       <div>
         HP: {self.health}/{self.getMaxHealth()}
