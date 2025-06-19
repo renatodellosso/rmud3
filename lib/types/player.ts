@@ -15,6 +15,7 @@ import { ConsumableHotbar, EquipmentHotbar } from "./Hotbar";
 import { getFromOptionalFunc, restoreFieldsAndMethods } from "lib/utils";
 import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";
+import { LocationId } from "lib/gamedata/rawLocations";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -95,6 +96,12 @@ export class PlayerInstance extends CreatureInstance {
     super.die();
 
     respawn(this);
+  }
+
+  move(newLocationId: LocationId): void {
+    super.move(newLocationId);
+
+    getIo().clearInteractions(this._id.toString());
   }
 }
 

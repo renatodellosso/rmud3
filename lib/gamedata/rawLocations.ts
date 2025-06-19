@@ -28,6 +28,9 @@ const rawLocations: Partial<OmitType<Location, Function>>[] = [
     description:
       "You are in the center of a quiet town square. A small fire flickers in the center, casting shadows on the dirt streets.",
     exits: new Set<LocationId>(["docks", "dungeon-entrance"]),
+    entities: new Set<EntityInstance>([
+      new EntityInstance("anvil", "town-square"),
+    ]),
   },
   {
     id: "dungeon-entrance",

@@ -65,9 +65,13 @@ export default function Play() {
         )}
         {gameState.interactions
           .filter((i) => i.type !== "logOnly")
-          .map((interaction) =>
+          .map((interaction, index) =>
             interaction.type === "crafting" ? (
-              <CraftingMenu gameState={gameState} interaction={interaction} />
+              <CraftingMenu
+                key={index}
+                gameState={gameState}
+                interaction={interaction}
+              />
             ) : (
               <></>
             )

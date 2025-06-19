@@ -8,5 +8,5 @@ export default function CraftingMenu({
   gameState: GameState;
   interaction: Interaction;
 }) {
-  return <div key={interaction.entityId.toString()}></div>;
+  return <div>Crafting</div>;
 }

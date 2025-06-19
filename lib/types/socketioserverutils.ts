@@ -320,4 +320,27 @@ export class Io implements ClientFriendlyIo {
     socket.data.session.messages = [];
     return Promise.resolve();
   }
+
+  clearInteractions(playerId: string): Promise<void> {
+    const socketMap = getSocketsByPlayerInstanceIds();
+    if (!socketMap) {
+      throw new Error("SocketsByPlayerInstanceIds not initialized");
+    }
+
+    const socket = socketMap.get(playerId);
+
+    if (!socket) {
+      throw new Error(`Socket for player ${playerId} not found`);
+    }
+
+    if (!socket.data.session) {
+      console.warn(
+        `Socket ${socket.id} does not have a session. Cannot clear interactions.`
+      );
+      return Promise.resolve();
+    }
+
+    socket.data.session.interactions = [];
+    return Promise.resolve();
+  }
 }
