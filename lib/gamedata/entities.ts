@@ -108,6 +108,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         CanTarget.isPlayer,
       ]),
     ],
+    xpValue: 15,
     maxDrops: 1,
     lootTable: new WeightedTable<ItemId>([
       {
@@ -164,7 +165,7 @@ const entities: Record<EntityId, EntityDefinition> = {
   } satisfies CreatureDefinition as CreatureDefinition,
   container: {
     name: "Container",
-    interact: containerInteraction()
+    interact: containerInteraction(),
   } as ContainerDefinition,
   signPost: {
     name: "Sign Post",
