@@ -52,7 +52,7 @@ export default function populateDungeon(dungeon: Dungeon) {
 
 function addEntityToLocation(location: Location, defId: EntityId) {
   const entity =
-    "getMaxHealth" in entities[defId]
+    "health" in entities[defId]
       ? new CreatureInstance(defId as CreatureId, location.id)
       : new EntityInstance(defId, location.id);
   location.entities.add(entity);
