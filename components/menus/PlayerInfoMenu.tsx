@@ -12,6 +12,9 @@ export default function PlayerInfoMenu({
         HP: {self.health}/{self.getMaxHealth()}
       </div>
       <div>
+        XP: {self.xp.toLocaleString()}
+      </div>
+      <div>
         Ability Scores:
         <ul>
           {Object.entries(self.abilityScores).map(([ability, score]) => {

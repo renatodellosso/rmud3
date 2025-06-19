@@ -5,7 +5,11 @@ import {
   ServerToClientEvents,
   SocketData,
 } from "./socketiotypes";
-import { getFromOptionalFunc, getSingleton } from "lib/utils";
+import {
+  getFromOptionalFunc,
+  getSingleton,
+  restoreFieldsAndMethods,
+} from "lib/utils";
 import locations from "lib/locations";
 import getPlayerManager from "lib/PlayerManager";
 import { ExitData, GameState } from "./types";
@@ -129,9 +133,11 @@ export function updateGameState(socket: TypedSocket) {
   const location = locations[player.instance.location];
 
   // Clone entities to avoid modifying the original objects
-  const entityList = Array.from(location.entities).map((e) =>
-    structuredClone(e)
-  ) as (EntityInstance & {
+  const entityList = Array.from(location.entities).map((e) => {
+    const { damagers, ...newEntity } = e as CreatureInstance;
+
+    return newEntity as any as EntityInstance;
+  }) as (EntityInstance & {
     interactable: boolean;
   })[];
 
@@ -150,8 +156,14 @@ export function updateGameState(socket: TypedSocket) {
 
   player.instance.recalculateMaxWeight();
 
+  // Clean up player instance
+  const { damagers, ...copiedInstanceRaw } = player.instance as PlayerInstance;
+  const copiedInstance = copiedInstanceRaw as PlayerInstance;
+  restoreFieldsAndMethods(copiedInstance, new PlayerInstance());
+  copiedInstance.prepForGameState();
+
   const gameState: GameState = {
-    self: player.instance,
+    self: copiedInstance,
     progress: player.progress,
     location: {
       // Leave out floor from dungeon locations

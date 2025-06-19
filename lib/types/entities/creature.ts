@@ -37,7 +37,7 @@ export class CreatureInstance extends EntityInstance {
   /**
    * Maps Entity IDs to the amount of damage they have dealt to this creature.
    */
-  damagers: Map<EntityInstance, number> = new Map();
+  damagers: { [_id: string]: { entity: EntityInstance; damage: number } } = {};
 
   constructor(
     definitionId: CreatureId = undefined as any,
@@ -83,7 +83,10 @@ export class CreatureInstance extends EntityInstance {
   takeDamage(amount: number, type: DamageType, source: EntityInstance): number {
     amount = Math.min(Math.max(amount, 0), this.health);
 
-    this.damagers.set(source, this.damagers.get(source) ?? 0 + amount);
+    this.damagers[source._id.toString()] = {
+      entity: source,
+      damage: (this.damagers[source._id.toString()]?.damage ?? 0) + amount,
+    };
 
     this.health -= amount;
 
@@ -131,12 +134,14 @@ export class CreatureInstance extends EntityInstance {
 
   distributeXp() {
     let totalDamage = 0;
-    this.damagers.forEach((damage) => (totalDamage += damage));
+    Object.values(this.damagers).forEach(
+      ({ damage }) => (totalDamage += damage)
+    );
 
     if (totalDamage === 0) return;
 
     const xpPerDamage = this.getDef().xpValue / totalDamage;
-    this.damagers.forEach((damage, entity) => {
+    Object.values(this.damagers).forEach(({ damage, entity }) => {
       if ("xp" in entity && typeof entity.xp === "number") {
         entity.xp += Math.floor(damage * xpPerDamage);
       }
@@ -164,6 +169,6 @@ export class CreatureInstance extends EntityInstance {
   }
 
   prepForGameState() {
-    this.damagers.clear();
+    this.damagers = {};
   }
 }

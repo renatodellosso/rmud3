@@ -61,13 +61,17 @@ export class PlayerInstance extends CreatureInstance {
     return val;
   }
 
+  getConsumables(): ItemInstance[] {
+    return this.inventory.items.filter((item) =>
+      items[item.definitionId].tags.includes(ItemTag.Consumable)
+    );
+  }
+
   getAbilities(): AbilityWithSource[] {
     const abilities = super.getAbilities();
 
     for (const equipment of this.equipment.items.concat(
-      this.inventory.items.filter((item) =>
-        items[item.definitionId].tags.includes(ItemTag.Equipment)
-      )
+      this.getConsumables()
     )) {
       const def = items[equipment.definitionId] as EquipmentDefinition;
       if (!def.getAbilities) continue;
