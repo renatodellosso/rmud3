@@ -224,7 +224,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           {
             bone: 1,
           },
-          { definitionId: "test2", amount: 3 }
+          { definitionId: "chestplate1", amount: 1 }
         ),
         new Recipe({}, "bone"),
       ])

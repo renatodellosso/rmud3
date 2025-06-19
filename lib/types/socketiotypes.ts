@@ -1,6 +1,7 @@
 import { LocationId } from "lib/gamedata/rawLocations";
 import Session from "./Session";
 import { GameState, PlayerSave, SerializedEJSON } from "./types";
+import { ItemInstance } from "./item";
 
 export interface ServerToClientEvents {
   hello: () => void;
@@ -42,6 +43,8 @@ export interface ClientToServerEvents {
   ) => void;
   startInteraction: (entityId: string) => void;
   interact: (entityId: string, action: any) => void;
+  equip: (item: ItemInstance) => void;
+  unequip: (item: ItemInstance) => void;
 }
 
 export interface InterServerEvents {
