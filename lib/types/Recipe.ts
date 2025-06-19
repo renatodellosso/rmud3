@@ -50,7 +50,7 @@ export default class Recipe {
   /**
    * @returns true if the crafting was successful, false otherwise.
    */
-  craft(inventory: Inventory): boolean {
+  craft(inventory: Inventory, player: PlayerInstance): boolean {
     if (!this.hasInput(inventory) || !this.hasRoomForOutput(inventory)) {
       return false;
     }

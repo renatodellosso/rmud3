@@ -142,6 +142,8 @@ export function updateGameState(socket: TypedSocket) {
       false;
   }
 
+  player.instance.recalculateMaxWeight();
+
   const gameState: GameState = {
     self: player.instance,
     progress: player.progress,

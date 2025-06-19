@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
 import { CreatureInstance } from "./entities/creature";
-import Inventory, { DirectInventory, PlayerDirectInventory } from "./Inventory";
+import Inventory, { DirectInventory } from "./Inventory";
 import {
   AbilityScore,
   CannotDirectlyCreateInstanceError,
@@ -32,7 +32,7 @@ export class PlayerInstance extends CreatureInstance {
 
   xp: number = 0;
 
-  inventory: PlayerDirectInventory = new PlayerDirectInventory();
+  inventory: DirectInventory = new DirectInventory();
   equipment: EquipmentHotbar = new EquipmentHotbar();
   consumables: ConsumableHotbar = new ConsumableHotbar();
 
@@ -102,6 +102,11 @@ export class PlayerInstance extends CreatureInstance {
     super.move(newLocationId);
 
     getIo().clearInteractions(this._id.toString());
+  }
+
+  recalculateMaxWeight() {
+    this.inventory.maxWeight =
+      100 + this.getAbilityScore(AbilityScore.Strength) * 10;
   }
 }
 

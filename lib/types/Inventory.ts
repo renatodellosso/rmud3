@@ -33,6 +33,7 @@ export default interface Inventory {
   get(item: ItemInstance): ItemInstance | undefined;
   getById(itemId: ItemId): ItemInstance | undefined;
   getCountById(itemId: ItemId): number;
+  getItems(): ItemInstance[];
 }
 
 /**
@@ -40,9 +41,11 @@ export default interface Inventory {
  */
 export class DirectInventory implements Inventory {
   items: ItemInstance[] = [];
+  maxWeight: number | undefined;
 
-  constructor(items: ItemInstance[] = []) {
+  constructor(items: ItemInstance[] = [], maxWeight?: number) {
     this.items = items;
+    this.maxWeight = maxWeight;
   }
 
   add(item: ItemInstance) {
@@ -104,7 +107,7 @@ export class DirectInventory implements Inventory {
   }
 
   getMaxWeight() {
-    return undefined;
+    return this.maxWeight;
   }
 
   getUsedWeight() {
@@ -127,14 +130,8 @@ export class DirectInventory implements Inventory {
       .filter((item) => item.definitionId === itemId)
       .reduce((acc, item) => acc + item.amount, 0);
   }
-}
 
-export class PlayerDirectInventory extends DirectInventory {
-  constructor(items: ItemInstance[] = []) {
-    super(items);
-  }
-
-  getMaxWeightFromPlayer(player: PlayerInstance) {
-    return 100 + player.abilityScores[AbilityScore.Strength] * 10;
+  getItems(): ItemInstance[] {
+    return this.items;
   }
 }
