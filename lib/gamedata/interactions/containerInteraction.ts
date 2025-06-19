@@ -20,7 +20,7 @@ export default function containerInteraction(): (
       return {
         entityId: entity._id,
         type: "container",
-        state: undefined
+        inventory: entity.inventory
       };
     }
 

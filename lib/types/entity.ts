@@ -84,4 +84,5 @@ export type Interaction = {
   actions?: { id: string; text: string }[];
   title?: string;
   recipes?: Recipe[];
+  inventory?: Inventory;
 };
