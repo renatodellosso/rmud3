@@ -57,7 +57,7 @@ export default class Recipe {
 
     for (const [itemId, quantity] of Object.entries(this.input)) {
       const amt = inventory.getCountById(itemId as ItemId);
-      inventory.removeById(itemId as ItemId, amt);
+      inventory.removeById(itemId as ItemId, quantity);
     }
 
     for (const item of this.output) {
