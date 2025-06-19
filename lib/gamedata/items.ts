@@ -8,6 +8,15 @@ import {
 import * as Abilities from "lib/gamedata/Abilities";
 import { DamageType } from "lib/types/types";
 
+export type ItemId =
+  | "test"
+  | "test2"
+  | "equipment1"
+  | "equipment2"
+  | "chestplate1"
+  | "consumable1"
+  | "rustySword";
+
 const items = Object.freeze({
   test: {
     name: "Test Item",
@@ -61,6 +70,6 @@ const items = Object.freeze({
       ),
     ],
   } satisfies EquipmentDefinition,
-} as Record<string, ItemDefinition>);
+} as Record<ItemId, ItemDefinition>);
 
 export default items;

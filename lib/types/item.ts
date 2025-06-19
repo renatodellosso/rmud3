@@ -1,4 +1,4 @@
-import items from "../gamedata/items";
+import items, { ItemId } from "../gamedata/items";
 import Ability, { AbilitySource } from "./Ability";
 import { CreatureInstance } from "./entities/creature";
 import { AbilityScore, OptionalFunc } from "./types";
@@ -11,7 +11,7 @@ export type ItemDefinition = {
 };
 
 export type ItemInstance = {
-  definitionId: keyof typeof items;
+  definitionId: ItemId;
   amount: number;
 };
 

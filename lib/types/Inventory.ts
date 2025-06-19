@@ -1,4 +1,4 @@
-import items from "../gamedata/items";
+import items, { ItemId } from "../gamedata/items";
 import { ItemInstance } from "./item";
 import { areItemInstancesEqual } from "../utils";
 
@@ -21,6 +21,7 @@ export default interface Inventory {
   getMaxWeight(): number | undefined;
 
   getUsedWeight(): number;
+  getById(itemId: ItemId): ItemInstance | undefined;
 }
 
 /**
@@ -80,5 +81,9 @@ export class DirectInventory implements Inventory {
       const itemDefinition = items[item.definitionId];
       return acc + itemDefinition.weight * item.amount;
     }, 0);
+  }
+
+  getById(itemId: ItemId) {
+    return this.items.find((item) => item.definitionId === itemId);
   }
 }
