@@ -5,7 +5,11 @@ import {
   ServerToClientEvents,
   SocketData,
 } from "./socketiotypes";
-import { getFromOptionalFunc, getSingleton } from "lib/utils";
+import {
+  getFromOptionalFunc,
+  getSingleton,
+  restoreFieldsAndMethods,
+} from "lib/utils";
 import locations from "lib/locations";
 import getPlayerManager from "lib/PlayerManager";
 import { ExitData, GameState } from "./types";
@@ -17,6 +21,7 @@ import getSocketsByPlayerInstanceIds from "lib/getSocketsByPlayerInstanceIds";
 import { LocationId } from "lib/gamedata/rawLocations";
 import entities from "lib/gamedata/entities";
 import { EntityInstance } from "./entity";
+import { CreatureInstance } from "./entities/creature";
 
 export type TypedSocket = Socket<
   ClientToServerEvents,
@@ -127,7 +132,12 @@ export function updateGameState(socket: TypedSocket) {
 
   const location = locations[player.instance.location];
 
-  const entityList = Array.from(location.entities) as (EntityInstance & {
+  // Clone entities to avoid modifying the original objects
+  const entityList = Array.from(location.entities).map((e) => {
+    const { damagers, ...newEntity } = e as CreatureInstance;
+
+    return newEntity as any as EntityInstance;
+  }) as (EntityInstance & {
     interactable: boolean;
   })[];
 
@@ -140,12 +150,20 @@ export function updateGameState(socket: TypedSocket) {
           ? def.canInteract(entity, player.instance as PlayerInstance)
           : true)) ??
       false;
+
+    if (entity instanceof CreatureInstance) entity.prepForGameState();
   }
 
   player.instance.recalculateMaxWeight();
 
+  // Clean up player instance
+  const { damagers, ...copiedInstanceRaw } = player.instance as PlayerInstance;
+  const copiedInstance = copiedInstanceRaw as PlayerInstance;
+  restoreFieldsAndMethods(copiedInstance, new PlayerInstance());
+  copiedInstance.prepForGameState();
+
   const gameState: GameState = {
-    self: player.instance,
+    self: copiedInstance,
     progress: player.progress,
     location: {
       // Leave out floor from dungeon locations

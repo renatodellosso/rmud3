@@ -16,7 +16,7 @@ enum Menu {
   PlayerInfo = "Player Info",
   Combat = "Combat",
   Location = "Location",
-  Inventory = "Inventory",
+  Inventory = "Inventory & Equipment",
 }
 
 function LoadingGameState() {

@@ -10,6 +10,7 @@ import { Targetable } from "lib/types/types";
 import entities from "lib/gamedata/entities";
 import getSessionManager from "lib/SessionManager";
 import { getIo } from "lib/ClientFriendlyIo";
+import { savePlayer } from "lib/utils";
 
 export default function registerGameListeners(socket: TypedSocket) {
   socket.on("requestGameState", () => {
@@ -162,5 +163,71 @@ export default function registerGameListeners(socket: TypedSocket) {
         );
 
     getIo().updateGameState(player.instance._id.toString());
+  });
+
+  socket.on("equip", (item) => {
+    const player = getPlayer(socket);
+
+    if (
+      player.instance.equipment.items.length >=
+      player.instance.equipment.getCapacity(player.instance)
+    ) {
+      throw new Error(
+        `Cannot equip item ${item.definitionId}: Equipment is full.`
+      );
+    }
+
+    if (!player.instance.equipment.canEquip(player.instance, item)) {
+      throw new Error(
+        `Item ${item.definitionId} cannot be equipped by player ${player.instance.name}.`
+      );
+    }
+
+    // Check if the item is in the player's inventory
+    if (!player.instance.inventory.get(item)) {
+      throw new Error(
+        `Item ${item.definitionId} not found in player's inventory.`
+      );
+    }
+
+    player.instance.equipment.equip(
+      player.instance,
+      structuredClone({
+        ...item,
+        amount: 1, // Ensure we equip one item
+      })
+    );
+
+    player.instance.inventory.remove({
+      ...item,
+      amount: 1,
+    });
+
+    getIo().updateGameState(player.instance._id.toString());
+    savePlayer(player.instance);
+  });
+
+  socket.on("unequip", (item) => {
+    const player = getPlayer(socket);
+
+    // Check if the item is equipped
+    if (!player.instance.equipment.isEquipped(item)) {
+      throw new Error(`Item ${item.definitionId} is not equipped.`);
+    }
+
+    if (!player.instance.equipment.unequip(item)) {
+      throw new Error(`Failed to unequip item ${item.definitionId}.`);
+    }
+
+    player.instance.inventory.add(
+      {
+        ...item,
+        amount: 1,
+      },
+      true
+    );
+
+    getIo().updateGameState(player.instance._id.toString());
+    savePlayer(player.instance);
   });
 }

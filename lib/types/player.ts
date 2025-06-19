@@ -11,11 +11,12 @@ import {
 import { EquipmentDefinition, ItemInstance, ItemTag } from "./item";
 import Ability, { AbilitySource, AbilityWithSource } from "./Ability";
 import items from "lib/gamedata/items";
-import { ConsumableHotbar, EquipmentHotbar } from "./Hotbar";
+import { EquipmentHotbar } from "./Hotbar";
 import { getFromOptionalFunc, restoreFieldsAndMethods } from "lib/utils";
 import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";
 import { LocationId } from "lib/gamedata/rawLocations";
+import { EntityInstance } from "./entity";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -34,8 +35,6 @@ export class PlayerInstance extends CreatureInstance {
 
   inventory: DirectInventory = new DirectInventory();
   equipment: EquipmentHotbar = new EquipmentHotbar();
-  consumables: ConsumableHotbar = new ConsumableHotbar();
-
   getMaxHealth(): number {
     let val = super.getMaxHealth();
 
@@ -62,11 +61,17 @@ export class PlayerInstance extends CreatureInstance {
     return val;
   }
 
+  getConsumables(): ItemInstance[] {
+    return this.inventory.items.filter((item) =>
+      items[item.definitionId].tags.includes(ItemTag.Consumable)
+    );
+  }
+
   getAbilities(): AbilityWithSource[] {
     const abilities = super.getAbilities();
 
     for (const equipment of this.equipment.items.concat(
-      this.consumables.items
+      this.getConsumables()
     )) {
       const def = items[equipment.definitionId] as EquipmentDefinition;
       if (!def.getAbilities) continue;
@@ -83,8 +88,8 @@ export class PlayerInstance extends CreatureInstance {
     return abilities;
   }
 
-  takeDamage(amount: number, type: DamageType): number {
-    const damageTaken = super.takeDamage(amount, type);
+  takeDamage(amount: number, type: DamageType, source: EntityInstance): number {
+    const damageTaken = super.takeDamage(amount, type, source);
 
     if (this.health > 0 && damageTaken > 0)
       getIo().emit(this._id.toString(), "tookDamage", damageTaken);
@@ -135,7 +140,6 @@ export function getDefaultPlayerAndProgress(): PlayerSave {
     xp: 0,
     inventory: new DirectInventory(),
     equipment: new EquipmentHotbar(),
-    consumables: new ConsumableHotbar(),
     health: 0,
     canActAt: new Date(),
     lastActedAt: new Date(),

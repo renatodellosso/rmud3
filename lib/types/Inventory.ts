@@ -8,7 +8,7 @@ export default interface Inventory {
   /**
    * @returns how many items were added to the inventory before hitting the weight limit.
    */
-  add(item: ItemInstance): number;
+  add(item: ItemInstance, ignoreWeight?: boolean): number;
   /**
    * Removes an item from the inventory.
    * If the item is not in the inventory, it will be ignored.
@@ -48,13 +48,13 @@ export class DirectInventory implements Inventory {
     this.maxWeight = maxWeight;
   }
 
-  add(item: ItemInstance) {
+  add(item: ItemInstance, ignoreWeight = false): number {
     const existingItem = this.items.find((i) => areItemInstancesEqual(i, item));
 
     const maxWeight = this.getMaxWeight();
     const usedWeight = this.getUsedWeight();
     const amountToAdd =
-      maxWeight === undefined
+      maxWeight === undefined || ignoreWeight
         ? item.amount
         : Math.min(
             Math.floor(

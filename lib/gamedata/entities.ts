@@ -44,6 +44,7 @@ const entities: Record<EntityId, EntityDefinition> = {
   player: {
     name: "Player",
     health: 20,
+    xpValue: 0,
     abilityScores: {
       [AbilityScore.Strength]: 0,
       [AbilityScore.Constitution]: 0,
@@ -78,6 +79,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         [CanTarget.isPlayer]
       ),
     ],
+    xpValue: 100,
     maxDrops: 1,
     lootTable: new WeightedTable<ItemId>([
       {
@@ -92,7 +94,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         delta,
         selectRandomAbility
       ),
-  } as CreatureDefinition,
+  } satisfies CreatureDefinition as CreatureDefinition,
   zombie: {
     name: "Zombie",
     health: 20,
@@ -120,7 +122,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         delta,
         selectRandomAbility
       ),
-  } as CreatureDefinition,
+  } satisfies CreatureDefinition as CreatureDefinition,
   skeleton: {
     name: "Skeleton",
     health: 15,
@@ -139,6 +141,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         [CanTarget.isPlayer]
       ),
     ],
+    xpValue: 10,
     maxDrops: 3,
     lootTable: new WeightedTable<ItemId>([
       {
@@ -158,7 +161,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         delta,
         selectRandomAbility
       ),
-  } as CreatureDefinition,
+  } satisfies CreatureDefinition as CreatureDefinition,
   container: {
     name: "Container",
     interact: containerInteraction()
@@ -245,7 +248,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           {
             bone: 1,
           },
-          { definitionId: "test2", amount: 3 }
+          { definitionId: "chestplate1", amount: 1 }
         ),
         new Recipe({}, "bone"),
       ])

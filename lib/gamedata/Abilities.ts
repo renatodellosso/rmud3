@@ -34,7 +34,7 @@ export function attack(
 
       const target = targets[0] as CreatureInstance;
 
-      const damageDealt = target.takeDamage(damage, damageType);
+      const damageDealt = target.takeDamage(damage, damageType, creature);
 
       getIo().sendMsgToRoom(
         creature.location,

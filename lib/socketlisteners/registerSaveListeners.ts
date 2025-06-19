@@ -17,10 +17,9 @@ import {
   PlayerInstance,
   PlayerProgress,
 } from "lib/types/player";
-import {
-  setSocket,
-} from "lib/getSocketsByPlayerInstanceIds";
+import { setSocket } from "lib/getSocketsByPlayerInstanceIds";
 import { TypedSocket } from "lib/types/socketioserverutils";
+import { savePlayer } from "lib/utils";
 
 function startPlaySession(
   socket: TypedSocket,
@@ -206,5 +205,19 @@ export default function registerSaveListeners(socket: TypedSocket) {
     }
 
     startPlaySession(socket, instance, progress);
+  });
+
+  socket.on("disconnect", () => {
+    if (!socket.data.session || !socket.data.session.playerInstanceId) {
+      return;
+    }
+
+    const playerManager = getPlayerManager();
+    const player = playerManager.getPlayerByInstanceId(
+      socket.data.session.playerInstanceId!
+    );
+
+    console.log(`Player ${player?.instance.name} disconnected. Saving...`);
+    savePlayer(player!.instance);
   });
 }

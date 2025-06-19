@@ -2,6 +2,7 @@ import items from "lib/gamedata/items";
 import { EquipmentDefinition, ItemInstance, ItemTag } from "./item";
 import { CreatureInstance } from "./entities/creature";
 import { PlayerInstance } from "./player";
+import { areItemInstancesEqual } from "lib/utils";
 
 export abstract class Hotbar {
   items: ItemInstance[] = [];
@@ -10,7 +11,7 @@ export abstract class Hotbar {
 
   canEquip(player: PlayerInstance, item: ItemInstance): boolean {
     return (
-      this.items.length < this.getCapacity(player) && !this.items.includes(item)
+      this.items.length < this.getCapacity(player) && !this.isEquipped(item)
     );
   }
 
@@ -23,12 +24,16 @@ export abstract class Hotbar {
   }
 
   unequip(item: ItemInstance): boolean {
-    const index = this.items.indexOf(item);
+    const index = this.items.findIndex((i) => areItemInstancesEqual(i, item));
     if (index !== -1) {
       this.items.splice(index, 1);
       return true;
     }
     return false;
+  }
+
+  isEquipped(item: ItemInstance): boolean {
+    return this.items.some((i) => areItemInstancesEqual(i, item));
   }
 }
 
@@ -42,23 +47,6 @@ export class EquipmentHotbar extends Hotbar {
 
     const def = items[item.definitionId] as EquipmentDefinition;
     if (!def.tags.includes(ItemTag.Equipment)) return false;
-
-    if (def.canEquip && !def.canEquip!(player)) return false;
-
-    return true;
-  }
-}
-
-export class ConsumableHotbar extends Hotbar {
-  getCapacity(player: PlayerInstance): number {
-    return 3; // Example capacity
-  }
-
-  canEquip(player: PlayerInstance, item: ItemInstance): boolean {
-    if (!super.canEquip(player, item)) return false;
-
-    const def = items[item.definitionId] as EquipmentDefinition;
-    if (!def.tags.includes(ItemTag.Consumable)) return false;
 
     if (def.canEquip && !def.canEquip!(player)) return false;
 

@@ -133,9 +133,6 @@ describe(restoreFieldsAndMethods.name, () => {
 
     expect(player.equipment?.canEquip).toBeDefined();
     expect(player.equipment?.canEquip).toBe(prototype.equipment.canEquip);
-
-    expect(player.consumables?.canEquip).toBeDefined();
-    expect(player.consumables?.canEquip).toBe(prototype.consumables.canEquip);
   });
 
   test("restores methods from superclass", () => {
