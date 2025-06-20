@@ -25,6 +25,7 @@ export default function registerGameListeners(socket: TypedSocket) {
     const session = socket.data.session!;
 
     session.map.addLocation(exitId);
+    session.map.visited[exitId] = true;
 
     updateGameState(socket);
   });

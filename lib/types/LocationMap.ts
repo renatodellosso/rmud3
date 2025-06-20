@@ -6,6 +6,9 @@ import { getSingleton } from "lib/utils";
 export default class LocationMap {
   locations: (LocationId | undefined)[][][];
   exits: Partial<{ [from in LocationId]: [number, number, number][] }>;
+  visited: Partial<{
+    [from in LocationId]: boolean;
+  }>;
 
   constructor() {
     this.locations = [
@@ -15,13 +18,17 @@ export default class LocationMap {
         [undefined, "tavern", undefined],
       ],
     ];
+
     this.exits = {};
+    this.visited = {};
 
     // Add exits for the initial locations
     for (let x = 0; x < this.locations[0].length; x++) {
       for (let y = 0; y < this.locations[0][x].length; y++) {
         const locId = this.locations[0][x][y];
         if (locId) {
+          this.visited[locId] = true;
+
           this.exits[locId] = [];
 
           const location = locations[locId];

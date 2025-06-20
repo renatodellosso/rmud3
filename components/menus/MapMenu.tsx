@@ -88,7 +88,7 @@ function DepthMap({
 
         if (!locId) continue;
 
-        ctx.fillStyle = locId === currentLocation ? "lightgreen" : "lightgray";
+        ctx.fillStyle = locId === currentLocation ? "lightgreen" : map.visited[locId] ? "lightgray" : "lightblue";
 
         ctx.fillRect(xPos, yPos, cellWidth, cellHeight);
       }
