@@ -5,6 +5,7 @@ import ContainerMenu from "@/components/menus/ContainerMenu";
 import CraftingMenu from "@/components/menus/CraftingMenu";
 import InventoryMenu from "@/components/menus/InventoryMenu";
 import LocationMenu from "@/components/menus/LocationMenu";
+import MapMenu from "@/components/menus/MapMenu";
 import PlayerInfoMenu from "@/components/menus/PlayerInfoMenu";
 import PrimaryMenu from "@/components/menus/PrimaryMenu";
 import useAnimations from "lib/hooks/useAnimations";
@@ -17,6 +18,7 @@ enum Menu {
   Combat = "Combat",
   Location = "Location",
   Inventory = "Inventory & Equipment",
+  Map = "Map",
 }
 
 function LoadingGameState() {
@@ -69,6 +71,12 @@ export default function Play() {
         {openMenus.includes(Menu.Inventory) && (
           <InventoryMenu self={gameState.self} />
         )}
+        {openMenus.includes(Menu.Map) && (
+          <MapMenu
+            map={gameState.map}
+            currentLocation={gameState.self.location}
+          />
+        )}
         {gameState.interactions
           .filter((i) => i.type !== "logOnly")
           .map((interaction, index) =>
@@ -78,15 +86,10 @@ export default function Play() {
                 inventory={gameState.self.inventory}
                 interaction={interaction}
               />
+            ) : interaction.type === "container" ? (
+              <ContainerMenu key={index} interaction={interaction} />
             ) : (
-              interaction.type === "container" ? (
-                <ContainerMenu
-                  key={index}
-                  interaction={interaction}
-                />
-              ) : (
-                <></>
-              )
+              <></>
             )
           )}
       </div>

@@ -174,6 +174,7 @@ export function updateGameState(socket: TypedSocket) {
     },
     messages: socket.data.session!.messages,
     interactions: socket.data.session!.interactions || [],
+    map: socket.data.session!.map,
   };
 
   socket.emit("setGameState", EJSON.stringify(gameState));

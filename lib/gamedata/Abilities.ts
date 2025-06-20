@@ -48,7 +48,7 @@ export function attack(
 
         io.sendMsgToRoom(
           creature.location,
-          `${creature.name} hit ${target.name} for ${damageDealt} ${damageType} using ${name}!`
+          `${creature.name} hit ${target.name} for ${damageDealt} ${damageType.type} using ${name}!`
         );
       }
     },
