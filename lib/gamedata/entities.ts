@@ -266,44 +266,69 @@ const entities: Record<EntityId, EntityDefinition> = {
   mystic: {
     name: "Mystic",
     interact: (entity, player, interaction, action) => {
-      if (player.abilityScoreIncreases <= 0) {
+      if (
+        player.abilityScoreIncreases <= 0 &&
+        (!interaction || (action !== "reset" && action !== "leave"))
+      ) {
         getIo().sendMsgToPlayer(
           player._id.toString(),
           'The Mystic does not look at you. "Come back when you\'re ready," they say. (You have no ability score increases left.)'
         );
-        return;
-      }
-
-      if (!interaction) {
-        getIo().sendMsgToPlayer(
-          player._id.toString(),
-          `The mystic looks at you with a knowing gaze and beckons towards the night sky. 
-          You feel a strange energy in the air, as if the stars themselves are waiting for 
-          you to make a choice. You have ${player.abilityScoreIncreases} ability score increases left.`
-        );
-
         return {
           entityId: entity._id,
           type: "logOnly",
           state: undefined,
           actions: [
             {
-              id: "strength",
-              text: "Increase Strength",
-            },
-            {
-              id: "constitution",
-              text: "Increase Constitution",
-            },
-            {
-              id: "intelligence",
-              text: "Increase Intelligence",
-            },
-            {
               id: "leave",
               text: "Goodbye",
             },
+            {
+              id: "reset",
+              text: "Reset Ability Scores",
+            },
           ],
+        };
+      }
+
+      const increaseActions = [
+        {
+          id: "strength",
+          text: "Increase Strength",
+        },
+        {
+          id: "constitution",
+          text: "Increase Constitution",
+        },
+        {
+          id: "intelligence",
+          text: "Increase Intelligence",
+        },
+        {
+          id: "reset",
+          text: "Reset Ability Scores",
+        },
+        {
+          id: "leave",
+          text: "Goodbye",
+        },
+      ];
+
+      if (!interaction) {
+        getIo().sendMsgToPlayer(
+          player._id.toString(),
+          `The mystic looks at you with a knowing gaze and beckons towards the night sky. 
+          You feel a strange energy in the air, as if the stars themselves are waiting for 
+          you to make a choice. You have ${player.abilityScoreIncreases} ability score increases left. 
+          Constitution grants +5 health, strength grants +10 kg carrying capacity, and intelligence improves
+          abilities.`
+        );
+
+        return {
+          entityId: entity._id,
+          type: "logOnly",
+          state: undefined,
+          actions: increaseActions,
         };
       }
 
@@ -313,6 +338,24 @@ const entities: Record<EntityId, EntityDefinition> = {
           "The mystic stares into the night sky as you leave."
         );
         return undefined;
+      }
+
+      if (action === "reset") {
+        for (const score of Object.values(AbilityScore)) {
+          player.abilityScoreIncreases += player.abilityScores[score];
+          player.abilityScores[score] = 0;
+        }
+
+        getIo().sendMsgToPlayer(
+          player._id.toString(),
+          `The mystic waves their hand and resets your ability scores. 
+          You have ${player.abilityScoreIncreases} ability score increases left.`
+        );
+
+        return {
+          ...interaction,
+          actions: increaseActions,
+        };
       }
 
       let abilityScore: AbilityScore | undefined;
@@ -341,12 +384,31 @@ const entities: Record<EntityId, EntityDefinition> = {
         player._id.toString(),
         `The mystic increases your ${abilityScore} by 1. You now have ${player.getAbilityScore(
           abilityScore
-        )} ${abilityScore}.`
+        )} ${abilityScore} and ${
+          player.abilityScoreIncreases
+        } ability score increases left.`
       );
 
       getIo().updateGameState(player._id.toString());
 
       savePlayer(player);
+
+      return {
+        ...interaction,
+        actions:
+          player.abilityScoreIncreases > 0
+            ? increaseActions
+            : [
+                {
+                  id: "leave",
+                  text: "Goodbye",
+                },
+                {
+                  id: "reset",
+                  text: "Reset Ability Scores",
+                },
+              ],
+      };
     },
   },
   tavernKeeper: {
