@@ -14,6 +14,7 @@ import Recipe, { RecipeGroup } from "lib/types/Recipe";
 import { ContainerDefinition } from "lib/types/entities/container";
 import containerInteraction from "./interactions/containerInteraction";
 import { savePlayer } from "lib/utils";
+import { getFromOptionalFunc } from "../utils";
 
 export type CreatureId =
   | "test"
@@ -480,7 +481,10 @@ const entities: Record<EntityId, EntityDefinition> = {
                 { [item.definitionId]: 1 },
                 {
                   definitionId: "money",
-                  amount: items[item.definitionId].sellValue,
+                  amount: getFromOptionalFunc(
+                    items[item.definitionId].getSellValue,
+                    item
+                  ),
                 }
               )
           )

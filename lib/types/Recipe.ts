@@ -3,6 +3,7 @@ import { PlayerInstance } from "./player";
 import Inventory from "./Inventory";
 import { ItemInstance } from "./item";
 import { savePlayer } from "lib/utils";
+import { getFromOptionalFunc } from "../utils";
 
 type ItemGroup = {
   [key in ItemId]?: number;
@@ -41,7 +42,9 @@ export default class Recipe {
     }
 
     const totalWeight = this.output.reduce((acc, item) => {
-      const weight = items[item.definitionId].weight * item.amount;
+      const weight =
+        getFromOptionalFunc(items[item.definitionId].getWeight, item) *
+        item.amount;
       return acc + weight;
     }, inventory.getUsedWeight());
 

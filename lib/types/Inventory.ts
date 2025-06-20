@@ -1,6 +1,6 @@
 import items, { ItemId } from "../gamedata/items";
 import { ItemInstance } from "./item";
-import { areItemInstancesEqual } from "../utils";
+import { areItemInstancesEqual, getFromOptionalFunc } from "../utils";
 import { PlayerInstance } from "./player";
 import { AbilityScore } from "./types";
 
@@ -58,7 +58,8 @@ export class DirectInventory implements Inventory {
         ? item.amount
         : Math.min(
             Math.floor(
-              (maxWeight - usedWeight) / items[item.definitionId].weight
+              (maxWeight - usedWeight) /
+                getFromOptionalFunc(items[item.definitionId].getWeight, item)
             ),
             item.amount
           );
@@ -113,7 +114,9 @@ export class DirectInventory implements Inventory {
   getUsedWeight() {
     return this.items.reduce((acc, item) => {
       const itemDefinition = items[item.definitionId];
-      return acc + itemDefinition.weight * item.amount;
+      return (
+        acc + getFromOptionalFunc(itemDefinition.getWeight, item) * item.amount
+      );
     }, 0);
   }
 

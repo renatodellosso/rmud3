@@ -3,6 +3,7 @@ import { PlayerInstance } from "../../lib/types/player";
 import ItemTooltip from "../ItemTooltip";
 import { ItemInstance, ItemTag } from "lib/types/item";
 import { socket } from "lib/socket";
+import { getFromOptionalFunc } from "../../lib/utils";
 
 export default function InventoryMenu({ self }: { self: PlayerInstance }) {
   const inventory = self.inventory;
@@ -65,7 +66,12 @@ export default function InventoryMenu({ self }: { self: PlayerInstance }) {
                   <ItemTooltip item={item} />
                 </td>
                 <td>{item.amount}</td>
-                <td>{items[item.definitionId].weight}</td>
+                <td>
+                  {getFromOptionalFunc(
+                    items[item.definitionId].getWeight,
+                    item
+                  )}
+                </td>
                 {items[item.definitionId].tags.includes(ItemTag.Equipment) && (
                   <td>
                     <button

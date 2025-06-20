@@ -7,8 +7,8 @@ export type ItemDefinition = {
   name: string;
   tags: ItemTag[];
   description: string;
-  weight: number;
-  sellValue: number;
+  getWeight: OptionalFunc<number, [ItemInstance]>;
+  getSellValue: OptionalFunc<number, [ItemInstance]>;
 };
 
 export type ItemInstance = {
