@@ -75,22 +75,25 @@ export default class LocationMap {
     for (const exit of Array.from(location.exits)) {
       const exitLoc = locations[exit] as DungeonLocation;
 
+      console.log(
+        `Adding exit from ${id} to ${exit} at depth ${exitLoc.floor.depth}, coords ${exitLoc.globalCoords}`
+      );
+
       if (!("globalCoords" in exitLoc)) {
         continue;
       }
 
-      this.exits[id]!.push([
+      const exitPos: [number, number, number] = [
         exitLoc.floor.depth + 1,
         exitLoc.globalCoords[0],
         exitLoc.globalCoords[1],
-      ]);
+      ];
 
-      if (this.exits[exit])
-        this.exits[exit]!.push([
-          location.floor.depth + 1,
-          location.globalCoords[0],
-          location.globalCoords[1],
-        ]);
+      if (this.exits[id].includes(exitPos)) continue;
+
+      this.exits[id]!.push(exitPos);
+
+      if (this.exits[exit]) this.exits[exit]!.push(exitPos);
       else this.addLocation(exit, false);
     }
   }
@@ -109,6 +112,15 @@ export default class LocationMap {
   }
 
   getPosition(locationId: LocationId): [number, number, number] | undefined {
+    const location = locations[locationId] as DungeonLocation;
+    if (location && "globalCoords" in location) {
+      return [
+        location.floor.depth + 1,
+        location.globalCoords[0],
+        location.globalCoords[1],
+      ];
+    }
+
     for (let depth = 0; depth < this.locations.length; depth++) {
       for (let x = 0; x < this.locations[depth].length; x++) {
         for (let y = 0; y < this.locations[depth][x].length; y++) {

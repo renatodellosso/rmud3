@@ -67,10 +67,6 @@ function DepthMap({
           const exitX = exitXPos + cellWidth / 2;
           const exitY = exitYPos + cellHeight / 2;
 
-          console.log(
-            `Drawing exit from ${locId} at (${x}, ${y}) to (${exitX}, ${exitY})`
-          );
-
           // Draw a line between the two points
           ctx.beginPath();
           ctx.moveTo(startX, startY);
@@ -88,9 +84,54 @@ function DepthMap({
 
         if (!locId) continue;
 
-        ctx.fillStyle = locId === currentLocation ? "lightgreen" : map.visited[locId] ? "lightgray" : "lightblue";
+        ctx.fillStyle =
+          locId === currentLocation
+            ? "lightgreen"
+            : map.visited[locId]
+            ? "lightgray"
+            : "lightblue";
 
         ctx.fillRect(xPos, yPos, cellWidth, cellHeight);
+      }
+    }
+
+    // Draw vertical exits
+    for (let y = 0; y < floor.length; y++) {
+      for (let x = 0; x < floor[y].length; x++) {
+        const locId = floor[y][x];
+        if (!locId) continue;
+
+        const [xPos, yPos] = getCanvasCoords(x, y);
+
+        // Draw vertical exits
+        const exits = map.getExitDirections(locId);
+
+        const verticalExits = exits.filter((exit) => exit[0] !== 0);
+
+        verticalExits.forEach((exit) => {
+          const [exitDepth, distY, distX] = exit;
+
+          // Draw an up or down arrow depending on exit depth
+          const isUp = exitDepth < 0;
+
+          // Contain arrow in top half is isUp, bottom half if not
+          const arrowHeight = cellHeight / 4;
+          const arrowWidth = cellWidth / 4;
+          const arrowY = isUp
+            ? yPos + cellHeight / 2 - arrowHeight
+            : yPos + cellHeight / 2 + arrowHeight;
+          const arrowX = xPos + cellWidth / 2;
+
+          ctx.fillStyle = "black";
+          ctx.beginPath();
+
+          ctx.moveTo(arrowX, arrowY);
+          ctx.lineTo(arrowX - arrowWidth / 2, yPos + cellHeight / 2);
+          ctx.lineTo(arrowX + arrowWidth / 2, yPos + cellHeight / 2);
+
+          ctx.closePath();
+          ctx.fill();
+        });
       }
     }
   }, [depth, map, currentLocation]);
