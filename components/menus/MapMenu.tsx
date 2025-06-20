@@ -95,7 +95,7 @@ function DepthMap({
     }
   }, [depth, map, currentLocation]);
 
-  return <canvas ref={canvasRef} className="w-full h-96"></canvas>;
+  return <canvas ref={canvasRef} className="w-full h-96 border"></canvas>;
 }
 
 export default function MapMenu({
@@ -114,7 +114,7 @@ export default function MapMenu({
   return (
     <div className="border w-1/3">
       <h1 className="text-xl">Map</h1>
-      <div className="flex gap-2">
+      <div className="flex gap-2 mb-2">
         <h2 className="text-lg">Viewing depth {depth}</h2>
         <button
           onClick={() => setDepth(Math.max(depth - 1, 0))}
