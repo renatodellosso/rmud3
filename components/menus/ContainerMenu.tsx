@@ -1,5 +1,6 @@
 import { Interaction } from "lib/types/entity";
 import { socket } from "lib/socket";
+import items from 'lib/gamedata/items';
 
 export default function ContainerMenu({
   interaction
@@ -29,7 +30,13 @@ export default function ContainerMenu({
           </tr>
         </thead>
         <tbody>
-          
+          {interaction.inventory!.map((item, index) => (
+            <tr key={index} className="hover:bg-gray-900">
+              <td>
+                {items[item.definitionId].name} x{item.amount}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

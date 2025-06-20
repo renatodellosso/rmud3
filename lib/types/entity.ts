@@ -6,6 +6,7 @@ import { PlayerInstance } from "./player";
 import { LocationId } from "lib/gamedata/rawLocations";
 import Recipe, { RecipeGroup } from "./Recipe";
 import Inventory from "./Inventory";
+import { ItemInstance } from "./item";
 
 export type EntityDefinition = {
   name: string;
@@ -84,5 +85,5 @@ export type Interaction = {
   actions?: { id: string; text: string }[];
   title?: string;
   recipes?: Recipe[];
-  inventory?: Inventory;
+  inventory?: ItemInstance[];
 };

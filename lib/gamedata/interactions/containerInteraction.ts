@@ -17,10 +17,12 @@ export default function containerInteraction(): (
   ): Interaction | undefined => {
     if (interaction === undefined) {
       // Initialize interaction if not provided
+      console.log(entity.inventory.getItems());
+
       return {
         entityId: entity._id,
         type: "container",
-        inventory: entity.inventory
+        inventory: entity.inventory.getItems(),
       };
     }
 
