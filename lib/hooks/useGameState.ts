@@ -9,6 +9,7 @@ import { isTargetACreature } from "lib/gamedata/CanTarget";
 import { EntityInstance } from "lib/types/entity";
 import { CreatureId } from "lib/gamedata/entities";
 import Recipe from "lib/types/Recipe";
+import LocationMap from "lib/types/LocationMap";
 
 export default function useGameState(): GameState | undefined {
   const [gameState, setGameState] = useState<GameState>();
@@ -75,6 +76,8 @@ export default function useGameState(): GameState | undefined {
 }
 
 function restoreMethods(gameState: GameState) {
+  restoreFieldsAndMethods(gameState.map, new LocationMap());
+
   restoreFieldsAndMethods(gameState.self, new PlayerInstance());
   for (const creature of gameState.location.entities) {
     restoreFieldsAndMethods(

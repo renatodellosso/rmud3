@@ -1,0 +1,141 @@
+import { LocationId } from "lib/gamedata/rawLocations";
+import locations from "lib/locations";
+import { Dungeon, DungeonLocation } from "lib/dungeongeneration/types";
+import { getSingleton } from "lib/utils";
+
+export default class LocationMap {
+  locations: (LocationId | undefined)[][][];
+  exits: Partial<{ [from in LocationId]: LocationId[] }>;
+
+  constructor() {
+    this.locations = [
+      [
+        [undefined, undefined, "training-ground"],
+        ["docks", "town-square", "dungeon-entrance"],
+        [undefined, "tavern", undefined],
+      ],
+    ];
+    this.exits = {};
+
+    // Add exits for the initial locations
+    for (let x = 0; x < this.locations[0].length; x++) {
+      for (let y = 0; y < this.locations[0][x].length; y++) {
+        const locId = this.locations[0][x][y];
+        if (locId) {
+          this.exits[locId] = [];
+
+          const location = locations[locId];
+          if (!location) continue;
+
+          for (const exit of Array.from(location.exits)) {
+            this.exits[locId]!.push(exit);
+          }
+        }
+      }
+    }
+  }
+
+  addLocation(id: LocationId, addExitsToLocations = true) {
+    const location = locations[id] as DungeonLocation;
+    if (!("floor" in location) || !("globalCoords" in location)) {
+      return;
+    }
+
+    const dungeon = getSingleton<Dungeon>("dungeon");
+    if (!dungeon)
+      throw new Error("Tried to add a location to a map without a dungeon");
+
+    if (this.locations.length <= location.floor.depth + 1) {
+      const floorLocations = dungeon!.locations[location.floor.depth];
+      this.locations.push(
+        new Array(floorLocations.length)
+          .fill(undefined)
+          .map(() => new Array(floorLocations[0].length).fill(undefined))
+      );
+    }
+
+    this.locations[location.floor.depth + 1][location.globalCoords[0]][
+      location.globalCoords[1]
+    ] = id;
+
+    if (!this.exits[id]) {
+      this.exits[id] = [];
+    }
+
+    if (!addExitsToLocations) return;
+
+    for (const exit of Array.from(location.exits)) {
+      this.exits[id]!.push(exit);
+
+      if (this.exits[exit]) this.exits[exit]!.push(id);
+      else this.addLocation(exit, false);
+    }
+  }
+
+  getDepth(locationId: LocationId): number {
+    for (let depth = 0; depth < this.locations.length; depth++) {
+      for (let x = 0; x < this.locations[depth].length; x++) {
+        for (let y = 0; y < this.locations[depth][x].length; y++) {
+          if (this.locations[depth][x][y] === locationId) {
+            return depth;
+          }
+        }
+      }
+    }
+    return 0; // Not found
+  }
+
+  getPosition(locationId: LocationId): [number, number, number] | undefined {
+    for (let depth = 0; depth < this.locations.length; depth++) {
+      for (let x = 0; x < this.locations[depth].length; x++) {
+        for (let y = 0; y < this.locations[depth][x].length; y++) {
+          if (this.locations[depth][x][y] === locationId) {
+            return [depth, x, y];
+          }
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  getExitDirections(locationId: LocationId): [number, number, number][] {
+    // Find the location, then find its exits
+
+    const exits = this.exits[locationId];
+    if (!exits) return [];
+
+    console.log(
+      `Getting exit directions for location ${locationId} with exits: ${exits.join(
+        ", "
+      )}`
+    );
+
+    const basePosition = this.getPosition(locationId);
+    if (!basePosition) return [];
+
+    const directions: [number, number, number][] = [];
+    for (const exit of exits) {
+      const exitPosition = this.getPosition(exit);
+      if (!exitPosition) continue;
+
+      const direction: [number, number, number] = [
+        exitPosition[0] - basePosition[0],
+        exitPosition[1] - basePosition[1],
+        exitPosition[2] - basePosition[2],
+      ];
+
+      console.log(
+        `Exit from ${locationId} to ${exit} is direction ${direction}`
+      );
+
+      if (direction[0] + direction[1] + direction[2] === 0) {
+        continue;
+      }
+
+      directions.push(direction);
+    }
+
+    return directions;
+  }
+}

@@ -1,5 +1,6 @@
 import { ObjectId } from "bson";
 import { Interaction } from "./entity";
+import LocationMap from "./LocationMap";
 
 type Session = {
   _id: ObjectId;
@@ -8,6 +9,7 @@ type Session = {
   playerInstanceId: ObjectId | undefined;
   messages: string[];
   interactions: Interaction[];
+  map: LocationMap;
 };
 
 export default Session;

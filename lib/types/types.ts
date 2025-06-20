@@ -3,6 +3,7 @@ import { randInRangeInt, restoreFieldsAndMethods } from "../utils";
 import { PlayerInstance, PlayerProgress } from "./player";
 import { EntityInstance, Interaction } from "./entity";
 import { LocationId } from "lib/gamedata/rawLocations";
+import LocationMap from "./LocationMap";
 
 export type Targetable = EntityInstance | Location;
 
@@ -61,6 +62,7 @@ export type GameState = {
   };
   messages: string[];
   interactions: Interaction[];
+  map: LocationMap;
 };
 
 export enum DamageType {

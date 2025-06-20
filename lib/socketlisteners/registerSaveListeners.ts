@@ -20,6 +20,7 @@ import {
 import { setSocket } from "lib/getSocketsByPlayerInstanceIds";
 import { TypedSocket } from "lib/types/socketioserverutils";
 import { savePlayer } from "lib/utils";
+import LocationMap from "lib/types/LocationMap";
 
 function startPlaySession(
   socket: TypedSocket,
@@ -28,6 +29,7 @@ function startPlaySession(
 ) {
   socket.data.session!.playerInstanceId = instance._id;
   socket.data.session!.playerProgressId = progress._id;
+  socket.data.session!.map = new LocationMap();
 
   setSocket(instance._id, socket);
 

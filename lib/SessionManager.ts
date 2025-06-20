@@ -1,6 +1,7 @@
 import { ObjectId } from "bson";
 import Session from "./types/Session";
 import { getSingleton } from "./utils";
+import LocationMap from "./types/LocationMap";
 
 export class SessionManager {
   private sessions: Map<string, Session>;
@@ -17,6 +18,7 @@ export class SessionManager {
       playerInstanceId: undefined,
       messages: [],
       interactions: [],
+      map: new LocationMap()
     };
 
     this.sessions.set(session._id.toString(), session);
