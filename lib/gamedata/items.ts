@@ -86,6 +86,11 @@ const items = Object.freeze({
     getWeight: 1,
     slot: EquipmentSlot.Chest,
     getSellValue: 30,
+    getDamageToTake: (creature, item, damage) =>
+      damage.map((d) => ({
+        amount: d.amount - 1, // Reduces damage taken by 1
+        type: DamageType.Piercing,
+      })),
   } satisfies EquipmentDefinition,
   consumable1: {
     name: "Test Consumable",
@@ -105,6 +110,11 @@ const items = Object.freeze({
       Constitution: 0,
       Intelligence: 0,
     },
+    getDamageToDeal: (creature, item, damage) =>
+      damage.map((d) => ({
+        amount: d.amount + 2, // Adds 2 slashing damage
+        type: d.type,
+      })),
     getAbilities: (creature, item) => [
       Abilities.attack(
         "Rusty Slash",

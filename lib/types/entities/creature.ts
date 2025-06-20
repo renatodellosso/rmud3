@@ -113,6 +113,37 @@ export class CreatureInstance extends EntityInstance {
     return abilities;
   }
 
+  getDamageToDeal(
+    amount: number,
+    type: DamageType
+  ): { amount: number; type: DamageType }[] {
+    let damage = [{ amount, type }];
+
+    for (const provider of this.getStatAndAbilityProviders()) {
+      if (!provider.provider.getDamageToDeal) {
+        continue;
+      }
+
+      damage = provider.provider.getDamageToDeal(this, provider.source, damage);
+    }
+
+    return damage;
+  }
+
+  getDamageToTake(
+    damage: { amount: number; type: DamageType }[]
+  ): { amount: number; type: DamageType }[] {
+    for (const provider of this.getStatAndAbilityProviders()) {
+      if (!provider.provider.getDamageToTake) {
+        continue;
+      }
+
+      damage = provider.provider.getDamageToTake(this, provider.source, damage);
+    }
+
+    return damage;
+  }
+
   takeDamage(amount: number, type: DamageType, source: EntityInstance): number {
     amount = Math.min(Math.max(amount, 0), this.health);
 
