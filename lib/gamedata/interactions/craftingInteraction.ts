@@ -27,7 +27,7 @@ export default function craftingInteraction(
         title,
         recipes: recipes.getAllowedRecipes(player),
       };
-    }
+    } else interaction.recipes = recipes.getAllowedRecipes(player); // Always keep recipes updated
 
     if (action === "exit") return undefined; // Close the interaction
 

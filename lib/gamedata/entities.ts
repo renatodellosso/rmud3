@@ -7,7 +7,7 @@ import * as Abilities from "lib/gamedata/Abilities";
 import * as CanTarget from "lib/gamedata/CanTarget";
 import { activateAbilityOnTick, selectRandomAbility } from "lib/entityutils";
 import { EntityDefinition } from "lib/types/entity";
-import { ItemId } from "./items";
+import items, { ItemId } from "./items";
 import { getIo } from "lib/ClientFriendlyIo";
 import craftingInteraction from "./interactions/craftingInteraction";
 import Recipe, { RecipeGroup } from "lib/types/Recipe";
@@ -28,7 +28,8 @@ export type EntityId =
   | "signPost"
   | "anvil"
   | "mystic"
-  | "tavernKeeper";
+  | "tavernKeeper"
+  | "junkCollector";
 
 const entities: Record<EntityId, EntityDefinition> = {
   test: {
@@ -403,6 +404,29 @@ const entities: Record<EntityId, EntityDefinition> = {
       }
 
       return interaction;
+    },
+  },
+  junkCollector: {
+    name: "Junk Collector",
+    interact: (entity, player, interaction, action) => {
+      const recipes = new RecipeGroup(
+        player.inventory.items
+          .filter((i) => i.definitionId !== "money")
+          .map(
+            (item) =>
+              new Recipe(
+                { [item.definitionId]: 1 },
+                {
+                  definitionId: "money",
+                  amount: items[item.definitionId].sellValue,
+                }
+              )
+          )
+      );
+
+      const func = craftingInteraction("Sell Items", recipes);
+
+      return func(entity, player, interaction, action);
     },
   },
 };

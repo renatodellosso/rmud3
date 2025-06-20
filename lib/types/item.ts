@@ -8,6 +8,7 @@ export type ItemDefinition = {
   tags: ItemTag[];
   description: string;
   weight: number;
+  sellValue: number;
 };
 
 export type ItemInstance = {
