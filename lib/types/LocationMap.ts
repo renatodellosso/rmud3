@@ -5,7 +5,7 @@ import { getSingleton } from "lib/utils";
 
 export default class LocationMap {
   locations: (LocationId | undefined)[][][];
-  exits: Partial<{ [from in LocationId]: LocationId[] }>;
+  exits: Partial<{ [from in LocationId]: [number, number, number][] }>;
 
   constructor() {
     this.locations = [
@@ -28,7 +28,8 @@ export default class LocationMap {
           if (!location) continue;
 
           for (const exit of Array.from(location.exits)) {
-            this.exits[locId]!.push(exit);
+            const pos = this.getPosition(exit);
+            if (pos) this.exits[locId]!.push(pos);
           }
         }
       }
@@ -65,9 +66,24 @@ export default class LocationMap {
     if (!addExitsToLocations) return;
 
     for (const exit of Array.from(location.exits)) {
-      this.exits[id]!.push(exit);
+      const exitLoc = locations[exit] as DungeonLocation;
 
-      if (this.exits[exit]) this.exits[exit]!.push(id);
+      if (!("globalCoords" in exitLoc)) {
+        continue;
+      }
+
+      this.exits[id]!.push([
+        exitLoc.floor.depth + 1,
+        exitLoc.globalCoords[0],
+        exitLoc.globalCoords[1],
+      ]);
+
+      if (this.exits[exit])
+        this.exits[exit]!.push([
+          location.floor.depth + 1,
+          location.globalCoords[0],
+          location.globalCoords[1],
+        ]);
       else this.addLocation(exit, false);
     }
   }
@@ -105,33 +121,16 @@ export default class LocationMap {
     const exits = this.exits[locationId];
     if (!exits) return [];
 
-    console.log(
-      `Getting exit directions for location ${locationId} with exits: ${exits.join(
-        ", "
-      )}`
-    );
-
     const basePosition = this.getPosition(locationId);
     if (!basePosition) return [];
 
     const directions: [number, number, number][] = [];
     for (const exit of exits) {
-      const exitPosition = this.getPosition(exit);
-      if (!exitPosition) continue;
-
       const direction: [number, number, number] = [
-        exitPosition[0] - basePosition[0],
-        exitPosition[1] - basePosition[1],
-        exitPosition[2] - basePosition[2],
+        exit[0] - basePosition[0],
+        exit[1] - basePosition[1],
+        exit[2] - basePosition[2],
       ];
-
-      console.log(
-        `Exit from ${locationId} to ${exit} is direction ${direction}`
-      );
-
-      if (direction[0] + direction[1] + direction[2] === 0) {
-        continue;
-      }
 
       directions.push(direction);
     }

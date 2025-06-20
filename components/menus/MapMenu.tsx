@@ -2,10 +2,15 @@ import LocationMap from "lib/types/LocationMap";
 import { LocationId } from "../../lib/gamedata/rawLocations";
 import { useEffect, useRef, useState } from "react";
 
-const CELL_PADDING = 15;
-const CORRIDOR_WIDTH = 5;
-
-function DepthMap({ map, depth }: { map: LocationMap; depth: number }) {
+function DepthMap({
+  map,
+  depth,
+  currentLocation,
+}: {
+  map: LocationMap;
+  depth: number;
+  currentLocation: LocationId;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const floor = map.locations[depth];
@@ -22,16 +27,23 @@ function DepthMap({ map, depth }: { map: LocationMap; depth: number }) {
 
     ctx.clearRect(0, 0, width, height);
 
-    const cellWidth = width / floor[0].length - CELL_PADDING;
-    const cellHeight = height / floor.length - CELL_PADDING;
+    const cellPadding = width * 0.03;
+
+    const cellWidth = width / floor[0].length - cellPadding;
+    const cellHeight = cellWidth * (height / width);
+
+    const corridorWidth = cellWidth * 0.25;
 
     function getCanvasCoords(x: number, y: number) {
       return [
-        x * (cellWidth + CELL_PADDING) + CELL_PADDING / 2,
-        y * (cellHeight + CELL_PADDING) + CELL_PADDING / 2,
+        x * (cellWidth + cellPadding) + cellPadding / 2,
+        y * (cellHeight + cellPadding) + cellPadding / 2,
       ];
     }
 
+    // Draw exits
+    ctx.lineWidth = corridorWidth;
+    ctx.strokeStyle = "lightgray";
     for (let y = 0; y < floor.length; y++) {
       for (let x = 0; x < floor[y].length; x++) {
         const locId = floor[y][x];
@@ -39,14 +51,10 @@ function DepthMap({ map, depth }: { map: LocationMap; depth: number }) {
 
         const [xPos, yPos] = getCanvasCoords(x, y);
 
-        ctx.fillStyle = "lightgray";
-
-        ctx.fillRect(xPos, yPos, cellWidth, cellHeight);
-
         // Draw exits
         const exits = map.getExitDirections(locId);
 
-        const sameFloorExits = exits.filter((exit) => exit[0] === depth);
+        const sameFloorExits = exits.filter((exit) => exit[0] === 0);
 
         sameFloorExits.forEach((exit) => {
           const [exitDepth, distY, distX] = exit;
@@ -59,17 +67,33 @@ function DepthMap({ map, depth }: { map: LocationMap; depth: number }) {
           const exitX = exitXPos + cellWidth / 2;
           const exitY = exitYPos + cellHeight / 2;
 
+          console.log(
+            `Drawing exit from ${locId} at (${x}, ${y}) to (${exitX}, ${exitY})`
+          );
+
           // Draw a line between the two points
           ctx.beginPath();
           ctx.moveTo(startX, startY);
           ctx.lineTo(exitX, exitY);
-          ctx.lineWidth = CORRIDOR_WIDTH;
-          ctx.strokeStyle = "lightgray";
           ctx.stroke();
         });
       }
     }
-  }, [depth, map]);
+
+    // Draw the grid
+    for (let y = 0; y < floor.length; y++) {
+      for (let x = 0; x < floor[y].length; x++) {
+        const [xPos, yPos] = getCanvasCoords(x, y);
+        const locId = floor[y][x];
+
+        if (!locId) continue;
+
+        ctx.fillStyle = locId === currentLocation ? "lightgreen" : "lightgray";
+
+        ctx.fillRect(xPos, yPos, cellWidth, cellHeight);
+      }
+    }
+  }, [depth, map, currentLocation]);
 
   return <canvas ref={canvasRef} className="w-full h-96"></canvas>;
 }
@@ -82,6 +106,10 @@ export default function MapMenu({
   currentLocation: LocationId;
 }) {
   const [depth, setDepth] = useState(map.getDepth(currentLocation));
+
+  useEffect(() => {
+    setDepth(map.getDepth(currentLocation));
+  }, [currentLocation]);
 
   return (
     <div className="border w-1/3">
@@ -105,7 +133,7 @@ export default function MapMenu({
           +
         </button>
       </div>
-      <DepthMap map={map} depth={depth} />
+      <DepthMap map={map} depth={depth} currentLocation={currentLocation} />
     </div>
   );
 }
