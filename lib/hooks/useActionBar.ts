@@ -56,9 +56,7 @@ export default function useActionBar(gameState: GameState) {
         const interactableEntities = gameState.location.entities.filter(
           (entity) =>
             entity.interactable &&
-            !gameState.interactions.find(
-              (i) => i.entityId.toString() === entity._id.toString()
-            )
+            !gameState.interactions.some((i) => i.entityId.equals(entity._id))
         );
 
         if (interactableEntities.length) {
@@ -90,7 +88,11 @@ export default function useActionBar(gameState: GameState) {
         newActions.push(backToBaseAction);
 
         gameState.location.entities
-          .filter((entity) => entity.interactable)
+          .filter(
+            (entity) =>
+              entity.interactable &&
+              !gameState.interactions.some((i) => i.entityId.equals(entity._id))
+          )
           .forEach((entity) => {
             newActions.push({
               text: entity.name,
