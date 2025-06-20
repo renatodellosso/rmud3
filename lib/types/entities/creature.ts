@@ -18,6 +18,7 @@ import { ItemId } from "lib/gamedata/items";
 import { ObjectId } from "bson";
 import getPlayerManager from "lib/PlayerManager";
 import { PlayerInstance } from "../player";
+import StatAndAbilityProvider from "../StatAndAbilityProvider";
 
 export type CreatureDefinition = EntityDefinition & {
   health: number;
@@ -58,13 +59,34 @@ export class CreatureInstance extends EntityInstance {
   }
 
   getAbilityScore(score: AbilityScore) {
-    return this.getDef().abilityScores[score];
+    let val = this.getDef().abilityScores[score];
+
+    for (const provider of this.getStatAndAbilityProviders()) {
+      if (
+        provider.provider.getAbilityScores &&
+        provider.provider.getAbilityScores[score]
+      ) {
+        val += getFromOptionalFunc(
+          provider.provider.getAbilityScores[score],
+          this,
+          provider.source
+        );
+      }
+    }
+
+    return val;
   }
 
   getMaxHealth() {
-    return (
-      this.getDef().health + 5 * this.getAbilityScore(AbilityScore.Constitution)
-    );
+    let health =
+      this.getDef().health +
+      5 * this.getAbilityScore(AbilityScore.Constitution);
+
+    health += this.mapStatAndAbilityProviders((provider, source) =>
+      getFromOptionalFunc(provider.getMaxHealth, this, source)
+    ).reduce((total, val) => total + (val ?? 0), 0);
+
+    return Math.max(health, 1);
   }
 
   getAbilities() {
@@ -75,6 +97,17 @@ export class CreatureInstance extends EntityInstance {
         ability,
         source: this,
       })) ?? [])
+    );
+
+    abilities.push(
+      ...this.mapStatAndAbilityProviders((provider, source) =>
+        getFromOptionalFunc(provider.getAbilities, this, source)?.map(
+          (ability) => ({
+            ability,
+            source,
+          })
+        )
+      ).flat()
     );
 
     return abilities;
@@ -153,6 +186,30 @@ export class CreatureInstance extends EntityInstance {
 
   prepForGameState() {
     this.damagers = new DamagerList();
+  }
+
+  getStatAndAbilityProviders(): {
+    provider: StatAndAbilityProvider;
+    source: AbilitySource;
+  }[] {
+    return [];
+  }
+
+  mapStatAndAbilityProviders<T>(
+    callback: (
+      provider: StatAndAbilityProvider,
+      source: AbilitySource
+    ) => T | undefined
+  ): T[] {
+    let arr = [];
+    for (const provider of this.getStatAndAbilityProviders()) {
+      const val = callback(provider.provider, provider.source);
+
+      if (val !== undefined) {
+        arr.push(val);
+      }
+    }
+    return arr;
   }
 }
 

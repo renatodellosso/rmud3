@@ -3,6 +3,7 @@ import { CreatureInstance } from "./entities/creature";
 import { ItemInstance } from "./item";
 import { DamageType, Targetable } from "./types";
 import { OptionalFunc } from "./types";
+import StatAndAbilityProvider from "./StatAndAbilityProvider";
 
 export type AbilitySource = ItemInstance | CreatureInstance;
 

@@ -139,7 +139,7 @@ export function chance(percentage: number): boolean {
 }
 
 export function getFromOptionalFunc<TReturn, TArgs extends any[]>(
-  func: OptionalFunc<TReturn, TArgs>,
+  func: OptionalFunc<TReturn, TArgs> | undefined,
   ...args: TArgs
 ): TReturn {
   if (typeof func !== "function") {

@@ -8,7 +8,12 @@ import {
   OmitType,
   PlayerSave,
 } from "./types";
-import { EquipmentDefinition, ItemInstance, ItemTag } from "./item";
+import {
+  ConsumableDefinition,
+  EquipmentDefinition,
+  ItemInstance,
+  ItemTag,
+} from "./item";
 import Ability, { AbilitySource, AbilityWithSource } from "./Ability";
 import items from "lib/gamedata/items";
 import { EquipmentHotbar } from "./Hotbar";
@@ -22,6 +27,7 @@ import { getIo } from "lib/ClientFriendlyIo";
 import { LocationId } from "lib/gamedata/rawLocations";
 import { EntityInstance } from "./entity";
 import XpForNextLevel from "lib/gamedata/XpForNextLevel";
+import StatAndAbilityProvider from "./StatAndAbilityProvider";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -58,13 +64,6 @@ export class PlayerInstance extends CreatureInstance {
   getAbilityScore(score: AbilityScore) {
     let val = this.abilityScores[score] + super.getAbilityScore(score);
 
-    for (const equipment of this.equipment.items) {
-      const def = items[equipment.definitionId] as EquipmentDefinition;
-      if (!def.abilityScores || !def.abilityScores[score]) continue;
-
-      val += getFromOptionalFunc(def.abilityScores[score]!, this, equipment);
-    }
-
     return val;
   }
 
@@ -77,10 +76,8 @@ export class PlayerInstance extends CreatureInstance {
   getAbilities(): AbilityWithSource[] {
     const abilities = super.getAbilities();
 
-    for (const equipment of this.equipment.items.concat(
-      this.getConsumables()
-    )) {
-      const def = items[equipment.definitionId] as EquipmentDefinition;
+    for (const equipment of this.getConsumables()) {
+      const def = items[equipment.definitionId] as ConsumableDefinition;
       if (!def.getAbilities) continue;
 
       abilities.push(
@@ -139,8 +136,32 @@ export class PlayerInstance extends CreatureInstance {
   }
 
   recalculateMaxWeight() {
-    this.inventory.maxWeight =
-      100 + this.getAbilityScore(AbilityScore.Strength) * 10;
+    this.inventory.maxWeight = 100;
+
+    this.inventory.maxWeight +=
+      this.getAbilityScore(AbilityScore.Strength) * 10;
+
+    for (const provider of this.getStatAndAbilityProviders()) {
+      if (!provider.provider.getCarryingCapacity) continue;
+
+      this.inventory.maxWeight += getFromOptionalFunc(
+        provider.provider.getCarryingCapacity,
+        this,
+        provider.source
+      );
+    }
+  }
+
+  getStatAndAbilityProviders(): {
+    provider: StatAndAbilityProvider;
+    source: AbilitySource;
+  }[] {
+    return super.getStatAndAbilityProviders().concat(
+      this.equipment.items.map((item) => ({
+        provider: items[item.definitionId] as StatAndAbilityProvider,
+        source: item,
+      }))
+    );
   }
 }
 

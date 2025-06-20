@@ -100,6 +100,11 @@ const items = Object.freeze({
     description: "A rusty old sword, not very effective.",
     getWeight: 3,
     getSellValue: 5,
+    getAbilityScores: {
+      Strength: 1,
+      Constitution: 0,
+      Intelligence: 0,
+    },
     getAbilities: (creature, item) => [
       Abilities.attack(
         "Rusty Slash",

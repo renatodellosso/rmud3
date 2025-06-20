@@ -1,7 +1,8 @@
-import items, { ItemId } from "../gamedata/items";
-import Ability, { AbilitySource } from "./Ability";
+import { ItemId } from "../gamedata/items";
+import { AbilitySource } from "./Ability";
 import { CreatureInstance } from "./entities/creature";
-import { AbilityScore, OptionalFunc } from "./types";
+import StatAndAbilityProvider from "./StatAndAbilityProvider";
+import { OptionalFunc } from "./types";
 
 export type ItemDefinition = {
   name: string;
@@ -21,31 +22,25 @@ export enum ItemTag {
   Consumable = "Consumable",
 }
 
-export interface ActivatableItemDefinition {
-  getAbilities?: OptionalFunc<Ability[], [CreatureInstance, ItemInstance]>;
+export interface ActivatableItemDefinition<TSource extends AbilitySource>
+  extends StatAndAbilityProvider<TSource> {
   /**
    * Undefined defaults to true
    */
   canEquip?: (player: CreatureInstance) => boolean;
 }
 
-export type EquipmentDefinition = ActivatableItemDefinition &
+export type EquipmentDefinition = ActivatableItemDefinition<ItemInstance> &
   Omit<ItemDefinition, "tags" | "definitionId"> & {
     tags: [ItemTag.Equipment, ...ItemTag[]]; // Ensure Equipment always has the Equipment tag
     slot?: EquipmentSlot;
-    getMaxHealth?: OptionalFunc<number, [CreatureInstance, ItemInstance]>;
-    abilityScores?: {
-      [score in AbilityScore]:
-        | OptionalFunc<number, [CreatureInstance, ItemInstance]>
-        | undefined;
-    };
   };
 
 export enum EquipmentSlot {
   Chest = "Chest",
 }
 
-export type ConsumableDefinition = ActivatableItemDefinition &
+export type ConsumableDefinition = ActivatableItemDefinition<ItemInstance> &
   Omit<ItemDefinition, "tags" | "definitionId"> & {
     tags: [ItemTag.Consumable, ...ItemTag[]]; // Ensure Consumable always has the Consumable tag
     getMaxUses?: OptionalFunc<number, [CreatureInstance, ItemInstance]>;
