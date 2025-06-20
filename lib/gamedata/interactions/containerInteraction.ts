@@ -1,6 +1,7 @@
 import { ContainerInstance } from "lib/types/entities/container";
 import { EntityInstance, Interaction } from "lib/types/entity";
 import Inventory from "lib/types/Inventory";
+import { ItemInstance } from "lib/types/item";
 import { PlayerInstance } from "lib/types/player";
 
 export default function containerInteraction(): (
@@ -25,6 +26,21 @@ export default function containerInteraction(): (
     }
 
     if (action === "exit") return undefined;
+
+    let parsedAction = JSON.parse(action);
+
+    if ("definitionId" in parsedAction && "amount" in parsedAction) {
+      let item: ItemInstance = parsedAction as ItemInstance;
+
+      entity.inventory.remove(item);
+
+      player.inventory.add(item);
+
+      return {
+        ...interaction,
+        inventory: entity.inventory.getItems(),
+      };
+    }
 
     return interaction;
   }

@@ -1,14 +1,43 @@
 import { Interaction } from "lib/types/entity";
 import { socket } from "lib/socket";
 import items from 'lib/gamedata/items';
+import { ItemInstance } from "lib/types/item";
+import { useState } from "react";
 
 export default function ContainerMenu({
   interaction
 }: {
   interaction: Interaction;
 }) {
-  function takeItem(index: number) {
-    
+  const [amount, setAmount] = useState("");
+  const [error, setError] = useState("");
+
+  function takeItem(item: ItemInstance) {
+    let amountN: number = 1;
+
+    try {
+      amountN = +amount;
+    }
+    catch (error) {
+      setError("Enter a positive whole number");
+      return;
+    }
+
+    if (amountN < 1) {
+      setError("Enter a positive whole number");
+      return;
+    }
+
+    if (amountN > item.amount) {
+      setError("Cannot take more items than present (" + item.amount + ")");
+      return;
+    }
+
+    setError("");
+
+    item.amount = amountN;
+
+    socket.emit("interact", interaction.entityId.toString(), JSON.stringify(item));
   }
 
   return (
@@ -17,7 +46,7 @@ export default function ContainerMenu({
         <h1 className="text-xl">{interaction.title}</h1>
         <button
           onClick={() => {
-            // Close the crafting interaction
+            // Close the container interaction
             socket.emit("interact", interaction.entityId.toString(), "exit");
           }}
           className="px-1"
@@ -38,7 +67,17 @@ export default function ContainerMenu({
                 {items[item.definitionId].name} x{item.amount}
               </td>
               <td>
-                <button onClick={() => takeItem(index)} className="px-1">
+                <input
+                  type="text"
+                  name="amount"
+                  placeholder="1"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  className="px-1"
+                />
+              </td>
+              <td>
+                <button onClick={() => takeItem(item)} className="px-1">
                   Take
                 </button>
               </td>
@@ -46,6 +85,7 @@ export default function ContainerMenu({
           ))}
         </tbody>
       </table>
+      {error && <p className="text-red-500">{error}</p>}
     </div>
   );
 }
