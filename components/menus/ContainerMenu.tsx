@@ -7,7 +7,9 @@ export default function ContainerMenu({
 }: {
   interaction: Interaction;
 }) {
-
+  function takeItem(index: number) {
+    
+  }
 
   return (
     <div className="border w-1/3 flex flex-col gap-2">
@@ -34,6 +36,11 @@ export default function ContainerMenu({
             <tr key={index} className="hover:bg-gray-900">
               <td>
                 {items[item.definitionId].name} x{item.amount}
+              </td>
+              <td>
+                <button onClick={() => takeItem(index)} className="px-1">
+                  Take
+                </button>
               </td>
             </tr>
           ))}
