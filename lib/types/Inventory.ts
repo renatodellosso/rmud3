@@ -63,6 +63,8 @@ export class DirectInventory implements Inventory {
             ),
             item.amount
           );
+      
+    if (amountToAdd === 0) return amountToAdd;
 
     if (existingItem) {
       existingItem.amount += amountToAdd;
