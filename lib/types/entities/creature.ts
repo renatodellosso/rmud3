@@ -165,11 +165,11 @@ export class CreatureInstance extends EntityInstance {
     const io = getIo();
     io.sendMsgToRoom(location.id, `${this.name} has died.`);
 
-    let items: ItemInstance[] = [];
-
     this.damagers.distributeXp(
       (entities[this.definitionId] as CreatureDefinition).xpValue
     );
+
+    let inventory = new DirectInventory();
 
     for (let i = 0; i < this.getDef().maxDrops; i++) {
       const drop = this.getDef().lootTable.roll();
@@ -179,10 +179,8 @@ export class CreatureInstance extends EntityInstance {
         amount: drop.amount,
       };
 
-      items.push(item);
+      inventory.add(item);
     }
-
-    const inventory = new DirectInventory(items);
 
     const corpse = new ContainerInstance(
       "container",
