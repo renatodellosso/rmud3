@@ -15,7 +15,7 @@ import getPlayerManager from "lib/PlayerManager";
 import { ExitData, GameState } from "./types";
 import { EJSON } from "bson";
 import Session from "./Session";
-import { PlayerInstance } from "./player";
+import { PlayerInstance } from "./entities/player";
 import ClientFriendlyIo from "lib/ClientFriendlyIo";
 import getSocketsByPlayerInstanceIds from "lib/getSocketsByPlayerInstanceIds";
 import { LocationId } from "lib/gamedata/rawLocations";

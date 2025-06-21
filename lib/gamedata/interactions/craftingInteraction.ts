@@ -1,6 +1,6 @@
 import { getIo } from "lib/ClientFriendlyIo";
 import { EntityInstance, Interaction } from "lib/types/entity";
-import { PlayerInstance } from "lib/types/player";
+import { PlayerInstance } from "lib/types/entities/player";
 import { RecipeGroup } from "lib/types/Recipe";
 import { savePlayer } from "lib/utils";
 

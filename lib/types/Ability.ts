@@ -3,9 +3,12 @@ import { CreatureInstance } from "./entities/creature";
 import { ItemInstance } from "./item";
 import { DamageType, Targetable } from "./types";
 import { OptionalFunc } from "./types";
-import StatAndAbilityProvider from "./StatAndAbilityProvider";
+import { StatusEffectInstance } from "./statuseffect";
 
-export type AbilitySource = ItemInstance | CreatureInstance;
+export type AbilitySource =
+  | ItemInstance
+  | CreatureInstance
+  | StatusEffectInstance;
 
 type Ability = {
   name: string;
@@ -39,7 +42,7 @@ export type AbilityWithSource = {
 export function getAbilitySourceName(source: AbilitySource): string {
   if (source instanceof CreatureInstance) {
     return source.name;
-  } else if ("definitionId" in source) {
+  } else if ("definitionId" in source && "amount" in source) {
     const item = items[source.definitionId];
 
     if (!item) {

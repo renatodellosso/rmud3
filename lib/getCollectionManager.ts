@@ -3,7 +3,7 @@ import { ObjectId } from "bson";
 import NodeCache from "node-cache";
 import CollectionId, { CollectionIdToType } from "./types/CollectionId";
 import Account from "./types/Account";
-import { PlayerInstance, PlayerProgress } from "./types/player";
+import { PlayerInstance, PlayerProgress } from "./types/entities/player";
 import { getSingleton } from "./utils";
 
 export class CachedCollection<T extends WithId<Document>> {

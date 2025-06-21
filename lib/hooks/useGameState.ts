@@ -3,7 +3,7 @@ import { GameState, SerializedEJSON } from "lib/types/types";
 import { useEffect, useState } from "react";
 import { EJSON } from "bson";
 import { restoreFieldsAndMethods } from "lib/utils";
-import { PlayerInstance } from "lib/types/player";
+import { PlayerInstance } from "lib/types/entities/player";
 import { CreatureInstance } from "lib/types/entities/creature";
 import { isTargetACreature } from "lib/gamedata/CanTarget";
 import { EntityInstance } from "lib/types/entity";

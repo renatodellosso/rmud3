@@ -1,22 +1,22 @@
 import { ObjectId } from "bson";
-import { CreatureInstance } from "./entities/creature";
-import Inventory, { DirectInventory } from "./Inventory";
+import { CreatureInstance } from "../entities/creature";
+import Inventory, { DirectInventory } from "../Inventory";
 import {
   AbilityScore,
   CannotDirectlyCreateInstanceError,
   DamageType,
   OmitType,
   PlayerSave,
-} from "./types";
+} from "../types";
 import {
   ConsumableDefinition,
   EquipmentDefinition,
   ItemInstance,
   ItemTag,
-} from "./item";
-import Ability, { AbilitySource, AbilityWithSource } from "./Ability";
+} from "../item";
+import Ability, { AbilitySource, AbilityWithSource } from "../Ability";
 import items from "lib/gamedata/items";
-import { EquipmentHotbar } from "./Hotbar";
+import { EquipmentHotbar } from "../Hotbar";
 import {
   getFromOptionalFunc,
   restoreFieldsAndMethods,
@@ -25,9 +25,9 @@ import {
 import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";
 import { LocationId } from "lib/gamedata/rawLocations";
-import { EntityInstance } from "./entity";
+import { EntityInstance } from "../entity";
 import XpForNextLevel from "lib/gamedata/XpForNextLevel";
-import StatAndAbilityProvider from "./StatAndAbilityProvider";
+import StatAndAbilityProvider from "../StatAndAbilityProvider";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -48,6 +48,16 @@ export class PlayerInstance extends CreatureInstance {
 
   inventory: DirectInventory = new DirectInventory();
   equipment: EquipmentHotbar = new EquipmentHotbar();
+
+  tick(deltaTime: number): void {
+    // Update game state if status effects have changed
+    const originalStatusEffectCount = this.statusEffects.length;
+    super.tick(deltaTime);
+    if (this.statusEffects.length != originalStatusEffectCount) {
+      getIo().updateGameState(this._id.toString());
+    }
+  }
+
   getMaxHealth(): number {
     let val = super.getMaxHealth();
 

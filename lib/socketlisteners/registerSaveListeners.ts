@@ -16,7 +16,7 @@ import {
   getDefaultPlayerAndProgress,
   PlayerInstance,
   PlayerProgress,
-} from "lib/types/player";
+} from "lib/types/entities/player";
 import { setSocket } from "lib/getSocketsByPlayerInstanceIds";
 import { TypedSocket } from "lib/types/socketioserverutils";
 import { savePlayer } from "lib/utils";

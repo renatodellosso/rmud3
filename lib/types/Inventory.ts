@@ -1,7 +1,7 @@
 import items, { ItemId } from "../gamedata/items";
 import { ItemInstance } from "./item";
 import { areItemInstancesEqual, getFromOptionalFunc } from "../utils";
-import { PlayerInstance } from "./player";
+import { PlayerInstance } from "./entities/player";
 import { AbilityScore } from "./types";
 
 export default interface Inventory {
@@ -63,7 +63,7 @@ export class DirectInventory implements Inventory {
             ),
             item.amount
           );
-      
+
     if (amountToAdd === 0) return amountToAdd;
 
     if (existingItem) {

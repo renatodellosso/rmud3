@@ -2,7 +2,7 @@ import { ContainerInstance } from "lib/types/entities/container";
 import { EntityInstance, Interaction } from "lib/types/entity";
 import Inventory from "lib/types/Inventory";
 import { ItemInstance } from "lib/types/item";
-import { PlayerInstance } from "lib/types/player";
+import { PlayerInstance } from "lib/types/entities/player";
 
 export default function containerInteraction(): (
   entity: ContainerInstance,
@@ -43,5 +43,5 @@ export default function containerInteraction(): (
     }
 
     return interaction;
-  }
+  };
 }

@@ -1,7 +1,7 @@
 // import locations from "lib/locations";
 import { getFromOptionalFunc } from "lib/utils";
 import { CreatureInstance } from "./entities/creature";
-import { PlayerInstance } from "./player";
+import { PlayerInstance } from "./entities/player";
 import { OptionalFunc } from "./types";
 import { getIo } from "lib/ClientFriendlyIo";
 import { EntityInstance } from "./entity";

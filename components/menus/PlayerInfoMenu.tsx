@@ -1,3 +1,4 @@
+import statusEffects from "lib/gamedata/statusEffects";
 import XpForNextLevel from "lib/gamedata/XpForNextLevel";
 import { AbilityScore, GameState } from "lib/types/types";
 
@@ -30,6 +31,17 @@ export default function PlayerInfoMenu({
               </li>
             );
           })}
+        </ul>
+      </div>
+      <div>
+        Status Effects:
+        <ul>
+          {self.statusEffects.map((effect) => (
+            <li key={effect.definitionId}>
+              {statusEffects[effect.definitionId].name} -{" "}
+              {statusEffects[effect.definitionId].description}
+            </li>
+          ))}
         </ul>
       </div>
     </div>

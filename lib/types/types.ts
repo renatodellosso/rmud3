@@ -1,6 +1,6 @@
 import { Location } from "./Location";
 import { randInRangeInt, restoreFieldsAndMethods } from "../utils";
-import { PlayerInstance, PlayerProgress } from "./player";
+import { PlayerInstance, PlayerProgress } from "./entities/player";
 import { EntityInstance, Interaction } from "./entity";
 import { LocationId } from "lib/gamedata/rawLocations";
 import LocationMap from "./LocationMap";

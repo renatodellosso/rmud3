@@ -1,6 +1,6 @@
 import { CreatureInstance } from "lib/types/entities/creature";
 import { ItemInstance } from "lib/types/item";
-import { PlayerInstance } from "lib/types/player";
+import { PlayerInstance } from "lib/types/entities/player";
 import {
   areItemInstancesEqual,
   getSingleton,

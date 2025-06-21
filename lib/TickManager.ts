@@ -29,7 +29,7 @@ export function startTicking() {
     }
 
     for (const creature of toTick) {
-      entities[creature.definitionId].tick?.(creature, delta);
+      creature.tick(delta);
     }
   }, TICK_INTERVAL);
 }

@@ -1,5 +1,5 @@
 import Account from "./Account";
-import { PlayerInstance, PlayerProgress } from "./player";
+import { PlayerInstance, PlayerProgress } from "./entities/player";
 
 enum CollectionId {
   Accounts = "Accounts",

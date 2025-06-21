@@ -1,5 +1,5 @@
 import items, { ItemId } from "lib/gamedata/items";
-import { PlayerInstance } from "./player";
+import { PlayerInstance } from "./entities/player";
 import Inventory from "./Inventory";
 import { ItemInstance } from "./item";
 import { savePlayer } from "lib/utils";

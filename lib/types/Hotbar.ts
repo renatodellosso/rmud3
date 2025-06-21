@@ -1,7 +1,7 @@
 import items from "lib/gamedata/items";
 import { EquipmentDefinition, ItemInstance, ItemTag } from "./item";
 import { CreatureInstance } from "./entities/creature";
-import { PlayerInstance } from "./player";
+import { PlayerInstance } from "./entities/player";
 import { areItemInstancesEqual } from "lib/utils";
 
 export abstract class Hotbar {

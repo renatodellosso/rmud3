@@ -23,4 +23,18 @@ export default interface StatAndAbilityProvider<
     source: TSource,
     damage: { amount: number; type: DamageType }[]
   ) => { amount: number; type: DamageType }[];
+  /**
+   * @param cooldown in seconds
+   */
+  getCooldown?: (
+    creature: CreatureInstance,
+    source: TSource,
+    ability: Ability,
+    cooldown: number
+  ) => number;
+  tick?: (
+    creature: CreatureInstance,
+    deltaTime: number,
+    source: TSource
+  ) => void;
 }

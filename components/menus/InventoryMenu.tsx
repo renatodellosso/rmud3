@@ -1,5 +1,5 @@
 import items from "lib/gamedata/items";
-import { PlayerInstance } from "../../lib/types/player";
+import { PlayerInstance } from "../../lib/types/entities/player";
 import ItemTooltip from "../ItemTooltip";
 import { ItemInstance, ItemTag } from "lib/types/item";
 import { socket } from "lib/socket";

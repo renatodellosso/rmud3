@@ -2,7 +2,7 @@ import entities, { EntityId } from "lib/gamedata/entities";
 import { ObjectId } from "bson";
 import locations from "lib/locations";
 import { savePlayer } from "lib/utils";
-import { PlayerInstance } from "./player";
+import { PlayerInstance } from "./entities/player";
 import { LocationId } from "lib/gamedata/rawLocations";
 import Recipe, { RecipeGroup } from "./Recipe";
 import Inventory from "./Inventory";
@@ -50,6 +50,10 @@ export class EntityInstance {
     }
 
     this.name ??= definition.name;
+  }
+
+  tick(deltaTime: number) {
+    entities[this.definitionId].tick?.(this, deltaTime);
   }
 
   move(newLocationId: LocationId) {

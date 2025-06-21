@@ -1,5 +1,5 @@
 import { ItemInstance } from "./types/item";
-import { PlayerInstance } from "./types/player";
+import { PlayerInstance } from "./types/entities/player";
 import { OptionalFunc, Targetable } from "./types/types";
 
 /**
@@ -176,5 +176,5 @@ export function importOnlyOnServer<T extends object>(filePath: string, obj: T) {
 
 export function savePlayer(player: PlayerInstance) {
   if (typeof window === "undefined")
-    require("./PlayerManager").savePlayerServerOnly(player);
+    require("./playerManager").savePlayerServerOnly(player);
 }

@@ -1,4 +1,4 @@
-import { PlayerInstance, PlayerProgress } from "./types/player";
+import { PlayerInstance, PlayerProgress } from "./types/entities/player";
 import { ObjectId } from "bson";
 import { getSingleton, restoreFieldsAndMethods } from "./utils";
 import locations from "./locations";

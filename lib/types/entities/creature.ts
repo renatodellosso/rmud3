@@ -15,10 +15,9 @@ import { ContainerInstance } from "./container";
 import Inventory, { DirectInventory } from "../Inventory";
 import { ItemInstance } from "../item";
 import { ItemId } from "lib/gamedata/items";
-import { ObjectId } from "bson";
-import getPlayerManager from "lib/PlayerManager";
-import { PlayerInstance } from "../player";
 import StatAndAbilityProvider from "../StatAndAbilityProvider";
+import { StatusEffectInstance } from "../statuseffect";
+import statusEffects, { StatusEffectId } from "lib/gamedata/statusEffects";
 
 export type CreatureDefinition = EntityDefinition & {
   health: number;
@@ -34,6 +33,8 @@ export class CreatureInstance extends EntityInstance {
 
   canActAt: Date = new Date();
   lastActedAt: Date = new Date();
+
+  statusEffects: StatusEffectInstance[] = [];
 
   /**
    * Maps Entity IDs to the amount of damage they have dealt to this creature.
@@ -205,12 +206,57 @@ export class CreatureInstance extends EntityInstance {
     this.lastActedAt = new Date();
     this.canActAt = new Date();
 
-    this.canActAt.setSeconds(
-      this.canActAt.getSeconds() +
-        getFromOptionalFunc(ability.getCooldown, this, source)
-    );
+    let cooldown = getFromOptionalFunc(ability.getCooldown, this, source);
+    for (const provider of this.getStatAndAbilityProviders()) {
+      if (provider.provider.getCooldown) {
+        cooldown = provider.provider.getCooldown(
+          this,
+          provider.source,
+          ability,
+          cooldown
+        );
+      }
+    }
+
+    this.canActAt.setSeconds(this.canActAt.getSeconds() + cooldown);
 
     getIo().updateGameStateForRoom(location.id);
+  }
+
+  /**
+   * @param deltaTime in seconds
+   */
+  tick(deltaTime: number) {
+    super.tick(deltaTime);
+
+    // Remove expired status effects
+    this.statusEffects = this.statusEffects.filter(
+      (effect) => effect.expiresAt > new Date()
+    );
+
+    for (const provider of this.getStatAndAbilityProviders()) {
+      provider.provider.tick?.(this, deltaTime, provider.source);
+    }
+  }
+
+  /**
+   * @param duration in seconds
+   */
+  addStatusEffect(id: StatusEffectId, duration: number) {
+    const existing = this.statusEffects.find(
+      (effect) => effect.definitionId === id
+    );
+
+    if (existing) {
+      // If the effect already exists, extend its duration
+      existing.expiresAt.setSeconds(existing.expiresAt.getSeconds() + duration);
+    } else {
+      // Otherwise, create a new effect
+      this.statusEffects.push({
+        definitionId: id,
+        expiresAt: new Date(Date.now() + duration * 1000),
+      });
+    }
   }
 
   prepForGameState() {
@@ -221,7 +267,10 @@ export class CreatureInstance extends EntityInstance {
     provider: StatAndAbilityProvider;
     source: AbilitySource;
   }[] {
-    return [];
+    return this.statusEffects.map((effect) => ({
+      provider: statusEffects[effect.definitionId] as StatAndAbilityProvider,
+      source: effect,
+    }));
   }
 
   mapStatAndAbilityProviders<T>(

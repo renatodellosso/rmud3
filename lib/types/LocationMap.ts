@@ -89,7 +89,7 @@ export default class LocationMap {
         exitLoc.globalCoords[1],
       ];
 
-      if (this.exits[id].includes(exitPos)) continue;
+      if (this.exits[id]!.includes(exitPos)) continue;
 
       this.exits[id]!.push(exitPos);
 
