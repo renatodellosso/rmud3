@@ -89,5 +89,6 @@ export type Interaction = {
   actions?: { id: string; text: string }[];
   title?: string;
   recipes?: Recipe[];
-  inventory?: ItemInstance[];
+  interactionInventory?: ItemInstance[];
+  playerInventory?: ItemInstance[];
 };

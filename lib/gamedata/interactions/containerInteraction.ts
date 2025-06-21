@@ -21,27 +21,37 @@ export default function containerInteraction(): (
       return {
         entityId: entity._id,
         type: "container",
-        inventory: entity.inventory.getItems(),
+        interactionInventory: entity.inventory.getItems(),
+        playerInventory: player.inventory.getItems()
       };
     }
 
     if (action === "exit") return undefined;
 
-    let parsedAction = JSON.parse(action);
+    try {
+      let parsedAction = JSON.parse(action);
 
-    if ("definitionId" in parsedAction && "amount" in parsedAction) {
-      let item: ItemInstance = parsedAction as ItemInstance;
+      if ("definitionId" in parsedAction && "amount" in parsedAction && "insert" in parsedAction) {
+        const item: ItemInstance = {definitionId: parsedAction.definitionId, amount: parsedAction.amount};
 
-      entity.inventory.remove(item);
+        if (!parsedAction.insert) {
+          entity.inventory.remove(item);
+          player.inventory.add(item);
+        }
+        else {
+          player.inventory.remove(item);
+          entity.inventory.add(item);
+        }
 
-      player.inventory.add(item);
-
-      return {
-        ...interaction,
-        inventory: entity.inventory.getItems(),
-      };
+        return {
+          ...interaction,
+          interactionInventory: entity.inventory.getItems(),
+          playerInventory: player.inventory.getItems()
+        };
+      }
     }
-
-    return interaction;
+    catch {
+      return interaction;
+    }
   };
 }

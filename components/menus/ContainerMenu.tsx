@@ -13,7 +13,7 @@ export default function ContainerMenu({
   const [error, setError] = useState("");
   const [viewInventory, setViewInventory] = useState(false);
 
-  function takeItem(item: ItemInstance) {
+  function transferItem(item: ItemInstance) {
     let amountN: number = 1;
 
     try {
@@ -38,7 +38,9 @@ export default function ContainerMenu({
 
     item.amount = amountN;
 
-    socket.emit("interact", interaction.entityId.toString(), JSON.stringify(item));
+    const itemData = {definitionId: item.definitionId, amount: amountN, insert: viewInventory};
+
+    socket.emit("interact", interaction.entityId.toString(), JSON.stringify(itemData));
   }
 
   function switchInventory() {
@@ -66,48 +68,65 @@ export default function ContainerMenu({
         </button>
       </div>
       {viewInventory ? (
-        <table className="border-separate border-spacing-y-2">
-          <thead>
-            <tr>
-              <th>Inventory Items</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-          </tbody>
-        </table>
+        <div>
+          <div className="text-center">Inventory Items</div>
+          <table className="border-separate border-spacing-y-2">
+            <tbody>
+              {interaction.playerInventory!.map((item, index) => (
+                <tr key={index} className="hover:bg-gray-900">
+                  <td>
+                    {items[item.definitionId].name} x{item.amount}
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      name="amount"
+                      placeholder="1"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      className="px-1"
+                    />
+                  </td>
+                  <td>
+                    <button onClick={() => transferItem(item)} className="px-1">
+                      Insert
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
-        <table className="border-separate border-spacing-y-2">
-          <thead>
-            <tr>
-              <th>Container Items</th>
-            </tr>
-          </thead>
-          <tbody>
-            {interaction.inventory!.map((item, index) => (
-              <tr key={index} className="hover:bg-gray-900">
-                <td>
-                  {items[item.definitionId].name} x{item.amount}
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    name="amount"
-                    placeholder="1"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    className="px-1"
-                  />
-                </td>
-                <td>
-                  <button onClick={() => takeItem(item)} className="px-1">
-                    Take
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div>
+          <div className="text-center">Container Items</div>
+          <table className="border-separate border-spacing-y-2">
+            <tbody>
+              {interaction.interactionInventory!.map((item, index) => (
+                <tr key={index} className="hover:bg-gray-900">
+                  <td>
+                    {items[item.definitionId].name} x{item.amount}
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      name="amount"
+                      placeholder="1"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      className="px-1"
+                    />
+                  </td>
+                  <td>
+                    <button onClick={() => transferItem(item)} className="px-1">
+                      Take
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       {error && <p className="text-red-500">{error}</p>}
