@@ -156,4 +156,20 @@ export default class LocationMap {
 
     return directions;
   }
+
+  getDirection(
+    from: LocationId,
+    to: LocationId
+  ): [number, number, number] | undefined {
+    const fromPosition = this.getPosition(from);
+    const toPosition = this.getPosition(to);
+
+    if (!fromPosition || !toPosition) return undefined;
+
+    return [
+      toPosition[0] - fromPosition[0],
+      toPosition[1] - fromPosition[1],
+      toPosition[2] - fromPosition[2],
+    ];
+  }
 }

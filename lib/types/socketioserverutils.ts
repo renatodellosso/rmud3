@@ -22,6 +22,7 @@ import { LocationId } from "lib/gamedata/rawLocations";
 import entities from "lib/gamedata/entities";
 import { EntityInstance } from "./entity";
 import { CreatureInstance } from "./entities/creature";
+import LocationMap from "./LocationMap";
 
 export type TypedSocket = Socket<
   ClientToServerEvents,
@@ -91,12 +92,29 @@ export function sendMsgToSocket(socket: TypedSocket, msg: string) {
   return Promise.resolve();
 }
 
-export function getExitData(locationId: LocationId): ExitData {
+export function getExitData(
+  locationId: LocationId,
+  map: LocationMap,
+  currentLocationId: LocationId
+): ExitData {
   const location = locations[locationId];
+
+  const direction = map.getDirection(currentLocationId, locationId);
+
+  let dirText = "";
+  if (direction) {
+    // The directions are a little weird here
+    if (direction[0] > 0) dirText = " (D)";
+    else if (direction[0] < 0) dirText = " (U)";
+    else if (direction[1] > 0) dirText = " (S)";
+    else if (direction[1] < 0) dirText = " (N)";
+    else if (direction[2] > 0) dirText = " (E)";
+    else if (direction[2] < 0) dirText = " (W)";
+  }
 
   return {
     id: locationId,
-    name: location.name,
+    name: location.name + dirText,
   };
 }
 
@@ -127,6 +145,26 @@ export function getPlayer(socket: TypedSocket) {
 }
 
 export function updateGameState(socket: TypedSocket) {
+  const gameState = getGameState(socket);
+
+  socket.emit("setGameState", EJSON.stringify(gameState));
+
+  return Promise.resolve();
+}
+
+export async function updateGameStateForRoom(roomId: string) {
+  const io = getRawIoSingleton();
+  if (!io) return Promise.resolve();
+
+  const room = io.to(roomId);
+  const sockets = await room.fetchSockets();
+
+  return Promise.all(
+    sockets.map((s) => updateGameState(s as any as TypedSocket))
+  ).then(() => {});
+}
+
+function getGameState(socket: TypedSocket): GameState {
   const player = getPlayer(socket);
 
   const location = locations[player.instance.location];
@@ -158,7 +196,7 @@ export function updateGameState(socket: TypedSocket) {
   // Clean up player instance
   player.instance.prepForGameState();
 
-  const gameState: GameState = {
+  return {
     self: player.instance,
     progress: player.progress,
     location: {
@@ -170,28 +208,14 @@ export function updateGameState(socket: TypedSocket) {
         player.instance as PlayerInstance
       ),
       entities: entityList,
-      exits: Array.from(location.exits).map(getExitData),
+      exits: Array.from(location.exits).map((e) =>
+        getExitData(e, socket.data.session!.map, player.instance.location)
+      ),
     },
     messages: socket.data.session!.messages,
     interactions: socket.data.session!.interactions || [],
     map: socket.data.session!.map,
   };
-
-  socket.emit("setGameState", EJSON.stringify(gameState));
-
-  return Promise.resolve();
-}
-
-export async function updateGameStateForRoom(roomId: string) {
-  const io = getRawIoSingleton();
-  if (!io) return Promise.resolve();
-
-  const room = io.to(roomId);
-  const sockets = await room.fetchSockets();
-
-  return Promise.all(
-    sockets.map((s) => updateGameState(s as any as TypedSocket))
-  ).then(() => {});
 }
 
 export class Io implements ClientFriendlyIo {
