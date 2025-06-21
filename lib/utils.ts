@@ -176,5 +176,5 @@ export function importOnlyOnServer<T extends object>(filePath: string, obj: T) {
 
 export function savePlayer(player: PlayerInstance) {
   if (typeof window === "undefined")
-    require("./playerManager").savePlayerServerOnly(player);
+    require("./PlayerManager").savePlayerServerOnly(player);
 }
