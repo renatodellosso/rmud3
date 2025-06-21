@@ -11,6 +11,7 @@ export default function ContainerMenu({
 }) {
   const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
+  const [viewInventory, setViewInventory] = useState(false);
 
   function takeItem(item: ItemInstance) {
     let amountN: number = 1;
@@ -40,9 +41,19 @@ export default function ContainerMenu({
     socket.emit("interact", interaction.entityId.toString(), JSON.stringify(item));
   }
 
+  function switchInventory() {
+    if (!viewInventory) setViewInventory(true);
+    else setViewInventory(false);
+
+    socket.emit("interact", interaction.entityId.toString(), "switchInventory");
+  }
+
   return (
     <div className="border w-1/3 flex flex-col gap-2">
       <div className="flex justify-between">
+        <button onClick={switchInventory}>
+          {viewInventory ? "Open Container" : "Open Inventory"}
+        </button>
         <h1 className="text-xl">{interaction.title}</h1>
         <button
           onClick={() => {
@@ -54,37 +65,51 @@ export default function ContainerMenu({
           Exit
         </button>
       </div>
-      <table className="border-separate border-spacing-y-2">
-        <thead>
-          <tr>
-            <th>Items</th>
-          </tr>
-        </thead>
-        <tbody>
-          {interaction.inventory!.map((item, index) => (
-            <tr key={index} className="hover:bg-gray-900">
-              <td>
-                {items[item.definitionId].name} x{item.amount}
-              </td>
-              <td>
-                <input
-                  type="text"
-                  name="amount"
-                  placeholder="1"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  className="px-1"
-                />
-              </td>
-              <td>
-                <button onClick={() => takeItem(item)} className="px-1">
-                  Take
-                </button>
-              </td>
+      {viewInventory ? (
+        <table className="border-separate border-spacing-y-2">
+          <thead>
+            <tr>
+              <th>Inventory Items</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            
+          </tbody>
+        </table>
+      ) : (
+        <table className="border-separate border-spacing-y-2">
+          <thead>
+            <tr>
+              <th>Container Items</th>
+            </tr>
+          </thead>
+          <tbody>
+            {interaction.inventory!.map((item, index) => (
+              <tr key={index} className="hover:bg-gray-900">
+                <td>
+                  {items[item.definitionId].name} x{item.amount}
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    name="amount"
+                    placeholder="1"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    className="px-1"
+                  />
+                </td>
+                <td>
+                  <button onClick={() => takeItem(item)} className="px-1">
+                    Take
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
       {error && <p className="text-red-500">{error}</p>}
     </div>
   );
