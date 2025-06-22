@@ -10,6 +10,7 @@ import { EntityInstance } from "lib/types/entity";
 import { CreatureId } from "lib/gamedata/entities";
 import Recipe from "lib/types/Recipe";
 import LocationMap from "lib/types/LocationMap";
+import { DirectInventory } from "lib/types/Inventory";
 
 export default function useGameState(): GameState | undefined {
   const [gameState, setGameState] = useState<GameState>();
@@ -95,6 +96,10 @@ function restoreMethods(gameState: GameState) {
       for (const recipe of interaction.recipes) {
         restoreFieldsAndMethods(recipe, new Recipe({}, []));
       }
+    }
+
+    if (interaction.inventory) {
+      restoreFieldsAndMethods(interaction.inventory, new DirectInventory());
     }
   }
 }

@@ -62,8 +62,8 @@ export default function ContainerMenu({
   }
 
   const openInventory = viewPlayerInventory
-    ? interaction.playerInventory
-    : interaction.interactionInventory;
+    ? self.inventory
+    : interaction.inventory;
 
   return (
     <div className="border w-1/3 flex flex-col gap-2">
@@ -84,11 +84,13 @@ export default function ContainerMenu({
       </div>
       <div>
         <div className="text-center">
-          {viewPlayerInventory ? "Inventory" : "Container"} Items
+          {viewPlayerInventory ? "Inventory" : "Container"} Items (
+          {openInventory!.getUsedWeight()}/
+          {openInventory!.getMaxWeight() ?? "∞"} kg)
         </div>
         <table className="w-full border-separate border-spacing-y-2">
           <tbody>
-            {openInventory!.map((item, index) => (
+            {openInventory!.getItems().map((item, index) => (
               <tr key={index} className="hover:bg-gray-900">
                 <td>
                   <div className="tooltip">

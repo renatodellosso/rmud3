@@ -25,6 +25,7 @@ export default function ItemTooltip({
 
   const isEquipment = def.tags.includes(ItemTag.Equipment);
 
+  const weight = getFromOptionalFunc(def.getWeight, item);
   const sellValue = getFromOptionalFunc(def.getSellValue, item);
 
   return (
@@ -32,10 +33,12 @@ export default function ItemTooltip({
       <h1 className="text-lg">
         {def.name} x{item.amount}
       </h1>
-      <div>{getFromOptionalFunc(def.getWeight, item)} kg</div>
       <div>
-        Worth {item.amount * sellValue} {items["money"].name} total,{" "}
-        {sellValue} {items["money"].name} each
+        {item.amount * weight} kg total, {weight} kg each
+      </div>
+      <div>
+        Worth {item.amount * sellValue} {items["money"].name} total, {sellValue}{" "}
+        {items["money"].name} each
       </div>
       <div>{def.description}</div>
       {isEquipment && (

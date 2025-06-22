@@ -18,8 +18,7 @@ export default function inventoryInteraction(
     return {
       entityId: entity._id,
       type: "container",
-      interactionInventory: inventory.getItems(),
-      playerInventory: player.inventory.getItems(),
+      inventory,
       title,
     };
   }
@@ -51,8 +50,7 @@ export default function inventoryInteraction(
 
       return {
         ...interaction,
-        interactionInventory: inventory.getItems(),
-        playerInventory: player.inventory.getItems(),
+        inventory,
       };
     }
   } catch {
