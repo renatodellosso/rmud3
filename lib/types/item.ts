@@ -49,5 +49,4 @@ export const equipmentSlotToMaxEquipped: Record<EquipmentSlot, number> = {
 export type ConsumableDefinition = ActivatableItemDefinition<ItemInstance> &
   Omit<ItemDefinition, "tags" | "definitionId"> & {
     tags: [ItemTag.Consumable, ...ItemTag[]]; // Ensure Consumable always has the Consumable tag
-    getMaxUses?: OptionalFunc<number, [CreatureInstance, ItemInstance]>;
   };

@@ -7,6 +7,7 @@ import {
   DamageType,
   OmitType,
   PlayerSave,
+  Targetable,
 } from "../types";
 import {
   ConsumableDefinition,
@@ -172,6 +173,46 @@ export class PlayerInstance extends CreatureInstance {
         source: item,
       }))
     );
+  }
+
+  activateAbility(
+    ability: Ability,
+    targets: Targetable[],
+    source: AbilitySource
+  ) {
+    ability.activate(this, targets, source);
+
+    const location = locations[this.location];
+
+    this.lastActedAt = new Date();
+    this.canActAt = new Date();
+
+    let cooldown = getFromOptionalFunc(ability.getCooldown, this, source);
+    for (const provider of this.getStatAndAbilityProviders()) {
+      if (provider.provider.getCooldown) {
+        cooldown = provider.provider.getCooldown(
+          this,
+          provider.source,
+          ability,
+          cooldown
+        );
+      }
+    }
+
+    this.canActAt.setSeconds(this.canActAt.getSeconds() + cooldown);
+
+    if (
+      "definitionId" in source &&
+      "amount" in source &&
+      items[source.definitionId].tags.includes(ItemTag.Consumable)
+    ) {
+      this.inventory.remove({
+        definitionId: source.definitionId,
+        amount: 1,
+      });
+    }
+
+    getIo().updateGameStateForRoom(location.id);
   }
 }
 

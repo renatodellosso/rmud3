@@ -279,6 +279,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           }
         ),
         new Recipe({}, "bone"),
+        new Recipe({}, "healthPotion"),
       ])
     ),
   },
