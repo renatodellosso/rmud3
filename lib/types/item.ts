@@ -38,11 +38,13 @@ export type EquipmentDefinition = ActivatableItemDefinition<ItemInstance> &
 
 export enum EquipmentSlot {
   Chest = "Chest",
+  Head = "Head",
   Hands = "Hands",
 }
 
 export const equipmentSlotToMaxEquipped: Record<EquipmentSlot, number> = {
   Chest: 1,
+  Head: 1,
   Hands: 2,
 };
 

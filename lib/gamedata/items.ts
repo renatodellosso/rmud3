@@ -22,7 +22,8 @@ export type ItemId =
   | "consumable1"
   | "rustySword"
   | "money"
-  | "healthPotion";
+  | "healthPotion"
+  | "boneNecklace";
 
 const items = Object.freeze({
   test: {
@@ -55,11 +56,18 @@ const items = Object.freeze({
   },
   skull: {
     name: "Skull",
-    tags: [],
-    description: "TODO: add a witty description.",
+    tags: [ItemTag.Equipment],
+    description:
+      "A well preserved human skull. It could offer some protection.",
     getWeight: 1,
     getSellValue: 2,
-  },
+    slot: EquipmentSlot.Head,
+    getDamageToTake: (creature, item, damage) =>
+      damage.map((d) => ({
+        amount: d.amount - 1, // Reduces damage taken by 1
+        type: DamageType.Slashing,
+      })),
+  } satisfies EquipmentDefinition,
   eyeball: {
     name: "Eyeball",
     tags: [],
@@ -149,19 +157,22 @@ const items = Object.freeze({
   },
   healthPotion: {
     name: "Health Potion",
-    tags: ["Consumable"],
+    tags: [ItemTag.Consumable],
     description: "A red solution in a small bottle.",
     getWeight: 0.5,
     getSellValue: 10,
     getAbilities: (creature, item) => [
-      Abilities.heal(
-        "Heal",
-        "Heal a small amount of health.",
-        0,
-        5
-      )
+      Abilities.heal("Heal", "Heal a small amount of health.", 0, 5),
     ],
   } as ConsumableDefinition,
+  boneNecklace: {
+    name: "Bone Necklace",
+    tags: [ItemTag.Equipment],
+    description: "A necklace made of thin bones.",
+    getWeight: 0.5,
+    getSellValue: 10,
+    
+  },
 } as Record<ItemId, ItemDefinition>);
 
 export default items;
