@@ -49,7 +49,7 @@ export default function InventoryMenu({ self }: { self: PlayerInstance }) {
                 <tr key={index} className="hover:bg-gray-900">
                   <td className="tooltip">
                     {def.name}
-                    <ItemTooltip item={item} />
+                    <ItemTooltip item={item} creature={self} />
                   </td>
                   <td>
                     {def.slot ? (
@@ -89,7 +89,7 @@ export default function InventoryMenu({ self }: { self: PlayerInstance }) {
               <tr key={index} className="hover:bg-gray-900">
                 <td className="tooltip">
                   {items[item.definitionId].name}
-                  <ItemTooltip item={item} />
+                  <ItemTooltip item={item} creature={self} />
                 </td>
                 <td>{item.amount}</td>
                 <td>
