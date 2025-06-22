@@ -87,13 +87,13 @@ export function heal(
 
       if (target.health >= target.getMaxHealth()) return false;
 
-      const io = getIo();
-
       const healthAdded = target.addHealth(health);
 
-      io.sendMsgToRoom(
+      getIo().sendMsgToRoom(
         creature.location,
-        `${creature.name} healed ${target === creature ? "themself" : target.name} for ${healthAdded} using ${name}!`
+        `${creature.name} healed ${
+          target === creature ? "themself" : target.name
+        } for ${healthAdded} using ${name}!`
       );
 
       return true;

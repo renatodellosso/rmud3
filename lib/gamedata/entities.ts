@@ -76,7 +76,10 @@ const entities: Record<EntityId, EntityDefinition> = {
         getTargetCount: () => 0,
         canTarget: () => false,
         activate: (creature) => {
-          return `${creature.name} taunts everyone in the room!`;
+          getIo().sendMsgToRoom(
+            creature.location,
+            `${creature.name} taunts everyone in the room!`);
+          return true;
         },
       },
       Abilities.attack(
