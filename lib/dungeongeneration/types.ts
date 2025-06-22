@@ -47,6 +47,7 @@ export type FloorLayoutGenerationOptions = {
 
 export type FloorPopulationOptions = {
   encounterChance: number;
+  maxEncounters: number;
   encounters: WeightedTable<Encounter>;
 };
 

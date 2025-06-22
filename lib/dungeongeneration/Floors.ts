@@ -18,10 +18,11 @@ const floors: Record<string, FloorDefinition> = {
     },
     populationOptions: {
       encounterChance: 0.6,
+      maxEncounters: 2,
       encounters: new WeightedTable<Encounter>([
         {
           item: "skeleton",
-          amount: [1, 3],
+          amount: [1, 2],
           weight: 1,
         },
         {
@@ -58,26 +59,17 @@ const floors: Record<string, FloorDefinition> = {
     },
     populationOptions: {
       encounterChance: 0.5,
+      maxEncounters: 3,
       encounters: new WeightedTable<Encounter>([
         {
           item: "skeleton",
-          amount: [1, 3],
+          amount: 1,
           weight: 1,
         },
         {
           item: "zombie",
           amount: 1,
           weight: 0.8,
-        },
-        {
-          item: [
-            {
-              creature: "zombie",
-              amount: [1, 2],
-            },
-          ],
-          amount: [1, 2],
-          weight: 0.2,
         },
       ]),
     },
@@ -98,26 +90,17 @@ const floors: Record<string, FloorDefinition> = {
     },
     populationOptions: {
       encounterChance: 0.5,
+      maxEncounters: 2,
       encounters: new WeightedTable<Encounter>([
         {
           item: "skeleton",
-          amount: [1, 3],
+          amount: [1, 2],
           weight: 1,
         },
         {
           item: "zombie",
-          amount: 1,
-          weight: 0.8,
-        },
-        {
-          item: [
-            {
-              creature: "zombie",
-              amount: [1, 2],
-            },
-          ],
           amount: [1, 2],
-          weight: 0.2,
+          weight: 0.8,
         },
       ]),
     },
@@ -138,6 +121,7 @@ const floors: Record<string, FloorDefinition> = {
     },
     populationOptions: {
       encounterChance: 0,
+      maxEncounters: 0,
       encounters: new WeightedTable([]),
     },
   },
@@ -157,6 +141,7 @@ const floors: Record<string, FloorDefinition> = {
     },
     populationOptions: {
       encounterChance: 0,
+      maxEncounters: 0,
       encounters: new WeightedTable([]),
     },
   },
@@ -176,6 +161,7 @@ const floors: Record<string, FloorDefinition> = {
     },
     populationOptions: {
       encounterChance: 0,
+      maxEncounters: 0,
       encounters: new WeightedTable([]),
     },
   },

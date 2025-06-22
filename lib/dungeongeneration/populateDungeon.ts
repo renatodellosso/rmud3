@@ -14,32 +14,35 @@ export default function populateDungeon(dungeon: Dungeon) {
         const location = floor.locations[x][y];
         if (!location) continue;
 
-        if (!chance(floor.definition.populationOptions.encounterChance))
-          continue;
+        for (let i = 0; i < floor.definition.populationOptions.maxEncounters; i++) {
 
-        const encounter = floor.definition.populationOptions.encounters.roll();
-
-        for (let i = 0; i < encounter.amount; i++) {
-          if (typeof encounter.item === "string") {
-            addEntityToLocation(location, encounter.item as EntityId);
-
-            creatureCount++;
+          if (!chance(floor.definition.populationOptions.encounterChance))
             continue;
-          }
 
-          for (const creatureGroup of encounter.item) {
-            const amount =
-              typeof creatureGroup.amount === "number"
-                ? creatureGroup.amount
-                : randInRangeInt(
-                    creatureGroup.amount[0],
-                    creatureGroup.amount[1]
-                  );
+          const encounter = floor.definition.populationOptions.encounters.roll();
 
-            for (let j = 0; j < amount; j++) {
-              addEntityToLocation(location, creatureGroup.creature);
+          for (let i = 0; i < encounter.amount; i++) {
+            if (typeof encounter.item === "string") {
+              addEntityToLocation(location, encounter.item as EntityId);
 
               creatureCount++;
+              continue;
+            }
+
+            for (const creatureGroup of encounter.item) {
+              const amount =
+                typeof creatureGroup.amount === "number"
+                  ? creatureGroup.amount
+                  : randInRangeInt(
+                      creatureGroup.amount[0],
+                      creatureGroup.amount[1]
+                    );
+
+              for (let j = 0; j < amount; j++) {
+                addEntityToLocation(location, creatureGroup.creature);
+
+                creatureCount++;
+              }
             }
           }
         }
