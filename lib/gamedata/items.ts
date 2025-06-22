@@ -141,7 +141,7 @@ const items = Object.freeze({
     ],
   } satisfies EquipmentDefinition,
   money: {
-    name: "Silver Coin",
+    name: "Silver Coins",
     tags: [],
     description: "A small silver coin.",
     getWeight: 0,
@@ -154,12 +154,7 @@ const items = Object.freeze({
     getWeight: 0.5,
     getSellValue: 10,
     getAbilities: (creature, item) => [
-      Abilities.heal(
-        "Heal",
-        "Heal a small amount of health.",
-        0,
-        5
-      )
+      Abilities.heal("Heal", "Heal a small amount of health.", 0, 5),
     ],
   } as ConsumableDefinition,
 } as Record<ItemId, ItemDefinition>);

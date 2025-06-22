@@ -53,14 +53,17 @@ export class DirectInventory implements Inventory {
 
     const maxWeight = this.getMaxWeight();
     const usedWeight = this.getUsedWeight();
+
+    const itemWeight = getFromOptionalFunc(
+      items[item.definitionId].getWeight,
+      item
+    );
+
     const amountToAdd =
-      maxWeight === undefined || ignoreWeight
+      maxWeight === undefined || ignoreWeight || itemWeight === 0
         ? item.amount
         : Math.min(
-            Math.floor(
-              (maxWeight - usedWeight) /
-                getFromOptionalFunc(items[item.definitionId].getWeight, item)
-            ),
+            Math.floor((maxWeight - usedWeight) / itemWeight),
             item.amount
           );
 

@@ -29,6 +29,7 @@ import { LocationId } from "lib/gamedata/rawLocations";
 import { EntityInstance } from "../entity";
 import XpForNextLevel from "lib/gamedata/XpForNextLevel";
 import StatAndAbilityProvider from "../StatAndAbilityProvider";
+import Vault from "../Vault";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -49,6 +50,8 @@ export class PlayerInstance extends CreatureInstance {
 
   inventory: DirectInventory = new DirectInventory();
   equipment: EquipmentHotbar = new EquipmentHotbar();
+
+  vault: Vault = new Vault();
 
   tick(deltaTime: number): void {
     // Update game state if status effects have changed
@@ -114,6 +117,8 @@ export class PlayerInstance extends CreatureInstance {
 
   die(): void {
     super.die();
+
+    getIo().leaveRoom(this.location, this._id.toString());
 
     respawn(this);
   }

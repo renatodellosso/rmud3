@@ -19,6 +19,7 @@ import { ContainerInstance } from "lib/types/entities/container";
 import inventoryInteraction from "./interactions/inventoryInteraction";
 import { savePlayer } from "lib/utils";
 import { getFromOptionalFunc } from "../utils";
+import { vaultLevelling } from "lib/types/Vault";
 
 export type CreatureId =
   | "test"
@@ -34,7 +35,9 @@ export type EntityId =
   | "anvil"
   | "mystic"
   | "tavernKeeper"
-  | "junkCollector";
+  | "junkCollector"
+  | "banker"
+  | "vault";
 
 const entities: Record<EntityId, EntityDefinition> = {
   test: {
@@ -172,18 +175,15 @@ const entities: Record<EntityId, EntityDefinition> = {
   } satisfies CreatureDefinition as CreatureDefinition,
   container: {
     name: "Container",
-    interact: (entity, player, interaction, action) => {
-      const func = inventoryInteraction();
-
-      return func(
+    interact: (entity, player, interaction, action) =>
+      inventoryInteraction(
         entity as ContainerInstance,
         player,
         interaction,
         action,
         (entity as ContainerInstance).inventory,
         entity.name
-      );
-    },
+      ),
   },
   signPost: {
     name: "Sign Post",
@@ -511,6 +511,120 @@ const entities: Record<EntityId, EntityDefinition> = {
 
       return func(entity, player, interaction, action);
     },
+  },
+  banker: {
+    name: "Banker",
+    canInteract: (entity, player) =>
+      player.vault.level < vaultLevelling.length - 1,
+    interact: (entity, player, interaction, action) => {
+      const nextVaultLevel = player.vault.level + 1;
+      const nextVaultLevelStats = vaultLevelling[nextVaultLevel];
+      const playerMoney = player.inventory.getCountById("money");
+
+      const io = getIo();
+
+      if (!interaction) {
+        io.sendMsgToPlayer(
+          player._id.toString(),
+          `"Welcome to the bank! Your vault is currently at level ${
+            player.vault.level + 1
+          } and has a capacity of ${
+            vaultLevelling[player.vault.level].maxWeight
+          } kg.
+          You can upgrade it to level ${nextVaultLevel + 1} for ${
+            nextVaultLevelStats.price
+          } ${items["money"].name},
+          which will increase your vault's maximum weight to ${
+            nextVaultLevelStats.maxWeight
+          } kg.`
+        );
+
+        if (playerMoney < nextVaultLevelStats.price) {
+          io.sendMsgToPlayer(
+            player._id.toString(),
+            `You only have ${playerMoney} ${
+              items["money"].name
+            }, which is not enough to upgrade your vault. 
+            You need ${nextVaultLevelStats.price - playerMoney} more ${
+              items["money"].name
+            }.`
+          );
+        }
+
+        const actions = [
+          {
+            id: "leave",
+            text: "Goodbye",
+          },
+        ];
+
+        if (playerMoney >= nextVaultLevelStats.price) {
+          actions.unshift({
+            id: "upgrade",
+            text: "Upgrade Vault",
+          });
+        }
+
+        return {
+          entityId: entity._id,
+          type: "logOnly",
+          state: undefined,
+          actions,
+        };
+      }
+
+      if (action === "leave") {
+        io.sendMsgToPlayer(player._id.toString(), "You walk away.");
+        return undefined;
+      }
+
+      if (action === "upgrade") {
+        if (playerMoney < nextVaultLevelStats.price) {
+          io.sendMsgToPlayer(
+            player._id.toString(),
+            `You only have ${playerMoney} ${
+              items["money"].name
+            }, which is not enough to upgrade your vault. 
+            You need ${nextVaultLevelStats.price - playerMoney} more ${
+              items["money"].name
+            }.`
+          );
+          return interaction;
+        }
+
+        player.inventory.removeById("money", nextVaultLevelStats.price);
+        player.vault.level = nextVaultLevel;
+        player.vault.recalculateVaultSize();
+
+        savePlayer(player);
+
+        io.sendMsgToPlayer(
+          player._id.toString(),
+          `Your vault has been upgraded to level ${nextVaultLevel + 1}. 
+          Your vault's maximum weight is now ${
+            nextVaultLevelStats.maxWeight
+          } kg.`
+        );
+
+        io.updateGameState(player._id.toString());
+
+        return undefined;
+      }
+
+      return interaction;
+    },
+  },
+  vault: {
+    name: "Vault",
+    interact: (entity, player, interaction, action) =>
+      inventoryInteraction(
+        entity,
+        player,
+        interaction,
+        action,
+        player.vault.inventory,
+        "Vault"
+      ),
   },
 };
 

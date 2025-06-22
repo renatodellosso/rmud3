@@ -34,8 +34,8 @@ export default function ItemTooltip({
       </h1>
       <div>{getFromOptionalFunc(def.getWeight, item)} kg</div>
       <div>
-        Worth {item.amount * sellValue} {items["money"].name}s total,{" "}
-        {sellValue} {items["money"].name}s each
+        Worth {item.amount * sellValue} {items["money"].name} total,{" "}
+        {sellValue} {items["money"].name} each
       </div>
       <div>{def.description}</div>
       {isEquipment && (
