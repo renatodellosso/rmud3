@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { getFromOptionalFunc, getTargetId } from "../../lib/utils";
 import { socket } from "lib/socket";
 import { isTargetACreature } from "lib/gamedata/CanTarget";
+import AbilityTooltip from "../AbilityTooltip";
 
 export default function CombatMenu({ gameState }: { gameState: GameState }) {
   const [targets, setTargets] = useState<Targetable[]>([]);
@@ -94,7 +95,7 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
             <button
               key={ability.ability.name}
               onClick={() => selectAbility(ability.ability, ability.source)}
-              className={`w-full px-1 ${
+              className={`tooltip w-full px-1 ${
                 selectedAbility?.ability.name === ability.ability.name &&
                 selectedAbility?.source.definitionId ===
                   ability.source.definitionId
@@ -103,6 +104,10 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
               }`}
             >
               {ability.ability.name} ({getAbilitySourceName(ability.source)})
+              <AbilityTooltip
+                abilityWithSource={ability}
+                creature={gameState.self}
+              />
             </button>
           ))}
         </div>

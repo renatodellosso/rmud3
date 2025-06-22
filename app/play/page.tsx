@@ -87,7 +87,11 @@ export default function Play() {
                 interaction={interaction}
               />
             ) : interaction.type === "container" ? (
-              <ContainerMenu key={index} interaction={interaction} />
+              <ContainerMenu
+                key={index}
+                interaction={interaction}
+                self={gameState.self}
+              />
             ) : (
               <></>
             )
