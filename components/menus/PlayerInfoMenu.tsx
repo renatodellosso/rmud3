@@ -18,7 +18,7 @@ export default function PlayerInfoMenu({
         {XpForNextLevel[self.level].toLocaleString()} XP
       </div>
       <div>
-        Ability Scores:
+        <strong>Ability Scores:</strong>
         <ul>
           {Object.entries(self.abilityScores).map(([ability, score]) => {
             const val = self.getAbilityScore(ability as AbilityScore);
@@ -34,7 +34,7 @@ export default function PlayerInfoMenu({
         </ul>
       </div>
       <div>
-        Status Effects:
+        <strong>Status Effects:</strong>
         <ul>
           {self.statusEffects.map((effect) => (
             <li key={effect.definitionId}>
