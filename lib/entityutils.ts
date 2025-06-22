@@ -1,6 +1,7 @@
 import locations from "./locations";
 import { AbilityWithSource } from "./types/Ability";
 import { CreatureInstance } from "./types/entities/creature";
+import { EntityInstance } from "./types/entity";
 import { Targetable } from "./types/types";
 import { getFromOptionalFunc } from "./utils";
 
@@ -91,4 +92,35 @@ export function activateAbilityOnTick(
 
   const targets = selectRandomTargets(instance, ability);
   instance.activateAbility(ability.ability, targets, ability.source);
+}
+
+export function chanceToMoveRandomly(
+  entity: EntityInstance,
+  chance: number
+): boolean {
+  if (Math.random() < chance) {
+    entity.moveToRandomLocation();
+    return true;
+  }
+  return false;
+}
+
+export function activateAbilityAndMoveRandomlyOnTick(
+  abilityChance: number,
+  abilitySelector: (
+    creature: CreatureInstance
+  ) => AbilityWithSource | undefined,
+  moveChance: number
+) {
+  return (entity: EntityInstance, deltaTime: number) => {
+    if (!(entity instanceof CreatureInstance)) {
+      return;
+    }
+
+    if (Math.random() < abilityChance * deltaTime) {
+      activateAbilityOnTick(entity, deltaTime, abilitySelector);
+    }
+
+    chanceToMoveRandomly(entity, moveChance * deltaTime);
+  };
 }

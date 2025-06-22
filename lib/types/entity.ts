@@ -7,6 +7,10 @@ import { LocationId } from "lib/gamedata/rawLocations";
 import Recipe, { RecipeGroup } from "./Recipe";
 import Inventory from "./Inventory";
 import { ItemInstance } from "./item";
+import { DungeonLocation, FloorInstance } from "lib/dungeongeneration/types";
+import { activateAbilityOnTick } from "lib/entityutils";
+import { CreatureInstance } from "./entities/creature";
+import { AbilityWithSource } from "./Ability";
 
 export type EntityDefinition = {
   name: string;
@@ -79,6 +83,32 @@ export class EntityInstance {
     console.log(
       `Creature ${this.name} moved from ${currentLocation.name} to ${this.location}.`
     );
+  }
+
+  moveToRandomLocation(canChangeDepths = false) {
+    const location = locations[this.location];
+
+    const validExits = Array.from(location.exits).filter((exit) => {
+      if (canChangeDepths) return true;
+
+      const targetLocation = locations[exit];
+      if ("floor" in targetLocation != "floor" in location) return false;
+      if (!("floor" in targetLocation)) return true;
+
+      return (
+        (targetLocation.floor as FloorInstance).depth ===
+        ((location as DungeonLocation).floor as FloorInstance).depth
+      );
+    });
+
+    if (validExits.length === 0) {
+      return;
+    }
+
+    const randomExit =
+      validExits[Math.floor(Math.random() * validExits.length)];
+
+    this.move(randomExit);
   }
 }
 
