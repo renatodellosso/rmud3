@@ -1,5 +1,10 @@
 import items from "lib/gamedata/items";
-import { EquipmentDefinition, ItemInstance, ItemTag } from "./item";
+import {
+  EquipmentDefinition,
+  equipmentSlotToMaxEquipped,
+  ItemInstance,
+  ItemTag,
+} from "./item";
 import { CreatureInstance } from "./entities/creature";
 import { PlayerInstance } from "./entities/player";
 import { areItemInstancesEqual } from "lib/utils";
@@ -47,8 +52,16 @@ export class EquipmentHotbar extends Hotbar {
 
     const def = items[item.definitionId] as EquipmentDefinition;
     if (!def.tags.includes(ItemTag.Equipment)) return false;
-
     if (def.canEquip && !def.canEquip!(player)) return false;
+
+    if (
+      def.slot &&
+      this.items.filter((i) => {
+        const existingDef = items[i.definitionId] as EquipmentDefinition;
+        return existingDef.slot === def.slot;
+      }).length >= equipmentSlotToMaxEquipped[def.slot]
+    )
+      return false;
 
     return true;
   }

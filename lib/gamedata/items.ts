@@ -18,6 +18,7 @@ export type ItemId =
   | "equipment1"
   | "equipment2"
   | "chestplate1"
+  | "chestplate2"
   | "consumable1"
   | "rustySword"
   | "money"
@@ -84,6 +85,19 @@ const items = Object.freeze({
     name: "Test Chestplate",
     tags: [ItemTag.Equipment],
     description: "This is a test chestplate.",
+    getWeight: 1,
+    slot: EquipmentSlot.Chest,
+    getSellValue: 30,
+    getDamageToTake: (creature, item, damage) =>
+      damage.map((d) => ({
+        amount: d.amount - 1, // Reduces damage taken by 1
+        type: DamageType.Piercing,
+      })),
+  } satisfies EquipmentDefinition,
+  chestplate2: {
+    name: "Test Chestplate 2",
+    tags: [ItemTag.Equipment],
+    description: "This is another test chestplate.",
     getWeight: 1,
     slot: EquipmentSlot.Chest,
     getSellValue: 30,
