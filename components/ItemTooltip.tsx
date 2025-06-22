@@ -1,5 +1,10 @@
 import items from "lib/gamedata/items";
-import { ItemInstance } from "lib/types/item";
+import {
+  EquipmentDefinition,
+  equipmentSlotToMaxEquipped,
+  ItemInstance,
+  ItemTag,
+} from "lib/types/item";
 import { getFromOptionalFunc } from "../lib/utils";
 
 /**
@@ -9,6 +14,9 @@ import { getFromOptionalFunc } from "../lib/utils";
 export default function ItemTooltip({ item }: { item: ItemInstance }) {
   const def = items[item.definitionId];
 
+  const isEquipment = def.tags.includes(ItemTag.Equipment);
+  const equipment = def as EquipmentDefinition;
+
   return (
     <span className="tooltip-text flex-col w-64 text-white">
       <h1 className="text-lg">
@@ -16,6 +24,16 @@ export default function ItemTooltip({ item }: { item: ItemInstance }) {
       </h1>
       <div>{getFromOptionalFunc(def.getWeight, item)} kg</div>
       <div>{def.description}</div>
+      {isEquipment && (
+        <div>
+          Slot:{" "}
+          {equipment.slot
+            ? `${equipment.slot} (Can equip up to ${
+                equipmentSlotToMaxEquipped[equipment.slot]
+              })`
+            : "None"}
+        </div>
+      )}
     </span>
   );
 }

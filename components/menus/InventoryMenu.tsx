@@ -1,7 +1,12 @@
 import items from "lib/gamedata/items";
 import { PlayerInstance } from "../../lib/types/entities/player";
 import ItemTooltip from "../ItemTooltip";
-import { ItemInstance, ItemTag } from "lib/types/item";
+import {
+  EquipmentDefinition,
+  equipmentSlotToMaxEquipped,
+  ItemInstance,
+  ItemTag,
+} from "lib/types/item";
 import { socket } from "lib/socket";
 import { getFromOptionalFunc } from "../../lib/utils";
 
@@ -27,21 +32,42 @@ export default function InventoryMenu({ self }: { self: PlayerInstance }) {
           <thead>
             <tr>
               <th>Item</th>
+              <th>Slot</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {self.equipment.items.map((item, index) => (
-              <tr key={index} className="hover:bg-gray-900">
-                <td className="tooltip">
-                  {items[item.definitionId].name}
-                  <ItemTooltip item={item} />
-                </td>
-                <td>
-                  <button onClick={() => unequip(item)}>Unequip</button>
-                </td>
-              </tr>
-            ))}
+            {self.equipment.items
+              .map(
+                (item) =>
+                  [item, items[item.definitionId] as EquipmentDefinition] as [
+                    ItemInstance,
+                    EquipmentDefinition
+                  ]
+              )
+              .map(([item, def], index) => (
+                <tr key={index} className="hover:bg-gray-900">
+                  <td className="tooltip">
+                    {def.name}
+                    <ItemTooltip item={item} />
+                  </td>
+                  <td>
+                    {def.slot ? (
+                      <div className="tooltip">
+                        {def.slot}
+                        <div className="tooltip-text w-max">
+                          Can equip up to {equipmentSlotToMaxEquipped[def.slot]}
+                        </div>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </td>
+                  <td>
+                    <button onClick={() => unequip(item)}>Unequip</button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

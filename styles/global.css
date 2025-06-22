@@ -132,8 +132,7 @@ input {
   /* Position the tooltip */
   position: absolute;
   z-index: 1;
-  bottom: 125%; /* Position above the text */
-  left: 50%;
+  left: 200%;
   margin-left: -60px;
 
   /* Fade in animation */
