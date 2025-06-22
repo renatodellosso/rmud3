@@ -38,7 +38,8 @@ export default function PlayerInfoMenu({
         <ul>
           {self.statusEffects.map((effect) => (
             <li key={effect.definitionId}>
-              {statusEffects[effect.definitionId].name} -{" "}
+              {statusEffects[effect.definitionId].name} (expires in{" "}
+              {Math.round((Date.now() - effect.expiresAt.getTime()) / 1000)}s) -{" "}
               {statusEffects[effect.definitionId].description}
             </li>
           ))}

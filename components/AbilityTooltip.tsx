@@ -1,6 +1,5 @@
-import { AbilityWithSource, getAbilitySourceName } from "lib/types/Ability";
+import { AbilityWithSource } from "lib/types/Ability";
 import { CreatureInstance } from "lib/types/entities/creature";
-import { getFromOptionalFunc } from "lib/utils";
 import AbilityDescription from "./AbilityDescription";
 
 export default function AbilityTooltip(props: {

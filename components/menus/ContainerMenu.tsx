@@ -3,11 +3,15 @@ import { socket } from "lib/socket";
 import items from "lib/gamedata/items";
 import { ItemInstance } from "lib/types/item";
 import { useState } from "react";
+import ItemTooltip from "../ItemTooltip";
+import { PlayerInstance } from "lib/types/entities/player";
 
 export default function ContainerMenu({
   interaction,
+  self,
 }: {
   interaction: Interaction;
+  self: PlayerInstance;
 }) {
   const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
@@ -87,7 +91,10 @@ export default function ContainerMenu({
             {openInventory!.map((item, index) => (
               <tr key={index} className="hover:bg-gray-900">
                 <td>
-                  {items[item.definitionId].name} x{item.amount}
+                  <div className="tooltip">
+                    {items[item.definitionId].name} x{item.amount}
+                    <ItemTooltip item={item} creature={self} />
+                  </div>
                 </td>
                 <td className="flex justify-end">
                   <input
