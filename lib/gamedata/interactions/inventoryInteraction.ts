@@ -8,21 +8,26 @@ export default function containerInteraction(): (
   entity: ContainerInstance,
   player: PlayerInstance,
   interaction: Interaction | undefined,
-  action: any
+  action: any,
+  inventory: Inventory,
+  title: string
 ) => Interaction | undefined {
   return (
     entity: ContainerInstance,
     player: PlayerInstance,
     interaction: Interaction | undefined,
-    action: any
+    action: any,
+    inventory: Inventory,
+    title: string
   ): Interaction | undefined => {
     if (interaction === undefined) {
       // Initialize interaction if not provided
       return {
         entityId: entity._id,
         type: "container",
-        interactionInventory: entity.inventory.getItems(),
-        playerInventory: player.inventory.getItems()
+        interactionInventory: inventory.getItems(),
+        playerInventory: player.inventory.getItems(),
+        title,
       };
     }
 
@@ -31,26 +36,31 @@ export default function containerInteraction(): (
     try {
       let parsedAction = JSON.parse(action);
 
-      if ("definitionId" in parsedAction && "amount" in parsedAction && "insert" in parsedAction) {
-        const item: ItemInstance = {definitionId: parsedAction.definitionId, amount: parsedAction.amount};
+      if (
+        "definitionId" in parsedAction &&
+        "amount" in parsedAction &&
+        "insert" in parsedAction
+      ) {
+        const item: ItemInstance = {
+          definitionId: parsedAction.definitionId,
+          amount: parsedAction.amount,
+        };
 
         if (!parsedAction.insert) {
-          entity.inventory.remove(item);
+          inventory.remove(item);
           player.inventory.add(item);
-        }
-        else {
+        } else {
           player.inventory.remove(item);
-          entity.inventory.add(item);
+          inventory.add(item);
         }
 
         return {
           ...interaction,
-          interactionInventory: entity.inventory.getItems(),
-          playerInventory: player.inventory.getItems()
+          interactionInventory: inventory.getItems(),
+          playerInventory: player.inventory.getItems(),
         };
       }
-    }
-    catch {
+    } catch {
       return interaction;
     }
   };

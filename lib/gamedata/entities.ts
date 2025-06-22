@@ -11,8 +11,8 @@ import items, { ItemId } from "./items";
 import { getIo } from "lib/ClientFriendlyIo";
 import craftingInteraction from "./interactions/craftingInteraction";
 import Recipe, { RecipeGroup } from "lib/types/Recipe";
-import { ContainerDefinition } from "lib/types/entities/container";
-import containerInteraction from "./interactions/containerInteraction";
+import { ContainerInstance } from "lib/types/entities/container";
+import inventoryInteraction from "./interactions/inventoryInteraction";
 import { savePlayer } from "lib/utils";
 import { getFromOptionalFunc } from "../utils";
 
@@ -174,8 +174,19 @@ const entities: Record<EntityId, EntityDefinition> = {
   } satisfies CreatureDefinition as CreatureDefinition,
   container: {
     name: "Container",
-    interact: containerInteraction(),
-  } as ContainerDefinition,
+    interact: (entity, player, interaction, action) => {
+      const func = inventoryInteraction();
+
+      return func(
+        entity as ContainerInstance,
+        player,
+        interaction,
+        action,
+        (entity as ContainerInstance).inventory,
+        entity.name
+      );
+    },
+  },
   signPost: {
     name: "Sign Post",
     interact: (entity, player, interaction, action) => {

@@ -3,10 +3,6 @@ import { LocationId } from "lib/gamedata/rawLocations";
 import { EntityDefinition, EntityInstance } from "../entity";
 import Inventory from "../Inventory";
 
-export type ContainerDefinition = EntityDefinition & {
-  inventory: Inventory;
-};
-
 export class ContainerInstance extends EntityInstance {
   inventory: Inventory = undefined as unknown as Inventory;
 
