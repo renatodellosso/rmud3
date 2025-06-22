@@ -272,6 +272,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           { definitionId: "chestplate1", amount: 1 }
         ),
         new Recipe({}, "bone"),
+        new Recipe({}, "healthPotion"),
       ])
     ),
   },

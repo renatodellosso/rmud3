@@ -20,7 +20,8 @@ export type ItemId =
   | "chestplate1"
   | "consumable1"
   | "rustySword"
-  | "money";
+  | "money"
+  | "healthPotion";
 
 const items = Object.freeze({
   test: {
@@ -132,6 +133,22 @@ const items = Object.freeze({
     getWeight: 0,
     getSellValue: 1,
   },
+  healthPotion: {
+    name: "Health Potion",
+    tags: ["Consumable"],
+    description: "A red solution in a small bottle.",
+    getWeight: 0.5,
+    getSellValue: 10,
+    getAbilities: (creature, item) => [
+      Abilities.attack(
+        "\"Heal\"",
+        "Heal a small amount of health.",
+        0,
+        5,
+        DamageType.Bludgeoning
+      )
+    ],
+  } as ConsumableDefinition,
 } as Record<ItemId, ItemDefinition>);
 
 export default items;
