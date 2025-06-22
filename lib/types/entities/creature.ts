@@ -199,7 +199,13 @@ export class CreatureInstance extends EntityInstance {
     targets: Targetable[],
     source: AbilitySource
   ) {
-    ability.activate(this, targets, source);
+    const wasAbilitySuccessful: boolean = ability.activate(
+      this,
+      targets,
+      source
+    );
+
+    if (!wasAbilitySuccessful) return;
 
     const location = locations[this.location];
 
@@ -257,6 +263,19 @@ export class CreatureInstance extends EntityInstance {
         expiresAt: new Date(Date.now() + duration * 1000),
       });
     }
+  }
+
+  /**
+   * @param health 
+   * @returns actual health gained 
+   */
+  addHealth(health: number) {
+    const initialHealth = this.health;
+    this.health += health;
+
+    if (this.health > this.getMaxHealth()) this.health = this.getMaxHealth();
+
+    return this.health - initialHealth;
   }
 
   prepForGameState() {

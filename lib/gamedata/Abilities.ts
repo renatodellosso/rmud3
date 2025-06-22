@@ -51,6 +51,52 @@ export function attack(
           `${creature.name} hit ${target.name} for ${damageDealt} ${damageType.type} using ${name}!`
         );
       }
+
+      return true;
+    },
+  };
+}
+
+export function heal(
+  name: string,
+  getDescription: OptionalFunc<string, CreatureInstance>,
+  getCooldown: OptionalFunc<number, CreatureInstance>,
+  health: number,
+  targetRestrictions?: ((
+    creature: CreatureInstance,
+    target: Targetable
+  ) => boolean)[]
+): Ability {
+  return {
+    name,
+    getDescription,
+    getCooldown,
+    getTargetCount: 1,
+    canTarget: CanTarget.and(
+      CanTarget.isTargetACreature,
+      ...(targetRestrictions ?? [])
+    ),
+    activate: (creature: CreatureInstance, targets: Targetable[]) => {
+      if (targets.length !== 1) {
+        throw new Error(
+          `Expected exactly one target for ability ${name}, but got ${targets.length}.`
+        );
+      }
+
+      const target = targets[0] as CreatureInstance;
+
+      if (target.health >= target.getMaxHealth()) return false;
+
+      const io = getIo();
+
+      const healthAdded = target.addHealth(health);
+
+      io.sendMsgToRoom(
+        creature.location,
+        `${creature.name} healed ${target === creature ? "themself" : target.name} for ${healthAdded} using ${name}!`
+      );
+
+      return true;
     },
   };
 }

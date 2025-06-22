@@ -180,7 +180,13 @@ export class PlayerInstance extends CreatureInstance {
     targets: Targetable[],
     source: AbilitySource
   ) {
-    ability.activate(this, targets, source);
+    const wasAbilitySuccessful: boolean = ability.activate(
+      this,
+      targets,
+      source
+    );
+
+    if (!wasAbilitySuccessful) return;
 
     const location = locations[this.location];
 

@@ -140,12 +140,11 @@ const items = Object.freeze({
     getWeight: 0.5,
     getSellValue: 10,
     getAbilities: (creature, item) => [
-      Abilities.attack(
-        "\"Heal\"",
+      Abilities.heal(
+        "Heal",
         "Heal a small amount of health.",
         0,
-        5,
-        DamageType.Bludgeoning
+        5
       )
     ],
   } as ConsumableDefinition,
