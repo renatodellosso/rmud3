@@ -18,6 +18,7 @@ import { ItemId } from "lib/gamedata/items";
 import StatAndAbilityProvider from "../StatAndAbilityProvider";
 import { StatusEffectInstance } from "../statuseffect";
 import statusEffects, { StatusEffectId } from "lib/gamedata/statusEffects";
+import { DungeonLocation, FloorInstance } from "lib/dungeongeneration/types";
 
 export type CreatureDefinition = EntityDefinition & {
   health: number;
@@ -266,8 +267,8 @@ export class CreatureInstance extends EntityInstance {
   }
 
   /**
-   * @param health 
-   * @returns actual health gained 
+   * @param health
+   * @returns actual health gained
    */
   addHealth(health: number) {
     const initialHealth = this.health;

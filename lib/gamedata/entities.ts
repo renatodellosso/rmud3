@@ -5,7 +5,11 @@ import {
 } from "../types/entities/creature";
 import * as Abilities from "lib/gamedata/Abilities";
 import * as CanTarget from "lib/gamedata/CanTarget";
-import { activateAbilityOnTick, selectRandomAbility } from "lib/entityutils";
+import {
+  activateAbilityAndMoveRandomlyOnTick,
+  activateAbilityOnTick,
+  selectRandomAbility,
+} from "lib/entityutils";
 import { EntityDefinition } from "lib/types/entity";
 import items, { ItemId } from "./items";
 import { getIo } from "lib/ClientFriendlyIo";
@@ -78,7 +82,8 @@ const entities: Record<EntityId, EntityDefinition> = {
         activate: (creature) => {
           getIo().sendMsgToRoom(
             creature.location,
-            `${creature.name} taunts everyone in the room!`);
+            `${creature.name} taunts everyone in the room!`
+          );
           return true;
         },
       },
@@ -129,12 +134,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         weight: 1,
       },
     ]),
-    tick: (creature, delta) =>
-      activateAbilityOnTick(
-        creature as CreatureInstance,
-        delta,
-        selectRandomAbility
-      ),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
   } satisfies CreatureDefinition as CreatureDefinition,
   skeleton: {
     name: "Skeleton",
@@ -168,12 +168,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         weight: 0.2,
       },
     ]),
-    tick: (creature, delta) =>
-      activateAbilityOnTick(
-        creature as CreatureInstance,
-        delta,
-        selectRandomAbility
-      ),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
   } satisfies CreatureDefinition as CreatureDefinition,
   container: {
     name: "Container",
