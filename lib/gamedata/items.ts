@@ -24,27 +24,6 @@ export type ItemId =
   | "certificateOfAchievement";
 
 const items = Object.freeze({
-  test: {
-    name: "Test Item",
-    tags: [],
-    description: "This is a test item.",
-    getWeight: 1,
-    getSellValue: 10,
-  },
-  test2: {
-    name: "Test Item 2",
-    tags: [],
-    description: "This is another test item.",
-    getWeight: 2,
-    getSellValue: 20,
-  },
-  rmud3ForDummies: {
-    name: "RMUD3 For Dummies",
-    tags: [],
-    description: "...",
-    getWeight: 2.5,
-    getSellValue: 5,
-  },
   bone: {
     name: "Bone",
     tags: [],
@@ -78,53 +57,6 @@ const items = Object.freeze({
     getWeight: 0.2,
     getSellValue: 1,
   },
-  equipment1: {
-    name: "Test Equipment",
-    tags: [ItemTag.Equipment],
-    description: "This is a test equipment.",
-    getWeight: 1,
-    getSellValue: 15,
-  } satisfies EquipmentDefinition,
-  equipment2: {
-    name: "Test Equipment 2",
-    tags: [ItemTag.Equipment],
-    description: "This is another test equipment.",
-    getWeight: 2,
-    getSellValue: 25,
-  } satisfies EquipmentDefinition,
-  chestplate1: {
-    name: "Test Chestplate",
-    tags: [ItemTag.Equipment],
-    description: "This is a test chestplate.",
-    getWeight: 1,
-    slot: EquipmentSlot.Chest,
-    getSellValue: 30,
-    getDamageToTake: (creature, item, damage) =>
-      damage.map((d) => ({
-        amount: d.amount - 1, // Reduces damage taken by 1
-        type: DamageType.Piercing,
-      })),
-  } satisfies EquipmentDefinition,
-  chestplate2: {
-    name: "Test Chestplate 2",
-    tags: [ItemTag.Equipment],
-    description: "This is another test chestplate.",
-    getWeight: 1,
-    slot: EquipmentSlot.Chest,
-    getSellValue: 30,
-    getDamageToTake: (creature, item, damage) =>
-      damage.map((d) => ({
-        amount: d.amount - 1, // Reduces damage taken by 1
-        type: DamageType.Piercing,
-      })),
-  } satisfies EquipmentDefinition,
-  consumable1: {
-    name: "Test Consumable",
-    tags: [ItemTag.Consumable],
-    description: "This is a test consumable.",
-    getWeight: 1,
-    getSellValue: 10,
-  } satisfies ConsumableDefinition,
   rustySword: {
     name: "Rusty Sword",
     tags: [ItemTag.Equipment],
@@ -149,14 +81,14 @@ const items = Object.freeze({
         [{ amount: 5, type: DamageType.Slashing }]
       ),
       Abilities.attackWithStatusEffect(
-        "Stun Test",
-        "Test stunned",
-        1,
-        [{ amount: 1, type: DamageType.Bludgeoning }],
+        "Stunning Strike",
+        "A powerful strike that stuns the target.",
+        1.5,
+        [{ amount: 3, type: DamageType.Bludgeoning }],
         [
           {
             id: "stunned",
-            strength: 0,
+            strength: 3,
             duration: 5, // Duration in seconds
           },
         ]
