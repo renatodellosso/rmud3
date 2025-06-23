@@ -27,14 +27,14 @@ export const difficultyOptions: Record<Difficulty, DifficultyOptions> = {
     inventoryHandlingOnDeath: InventoryHandlingOnDeath.KeepItems,
   },
   [Difficulty.Hard]: {
-    name: "Peasant",
+    name: "Hero",
     description: "A challenging experience for seasoned players.",
     baseHealth: 30,
     healthBonusFromConstitution: 4,
     inventoryHandlingOnDeath: InventoryHandlingOnDeath.DropItems,
   },
   [Difficulty.VeryHard]: {
-    name: "Scum",
+    name: "Legend",
     description: "A brutal experience for the most masterful players.",
     baseHealth: 20,
     healthBonusFromConstitution: 2,
