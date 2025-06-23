@@ -34,7 +34,7 @@ const floors: Record<string, FloorDefinition> = {
           item: "slime",
           amount: [1, 3],
           weight: 2,
-        }
+        },
       ]),
     },
   },
@@ -101,8 +101,28 @@ const floors: Record<string, FloorDefinition> = {
           item: "troll",
           amount: 1,
           weight: 0.4,
-        }
+        },
       ]),
+    },
+  },
+  mines: {
+    name: "Mines",
+    depths: [1, 2],
+    appearanceWeight: 1.6,
+    blendChance: 0.5,
+    visualizerColor: "#A9A9A9",
+    layoutGenerationOptions: {
+      roomChance: 0.6,
+      connectionChance: 0.4,
+      width: [10, 16],
+      length: [10, 16],
+      roomCount: [20, 40],
+      exitCount: [3, 4],
+    },
+    populationOptions: {
+      encounterChance: 0,
+      maxEncounters: 0,
+      encounters: new WeightedTable([]),
     },
   },
   fungalCaverns: {
@@ -120,29 +140,35 @@ const floors: Record<string, FloorDefinition> = {
       exitCount: [5, 6],
     },
     populationOptions: {
-      encounterChance: 0,
-      maxEncounters: 0,
-      encounters: new WeightedTable([]),
-    },
-  },
-  mines: {
-    name: "Mines",
-    depths: [2],
-    appearanceWeight: 1.6,
-    blendChance: 0.5,
-    visualizerColor: "#A9A9A9",
-    layoutGenerationOptions: {
-      roomChance: 0.6,
-      connectionChance: 0.4,
-      width: [10, 16],
-      length: [10, 16],
-      roomCount: [20, 40],
-      exitCount: [3, 4],
-    },
-    populationOptions: {
-      encounterChance: 0,
-      maxEncounters: 0,
-      encounters: new WeightedTable([]),
+      encounterChance: 0.7,
+      maxEncounters: 2,
+      encounters: new WeightedTable([
+        {
+          item: "fungalZombie",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: "fungalTroll",
+          amount: 1,
+          weight: 1,
+        },
+        {
+          item: "zombie",
+          amount: [1, 2],
+          weight: 0.25,
+        },
+        {
+          item: "troll",
+          amount: 1,
+          weight: 0.25,
+        },
+        {
+          item: "sentientFungus",
+          amount: 1,
+          weight: 0.5,
+        },
+      ]),
     },
   },
   ruins: {
