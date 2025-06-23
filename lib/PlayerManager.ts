@@ -9,10 +9,12 @@ import { getMongoClient } from "./getMongoClient";
 export class PlayerManager {
   instances: Map<string, PlayerInstance>;
   progresses: Map<string, PlayerProgress>;
+  isOnline: Map<string, boolean> = new Map();
 
   constructor() {
     this.instances = new Map<string, PlayerInstance>();
     this.progresses = new Map<string, PlayerProgress>();
+    this.isOnline = new Map<string, boolean>();
   }
 
   public getPlayerByInstanceId(id: ObjectId) {

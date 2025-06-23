@@ -21,6 +21,7 @@ import { setSocket } from "lib/getSocketsByPlayerInstanceIds";
 import { TypedSocket } from "lib/types/socketioserverutils";
 import { savePlayer } from "lib/utils";
 import LocationMap from "lib/types/LocationMap";
+import { getIo } from "lib/ClientFriendlyIo";
 
 function startPlaySession(
   socket: TypedSocket,
@@ -209,6 +210,17 @@ export default function registerSaveListeners(socket: TypedSocket) {
     startPlaySession(socket, instance, progress);
   });
 
+  socket.onAny((event, ...args) => {
+    const session = socket.data.session;
+    if (!session || !session.playerInstanceId) {
+      return;
+    }
+
+    const playerManager = getPlayerManager();
+
+    playerManager.isOnline.set(session.playerInstanceId.toString(), true);
+  });
+
   socket.on("disconnect", () => {
     if (!socket.data.session || !socket.data.session.playerInstanceId) {
       return;
@@ -219,7 +231,24 @@ export default function registerSaveListeners(socket: TypedSocket) {
       socket.data.session.playerInstanceId!
     );
 
+    playerManager.isOnline.set(player!.instance._id.toString(), false);
+
     console.log(`Player ${player?.instance.name} disconnected. Saving...`);
     savePlayer(player!.instance);
+
+    setTimeout(() => {
+      if (playerManager.isOnline.get(player!.instance._id.toString())) return;
+      console.log(
+        `Player ${
+          player!.instance.name
+        } has been inactive for 15 seconds. Removing player entity...`
+      );
+
+      getIo().sendMsgToRoom(
+        player!.instance.location,
+        `${player!.instance.name} has disconnected.`
+      );
+      locations[player!.instance.location].exit(player!.instance);
+    }, 15000);
   });
 }
