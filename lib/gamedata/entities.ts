@@ -27,7 +27,8 @@ export type CreatureId =
   | "trainingDummy"
   | "zombie"
   | "skeleton"
-  | "slime";
+  | "slime"
+  | "troll";
 
 export type EntityId =
   | CreatureId
@@ -130,8 +131,13 @@ const entities: Record<EntityId, EntityDefinition> = {
       ]),
     ],
     xpValue: 15,
-    maxDrops: 1,
+    maxDrops: 2,
     lootTable: new WeightedTable<ItemId>([
+      {
+        item: "rottenFlesh",
+        amount: [1, 2],
+        weight: 1.2
+      },
       {
         item: "eyeball",
         amount: [0, 2],
@@ -183,14 +189,9 @@ const entities: Record<EntityId, EntityDefinition> = {
       [AbilityScore.Intelligence]: 0,
     },
     intrinsicAbilities: [
-      Abilities.attack(
-        "Slime",
-        "Slime.",
-        4,
-        1,
-        DamageType.Bludgeoning,
-        [CanTarget.isPlayer]
-      ),
+      Abilities.attack("Slime", "Slime.", 4, 1, DamageType.Bludgeoning, [
+        CanTarget.isPlayer,
+      ]),
     ],
     xpValue: 5,
     maxDrops: 1,
@@ -202,6 +203,47 @@ const entities: Record<EntityId, EntityDefinition> = {
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  } satisfies CreatureDefinition as CreatureDefinition,
+  troll: {
+    name: "Troll",
+    health: 25,
+    abilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 1,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Slam",
+        "Slam.",
+        6,
+        5,
+        DamageType.Bludgeoning,
+        [CanTarget.isPlayer]
+      ),
+      Abilities.heal(
+        "Heal",
+        "Recover a small amount of health.",
+        10,
+        5,
+        [CanTarget.isSelf]
+      )
+    ],
+    xpValue: 20,
+    maxDrops: 2,
+    lootTable: new WeightedTable<ItemId>([
+      {
+        item: "taintedFlesh",
+        amount: [1, 2],
+        weight: 1,
+      },
+      {
+        item: "trollTooth",
+        amount: [1, 3],
+        weight: 0.8
+      }
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
   } satisfies CreatureDefinition as CreatureDefinition,
   container: {
     name: "Container",

@@ -39,6 +39,15 @@ export function isPlayer(
   );
 }
 
+export function isSelf(
+  creature: CreatureInstance,
+  target: Targetable
+): boolean {
+  return (
+    (isTargetACreature(creature, target) && creature === target)
+  );
+}
+
 export function notAtMaxHealth(
   creature: CreatureInstance,
   target: Targetable
