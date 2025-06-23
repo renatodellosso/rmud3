@@ -1,6 +1,7 @@
 import statusEffects from "lib/gamedata/statusEffects";
 import XpForNextLevel from "lib/gamedata/XpForNextLevel";
 import { AbilityScore, GameState } from "lib/types/types";
+import { difficultyOptions } from "../../lib/types/Difficulty";
 
 export default function PlayerInfoMenu({
   gameState: { self },
@@ -10,6 +11,12 @@ export default function PlayerInfoMenu({
   return (
     <div className="border w-1/5 flex flex-col gap-2">
       <h2 className="text-xl">{self.name}</h2>
+      <div className="tooltip">
+        Difficulty: {difficultyOptions[self.difficulty].name}
+        <div className="tooltip-text w-48">
+          {difficultyOptions[self.difficulty].description}
+        </div>
+      </div>
       <div>
         HP: {self.health}/{self.getMaxHealth()}
       </div>
@@ -38,7 +45,8 @@ export default function PlayerInfoMenu({
         <ul>
           {self.statusEffects.map((effect) => (
             <li key={effect.definitionId}>
-              {statusEffects[effect.definitionId].name} {effect.strength} (expires in{" "}
+              {statusEffects[effect.definitionId].name} {effect.strength}{" "}
+              (expires in{" "}
               {Math.round((Date.now() - effect.expiresAt.getTime()) / 1000)}s) -{" "}
               {statusEffects[effect.definitionId].description}
             </li>

@@ -2,6 +2,7 @@ import { LocationId } from "lib/gamedata/rawLocations";
 import Session from "./Session";
 import { GameState, PlayerSave, SerializedEJSON } from "./types";
 import { ItemInstance } from "./item";
+import Difficulty from "./Difficulty";
 
 export interface ServerToClientEvents {
   hello: () => void;
@@ -32,7 +33,7 @@ export interface ClientToServerEvents {
     callback: (success: boolean) => void
   ) => void;
   getSaves: (callback: (saves: SerializedEJSON<PlayerSave[]>) => void) => void;
-  createNewSave: (saveName: string) => void;
+  createNewSave: (saveName: string, difficulty: Difficulty) => void;
   selectSave: (progressId: string) => void;
   requestGameState: () => void;
   move: (newLocationId: LocationId) => void;

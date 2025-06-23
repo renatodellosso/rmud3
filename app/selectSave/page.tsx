@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { EJSON } from "bson";
 import { PlayerSave, SerializedEJSON } from "lib/types/types";
+import Difficulty, { difficultyOptions } from "lib/types/Difficulty";
 import useRedirectIfSessionIdIsNotPresent from "lib/hooks/useRedirectIfSessionIdIsNotPresent";
 
 function PlayerSaveCard({ save }: { save: PlayerSave }) {
@@ -15,7 +16,8 @@ function PlayerSaveCard({ save }: { save: PlayerSave }) {
 
   return (
     <button onClick={selectSave} className="w-full">
-      {save.instance.saveName}
+      {save.instance.saveName} (
+      {difficultyOptions[save.instance.difficulty]?.name})
     </button>
   );
 }
@@ -25,6 +27,7 @@ export default function SelectSave() {
   const [saves, setSaves] = useState<PlayerSave[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [saveName, setSaveName] = useState("");
+  const [selectedDifficulty, setSelectedDifficulty] = useState(Difficulty.Normal);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -56,7 +59,7 @@ export default function SelectSave() {
     setSubmitting(true);
     setError("");
 
-    socket.emit("createNewSave", saveName);
+    socket.emit("createNewSave", saveName, selectedDifficulty);
     location.href = "/play";
   }
 
@@ -80,6 +83,20 @@ export default function SelectSave() {
             onChange={(e) => setSaveName(e.target.value)}
             className="w-full mt-6"
           />
+          <div className="flex w-full gap-2">
+            <div>Difficulty:</div>
+            {Object.values(Difficulty).map((difficulty) => (
+              <button
+                key={difficulty}
+                disabled={selectedDifficulty == difficulty}
+                onClick={() => setSelectedDifficulty(difficulty)}
+                className="px-1"
+              >
+                {difficultyOptions[difficulty].name}
+              </button>
+            ))}
+          </div>
+          <div>{difficultyOptions[selectedDifficulty].description}</div>
           <button onClick={createNewSave} className="w-full">
             Create New Save
           </button>

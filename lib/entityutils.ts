@@ -29,7 +29,9 @@ export function getValidTargets(
 ): Targetable[] {
   const location = locations[creature.location];
   const potentialTargets = (
-    Array.from(location.entities) as Targetable[]
+    Array.from(location.entities).filter(
+      (e) => e.location == location.id
+    ) as Targetable[]
   ).concat(location);
 
   return potentialTargets.filter((target) =>

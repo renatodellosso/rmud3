@@ -101,7 +101,7 @@ export default function registerSaveListeners(socket: TypedSocket) {
     callback(EJSON.stringify(saves));
   });
 
-  socket.on("createNewSave", async (saveName) => {
+  socket.on("createNewSave", async (saveName, difficulty) => {
     if (!socket.data.session) {
       console.error("No session set for socket");
       return;
@@ -110,7 +110,7 @@ export default function registerSaveListeners(socket: TypedSocket) {
     const db = await getMongoClient();
     const collectionManager = getCollectionManager(db);
 
-    const accountsCollection = await collectionManager.getCollection(
+    const accountsCollection = collectionManager.getCollection(
       CollectionId.Accounts
     );
 
@@ -133,7 +133,7 @@ export default function registerSaveListeners(socket: TypedSocket) {
       CollectionId.PlayerInstances
     );
 
-    const { instance, progress } = getDefaultPlayerAndProgress();
+    const { instance, progress } = getDefaultPlayerAndProgress(difficulty);
     instance.name = account!.username;
     instance.saveName = saveName;
 

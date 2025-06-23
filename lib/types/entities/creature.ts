@@ -80,15 +80,21 @@ export class CreatureInstance extends EntityInstance {
   }
 
   getMaxHealth() {
-    let health =
-      this.getDef().health +
-      5 * this.getAbilityScore(AbilityScore.Constitution);
+    let health = this.getBaseHealth() + this.getHealthBonusFromConstitution();
 
     health += this.mapStatAndAbilityProviders((provider, source) =>
       getFromOptionalFunc(provider.getMaxHealth, this, source)
     ).reduce((total, val) => total + (val ?? 0), 0);
 
     return Math.max(health, 1);
+  }
+
+  getBaseHealth() {
+    return this.getDef().health;
+  }
+
+  getHealthBonusFromConstitution() {
+    return 5 * this.getAbilityScore(AbilityScore.Constitution);
   }
 
   getAbilities() {
@@ -193,6 +199,8 @@ export class CreatureInstance extends EntityInstance {
     location.entities.add(corpse);
 
     io.updateGameStateForRoom(location.id);
+
+    return corpse;
   }
 
   activateAbility(

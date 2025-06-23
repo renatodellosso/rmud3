@@ -9,6 +9,7 @@ import {
   PlayerSave,
   Targetable,
 } from "../types";
+import Difficulty, { difficultyOptions } from "../Difficulty";
 import {
   ConsumableDefinition,
   EquipmentDefinition,
@@ -33,6 +34,7 @@ import Vault from "../Vault";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
+  difficulty: Difficulty = Difficulty.Normal;
 
   definitionId: "player" = "player";
 
@@ -73,6 +75,20 @@ export class PlayerInstance extends CreatureInstance {
     }
 
     return val;
+  }
+
+  getBaseHealth(): number {
+    return (
+      difficultyOptions[this.difficulty].baseHealth ?? super.getBaseHealth()
+    );
+  }
+
+  getHealthBonusFromConstitution(): number {
+    const fromDifficulty =
+      difficultyOptions[this.difficulty].healthBonusFromConstitution;
+
+    if (!fromDifficulty) return super.getHealthBonusFromConstitution();
+    return fromDifficulty * this.getAbilityScore(AbilityScore.Constitution);
   }
 
   getAbilityScore(score: AbilityScore) {
@@ -120,8 +136,23 @@ export class PlayerInstance extends CreatureInstance {
     return damageTaken;
   }
 
-  die(): void {
-    super.die();
+  die() {
+    const corpse = super.die();
+
+    switch (difficultyOptions[this.difficulty].inventoryHandlingOnDeath) {
+      case "KeepItems":
+        break;
+      case "DropItems":
+        this.equipment.items.forEach((item) => this.inventory.add(item, true));
+        this.inventory.items.forEach((item) =>
+          corpse.inventory.add(item, true)
+        );
+      // Pass through to DestroyItems
+      case "DestroyItems":
+        this.inventory = new DirectInventory();
+        this.equipment = new EquipmentHotbar();
+        break;
+    }
 
     if (locations[this.location].entities.has(this))
       throw new Error("Player not removed from location entities on death.");
@@ -129,6 +160,8 @@ export class PlayerInstance extends CreatureInstance {
     getIo().leaveRoom(this.location, this._id.toString());
 
     respawn(this);
+
+    return corpse;
   }
 
   move(newLocationId: LocationId): void {
@@ -244,7 +277,9 @@ export type PlayerProgress = {
   playerInstanceId: ObjectId;
 };
 
-export function getDefaultPlayerAndProgress(): PlayerSave {
+export function getDefaultPlayerAndProgress(
+  difficulty: Difficulty
+): PlayerSave {
   const instance: PlayerInstance = {
     _id: new ObjectId(),
     name: "Player",
@@ -252,6 +287,7 @@ export function getDefaultPlayerAndProgress(): PlayerSave {
     location: "docks",
     progressId: new ObjectId(),
     definitionId: "player",
+    difficulty,
     abilityScores: {
       Strength: 0,
       Constitution: 0,
