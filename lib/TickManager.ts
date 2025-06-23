@@ -1,6 +1,8 @@
+import { Dungeon } from "./dungeongeneration/types";
 import entities from "./gamedata/entities";
 import { CreatureInstance } from "./types/entities/creature";
 import { getSingleton } from "./utils";
+import regenerateDungeon from "./dungeongeneration/regenerateDungeon";
 
 const TICK_INTERVAL = 1000; // 1 second
 
@@ -31,5 +33,7 @@ export function startTicking() {
     for (const creature of toTick) {
       creature.tick(delta);
     }
+
+    regenerateDungeon(getSingleton<Dungeon>("dungeon")!, delta);
   }, TICK_INTERVAL);
 }

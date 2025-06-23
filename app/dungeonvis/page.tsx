@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import generateDungeonLayout from "lib/dungeongeneration/generateDungeonLayout";
 import { getCoordsFromId as getCoordsFromLocationId } from "lib/dungeongeneration/utils";
 import generateDungeon from "lib/dungeongeneration/generateDungeon";
+import regenerateDungeon from "lib/dungeongeneration/regenerateDungeon";
 
 export default function DungeonVis() {
   const [dungeon, setDungeon] = useState<Dungeon>();
@@ -127,12 +128,35 @@ export default function DungeonVis() {
     return <div>Loading...</div>;
   }
 
+  function partiallyRegenerateDungeon(times: number) {
+    if (!dungeon) return;
+
+    for (let i = 0; i < times; i++) {
+      regenerateDungeon(dungeon, 1);
+    }
+    setDungeon({ ...dungeon }); // Trigger re-render
+  }
+
   return (
     <div>
       <h1 className="text-xl">Dungeon Visualization</h1>
-      <button onClick={() => setDungeon(generateDungeonLayout())}>
-        Regenerate Dungeon
-      </button>
+      <div className="flex flex-col">
+        <button onClick={() => setDungeon(generateDungeonLayout())}>
+          Fully Regenerate Dungeon
+        </button>
+        <button onClick={() => partiallyRegenerateDungeon(1)}>
+          Partially Regenerate Dungeon x1
+        </button>
+        <button onClick={() => partiallyRegenerateDungeon(10)}>
+          Partially Regenerate Dungeon x10
+        </button>
+        <button onClick={() => partiallyRegenerateDungeon(100)}>
+          Partially Regenerate Dungeon x100
+        </button>
+        <button onClick={() => partiallyRegenerateDungeon(1000)}>
+          Partially Regenerate Dungeon x1000
+        </button>
+      </div>
       <div>
         <h2 className="text-lg">Floors</h2>
         <ul>
@@ -146,13 +170,7 @@ export default function DungeonVis() {
                   View
                 </button>
               </div>
-              <div>
-                Rooms:{" "}
-                {
-                  floor.locations.flat().filter((room) => room !== undefined)
-                    .length
-                }
-              </div>
+              <div>Rooms: {floor.roomCount}</div>
               <div>Depth: {floor.depth}</div>
             </li>
           ))}

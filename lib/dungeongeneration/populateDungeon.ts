@@ -1,6 +1,6 @@
 import { chance, randInRangeInt } from "lib/utils";
 import { Location } from "lib/types/Location";
-import { Dungeon } from "./types";
+import { Dungeon, FloorInstance } from "./types";
 import { CreatureInstance } from "lib/types/entities/creature";
 import entities, { CreatureId, EntityId } from "lib/gamedata/entities";
 import { EntityInstance } from "lib/types/entity";
@@ -14,43 +14,49 @@ export default function populateDungeon(dungeon: Dungeon) {
         const location = floor.locations[x][y];
         if (!location) continue;
 
-        for (let i = 0; i < floor.definition.populationOptions.maxEncounters; i++) {
-
-          if (!chance(floor.definition.populationOptions.encounterChance))
-            continue;
-
-          const encounter = floor.definition.populationOptions.encounters.roll();
-
-          for (let i = 0; i < encounter.amount; i++) {
-            if (typeof encounter.item === "string") {
-              addEntityToLocation(location, encounter.item as EntityId);
-
-              creatureCount++;
-              continue;
-            }
-
-            for (const creatureGroup of encounter.item) {
-              const amount =
-                typeof creatureGroup.amount === "number"
-                  ? creatureGroup.amount
-                  : randInRangeInt(
-                      creatureGroup.amount[0],
-                      creatureGroup.amount[1]
-                    );
-
-              for (let j = 0; j < amount; j++) {
-                addEntityToLocation(location, creatureGroup.creature);
-
-                creatureCount++;
-              }
-            }
-          }
-        }
+        const roomCreatureCount = populateRoom(floor, location);
+        creatureCount += roomCreatureCount;
       }
     }
   }
 
   console.log(`Populated dungeon with ${creatureCount} creatures.`);
+}
+
+/**
+ * @returns how many creatures were added to the room
+ */
+export function populateRoom(floor: FloorInstance, location: Location) {
+  let creatureCount = 0;
+  for (let i = 0; i < floor.definition.populationOptions.maxEncounters; i++) {
+    if (!chance(floor.definition.populationOptions.encounterChance)) continue;
+
+    const encounter = floor.definition.populationOptions.encounters.roll();
+
+    for (let i = 0; i < encounter.amount; i++) {
+      if (typeof encounter.item === "string") {
+        addEntityToLocation(location, encounter.item as EntityId);
+
+        creatureCount++;
+        continue;
+      }
+
+      for (const creatureGroup of encounter.item) {
+        const amount =
+          typeof creatureGroup.amount === "number"
+            ? creatureGroup.amount
+            : randInRangeInt(creatureGroup.amount[0], creatureGroup.amount[1]);
+
+        for (let j = 0; j < amount; j++) {
+          addEntityToLocation(location, creatureGroup.creature);
+
+          creatureCount++;
+        }
+      }
+    }
+  }
+
+  return creatureCount;
 }
 
 function addEntityToLocation(location: Location, defId: EntityId) {
