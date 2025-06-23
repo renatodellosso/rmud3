@@ -74,12 +74,7 @@ export function heal(
     getTargetCount: 1,
     canTarget: CanTarget.and(
       CanTarget.isTargetACreature,
-      (creature, target) =>
-        "health" in target &&
-        typeof target.health === "number" &&
-        "getMaxHealth" in target &&
-        typeof target.getMaxHealth === "function" &&
-        target.health < target.getMaxHealth(),
+      CanTarget.notAtMaxHealth,
       ...(targetRestrictions ?? [])
     ),
     activate: (creature: CreatureInstance, targets: Targetable[]) => {

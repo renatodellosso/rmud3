@@ -38,3 +38,16 @@ export function isPlayer(
     (target as CreatureInstance).definitionId === "player"
   );
 }
+
+export function notAtMaxHealth(
+  creature: CreatureInstance,
+  target: Targetable
+): boolean {
+  if (!isTargetACreature(creature, target)) {
+    return false;
+  }
+
+  const cTarget = target as CreatureInstance;
+
+  return cTarget.health < cTarget.getMaxHealth();
+}
