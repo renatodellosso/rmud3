@@ -25,7 +25,8 @@ export type ItemId =
   | "bigStick"
   | "leather"
   | "leatherTunic"
-  | "jar";
+  | "jar"
+  | "slimeJar";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -209,8 +210,29 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     name: "Jar",
     description: "A glass jar, perfect for storing things. Just don't drop it!",
     getWeight: 0.5,
-    getSellValue: 1,
+    getSellValue: 5,
     tags: [],
+  },
+  slimeJar: {
+    name: "Slime Jar",
+    description: "A jar filled with a strange, glowing slime.",
+    getWeight: 0.5,
+    getSellValue: 10,
+    tags: [ItemTag.Consumable],
+    getAbilities: (creature, item) => [
+      Abilities.applyStatusEffect(
+        "Slime Splash",
+        "Splash the target with slime.",
+        1,
+        [
+          {
+            id: "infested",
+            strength: 15,
+            duration: 5, // Duration in seconds
+          },
+        ]
+      ),
+    ],
   },
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
