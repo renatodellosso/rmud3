@@ -7,9 +7,9 @@ enum Difficulty {
 export default Difficulty;
 
 export const enum InventoryHandlingOnDeath {
-  KeepItems = "KeepItems",
-  DropItems = "DropItems",
-  DestroyItems = "DestroyItems",
+  KeepItems = "Keep Items",
+  DropItems = "Drop Items",
+  DestroyItems = "Destroy Items",
 }
 
 type DifficultyOptions = {

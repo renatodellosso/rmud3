@@ -7,6 +7,7 @@ import { EJSON } from "bson";
 import { PlayerSave, SerializedEJSON } from "lib/types/types";
 import Difficulty, { difficultyOptions } from "lib/types/Difficulty";
 import useRedirectIfSessionIdIsNotPresent from "lib/hooks/useRedirectIfSessionIdIsNotPresent";
+import DifficultyDescription from "@/components/DifficultyDescription";
 
 function PlayerSaveCard({ save }: { save: PlayerSave }) {
   function selectSave() {
@@ -27,7 +28,9 @@ export default function SelectSave() {
   const [saves, setSaves] = useState<PlayerSave[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [saveName, setSaveName] = useState("");
-  const [selectedDifficulty, setSelectedDifficulty] = useState(Difficulty.Normal);
+  const [selectedDifficulty, setSelectedDifficulty] = useState(
+    Difficulty.Normal
+  );
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -96,7 +99,7 @@ export default function SelectSave() {
               </button>
             ))}
           </div>
-          <div>{difficultyOptions[selectedDifficulty].description}</div>
+          <DifficultyDescription difficulty={selectedDifficulty} />
           <button onClick={createNewSave} className="w-full">
             Create New Save
           </button>

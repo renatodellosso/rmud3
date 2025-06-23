@@ -9,7 +9,10 @@ import {
   PlayerSave,
   Targetable,
 } from "../types";
-import Difficulty, { difficultyOptions } from "../Difficulty";
+import Difficulty, {
+  difficultyOptions,
+  InventoryHandlingOnDeath,
+} from "../Difficulty";
 import {
   ConsumableDefinition,
   EquipmentDefinition,
@@ -140,15 +143,15 @@ export class PlayerInstance extends CreatureInstance {
     const corpse = super.die();
 
     switch (difficultyOptions[this.difficulty].inventoryHandlingOnDeath) {
-      case "KeepItems":
+      case InventoryHandlingOnDeath.KeepItems:
         break;
-      case "DropItems":
+      case InventoryHandlingOnDeath.DropItems:
         this.equipment.items.forEach((item) => this.inventory.add(item, true));
         this.inventory.items.forEach((item) =>
           corpse.inventory.add(item, true)
         );
       // Pass through to DestroyItems
-      case "DestroyItems":
+      case InventoryHandlingOnDeath.DestroyItems:
         this.inventory = new DirectInventory();
         this.equipment = new EquipmentHotbar();
         break;

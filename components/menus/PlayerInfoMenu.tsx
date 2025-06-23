@@ -2,6 +2,7 @@ import statusEffects from "lib/gamedata/statusEffects";
 import XpForNextLevel from "lib/gamedata/XpForNextLevel";
 import { AbilityScore, GameState } from "lib/types/types";
 import { difficultyOptions } from "../../lib/types/Difficulty";
+import DifficultyDescription from "../DifficultyDescription";
 
 export default function PlayerInfoMenu({
   gameState: { self },
@@ -14,7 +15,7 @@ export default function PlayerInfoMenu({
       <div className="tooltip">
         Difficulty: {difficultyOptions[self.difficulty].name}
         <div className="tooltip-text w-48">
-          {difficultyOptions[self.difficulty].description}
+          <DifficultyDescription difficulty={self.difficulty} />
         </div>
       </div>
       <div>
