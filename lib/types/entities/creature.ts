@@ -119,6 +119,7 @@ export class CreatureInstance extends EntityInstance {
     amount: number,
     type: DamageType
   ): { amount: number; type: DamageType }[] {
+    amount += this.getAbilityScore(AbilityScore.Strength);
     let damage = [{ amount, type }];
 
     for (const provider of this.getStatAndAbilityProviders()) {

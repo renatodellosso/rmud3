@@ -26,7 +26,8 @@ export type CreatureId =
   | "player"
   | "trainingDummy"
   | "zombie"
-  | "skeleton";
+  | "skeleton"
+  | "slime";
 
 export type EntityId =
   | CreatureId
@@ -117,11 +118,11 @@ const entities: Record<EntityId, EntityDefinition> = {
   } satisfies CreatureDefinition as CreatureDefinition,
   zombie: {
     name: "Zombie",
-    health: 20,
+    health: 15,
     abilityScores: {
       [AbilityScore.Strength]: 5,
-      [AbilityScore.Constitution]: 5,
-      [AbilityScore.Intelligence]: 1,
+      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Intelligence]: 0,
     },
     intrinsicAbilities: [
       Abilities.attack("Bite", "Bite an enemy.", 3, 1, DamageType.Piercing, [
@@ -162,7 +163,7 @@ const entities: Record<EntityId, EntityDefinition> = {
     lootTable: new WeightedTable<ItemId>([
       {
         item: "bone",
-        amount: [1, 5],
+        amount: [1, 2],
         weight: 1,
       },
       {
@@ -172,6 +173,35 @@ const entities: Record<EntityId, EntityDefinition> = {
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  } satisfies CreatureDefinition as CreatureDefinition,
+  slime: {
+    name: "Slime",
+    health: 25,
+    abilityScores: {
+      [AbilityScore.Strength]: 0,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 0,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Slime",
+        "Slime.",
+        4,
+        1,
+        DamageType.Bludgeoning,
+        [CanTarget.isPlayer]
+      ),
+    ],
+    xpValue: 5,
+    maxDrops: 1,
+    lootTable: new WeightedTable<ItemId>([
+      {
+        item: "slime",
+        amount: [1, 3],
+        weight: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
   } satisfies CreatureDefinition as CreatureDefinition,
   container: {
     name: "Container",

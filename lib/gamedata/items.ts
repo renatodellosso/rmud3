@@ -23,7 +23,8 @@ export type ItemId =
   | "rustySword"
   | "money"
   | "healthPotion"
-  | "boneNecklace";
+  | "boneNecklace"
+  | "slime";
 
 const items = Object.freeze({
   test: {
@@ -62,6 +63,11 @@ const items = Object.freeze({
     getWeight: 1,
     getSellValue: 2,
     slot: EquipmentSlot.Head,
+    getAbilityScores: {
+      Strength: 0,
+      Constitution: 0,
+      Intelligence: 1
+    },
     getDamageToTake: (creature, item, damage) =>
       damage.map((d) => ({
         amount: d.amount - 1, // Reduces damage taken by 1
@@ -171,8 +177,19 @@ const items = Object.freeze({
     description: "A necklace made of thin bones.",
     getWeight: 0.5,
     getSellValue: 10,
-    
-  },
+    getDamageToDeal: (creature, item, damage) =>
+      damage.map((d) => ({
+        amount: d.amount + 1,
+        type: d.type,
+      })),
+  } as EquipmentDefinition,
+  slime: {
+    name: "Slime",
+    tags: [],
+    description: "It's very slimy.",
+    getWeight: 0.1,
+    getSellValue: 1
+  }
 } as Record<ItemId, ItemDefinition>);
 
 export default items;
