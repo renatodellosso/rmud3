@@ -10,17 +10,9 @@ import { DamageType } from "lib/types/types";
 import { StatusEffectId } from "./statusEffects";
 
 export type ItemId =
-  | "test"
-  | "test2"
-  | "rmud3ForDummies"
   | "bone"
   | "skull"
   | "eyeball"
-  | "equipment1"
-  | "equipment2"
-  | "chestplate1"
-  | "chestplate2"
-  | "consumable1"
   | "rustySword"
   | "money"
   | "healthPotion"
@@ -29,7 +21,8 @@ export type ItemId =
   | "rottenFlesh"
   | "taintedFlesh"
   | "trollTooth"
-  | "mushroom";
+  | "mushroom"
+  | "certificateOfAchievement";
 
 const items = Object.freeze({
   test: {
@@ -238,6 +231,13 @@ const items = Object.freeze({
       Abilities.heal("Heal", "Heal a small amount of health.", 0, 1),
     ],
   } satisfies ConsumableDefinition,
+  certificateOfAchievement: {
+    name: "Certificate of Achievement",
+    tags: [],
+    description: "Congratulations! You have completed the tutorial!",
+    getWeight: 0,
+    getSellValue: 0,
+  },
 } as Record<ItemId, ItemDefinition>);
 
 export default items;

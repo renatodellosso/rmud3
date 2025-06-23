@@ -22,7 +22,6 @@ import { getFromOptionalFunc } from "../utils";
 import { vaultLevelling } from "lib/types/Vault";
 
 export type CreatureId =
-  | "test"
   | "player"
   | "trainingDummy"
   | "zombie"
@@ -45,23 +44,6 @@ export type EntityId =
   | "vault";
 
 const entities: Record<EntityId, EntityDefinition> = {
-  test: {
-    name: "Test Creature",
-    health: 10,
-    abilityScores: {
-      [AbilityScore.Strength]: 10,
-      [AbilityScore.Constitution]: 10,
-      [AbilityScore.Intelligence]: 10,
-    },
-    maxDrops: 1,
-    lootTable: new WeightedTable<ItemId>([
-      {
-        item: "test",
-        amount: [0, 1],
-        weight: 1,
-      },
-    ]),
-  } as CreatureDefinition,
   player: {
     name: "Player",
     health: 40,
@@ -112,7 +94,7 @@ const entities: Record<EntityId, EntityDefinition> = {
     maxDrops: 1,
     lootTable: new WeightedTable<ItemId>([
       {
-        item: "rmud3ForDummies",
+        item: "certificateOfAchievement",
         amount: [1, 1],
         weight: 1,
       },
@@ -448,33 +430,7 @@ const entities: Record<EntityId, EntityDefinition> = {
   },
   anvil: {
     name: "Anvil",
-    interact: craftingInteraction(
-      "Crafting at Anvil",
-      new RecipeGroup([
-        new Recipe(
-          {
-            test: 1,
-            test2: 1,
-          },
-          "test"
-        ),
-        new Recipe(
-          {
-            bone: 1,
-          },
-          { definitionId: "chestplate1", amount: 1 }
-        ),
-        new Recipe(
-          {},
-          {
-            definitionId: "chestplate2",
-            amount: 1,
-          }
-        ),
-        new Recipe({}, "bone"),
-        new Recipe({}, "healthPotion"),
-      ])
-    ),
+    interact: craftingInteraction("Crafting at Anvil", new RecipeGroup([])),
   },
   mystic: {
     name: "Mystic",
