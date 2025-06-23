@@ -22,7 +22,6 @@ import { getFromOptionalFunc } from "../utils";
 import { vaultLevelling } from "lib/types/Vault";
 
 export type CreatureId =
-  | "test"
   | "player"
   | "trainingDummy"
   | "zombie"
@@ -45,23 +44,6 @@ export type EntityId =
   | "vault";
 
 const entities: Record<EntityId, EntityDefinition> = {
-  test: {
-    name: "Test Creature",
-    health: 10,
-    abilityScores: {
-      [AbilityScore.Strength]: 10,
-      [AbilityScore.Constitution]: 10,
-      [AbilityScore.Intelligence]: 10,
-    },
-    maxDrops: 1,
-    lootTable: new WeightedTable<ItemId>([
-      {
-        item: "test",
-        amount: [0, 1],
-        weight: 1,
-      },
-    ]),
-  } as CreatureDefinition,
   player: {
     name: "Player",
     health: 40,
@@ -99,8 +81,12 @@ const entities: Record<EntityId, EntityDefinition> = {
         "Slap",
         "Slap an enemy.",
         0.5,
-        3,
-        DamageType.Bludgeoning,
+        [
+          {
+            amount: 3,
+            type: DamageType.Bludgeoning,
+          },
+        ],
         [CanTarget.isPlayer]
       ),
     ],
@@ -108,8 +94,8 @@ const entities: Record<EntityId, EntityDefinition> = {
     maxDrops: 1,
     lootTable: new WeightedTable<ItemId>([
       {
-        item: "rmud3ForDummies",
-        amount: [1, 1],
+        item: "certificateOfAchievement",
+        amount: 1,
         weight: 1,
       },
     ]),
@@ -129,9 +115,13 @@ const entities: Record<EntityId, EntityDefinition> = {
       [AbilityScore.Intelligence]: 0,
     },
     intrinsicAbilities: [
-      Abilities.attack("Bite", "Bite an enemy.", 3, 1, DamageType.Piercing, [
-        CanTarget.isPlayer,
-      ]),
+      Abilities.attack(
+        "Bite",
+        "Bite an enemy.",
+        3,
+        [{ amount: 1, type: DamageType.Piercing }],
+        [CanTarget.isPlayer]
+      ),
     ],
     xpValue: 15,
     maxDrops: 2,
@@ -162,8 +152,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         "Slash",
         "Slash an enemy with a bone sword.",
         4,
-        1,
-        DamageType.Slashing,
+        [{ amount: 1, type: DamageType.Slashing }],
         [CanTarget.isPlayer]
       ),
     ],
@@ -192,9 +181,13 @@ const entities: Record<EntityId, EntityDefinition> = {
       [AbilityScore.Intelligence]: 0,
     },
     intrinsicAbilities: [
-      Abilities.attack("Slime", "Slime.", 4, 1, DamageType.Bludgeoning, [
-        CanTarget.isPlayer,
-      ]),
+      Abilities.attack(
+        "Slime",
+        "Slime.",
+        4,
+        [{ amount: 1, type: DamageType.Bludgeoning }],
+        [CanTarget.isPlayer]
+      ),
     ],
     xpValue: 5,
     maxDrops: 1,
@@ -216,9 +209,13 @@ const entities: Record<EntityId, EntityDefinition> = {
       [AbilityScore.Intelligence]: 1,
     },
     intrinsicAbilities: [
-      Abilities.attack("Slam", "Slam.", 6, 5, DamageType.Bludgeoning, [
-        CanTarget.isPlayer,
-      ]),
+      Abilities.attack(
+        "Slam",
+        "Slam.",
+        6,
+        [{ amount: 5, type: DamageType.Bludgeoning }],
+        [CanTarget.isPlayer]
+      ),
       Abilities.heal("Heal", "Recover a small amount of health.", 10, 5, [
         CanTarget.isSelf,
       ]),
@@ -248,9 +245,13 @@ const entities: Record<EntityId, EntityDefinition> = {
       [AbilityScore.Intelligence]: 0,
     },
     intrinsicAbilities: [
-      Abilities.attack("Bite", "Bite an enemy.", 3, 2, DamageType.Piercing, [
-        CanTarget.isPlayer,
-      ]),
+      Abilities.attack(
+        "Bite",
+        "Bite an enemy.",
+        3,
+        [{ amount: 2, type: DamageType.Piercing }],
+        [CanTarget.isPlayer]
+      ),
     ],
     xpValue: 20,
     maxDrops: 3,
@@ -282,9 +283,13 @@ const entities: Record<EntityId, EntityDefinition> = {
       [AbilityScore.Intelligence]: 0,
     },
     intrinsicAbilities: [
-      Abilities.attack("Slam", "Slam.", 5, 5, DamageType.Bludgeoning, [
-        CanTarget.isPlayer,
-      ]),
+      Abilities.attack(
+        "Slam",
+        "Slam.",
+        5,
+        [{ amount: 5, type: DamageType.Bludgeoning }],
+        [CanTarget.isPlayer]
+      ),
       Abilities.heal("Heal", "Recover a small amount of health.", 10, 8, [
         CanTarget.isSelf,
       ]),
@@ -323,11 +328,14 @@ const entities: Record<EntityId, EntityDefinition> = {
         "Spore Injection",
         "Infest an enemy with spores.",
         4,
-        3,
-        DamageType.Piercing,
-        "infested",
-        5,
-        5,
+        [{ amount: 3, type: DamageType.Piercing }],
+        [
+          {
+            id: "infested",
+            strength: 5,
+            duration: 5,
+          },
+        ],
         [CanTarget.isPlayer]
       ),
     ],
@@ -422,33 +430,7 @@ const entities: Record<EntityId, EntityDefinition> = {
   },
   anvil: {
     name: "Anvil",
-    interact: craftingInteraction(
-      "Crafting at Anvil",
-      new RecipeGroup([
-        new Recipe(
-          {
-            test: 1,
-            test2: 1,
-          },
-          "test"
-        ),
-        new Recipe(
-          {
-            bone: 1,
-          },
-          { definitionId: "chestplate1", amount: 1 }
-        ),
-        new Recipe(
-          {},
-          {
-            definitionId: "chestplate2",
-            amount: 1,
-          }
-        ),
-        new Recipe({}, "bone"),
-        new Recipe({}, "healthPotion"),
-      ])
-    ),
+    interact: craftingInteraction("Crafting at Anvil", new RecipeGroup([])),
   },
   mystic: {
     name: "Mystic",

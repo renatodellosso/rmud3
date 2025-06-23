@@ -7,20 +7,11 @@ import {
 } from "lib/types/item";
 import * as Abilities from "lib/gamedata/Abilities";
 import { DamageType } from "lib/types/types";
-import { StatusEffectId } from './statusEffects';
 
 export type ItemId =
-  | "test"
-  | "test2"
-  | "rmud3ForDummies"
   | "bone"
   | "skull"
   | "eyeball"
-  | "equipment1"
-  | "equipment2"
-  | "chestplate1"
-  | "chestplate2"
-  | "consumable1"
   | "rustySword"
   | "money"
   | "healthPotion"
@@ -29,7 +20,8 @@ export type ItemId =
   | "rottenFlesh"
   | "taintedFlesh"
   | "trollTooth"
-  | "mushroom";
+  | "mushroom"
+  | "certificateOfAchievement";
 
 const items = Object.freeze({
   test: {
@@ -154,19 +146,21 @@ const items = Object.freeze({
         "Rusty Slash",
         "A basic slash attack with the rusty sword.",
         1,
-        5,
-        DamageType.Slashing
+        [{ amount: 5, type: DamageType.Slashing }]
       ),
       Abilities.attackWithStatusEffect(
         "Stun Test",
         "Test stunned",
         1,
-        1,
-        DamageType.Bludgeoning,
-        "stunned",
-        0,
-        1
-      )
+        [{ amount: 1, type: DamageType.Bludgeoning }],
+        [
+          {
+            id: "stunned",
+            strength: 0,
+            duration: 5, // Duration in seconds
+          },
+        ]
+      ),
     ],
   } satisfies EquipmentDefinition,
   money: {
@@ -236,6 +230,13 @@ const items = Object.freeze({
       Abilities.heal("Heal", "Heal a small amount of health.", 0, 1),
     ],
   } satisfies ConsumableDefinition,
+  certificateOfAchievement: {
+    name: "Certificate of Achievement",
+    tags: [],
+    description: "Congratulations! You have completed the tutorial!",
+    getWeight: 0,
+    getSellValue: 0,
+  },
 } as Record<ItemId, ItemDefinition>);
 
 export default items;

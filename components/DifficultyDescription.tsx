@@ -1,4 +1,6 @@
+import entities from "lib/gamedata/entities";
 import Difficulty, { difficultyOptions } from "lib/types/Difficulty";
+import { CreatureDefinition } from "lib/types/entities/creature";
 
 export default function DifficultyDescription({
   difficulty,
@@ -8,15 +10,14 @@ export default function DifficultyDescription({
   const options = difficultyOptions[difficulty];
 
   return (
-    <div className="difficulty-description">
+    <div>
       <strong>{options.name}</strong>
       <div>{options.description}</div>
       <div>
-        {options.baseHealth && <p>Base Health: {options.baseHealth}</p>}
+        <p>Base Health Multiplier: x{options.baseHealthMultiplier}</p>
         {options.healthBonusFromConstitution && (
           <p>
-            Health Bonus from Constitution:{" "}
-            {options.healthBonusFromConstitution}
+            Health Bonus per Constitution: {options.healthBonusFromConstitution}
           </p>
         )}
         <p>On Death: {options.inventoryHandlingOnDeath}</p>

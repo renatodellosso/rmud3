@@ -16,7 +16,7 @@ import Inventory, { DirectInventory } from "../Inventory";
 import { ItemInstance } from "../item";
 import { ItemId } from "lib/gamedata/items";
 import StatAndAbilityProvider from "../StatAndAbilityProvider";
-import { StatusEffectInstance } from "../statuseffect";
+import { StatusEffectInstance, StatusEffectToApply } from "../statuseffect";
 import statusEffects, { StatusEffectId } from "lib/gamedata/statusEffects";
 import { DungeonLocation, FloorInstance } from "lib/dungeongeneration/types";
 
@@ -257,7 +257,9 @@ export class CreatureInstance extends EntityInstance {
   /**
    * @param duration in seconds
    */
-  addStatusEffect(id: StatusEffectId, strength: number, duration: number) {
+  addStatusEffect(effect: StatusEffectToApply) {
+    const { id, strength, duration } = effect;
+
     const existing = this.statusEffects.find(
       (effect) => effect.definitionId === id
     );

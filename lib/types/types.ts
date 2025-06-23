@@ -119,3 +119,8 @@ export class WeightedTable<T> {
     throw new Error("No item found in weighted table, this should not happen");
   }
 }
+
+export type DamageWithType = {
+  amount: number;
+  type: DamageType;
+};

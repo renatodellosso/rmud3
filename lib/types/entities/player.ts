@@ -82,7 +82,8 @@ export class PlayerInstance extends CreatureInstance {
 
   getBaseHealth(): number {
     return (
-      difficultyOptions[this.difficulty].baseHealth ?? super.getBaseHealth()
+      difficultyOptions[this.difficulty].baseHealthMultiplier *
+      super.getBaseHealth()
     );
   }
 
