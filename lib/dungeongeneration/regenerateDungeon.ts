@@ -7,7 +7,7 @@ import { generateRoom } from "./generateDungeonLayout";
 import { populateRoom } from "./populateDungeon";
 
 const ROOM_DELETION_CHANCE = 0.00004;
-const EXIT_DELETION_CHANCE = 0.003;
+const EXIT_DELETION_CHANCE = 0.0005;
 const NEW_ROOM_CHANCE = 0.01;
 const NEW_EXIT_CHANCE = 0.01;
 const VERTICAL_EXIT_MULTIPLIER = 0.5;

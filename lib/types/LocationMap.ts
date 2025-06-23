@@ -66,22 +66,20 @@ export default class LocationMap {
       location.globalCoords[1]
     ] = id;
 
-    if (!this.exits[id]) {
-      this.exits[id] = [];
-    }
+    this.exits[id] = [];
 
     if (!addExitsToLocations) return;
 
     for (const exit of Array.from(location.exits)) {
       const exitLoc = locations[exit] as DungeonLocation;
 
-      console.log(
-        `Adding exit from ${id} to ${exit} at depth ${exitLoc.floor.depth}, coords ${exitLoc.globalCoords}`
-      );
-
       if (!("globalCoords" in exitLoc)) {
         continue;
       }
+
+      console.log(
+        `Adding exit from ${id} to ${exit} at depth ${exitLoc.floor.depth}, coords ${exitLoc.globalCoords}`
+      );
 
       const exitPos: [number, number, number] = [
         exitLoc.floor.depth + 1,

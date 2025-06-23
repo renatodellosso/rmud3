@@ -64,7 +64,7 @@ const entities: Record<EntityId, EntityDefinition> = {
   } as CreatureDefinition,
   player: {
     name: "Player",
-    health: 20,
+    health: 40,
     xpValue: 0,
     abilityScores: {
       [AbilityScore.Strength]: 0,

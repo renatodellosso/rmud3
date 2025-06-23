@@ -123,6 +123,9 @@ export class PlayerInstance extends CreatureInstance {
   die(): void {
     super.die();
 
+    if (locations[this.location].entities.has(this))
+      throw new Error("Player not removed from location entities on death.");
+
     getIo().leaveRoom(this.location, this._id.toString());
 
     respawn(this);

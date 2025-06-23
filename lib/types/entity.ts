@@ -92,6 +92,10 @@ export class EntityInstance {
       if (canChangeDepths) return true;
 
       const targetLocation = locations[exit];
+      if (!targetLocation)
+        throw new Error(
+          `Invalid exit: ${exit} (comes from location ${location.id})`
+        );
       if ("floor" in targetLocation != "floor" in location) return false;
       if (!("floor" in targetLocation)) return true;
 

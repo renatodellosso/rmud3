@@ -208,9 +208,11 @@ function getGameState(socket: TypedSocket): GameState {
         player.instance as PlayerInstance
       ),
       entities: entityList,
-      exits: Array.from(location.exits).map((e) =>
-        getExitData(e, socket.data.session!.map, player.instance.location)
-      ),
+      exits: Array.from(location.exits)
+        .filter((e) => e != location.id)
+        .map((e) =>
+          getExitData(e, socket.data.session!.map, player.instance.location)
+        ),
     },
     messages: socket.data.session!.messages,
     interactions: socket.data.session!.interactions || [],
