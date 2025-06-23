@@ -24,7 +24,10 @@ export type ItemId =
   | "money"
   | "healthPotion"
   | "boneNecklace"
-  | "slime";
+  | "slime"
+  | "rottenFlesh"
+  | "taintedFlesh"
+  | "trollTooth";
 
 const items = Object.freeze({
   test: {
@@ -66,7 +69,7 @@ const items = Object.freeze({
     getAbilityScores: {
       Strength: 0,
       Constitution: 0,
-      Intelligence: 1
+      Intelligence: 1,
     },
     getDamageToTake: (creature, item, damage) =>
       damage.map((d) => ({
@@ -188,8 +191,29 @@ const items = Object.freeze({
     tags: [],
     description: "It's very slimy.",
     getWeight: 0.1,
-    getSellValue: 1
-  }
+    getSellValue: 1,
+  },
+  rottenFlesh: {
+    name: "Rotten Flesh",
+    tags: [],
+    description: "A disgusting and rotting chunk of flesh.",
+    getWeight: 1,
+    getSellValue: 2,
+  },
+  taintedFlesh: {
+    name: "Tainted Flesh",
+    tags: [],
+    description: "A discolored and corrupted slab of meat.",
+    getWeight: 1,
+    getSellValue: 4,
+  },
+  trollTooth: {
+    name: "Troll Tooth",
+    tags: [],
+    description: "This yellow tooth is bigger than any you've seen.",
+    getWeight: 0.2,
+    getSellValue: 2,
+  },
 } as Record<ItemId, ItemDefinition>);
 
 export default items;

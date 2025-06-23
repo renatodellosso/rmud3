@@ -23,23 +23,18 @@ const floors: Record<string, FloorDefinition> = {
         {
           item: "skeleton",
           amount: [1, 2],
-          weight: 1,
+          weight: 0.8,
         },
         {
           item: "zombie",
           amount: 1,
-          weight: 0.8,
+          weight: 0.6,
         },
         {
-          item: [
-            {
-              creature: "zombie",
-              amount: [1, 2],
-            },
-          ],
-          amount: [1, 2],
-          weight: 0.2,
-        },
+          item: "slime",
+          amount: [1, 3],
+          weight: 2,
+        }
       ]),
     },
   },
@@ -102,6 +97,11 @@ const floors: Record<string, FloorDefinition> = {
           amount: [1, 2],
           weight: 0.8,
         },
+        {
+          item: "troll",
+          amount: 1,
+          weight: 0.4,
+        }
       ]),
     },
   },
