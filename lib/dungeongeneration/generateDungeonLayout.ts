@@ -327,6 +327,7 @@ function generateFloor(
       Math.min(...startingPoints.map((point) => point[0])),
       Math.min(...startingPoints.map((point) => point[1])),
     ],
+    roomCount: 0,
   };
 
   dungeon.floors.push(floorInstance);
@@ -520,10 +521,9 @@ function initLocationArrays(
   return { locations, dimensions, offsetStartingPoints };
 }
 
-function generateRoom(
+export function generateRoom(
   dungeon: Dungeon,
   floor: FloorInstance,
-  depth: number,
   globalCoords: Point
 ) {
   const location: DungeonLocation = restoreFieldsAndMethods(
@@ -540,9 +540,11 @@ function generateRoom(
     new DungeonLocation()
   );
 
+  floor.roomCount++;
   floor.locations[location.floorCoords[0]][location.floorCoords[1]] = location;
-  dungeon.locations[depth][location.globalCoords[0]][location.globalCoords[1]] =
-    location;
+  dungeon.locations[floor.depth][location.globalCoords[0]][
+    location.globalCoords[1]
+  ] = location;
 
   return location;
 }
@@ -602,7 +604,7 @@ function initStartingRooms(
 
     if (!dungeon.locations[depth][nonOffsetPoint[0]][nonOffsetPoint[1]])
       dungeon.locations[depth][nonOffsetPoint[0]][nonOffsetPoint[1]] =
-        generateRoom(dungeon, floorInstance, depth, nonOffsetPoint);
+        generateRoom(dungeon, floorInstance, nonOffsetPoint);
 
     const room = dungeon.locations[depth][nonOffsetPoint[0]][nonOffsetPoint[1]];
 
@@ -700,7 +702,7 @@ function generateFloorLayout(
 
     for (const point of emptyAdjacentPoints) {
       if (chance(options.roomChance)) {
-        const newRoom = generateRoom(dungeon, floorInstance, depth, [
+        const newRoom = generateRoom(dungeon, floorInstance, [
           point[0],
           point[1],
         ]);

@@ -14,6 +14,7 @@ export type FloorInstance = {
   depth: number;
   size: [number, number];
   offset: Point;
+  roomCount: number;
 };
 
 export type FloorDefinition = {
