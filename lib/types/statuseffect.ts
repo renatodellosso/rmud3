@@ -9,5 +9,6 @@ export type StatusEffectDefinition =
 
 export type StatusEffectInstance = {
   definitionId: StatusEffectId;
+  strength: number;
   expiresAt: Date;
 };

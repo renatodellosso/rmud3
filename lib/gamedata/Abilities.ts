@@ -63,7 +63,8 @@ export function applyStatusEffect(
   name: string,
   getDescription: OptionalFunc<string, CreatureInstance>,
   getCooldown: OptionalFunc<number, CreatureInstance>,
-  statusEffect: StatusEffectId,
+  statusEffectId: StatusEffectId,
+  statusEffectStrength: number,
   statusEffectDuration: number,
   targetRestrictions?: ((
     creature: CreatureInstance,
@@ -88,11 +89,11 @@ export function applyStatusEffect(
 
       const target = targets[0] as CreatureInstance;
 
-      target.addStatusEffect(statusEffect, statusEffectDuration);
+      target.addStatusEffect(statusEffectId, statusEffectStrength, statusEffectDuration);
 
       getIo().sendMsgToRoom(
         creature.location,
-        `${creature.name} applied ${statusEffect} to ${target.name} using ${name}!`
+        `${creature.name} applied ${statusEffectId} to ${target.name} using ${name}!`
       );
 
       return true;
@@ -106,7 +107,8 @@ export function attackWithStatusEffect(
   getCooldown: OptionalFunc<number, CreatureInstance>,
   damage: number,
   damageType: DamageType,
-  statusEffect: StatusEffectId,
+  statusEffectId: StatusEffectId,
+  statusEffectStrength: number,
   statusEffectDuration: number,
   targetRestrictions?: ((
     creature: CreatureInstance,
@@ -145,11 +147,11 @@ export function attackWithStatusEffect(
         );
       }
 
-      target.addStatusEffect(statusEffect, statusEffectDuration);
+      target.addStatusEffect(statusEffectId, statusEffectStrength, statusEffectDuration);
 
       io.sendMsgToRoom(
         creature.location,
-        `${creature.name} applied ${statusEffect} to ${target.name} using ${name}!`
+        `${creature.name} applied ${statusEffectId} to ${target.name} using ${name}!`
       );
 
       return true;

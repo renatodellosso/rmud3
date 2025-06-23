@@ -164,6 +164,7 @@ const items = Object.freeze({
         1,
         DamageType.Bludgeoning,
         "stunned",
+        0,
         1
       )
     ],

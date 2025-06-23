@@ -311,17 +311,25 @@ const entities: Record<EntityId, EntityDefinition> = {
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
   } satisfies CreatureDefinition as CreatureDefinition,
   sentientFungus: {
-    name: "Fungal Zombie",
-    health: 20,
+    name: "Sentient Fungus",
+    health: 10,
     abilityScores: {
-      [AbilityScore.Strength]: 4,
+      [AbilityScore.Strength]: 5,
       [AbilityScore.Constitution]: 1,
       [AbilityScore.Intelligence]: 0,
     },
     intrinsicAbilities: [
-      Abilities.attack("Spore Injection", "Infest an enemy with spores.", 3, 2, DamageType.Piercing, [
-        CanTarget.isPlayer,
-      ]),
+      Abilities.attackWithStatusEffect(
+        "Spore Injection",
+        "Infest an enemy with spores.",
+        4,
+        3,
+        DamageType.Piercing,
+        "infested",
+        5,
+        5,
+        [CanTarget.isPlayer]
+      ),
     ],
     xpValue: 25,
     maxDrops: 1,

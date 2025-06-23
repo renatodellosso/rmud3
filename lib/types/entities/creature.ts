@@ -249,7 +249,7 @@ export class CreatureInstance extends EntityInstance {
   /**
    * @param duration in seconds
    */
-  addStatusEffect(id: StatusEffectId, duration: number) {
+  addStatusEffect(id: StatusEffectId, strength: number, duration: number) {
     const existing = this.statusEffects.find(
       (effect) => effect.definitionId === id
     );
@@ -261,6 +261,7 @@ export class CreatureInstance extends EntityInstance {
       // Otherwise, create a new effect
       this.statusEffects.push({
         definitionId: id,
+        strength: strength,
         expiresAt: new Date(Date.now() + duration * 1000),
       });
     }
