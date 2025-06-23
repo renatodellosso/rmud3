@@ -7,7 +7,6 @@ import {
 } from "lib/types/item";
 import * as Abilities from "lib/gamedata/Abilities";
 import { DamageType } from "lib/types/types";
-import { StatusEffectId } from "./statusEffects";
 
 export type ItemId =
   | "bone"

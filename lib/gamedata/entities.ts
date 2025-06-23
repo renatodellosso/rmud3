@@ -95,7 +95,7 @@ const entities: Record<EntityId, EntityDefinition> = {
     lootTable: new WeightedTable<ItemId>([
       {
         item: "certificateOfAchievement",
-        amount: [1, 1],
+        amount: 1,
         weight: 1,
       },
     ]),
