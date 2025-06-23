@@ -9,6 +9,7 @@ import { getFromOptionalFunc } from "../lib/utils";
 import { CreatureInstance } from "lib/types/entities/creature";
 import AbilityDescription from "./AbilityDescription";
 import { AbilityScore } from "lib/types/types";
+import Ability from "lib/types/Ability";
 
 /**
  * Put the class "tooltip" on the element that should show the tooltip.
@@ -28,6 +29,21 @@ export default function ItemTooltip({
   const weight = getFromOptionalFunc(def.getWeight, item);
   const sellValue = getFromOptionalFunc(def.getSellValue, item);
 
+  const hasAbilities = "getAbilities" in def && def.getAbilities;
+  const abilities = hasAbilities
+    ? getFromOptionalFunc(
+        def.getAbilities as (
+          creature: CreatureInstance,
+          item: ItemInstance
+        ) => Ability[],
+        creature,
+        item
+      ).map((ability) => ({
+        ability,
+        source: item,
+      }))
+    : [];
+
   return (
     <span className="tooltip-text flex-col w-64 text-white">
       <h1 className="text-lg">
@@ -44,6 +60,24 @@ export default function ItemTooltip({
       {isEquipment && (
         <EquipmentDescription equipment={item} creature={creature} />
       )}
+      {hasAbilities ? (
+        abilities.length > 0 ? (
+          <div>
+            <strong>Abilities</strong>
+            {abilities.map((ability, index) => (
+              <AbilityDescription
+                key={index}
+                abilityWithSource={ability}
+                creature={creature}
+              />
+            ))}
+          </div>
+        ) : (
+          <div>No abilities</div>
+        )
+      ) : (
+        <></>
+      )}
     </span>
   );
 }
@@ -57,8 +91,6 @@ function EquipmentDescription({
 }) {
   const def = items[equipment.definitionId] as EquipmentDefinition;
 
-  const abilities =
-    getFromOptionalFunc(def.getAbilities, creature, equipment) ?? [];
   const abilityScores = def.getAbilityScores
     ? Object.keys(AbilityScore)
         .map((key) => {
@@ -84,23 +116,6 @@ function EquipmentDescription({
             })`
           : "None"}
       </div>
-      {abilities.length > 0 ? (
-        <div>
-          <strong>Abilities</strong>
-          {abilities.map((ability, index) => (
-            <AbilityDescription
-              key={index}
-              abilityWithSource={{
-                ability,
-                source: equipment,
-              }}
-              creature={creature}
-            />
-          ))}
-        </div>
-      ) : (
-        <div>No abilities</div>
-      )}
       {abilityScores.length > 0 ? (
         <div>
           <strong>Ability Scores</strong>
