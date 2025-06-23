@@ -8,6 +8,7 @@ import {
 import { CreatureInstance } from "./entities/creature";
 import { PlayerInstance } from "./entities/player";
 import { areItemInstancesEqual } from "lib/utils";
+import { getEquipmentLimitForLevel } from "lib/gamedata/levelling";
 
 export abstract class Hotbar {
   items: ItemInstance[] = [];
@@ -44,7 +45,7 @@ export abstract class Hotbar {
 
 export class EquipmentHotbar extends Hotbar {
   getCapacity(player: PlayerInstance): number {
-    return 4; // Example capacity
+    return getEquipmentLimitForLevel(player.level);
   }
 
   canEquip(player: PlayerInstance, item: ItemInstance): boolean {
