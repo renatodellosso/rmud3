@@ -1,9 +1,15 @@
 import Ability from "lib/types/Ability";
 import { CreatureInstance } from "lib/types/entities/creature";
-import { OptionalFunc, DamageType, Targetable } from "lib/types/types";
+import {
+  OptionalFunc,
+  DamageType,
+  Targetable,
+  DamageWithType,
+} from "lib/types/types";
 import * as CanTarget from "lib/gamedata/CanTarget";
 import { getIo } from "lib/ClientFriendlyIo";
-import { StatusEffectId } from "./statusEffects";
+import statusEffects, { StatusEffectId } from "./statusEffects";
+import { StatusEffectToApply } from "lib/types/statuseffect";
 
 // IMPORTANT: If you're adding a new target check, add it as a function in CanTarget to avoid circular dependencies.
 // Not sure why that happens, but it does.
@@ -12,8 +18,7 @@ export function attack(
   name: string,
   getDescription: OptionalFunc<string, CreatureInstance>,
   getCooldown: OptionalFunc<number, CreatureInstance>,
-  damage: number,
-  damageType: DamageType,
+  damage: DamageWithType[],
   targetRestrictions?: ((
     creature: CreatureInstance,
     target: Targetable
@@ -38,18 +43,22 @@ export function attack(
 
       const target = targets[0] as CreatureInstance;
 
-      let newDamage = creature.getDamageToDeal(damage, damageType);
+      const finalDamage: DamageWithType[] = [];
+      for (const d of damage) {
+        let newDamage = creature.getDamageToDeal(d.amount, d.type);
 
-      const damageDealt: { amount: number; type: DamageType }[] =
-        target.takeDamage(newDamage, creature);
+        const damageDealt: { amount: number; type: DamageType }[] =
+          target.takeDamage(newDamage, creature);
 
-      const io = getIo();
-      for (const d of damageDealt) {
-        getIo().sendMsgToRoom(
-          creature.location,
-          `${creature.name} hit ${target.name} for ${d.amount} ${d.type} using ${name}!`
-        );
+        finalDamage.push(...damageDealt);
       }
+
+      getIo().sendMsgToRoom(
+        creature.location,
+        `${creature.name} hit ${target.name} using ${name} for ${finalDamage
+          .map((d) => `${d.amount} ${d.type}`)
+          .join(", ")}!`
+      );
 
       return true;
     },
@@ -63,9 +72,7 @@ export function applyStatusEffect(
   name: string,
   getDescription: OptionalFunc<string, CreatureInstance>,
   getCooldown: OptionalFunc<number, CreatureInstance>,
-  statusEffectId: StatusEffectId,
-  statusEffectStrength: number,
-  statusEffectDuration: number,
+  effects: StatusEffectToApply[],
   targetRestrictions?: ((
     creature: CreatureInstance,
     target: Targetable
@@ -81,40 +88,45 @@ export function applyStatusEffect(
       ...(targetRestrictions ?? [])
     ),
     activate: (creature: CreatureInstance, targets: Targetable[]) => {
-      if (targets.length !== 1) {
-        throw new Error(
-          `Expected exactly one target for ability ${name}, but got ${targets.length}.`
-        );
+      for (const rawTarget of targets) {
+        const target = rawTarget as CreatureInstance;
+
+        for (const statusEffect of effects) {
+          target.addStatusEffect(statusEffect);
+
+          getIo().sendMsgToRoom(
+            creature.location,
+            `${creature.name} applied ${statusEffects[statusEffect.id].name} ${
+              statusEffect.strength ? `(${statusEffect.strength}) ` : ""
+            }to ${target.name} for ${statusEffect.duration}s using ${name}!`
+          );
+        }
       }
 
-      const target = targets[0] as CreatureInstance;
-
-      target.addStatusEffect(statusEffectId, statusEffectStrength, statusEffectDuration);
-
-      getIo().sendMsgToRoom(
-        creature.location,
-        `${creature.name} applied ${statusEffectId} to ${target.name} using ${name}!`
-      );
-
       return true;
-    }
-  }
+    },
+  };
 }
 
 export function attackWithStatusEffect(
   name: string,
   getDescription: OptionalFunc<string, CreatureInstance>,
   getCooldown: OptionalFunc<number, CreatureInstance>,
-  damage: number,
-  damageType: DamageType,
-  statusEffectId: StatusEffectId,
-  statusEffectStrength: number,
-  statusEffectDuration: number,
+  damage: DamageWithType[],
+  statusEffectsToApply: StatusEffectToApply[],
   targetRestrictions?: ((
     creature: CreatureInstance,
     target: Targetable
   ) => boolean)[]
 ): Ability {
+  const attackFunc = attack(
+    name,
+    getDescription,
+    getCooldown,
+    damage,
+    targetRestrictions
+  ).activate;
+
   return {
     name,
     getDescription,
@@ -125,34 +137,24 @@ export function attackWithStatusEffect(
       CanTarget.isTargetACreature,
       ...(targetRestrictions ?? [])
     ),
-    activate: (creature: CreatureInstance, targets: Targetable[]) => {
-      if (targets.length !== 1) {
-        throw new Error(
-          `Expected exactly one target for ability ${name}, but got ${targets.length}.`
-        );
-      }
-
-      const target = targets[0] as CreatureInstance;
-
-      let newDamage = creature.getDamageToDeal(damage, damageType);
-
-      const damageDealt: { amount: number; type: DamageType }[] =
-        target.takeDamage(newDamage, creature);
+    activate: (creature: CreatureInstance, targets: Targetable[], source) => {
+      attackFunc(creature, targets, source);
 
       const io = getIo();
-      for (const d of damageDealt) {
-        getIo().sendMsgToRoom(
-          creature.location,
-          `${creature.name} hit ${target.name} for ${d.amount} ${d.type} using ${name}!`
-        );
+
+      for (const rawTarget of targets) {
+        const target = rawTarget as CreatureInstance;
+
+        for (const statusEffect of statusEffectsToApply) {
+          target.addStatusEffect(statusEffect);
+          io.sendMsgToRoom(
+            creature.location,
+            `${creature.name} applied ${statusEffects[statusEffect.id].name} ${
+              statusEffect.strength ? `(${statusEffect.strength}) ` : ""
+            }to ${target.name} for ${statusEffect.duration}s using ${name}!`
+          );
+        }
       }
-
-      target.addStatusEffect(statusEffectId, statusEffectStrength, statusEffectDuration);
-
-      io.sendMsgToRoom(
-        creature.location,
-        `${creature.name} applied ${statusEffectId} to ${target.name} using ${name}!`
-      );
 
       return true;
     },

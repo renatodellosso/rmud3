@@ -7,7 +7,7 @@ import {
 } from "lib/types/item";
 import * as Abilities from "lib/gamedata/Abilities";
 import { DamageType } from "lib/types/types";
-import { StatusEffectId } from './statusEffects';
+import { StatusEffectId } from "./statusEffects";
 
 export type ItemId =
   | "test"
@@ -154,19 +154,21 @@ const items = Object.freeze({
         "Rusty Slash",
         "A basic slash attack with the rusty sword.",
         1,
-        5,
-        DamageType.Slashing
+        [{ amount: 5, type: DamageType.Slashing }]
       ),
       Abilities.attackWithStatusEffect(
         "Stun Test",
         "Test stunned",
         1,
-        1,
-        DamageType.Bludgeoning,
-        "stunned",
-        0,
-        1
-      )
+        [{ amount: 1, type: DamageType.Bludgeoning }],
+        [
+          {
+            id: "stunned",
+            strength: 0,
+            duration: 5, // Duration in seconds
+          },
+        ]
+      ),
     ],
   } satisfies EquipmentDefinition,
   money: {

@@ -12,3 +12,12 @@ export type StatusEffectInstance = {
   strength: number;
   expiresAt: Date;
 };
+
+export type StatusEffectToApply = {
+  id: StatusEffectId;
+  strength: number;
+  /**
+   * In seconds
+   */
+  duration: number;
+};
