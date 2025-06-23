@@ -430,7 +430,18 @@ const entities: Record<EntityId, EntityDefinition> = {
   },
   anvil: {
     name: "Anvil",
-    interact: craftingInteraction("Crafting at Anvil", new RecipeGroup([])),
+    interact: craftingInteraction(
+      "Crafting at Anvil",
+      new RecipeGroup([
+        new Recipe(
+          {},
+          {
+            definitionId: "bigStick",
+            amount: 1,
+          }
+        ),
+      ])
+    ),
   },
   mystic: {
     name: "Mystic",

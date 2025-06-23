@@ -21,13 +21,17 @@ export type ItemId =
   | "taintedFlesh"
   | "trollTooth"
   | "mushroom"
-  | "certificateOfAchievement";
+  | "certificateOfAchievement"
+  | "bigStick"
+  | "leather"
+  | "leatherTunic"
+  | "jar";
 
-const items = Object.freeze({
+const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
     name: "Bone",
     tags: [],
-    description: "TODO: add a witty description.",
+    description: "Looks like you had a bone to pick with someone.",
     getWeight: 0.5,
     getSellValue: 1,
   },
@@ -53,7 +57,7 @@ const items = Object.freeze({
   eyeball: {
     name: "Eyeball",
     tags: [],
-    description: "A squishy eyeball that fell from it's socket",
+    description: "A squishy eyeball that fell from it's socket.",
     getWeight: 0.2,
     getSellValue: 1,
   },
@@ -115,7 +119,7 @@ const items = Object.freeze({
   boneNecklace: {
     name: "Bone Necklace",
     tags: [ItemTag.Equipment],
-    description: "A necklace made of thin bones.",
+    description: "A necklace made of thin bones. Increases damage by 1.",
     getWeight: 0.5,
     getSellValue: 10,
     getDamageToDeal: (creature, item, damage) =>
@@ -169,6 +173,45 @@ const items = Object.freeze({
     getWeight: 0,
     getSellValue: 0,
   },
-} as Record<ItemId, ItemDefinition>);
+  bigStick: {
+    name: "Big Stick",
+    tags: [ItemTag.Equipment],
+    description: "Well, if you can't have a sword...",
+    getWeight: 5,
+    getSellValue: 0,
+    getAbilities: (creature, item) => [
+      Abilities.attack("Whack", "WHACK!", 1.5, [
+        { amount: 5, type: DamageType.Bludgeoning },
+      ]),
+    ],
+  },
+  leather: {
+    name: "Leather",
+    description: "Don't mention how you got it.",
+    getWeight: 0.5,
+    getSellValue: 2,
+    tags: [],
+  },
+  leatherTunic: {
+    name: "Leather Tunic",
+    description: "A simple leather tunic. Reduces damage taken by 1.",
+    getWeight: 2,
+    getSellValue: 5,
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Chest,
+    getDamageToTake: (creature, item, damage) =>
+      damage.map((d) => ({
+        amount: d.amount - 1, // Reduces damage taken by 1
+        type: d.type,
+      })),
+  },
+  jar: {
+    name: "Jar",
+    description: "A glass jar, perfect for storing things. Just don't drop it!",
+    getWeight: 0.5,
+    getSellValue: 1,
+    tags: [],
+  },
+} satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;
