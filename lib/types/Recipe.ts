@@ -2,7 +2,6 @@ import items, { ItemId } from "lib/gamedata/items";
 import { PlayerInstance } from "./entities/player";
 import Inventory from "./Inventory";
 import { ItemInstance } from "./item";
-import { savePlayer } from "lib/utils";
 import { getFromOptionalFunc } from "../utils";
 
 type ItemGroup = {
@@ -26,6 +25,35 @@ export default class Recipe {
       ? [output]
       : [{ definitionId: output, amount: 1 }];
     this.isAllowToCraft = isAllowToCraft;
+  }
+
+  static fromCost(
+    output: ItemInstance[] | ItemInstance | ItemId,
+    isAllowedToCraft?: (player: PlayerInstance) => boolean
+  ) {
+    let totalCost = Array.isArray(output)
+      ? output.reduce(
+          (acc, item) =>
+            acc +
+            item.amount *
+              getFromOptionalFunc(items[item.definitionId].getSellValue, item),
+          0
+        )
+      : typeof output === "object"
+      ? output.amount *
+        getFromOptionalFunc(items[output.definitionId].getSellValue, output)
+      : getFromOptionalFunc(items[output].getSellValue, {
+          definitionId: output,
+          amount: 1,
+        });
+
+    return new Recipe(
+      {
+        money: totalCost,
+      },
+      output,
+      isAllowedToCraft
+    );
   }
 
   hasInput(inventory: Inventory): boolean {
