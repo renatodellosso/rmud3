@@ -133,8 +133,9 @@ export class CreatureInstance extends EntityInstance {
     return damage;
   }
 
-  getDamageToTake(
-    damage: { amount: number; type: DamageType }[]
+  takeDamage(
+    damage: { amount: number; type: DamageType }[],
+    source: EntityInstance
   ): { amount: number; type: DamageType }[] {
     for (const provider of this.getStatAndAbilityProviders()) {
       if (!provider.provider.getDamageToTake) {
@@ -144,21 +145,19 @@ export class CreatureInstance extends EntityInstance {
       damage = provider.provider.getDamageToTake(this, provider.source, damage);
     }
 
-    return damage;
-  }
+    for (let d of damage) {
+      d.amount = Math.min(Math.max(d.amount, 0), this.health);
 
-  takeDamage(amount: number, type: DamageType, source: EntityInstance): number {
-    amount = Math.min(Math.max(amount, 0), this.health);
+      this.damagers.addDamage(source, d.amount);
 
-    this.damagers.addDamage(source, amount);
+      this.health -= d.amount;
 
-    this.health -= amount;
-
-    if (this.health <= 0) {
-      this.die();
+      if (this.health <= 0) {
+        this.die();
+      }
     }
 
-    return amount;
+    return damage;
   }
 
   die() {

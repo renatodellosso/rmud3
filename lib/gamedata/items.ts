@@ -7,6 +7,7 @@ import {
 } from "lib/types/item";
 import * as Abilities from "lib/gamedata/Abilities";
 import { DamageType } from "lib/types/types";
+import { StatusEffectId } from './statusEffects';
 
 export type ItemId =
   | "test"
@@ -27,7 +28,8 @@ export type ItemId =
   | "slime"
   | "rottenFlesh"
   | "taintedFlesh"
-  | "trollTooth";
+  | "trollTooth"
+  | "mushroom";
 
 const items = Object.freeze({
   test: {
@@ -155,6 +157,15 @@ const items = Object.freeze({
         5,
         DamageType.Slashing
       ),
+      Abilities.attackWithStatusEffect(
+        "Stun Test",
+        "Test stunned",
+        1,
+        1,
+        DamageType.Bludgeoning,
+        "stunned",
+        1
+      )
     ],
   } satisfies EquipmentDefinition,
   money: {
@@ -214,6 +225,16 @@ const items = Object.freeze({
     getWeight: 0.2,
     getSellValue: 2,
   },
+  mushroom: {
+    name: "Mushroom",
+    tags: [ItemTag.Consumable],
+    description: "A small white mushroom.",
+    getWeight: 0.1,
+    getSellValue: 1,
+    getAbilities: (creature, item) => [
+      Abilities.heal("Heal", "Heal a small amount of health.", 0, 1),
+    ],
+  } satisfies ConsumableDefinition,
 } as Record<ItemId, ItemDefinition>);
 
 export default items;

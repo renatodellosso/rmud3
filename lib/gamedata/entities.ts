@@ -28,7 +28,10 @@ export type CreatureId =
   | "zombie"
   | "skeleton"
   | "slime"
-  | "troll";
+  | "troll"
+  | "fungalZombie"
+  | "fungalTroll"
+  | "sentientFungus";
 
 export type EntityId =
   | CreatureId
@@ -121,7 +124,7 @@ const entities: Record<EntityId, EntityDefinition> = {
     name: "Zombie",
     health: 15,
     abilityScores: {
-      [AbilityScore.Strength]: 5,
+      [AbilityScore.Strength]: 3,
       [AbilityScore.Constitution]: 1,
       [AbilityScore.Intelligence]: 0,
     },
@@ -136,7 +139,7 @@ const entities: Record<EntityId, EntityDefinition> = {
       {
         item: "rottenFlesh",
         amount: [1, 2],
-        weight: 1.2
+        weight: 1.2,
       },
       {
         item: "eyeball",
@@ -213,21 +216,12 @@ const entities: Record<EntityId, EntityDefinition> = {
       [AbilityScore.Intelligence]: 1,
     },
     intrinsicAbilities: [
-      Abilities.attack(
-        "Slam",
-        "Slam.",
-        6,
-        5,
-        DamageType.Bludgeoning,
-        [CanTarget.isPlayer]
-      ),
-      Abilities.heal(
-        "Heal",
-        "Recover a small amount of health.",
-        10,
-        5,
-        [CanTarget.isSelf]
-      )
+      Abilities.attack("Slam", "Slam.", 6, 5, DamageType.Bludgeoning, [
+        CanTarget.isPlayer,
+      ]),
+      Abilities.heal("Heal", "Recover a small amount of health.", 10, 5, [
+        CanTarget.isSelf,
+      ]),
     ],
     xpValue: 20,
     maxDrops: 2,
@@ -240,8 +234,103 @@ const entities: Record<EntityId, EntityDefinition> = {
       {
         item: "trollTooth",
         amount: [1, 3],
-        weight: 0.8
-      }
+        weight: 0.8,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  } satisfies CreatureDefinition as CreatureDefinition,
+  fungalZombie: {
+    name: "Fungal Zombie",
+    health: 20,
+    abilityScores: {
+      [AbilityScore.Strength]: 4,
+      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Intelligence]: 0,
+    },
+    intrinsicAbilities: [
+      Abilities.attack("Bite", "Bite an enemy.", 3, 2, DamageType.Piercing, [
+        CanTarget.isPlayer,
+      ]),
+    ],
+    xpValue: 20,
+    maxDrops: 3,
+    lootTable: new WeightedTable<ItemId>([
+      {
+        item: "rottenFlesh",
+        amount: [1, 2],
+        weight: 1.2,
+      },
+      {
+        item: "eyeball",
+        amount: [0, 2],
+        weight: 1,
+      },
+      {
+        item: "mushroom",
+        amount: [1, 2],
+        weight: 1.5,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  } satisfies CreatureDefinition as CreatureDefinition,
+  fungalTroll: {
+    name: "Fungal Troll",
+    health: 25,
+    abilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 7,
+      [AbilityScore.Intelligence]: 0,
+    },
+    intrinsicAbilities: [
+      Abilities.attack("Slam", "Slam.", 5, 5, DamageType.Bludgeoning, [
+        CanTarget.isPlayer,
+      ]),
+      Abilities.heal("Heal", "Recover a small amount of health.", 10, 8, [
+        CanTarget.isSelf,
+      ]),
+    ],
+    xpValue: 30,
+    maxDrops: 2,
+    lootTable: new WeightedTable<ItemId>([
+      {
+        item: "taintedFlesh",
+        amount: [1, 2],
+        weight: 1,
+      },
+      {
+        item: "trollTooth",
+        amount: [1, 3],
+        weight: 0.8,
+      },
+      {
+        item: "mushroom",
+        amount: [1, 2],
+        weight: 2,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  } satisfies CreatureDefinition as CreatureDefinition,
+  sentientFungus: {
+    name: "Fungal Zombie",
+    health: 20,
+    abilityScores: {
+      [AbilityScore.Strength]: 4,
+      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Intelligence]: 0,
+    },
+    intrinsicAbilities: [
+      Abilities.attack("Spore Injection", "Infest an enemy with spores.", 3, 2, DamageType.Piercing, [
+        CanTarget.isPlayer,
+      ]),
+    ],
+    xpValue: 25,
+    maxDrops: 1,
+    lootTable: new WeightedTable<ItemId>([
+      {
+        item: "mushroom",
+        amount: [2, 5],
+        weight: 1,
+      },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
   } satisfies CreatureDefinition as CreatureDefinition,
