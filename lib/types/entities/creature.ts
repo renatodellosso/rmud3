@@ -16,7 +16,11 @@ import Inventory, { DirectInventory } from "../Inventory";
 import { ItemInstance } from "../item";
 import { ItemId } from "lib/gamedata/items";
 import StatAndAbilityProvider from "../StatAndAbilityProvider";
-import { StatusEffectInstance, StatusEffectToApply } from "../statuseffect";
+import {
+  StatusEffectInstance,
+  StatusEffectStacking,
+  StatusEffectToApply,
+} from "../statuseffect";
 import statusEffects, { StatusEffectId } from "lib/gamedata/statusEffects";
 import { DungeonLocation, FloorInstance } from "lib/dungeongeneration/types";
 
@@ -264,16 +268,57 @@ export class CreatureInstance extends EntityInstance {
       (effect) => effect.definitionId === id
     );
 
-    if (existing) {
-      // If the effect already exists, extend its duration
-      existing.expiresAt.setSeconds(existing.expiresAt.getSeconds() + duration);
-    } else {
-      // Otherwise, create a new effect
+    const def = statusEffects[id];
+
+    let newStrength: number;
+    let newDuration: number;
+
+    if (def.stacking === StatusEffectStacking.Separate || !existing) {
       this.statusEffects.push({
         definitionId: id,
         strength: strength,
         expiresAt: new Date(Date.now() + duration * 1000),
       });
+      return;
+    }
+
+    switch (def.stacking) {
+      case StatusEffectStacking.AddStrengthMaxDuration:
+        newStrength = existing.strength + strength;
+        newDuration = Math.max(
+          existing.expiresAt.getTime() - Date.now(),
+          duration * 1000
+        );
+        existing.strength = newStrength;
+        existing.expiresAt.setTime(Date.now() + newDuration);
+        return;
+      case StatusEffectStacking.AddDurationMaxStrength:
+        newStrength = Math.max(existing.strength, strength);
+        newDuration =
+          existing.expiresAt.getTime() - Date.now() + duration * 1000;
+        existing.strength = newStrength;
+        existing.expiresAt.setTime(Date.now() + newDuration);
+        return;
+      case StatusEffectStacking.AddStrengthAndDuration:
+        newStrength = existing.strength + strength;
+        newDuration =
+          existing.expiresAt.getTime() - Date.now() + duration * 1000;
+        existing.strength = newStrength;
+        existing.expiresAt.setTime(Date.now() + newDuration);
+        return;
+      case StatusEffectStacking.MaxStrength:
+        newStrength = Math.max(existing.strength, strength);
+        existing.strength = newStrength;
+        // Keep the existing expiration time
+        return;
+      case StatusEffectStacking.MaxDuration:
+        newDuration = Math.max(
+          existing.expiresAt.getTime() - Date.now(),
+          duration * 1000
+        );
+        existing.expiresAt.setTime(Date.now() + newDuration);
+        // Keep the existing strength
+        return;
     }
   }
 

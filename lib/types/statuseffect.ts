@@ -5,6 +5,7 @@ export type StatusEffectDefinition =
   StatAndAbilityProvider<StatusEffectInstance> & {
     name: string;
     description: string;
+    stacking: StatusEffectStacking;
   };
 
 export type StatusEffectInstance = {
@@ -21,3 +22,12 @@ export type StatusEffectToApply = {
    */
   duration: number;
 };
+
+export enum StatusEffectStacking {
+  Separate,
+  AddStrengthMaxDuration,
+  AddDurationMaxStrength,
+  AddStrengthAndDuration,
+  MaxStrength,
+  MaxDuration,
+}
