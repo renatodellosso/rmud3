@@ -4,6 +4,9 @@ import { OptionalFunc, DamageType, Targetable } from "lib/types/types";
 import * as CanTarget from "lib/gamedata/CanTarget";
 import { getIo } from "lib/ClientFriendlyIo";
 
+// IMPORTANT: If you're adding a new target check, add it as a function in CanTarget to avoid circular dependencies.
+// Not sure why that happens, but it does.
+
 export function attack(
   name: string,
   getDescription: OptionalFunc<string, CreatureInstance>,
