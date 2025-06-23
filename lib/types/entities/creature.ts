@@ -145,7 +145,7 @@ export class CreatureInstance extends EntityInstance {
 
   takeDamage(
     damage: { amount: number; type: DamageType }[],
-    source: EntityInstance
+    source: EntityInstance | StatusEffectInstance
   ): { amount: number; type: DamageType }[] {
     for (const provider of this.getStatAndAbilityProviders()) {
       if (!provider.provider.getDamageToTake) {
@@ -158,7 +158,8 @@ export class CreatureInstance extends EntityInstance {
     for (let d of damage) {
       d.amount = Math.min(Math.max(d.amount, 0), this.health);
 
-      this.damagers.addDamage(source, d.amount);
+      if (source instanceof EntityInstance)
+        this.damagers.addDamage(source, d.amount);
 
       this.health -= d.amount;
 
@@ -249,9 +250,25 @@ export class CreatureInstance extends EntityInstance {
     super.tick(deltaTime);
 
     // Remove expired status effects
-    this.statusEffects = this.statusEffects.filter(
-      (effect) => effect.expiresAt > new Date()
-    );
+    const newEffects: StatusEffectInstance[] = [];
+    const expiredEffects: StatusEffectInstance[] = [];
+
+    for (const effect of this.statusEffects) {
+      if (effect.expiresAt.getTime() <= Date.now()) {
+        expiredEffects.push(effect);
+      } else {
+        newEffects.push(effect);
+      }
+    }
+
+    for (const effect of expiredEffects) {
+      const def = statusEffects[effect.definitionId];
+      if (def.onExpire) {
+        def.onExpire(this, effect);
+      }
+    }
+
+    this.statusEffects = newEffects;
 
     for (const provider of this.getStatAndAbilityProviders()) {
       provider.provider.tick?.(this, deltaTime, provider.source);
