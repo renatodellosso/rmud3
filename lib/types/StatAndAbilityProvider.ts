@@ -1,6 +1,6 @@
 import Ability, { AbilitySource } from "./Ability";
 import { CreatureInstance } from "./entities/creature";
-import { AbilityScore, DamageType, OptionalFunc } from "./types";
+import { AbilityScore, DamageType, DamageWithType, OptionalFunc } from "./types";
 
 export default interface StatAndAbilityProvider<
   TSource extends AbilitySource = AbilitySource
@@ -13,6 +13,14 @@ export default interface StatAndAbilityProvider<
       | undefined;
   };
   getCarryingCapacity?: OptionalFunc<number, [CreatureInstance, TSource]>;
+  getDamageResistances?: OptionalFunc<
+    { amount: number; type: DamageType | "*" }[],
+    [CreatureInstance, TSource]
+  >;
+  getDamageBonuses?: OptionalFunc<
+    { amount: number; type: DamageType | "*" }[],
+    [CreatureInstance, TSource]
+  >;
   getDamageToDeal?: (
     creature: CreatureInstance,
     source: TSource,

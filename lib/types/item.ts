@@ -2,7 +2,7 @@ import { ItemId } from "../gamedata/items";
 import { AbilitySource } from "./Ability";
 import { CreatureInstance } from "./entities/creature";
 import StatAndAbilityProvider from "./StatAndAbilityProvider";
-import { OptionalFunc } from "./types";
+import { DamageWithType, OptionalFunc } from "./types";
 
 export type ItemDefinition = {
   name: string;
