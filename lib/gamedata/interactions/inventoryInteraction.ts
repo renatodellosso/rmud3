@@ -1,9 +1,9 @@
-import { ContainerInstance } from "lib/types/entities/container";
 import { EntityInstance, Interaction } from "lib/types/entity";
 import Inventory from "lib/types/Inventory";
 import { ItemInstance } from "lib/types/item";
 import { PlayerInstance } from "lib/types/entities/player";
 import { savePlayer } from "lib/utils";
+import { EJSON } from "bson";
 
 export default function inventoryInteraction(
   entity: EntityInstance,
@@ -26,7 +26,7 @@ export default function inventoryInteraction(
   if (action === "exit") return undefined;
 
   try {
-    let parsedAction = JSON.parse(action);
+    let parsedAction = EJSON.parse(action);
 
     if (
       "definitionId" in parsedAction &&

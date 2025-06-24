@@ -46,6 +46,7 @@ export interface ClientToServerEvents {
   interact: (entityId: string, action: any) => void;
   equip: (item: ItemInstance) => void;
   unequip: (item: ItemInstance) => void;
+  dropItem: (item: SerializedEJSON<ItemInstance>) => void;
 }
 
 export interface InterServerEvents {

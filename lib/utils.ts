@@ -1,6 +1,7 @@
 import { ItemInstance } from "./types/item";
 import { PlayerInstance } from "./types/entities/player";
 import { OptionalFunc, Targetable } from "./types/types";
+import { ObjectId } from "bson";
 
 /**
  * Copies all properties from the prototype to the object if they are not already defined.
@@ -81,12 +82,15 @@ export function areItemInstancesEqual(
   if (item1 == item2) return true;
 
   for (const key in item1) {
+    if (!(key in item2)) return false;
     if (skipAmount && key === "amount") continue;
-    if (
-      (item1 as Record<string, any>)[key] !==
-      (item2 as Record<string, any>)[key]
-    )
-      return false;
+
+    const v1 = (item1 as Record<string, any>)[key];
+    const v2 = (item2 as Record<string, any>)[key];
+
+    if (ObjectId.isValid(v1) && ObjectId.isValid(v2)) {
+      if (!new ObjectId(v1).equals(new ObjectId(v2))) return false;
+    } else if (v1 !== v2) return false;
   }
 
   return true;

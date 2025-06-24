@@ -7,6 +7,7 @@ import ItemTooltip from "../ItemTooltip";
 import { PlayerInstance } from "lib/types/entities/player";
 import { CreatureInstance } from "lib/types/entities/creature";
 import { getFromOptionalFunc } from "../../lib/utils";
+import { EJSON } from "bson";
 
 function ItemEntry({
   item,
@@ -35,7 +36,7 @@ function ItemEntry({
       insert: viewPlayerInventory,
     };
 
-    socket.emit("interact", entityId, JSON.stringify(itemData));
+    socket.emit("interact", entityId, EJSON.stringify(itemData));
   }
 
   function setValidAmount(amount: number) {

@@ -10,7 +10,13 @@ import { Targetable } from "lib/types/types";
 import entities from "lib/gamedata/entities";
 import getSessionManager from "lib/SessionManager";
 import { getIo } from "lib/ClientFriendlyIo";
-import { savePlayer } from "lib/utils";
+import { getFromOptionalFunc, savePlayer } from "lib/utils";
+import { EJSON } from "bson";
+import { ItemInstance } from "lib/types/item";
+import { EntityInstance } from "lib/types/entity";
+import items from "lib/gamedata/items";
+import { ContainerInstance } from "lib/types/entities/container";
+import { DirectInventory } from "lib/types/Inventory";
 
 export default function registerGameListeners(socket: TypedSocket) {
   socket.on("requestGameState", () => {
@@ -236,5 +242,55 @@ export default function registerGameListeners(socket: TypedSocket) {
 
     getIo().updateGameState(player.instance._id.toString());
     savePlayer(player.instance);
+  });
+
+  socket.on("dropItem", (itemEjson) => {
+    const item = EJSON.parse(itemEjson) as ItemInstance;
+
+    const player = getPlayer(socket);
+    const location = locations[player.instance.location];
+
+    if (!player.instance.inventory.get(item)) {
+      throw new Error(`Item ${item.definitionId} not found in inventory.`);
+    }
+
+    if (item.amount <= 0) {
+      throw new Error(
+        `Cannot drop item ${item.definitionId} with non-positive amount.`
+      );
+    }
+
+    const foundItem = EJSON.parse(
+      EJSON.stringify(player.instance.inventory.get(item))
+    ) as ItemInstance;
+    if (!foundItem) {
+      throw new Error(`Item ${item.definitionId} not found in inventory.`);
+    }
+
+    foundItem.amount = Math.min(foundItem.amount, item.amount);
+    
+    foundItem.amount = player.instance.inventory.remove(foundItem);
+
+    const inventory = new DirectInventory([foundItem]);
+    const container = new ContainerInstance(
+      "container",
+      location.id,
+      `${getFromOptionalFunc(items[item.definitionId].getName, foundItem)} x${
+        foundItem.amount
+      }`,
+      inventory,
+      true
+    );
+
+    location.entities.add(container);
+
+    getIo().sendMsgToRoom(
+      location.id,
+      `${player.instance.name} dropped ${getFromOptionalFunc(
+        items[item.definitionId].getName,
+        item
+      )} x${item.amount}.`
+    );
+    getIo().updateGameStateForRoom(location.id);
   });
 }

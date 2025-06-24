@@ -9,8 +9,79 @@ import {
 } from "lib/types/item";
 import { socket } from "lib/socket";
 import { getFromOptionalFunc } from "../../lib/utils";
+import { useState } from "react";
+import { EJSON } from "bson";
+
+function ItemEntry({
+  item,
+  self,
+  equip,
+  setError,
+}: {
+  item: ItemInstance;
+  self: PlayerInstance;
+  equip: (item: ItemInstance) => void;
+  setError: (error: string) => void;
+}) {
+  const [amount, setAmount] = useState(item.amount);
+
+  function setValidAmount(amount: number) {
+    if (amount > item.amount) {
+      setError(`You can only transfer up to ${item.amount} of this item.`);
+      return;
+    }
+
+    setError("");
+    setAmount(amount);
+  }
+
+  function drop() {
+    if (amount <= 0) {
+      setError("You must drop at least one item.");
+      return;
+    }
+
+    socket.emit("dropItem", EJSON.stringify({ ...item, amount }));
+  }
+
+  return (
+    <tr className="hover:bg-gray-900">
+      <td className="tooltip">
+        {getFromOptionalFunc(items[item.definitionId].getName, item)}
+        <ItemTooltip item={item} creature={self} />
+      </td>
+      <td>{item.amount}</td>
+      <td>{getFromOptionalFunc(items[item.definitionId].getWeight, item)}</td>
+      {items[item.definitionId].tags.includes(ItemTag.Equipment) && (
+        <td>
+          <button
+            onClick={() => equip(item)}
+            disabled={!self.equipment.canEquip(self, item)}
+          >
+            Equip
+          </button>
+        </td>
+      )}
+      <td className="flex justify-end">
+        <input
+          type="number"
+          name="amount"
+          placeholder="amount"
+          value={amount.toString()}
+          onChange={(e) => setValidAmount(e.target.valueAsNumber)}
+          className="px-1 text-right max-w-1/3"
+        />
+        <button onClick={drop} className="px-1">
+          Drop
+        </button>
+      </td>
+    </tr>
+  );
+}
 
 export default function InventoryMenu({ self }: { self: PlayerInstance }) {
+  const [error, setError] = useState("");
+
   const inventory = self.inventory;
 
   function equip(item: ItemInstance) {
@@ -86,32 +157,17 @@ export default function InventoryMenu({ self }: { self: PlayerInstance }) {
           </thead>
           <tbody>
             {inventory.getItems().map((item, index) => (
-              <tr key={index} className="hover:bg-gray-900">
-                <td className="tooltip">
-                  {getFromOptionalFunc(items[item.definitionId].getName, item)}
-                  <ItemTooltip item={item} creature={self} />
-                </td>
-                <td>{item.amount}</td>
-                <td>
-                  {getFromOptionalFunc(
-                    items[item.definitionId].getWeight,
-                    item
-                  )}
-                </td>
-                {items[item.definitionId].tags.includes(ItemTag.Equipment) && (
-                  <td>
-                    <button
-                      onClick={() => equip(item)}
-                      disabled={!self.equipment.canEquip(self, item)}
-                    >
-                      Equip
-                    </button>
-                  </td>
-                )}
-              </tr>
+              <ItemEntry
+                key={index}
+                item={item}
+                self={self}
+                equip={equip}
+                setError={setError}
+              />
             ))}
           </tbody>
         </table>
+        <div className="text-red-500">{error}</div>
       </div>
     </div>
   );

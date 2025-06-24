@@ -72,6 +72,10 @@ export async function sendMsgToRoomServerOnly(roomId: string, msg: string) {
     addMsgToSession(socket.data.session, msg);
   }
 
+  if (sockets.length === 0) {
+    return;
+  }
+
   room.emit("addMessage", msg);
   console.log(
     `Message sent to room ${roomId} with ${sockets.length} users: ${msg}`
@@ -199,6 +203,10 @@ function getGameState(socket: TypedSocket): GameState {
 
   // Clean up player instance
   player.instance.prepForGameState();
+
+  socket.data.session!.interactions = socket.data.session!.interactions.filter(
+    (i) => entityList.some((e) => e._id.equals(i.entityId))
+  );
 
   return {
     self: player.instance,
