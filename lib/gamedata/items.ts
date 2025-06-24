@@ -73,11 +73,10 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Constitution: 0,
       Intelligence: 1,
     },
-    getDamageToTake: (creature, item, damage) =>
-      damage.map((d) => ({
-        amount: d.amount - 1, // Reduces damage taken by 1
-        type: DamageType.Slashing,
-      })),
+    getDamageResistances: [
+      { amount: 1, type: "*" },
+      { amount: 1, type: DamageType.Slashing },
+    ],
   } satisfies EquipmentDefinition,
   eyeball: {
     getName: "Eyeball",
@@ -124,11 +123,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: "A necklace made of thin bones. Increases damage by 1.",
     getWeight: 0.5,
     getSellValue: 10,
-    getDamageToDeal: (creature, item, damage) =>
-      damage.map((d) => ({
-        amount: d.amount + 1,
-        type: d.type,
-      })),
+    getDamageBonuses: [{ amount: 1, type: "*" }],
   } as EquipmentDefinition,
   slime: {
     getName: "Slime",
@@ -201,11 +196,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 5,
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Chest,
-    getDamageToTake: (creature, item, damage) =>
-      damage.map((d) => ({
-        amount: d.amount - 1, // Reduces damage taken by 1
-        type: d.type,
-      })),
+    getDamageResistances: [{ amount: 1, type: "*" }],
   } satisfies EquipmentDefinition,
   bottle: {
     getName: "Bottle",
@@ -432,11 +423,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 15,
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Head,
-    getDamageToTake: (creature, item, damage) =>
-      damage.map((d) => ({
-        amount: d.amount - 2, // Reduces damage taken by 1
-        type: d.type,
-      })),
+    getDamageResistances: [{ amount: 2, type: "*" }],
   } satisfies EquipmentDefinition,
   ironChestplate: {
     getName: "Iron Chestplate",
@@ -445,11 +432,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 15,
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Chest,
-    getDamageToTake: (creature, item, damage) =>
-      damage.map((d) => ({
-        amount: d.amount - 2, // Reduces damage taken by 1
-        type: d.type,
-      })),
+    getDamageResistances: [{ amount: 2, type: "*" }],
   } satisfies EquipmentDefinition,
   ironBoots: {
     getName: "Iron Boots",
@@ -458,11 +441,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 15,
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Legs,
-    getDamageToTake: (creature, item, damage) =>
-      damage.map((d) => ({
-        amount: d.amount - 2, // Reduces damage taken by 1
-        type: d.type,
-      })),
+    getDamageResistances: [{ amount: 2, type: "*" }],
   } satisfies EquipmentDefinition,
   carvingStone: {
     getName: "Carving Stone",

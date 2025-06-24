@@ -58,14 +58,13 @@ export function attack(
       const target = targets[0] as CreatureInstance;
 
       const finalDamage: DamageWithType[] = [];
-      for (const d of damage) {
-        let newDamage = creature.getDamageToDeal(d.amount, d.type);
 
-        const damageDealt: { amount: number; type: DamageType }[] =
-          target.takeDamage(newDamage, creature);
+      let newDamage = creature.getDamageToDeal(damage);
 
-        finalDamage.push(...damageDealt);
-      }
+      const damageDealt: { amount: number; type: DamageType }[] =
+        target.takeDamage(newDamage, creature);
+
+      finalDamage.push(...damageDealt);
 
       getIo().sendMsgToRoom(
         creature.location,
