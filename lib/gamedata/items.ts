@@ -26,7 +26,8 @@ export type ItemId =
   | "leather"
   | "leatherTunic"
   | "jar"
-  | "slimeJar";
+  | "slimeJar"
+  | "rope";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -233,6 +234,13 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         ]
       ),
     ],
+  },
+  rope: {
+    name: "Rope",
+    description: "A sturdy rope, useful for climbing or tying things up.",
+    getWeight: 1,
+    getSellValue: 3,
+    tags: [],
   },
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 

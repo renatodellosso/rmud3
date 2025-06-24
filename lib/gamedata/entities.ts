@@ -460,6 +460,20 @@ const entities: Record<EntityId, EntityDefinition> = {
             amount: 1,
           }
         ),
+        new Recipe(
+          { leather: 1 },
+          {
+            definitionId: "rope",
+            amount: 5,
+          }
+        ),
+        new Recipe(
+          { bone: 1, rope: 10, trollTooth: 1 },
+          {
+            definitionId: "boneNecklace",
+            amount: 1,
+          }
+        ),
       ])
     ),
   },
