@@ -4,6 +4,8 @@ import { PlayerInstance, PlayerProgress } from "./entities/player";
 import { EntityInstance, Interaction } from "./entity";
 import { LocationId } from "lib/gamedata/rawLocations";
 import LocationMap from "./LocationMap";
+import items, { ItemId } from "lib/gamedata/items";
+import { ItemDefinition, ItemInstance } from "./item";
 
 export type Targetable = EntityInstance | Location;
 
@@ -117,6 +119,45 @@ export class WeightedTable<T> {
     }
 
     throw new Error("No item found in weighted table, this should not happen");
+  }
+}
+
+type LootTableEntry = {
+  item: WeightedTable<ItemId>;
+  amount: number;
+  chance: number;
+};
+
+export class LootTable {
+  public entries: LootTableEntry[];
+
+  constructor(entries: LootTableEntry[]) {
+    this.entries = entries;
+  }
+
+  roll(): ItemInstance[] {
+    if (this.entries.length === 0) {
+      throw new Error("Cannot roll on an empty loot table");
+    }
+
+    const roll = Math.random();
+
+    let rolledItems: ItemInstance[] = [];
+
+    for (const entry of this.entries) {
+      for (let i = 0; i < entry.amount; i++) {
+        if (Math.random() <= entry.chance) {
+          let rolledItem = entry.item.roll();
+
+          rolledItems.push({
+            definitionId: rolledItem.item,
+            amount: rolledItem.amount,
+          });
+        }
+      }
+    }
+
+    return rolledItems;
   }
 }
 

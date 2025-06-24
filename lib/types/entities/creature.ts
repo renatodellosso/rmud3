@@ -2,6 +2,7 @@ import entities, { CreatureId, EntityId } from "lib/gamedata/entities";
 import {
   AbilityScore,
   DamageType,
+  LootTable,
   Targetable,
   WeightedTable,
 } from "lib/types/types";
@@ -24,8 +25,7 @@ export type CreatureDefinition = EntityDefinition & {
   health: number;
   abilityScores: { [score in AbilityScore]: number };
   intrinsicAbilities?: Ability[];
-  maxDrops: number;
-  lootTable: WeightedTable<ItemId>;
+  lootTable: LootTable;
   xpValue: number;
 };
 
@@ -179,15 +179,12 @@ export class CreatureInstance extends EntityInstance {
 
     let inventory = new DirectInventory();
 
-    for (let i = 0; i < this.getDef().maxDrops; i++) {
-      const drop = this.getDef().lootTable.roll();
+    if (this.getDef().lootTable) {
+      const rolledInventory: ItemInstance[] = this.getDef().lootTable.roll();
 
-      const item: ItemInstance = {
-        definitionId: drop.item,
-        amount: drop.amount,
-      };
-
-      inventory.add(item);
+      for (const rolledItem of rolledInventory) {
+        inventory.add(rolledItem);
+      }      
     }
 
     const corpse = new ContainerInstance(
