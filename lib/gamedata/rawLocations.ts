@@ -4,13 +4,18 @@ import { restoreFieldsAndMethods } from "lib/utils";
 import { CreatureInstance } from "lib/types/entities/creature";
 import { EntityInstance } from "lib/types/entity";
 
+// Be sure to update location map if you add a new location!
+
 export type LocationId =
   | "docks"
   | "town-square"
   | "dungeon-entrance"
   | "training-ground"
   | "tavern"
+  | "north-road-1"
+  | "north-road-2"
   | "bank"
+  | "workshop"
   | `dungeon-${string}`;
 
 const rawLocations: Partial<OmitType<Location, Function>>[] = [
@@ -29,9 +34,13 @@ const rawLocations: Partial<OmitType<Location, Function>>[] = [
     name: "Town Square",
     description:
       "You are in the center of a quiet town square. A small fire flickers in the center, casting shadows on the dirt streets.",
-    exits: new Set<LocationId>(["docks", "dungeon-entrance", "tavern", "bank"]),
+    exits: new Set<LocationId>([
+      "docks",
+      "dungeon-entrance",
+      "tavern",
+      "north-road-1",
+    ]),
     entities: new Set<EntityInstance>([
-      new EntityInstance("anvil", "town-square"),
       new EntityInstance("mystic", "town-square"),
     ]),
   },
@@ -68,10 +77,36 @@ const rawLocations: Partial<OmitType<Location, Function>>[] = [
     name: "Bank",
     description:
       "You are in a small, dusty bank. The walls are lined with shelves of old books and scrolls.",
-    exits: new Set<LocationId>(["town-square"]),
+    exits: new Set<LocationId>(["north-road-1"]),
     entities: new Set<EntityInstance>([
       new EntityInstance("banker", "bank"),
       new EntityInstance("vault", "bank"),
+    ]),
+  },
+  {
+    id: "north-road-1",
+    name: "North Road",
+    description:
+      "You are on a long, winding road that leads north. The path is lined with trees and bushes.",
+    exits: new Set<LocationId>(["town-square", "bank", "north-road-2"]),
+  },
+  {
+    id: "north-road-2",
+    name: "North Road",
+    description:
+      "You are on a long, winding road that leads north. The path is lined with trees and bushes.",
+    exits: new Set<LocationId>(["north-road-1", "workshop"]),
+  },
+  {
+    id: "workshop",
+    name: "Workshop",
+    description:
+      "You are in a small workshop filled with tools and materials. The walls are lined with shelves of various items.",
+    exits: new Set<LocationId>(["north-road-2"]),
+    entities: new Set<EntityInstance>([
+      new EntityInstance("anvil", "workshop"),
+      new EntityInstance("workbench", "workshop"),
+      new EntityInstance("firepit", "workshop"),
     ]),
   },
 ];

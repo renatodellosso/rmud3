@@ -1,5 +1,5 @@
 import statusEffects from "lib/gamedata/statusEffects";
-import XpForNextLevel from "lib/gamedata/XpForNextLevel";
+import { xpForNextLevel } from "lib/gamedata/levelling";
 import { AbilityScore, GameState } from "lib/types/types";
 import { difficultyOptions } from "../../lib/types/Difficulty";
 import DifficultyDescription from "../DifficultyDescription";
@@ -23,7 +23,7 @@ export default function PlayerInfoMenu({
       </div>
       <div>
         Level {self.level} - {self.xp.toLocaleString()}/
-        {XpForNextLevel[self.level].toLocaleString()} XP
+        {xpForNextLevel[self.level].toLocaleString()} XP
       </div>
       <div>
         <strong>Ability Scores:</strong>

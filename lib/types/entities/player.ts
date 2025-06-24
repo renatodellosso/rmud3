@@ -31,7 +31,7 @@ import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";
 import { LocationId } from "lib/gamedata/rawLocations";
 import { EntityInstance } from "../entity";
-import XpForNextLevel from "lib/gamedata/XpForNextLevel";
+import { xpForNextLevel } from "lib/gamedata/levelling";
 import StatAndAbilityProvider from "../StatAndAbilityProvider";
 import Vault from "../Vault";
 
@@ -180,20 +180,33 @@ export class PlayerInstance extends CreatureInstance {
     const io = getIo();
     io.sendMsgToPlayer(this._id.toString(), `You gained ${amount} XP!`);
 
-    if (this.xp >= XpForNextLevel[this.level]) this.levelUp();
+    if (this.xp >= xpForNextLevel[this.level]) this.levelUp();
 
     io.updateGameState(this._id.toString());
     savePlayer(this);
   }
 
   levelUp() {
+    const oldEquipmentLimit = this.equipment.getCapacity(this);
+
     this.level++;
     this.abilityScoreIncreases++;
 
-    getIo().sendMsgToPlayer(
+    const io = getIo();
+    io.sendMsgToPlayer(
       this._id.toString(),
       `You leveled up! You are now level ${this.level}.`
     );
+
+    const newEquipmentLimit = this.equipment.getCapacity(this);
+    if (newEquipmentLimit > oldEquipmentLimit) {
+      io.sendMsgToPlayer(
+        this._id.toString(),
+        `You can now equip ${
+          newEquipmentLimit - oldEquipmentLimit
+        } more items, for a total of ${newEquipmentLimit}.`
+      );
+    }
   }
 
   recalculateMaxWeight() {

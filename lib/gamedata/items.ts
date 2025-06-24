@@ -21,34 +21,18 @@ export type ItemId =
   | "taintedFlesh"
   | "trollTooth"
   | "mushroom"
-  | "certificateOfAchievement";
+  | "certificateOfAchievement"
+  | "bigStick"
+  | "leather"
+  | "leatherTunic"
+  | "jar"
+  | "slimeJar";
 
-const items = Object.freeze({
-  test: {
-    name: "Test Item",
-    tags: [],
-    description: "This is a test item.",
-    getWeight: 1,
-    getSellValue: 10,
-  },
-  test2: {
-    name: "Test Item 2",
-    tags: [],
-    description: "This is another test item.",
-    getWeight: 2,
-    getSellValue: 20,
-  },
-  rmud3ForDummies: {
-    name: "RMUD3 For Dummies",
-    tags: [],
-    description: "...",
-    getWeight: 2.5,
-    getSellValue: 5,
-  },
+const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
     name: "Bone",
     tags: [],
-    description: "TODO: add a witty description.",
+    description: "Looks like you had a bone to pick with someone.",
     getWeight: 0.5,
     getSellValue: 1,
   },
@@ -74,57 +58,10 @@ const items = Object.freeze({
   eyeball: {
     name: "Eyeball",
     tags: [],
-    description: "A squishy eyeball that fell from it's socket",
+    description: "A squishy eyeball that fell from it's socket.",
     getWeight: 0.2,
     getSellValue: 1,
   },
-  equipment1: {
-    name: "Test Equipment",
-    tags: [ItemTag.Equipment],
-    description: "This is a test equipment.",
-    getWeight: 1,
-    getSellValue: 15,
-  } satisfies EquipmentDefinition,
-  equipment2: {
-    name: "Test Equipment 2",
-    tags: [ItemTag.Equipment],
-    description: "This is another test equipment.",
-    getWeight: 2,
-    getSellValue: 25,
-  } satisfies EquipmentDefinition,
-  chestplate1: {
-    name: "Test Chestplate",
-    tags: [ItemTag.Equipment],
-    description: "This is a test chestplate.",
-    getWeight: 1,
-    slot: EquipmentSlot.Chest,
-    getSellValue: 30,
-    getDamageToTake: (creature, item, damage) =>
-      damage.map((d) => ({
-        amount: d.amount - 1, // Reduces damage taken by 1
-        type: DamageType.Piercing,
-      })),
-  } satisfies EquipmentDefinition,
-  chestplate2: {
-    name: "Test Chestplate 2",
-    tags: [ItemTag.Equipment],
-    description: "This is another test chestplate.",
-    getWeight: 1,
-    slot: EquipmentSlot.Chest,
-    getSellValue: 30,
-    getDamageToTake: (creature, item, damage) =>
-      damage.map((d) => ({
-        amount: d.amount - 1, // Reduces damage taken by 1
-        type: DamageType.Piercing,
-      })),
-  } satisfies EquipmentDefinition,
-  consumable1: {
-    name: "Test Consumable",
-    tags: [ItemTag.Consumable],
-    description: "This is a test consumable.",
-    getWeight: 1,
-    getSellValue: 10,
-  } satisfies ConsumableDefinition,
   rustySword: {
     name: "Rusty Sword",
     tags: [ItemTag.Equipment],
@@ -149,14 +86,14 @@ const items = Object.freeze({
         [{ amount: 5, type: DamageType.Slashing }]
       ),
       Abilities.attackWithStatusEffect(
-        "Stun Test",
-        "Test stunned",
-        1,
-        [{ amount: 1, type: DamageType.Bludgeoning }],
+        "Stunning Strike",
+        "A powerful strike that stuns the target.",
+        1.5,
+        [{ amount: 3, type: DamageType.Bludgeoning }],
         [
           {
             id: "stunned",
-            strength: 0,
+            strength: 3,
             duration: 5, // Duration in seconds
           },
         ]
@@ -183,7 +120,7 @@ const items = Object.freeze({
   boneNecklace: {
     name: "Bone Necklace",
     tags: [ItemTag.Equipment],
-    description: "A necklace made of thin bones.",
+    description: "A necklace made of thin bones. Increases damage by 1.",
     getWeight: 0.5,
     getSellValue: 10,
     getDamageToDeal: (creature, item, damage) =>
@@ -237,6 +174,66 @@ const items = Object.freeze({
     getWeight: 0,
     getSellValue: 0,
   },
-} as Record<ItemId, ItemDefinition>);
+  bigStick: {
+    name: "Big Stick",
+    tags: [ItemTag.Equipment],
+    description: "Well, if you can't have a sword...",
+    getWeight: 5,
+    getSellValue: 0,
+    getAbilities: (creature, item) => [
+      Abilities.attack("Whack", "WHACK!", 1.5, [
+        { amount: 5, type: DamageType.Bludgeoning },
+      ]),
+    ],
+  },
+  leather: {
+    name: "Leather",
+    description: "Don't mention how you got it.",
+    getWeight: 0.5,
+    getSellValue: 2,
+    tags: [],
+  },
+  leatherTunic: {
+    name: "Leather Tunic",
+    description: "A simple leather tunic. Reduces damage taken by 1.",
+    getWeight: 2,
+    getSellValue: 5,
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Chest,
+    getDamageToTake: (creature, item, damage) =>
+      damage.map((d) => ({
+        amount: d.amount - 1, // Reduces damage taken by 1
+        type: d.type,
+      })),
+  },
+  jar: {
+    name: "Jar",
+    description: "A glass jar, perfect for storing things. Just don't drop it!",
+    getWeight: 0.5,
+    getSellValue: 5,
+    tags: [],
+  },
+  slimeJar: {
+    name: "Slime Jar",
+    description: "A jar filled with a strange, glowing slime.",
+    getWeight: 0.5,
+    getSellValue: 10,
+    tags: [ItemTag.Consumable],
+    getAbilities: (creature, item) => [
+      Abilities.applyStatusEffect(
+        "Slime Splash",
+        "Splash the target with slime.",
+        1,
+        [
+          {
+            id: "infested",
+            strength: 15,
+            duration: 5, // Duration in seconds
+          },
+        ]
+      ),
+    ],
+  },
+} satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;

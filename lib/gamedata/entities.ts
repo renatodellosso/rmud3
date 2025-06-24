@@ -37,6 +37,8 @@ export type EntityId =
   | "container"
   | "signPost"
   | "anvil"
+  | "workbench"
+  | "firepit"
   | "mystic"
   | "tavernKeeper"
   | "junkCollector"
@@ -483,6 +485,50 @@ const entities: Record<EntityId, EntityDefinition> = {
   anvil: {
     name: "Anvil",
     interact: craftingInteraction("Crafting at Anvil", new RecipeGroup([])),
+  },
+  workbench: {
+    name: "Workbench",
+    interact: craftingInteraction(
+      "Crafting at Workbench",
+      new RecipeGroup([
+        new Recipe(
+          {},
+          {
+            definitionId: "bigStick",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { leather: 5 },
+          {
+            definitionId: "leatherTunic",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { jar: 1, slime: 1 },
+          {
+            definitionId: "slimeJar",
+            amount: 1,
+          }
+        ),
+      ])
+    ),
+  },
+  firepit: {
+    name: "Firepit",
+    interact: craftingInteraction(
+      "Cooking at Firepit",
+      new RecipeGroup([
+        new Recipe(
+          { rottenFlesh: 1 },
+          {
+            definitionId: "leather",
+            amount: 1,
+          }
+        ),
+      ])
+    ),
   },
   mystic: {
     name: "Mystic",
