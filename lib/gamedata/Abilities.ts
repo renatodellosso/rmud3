@@ -10,9 +10,20 @@ import * as CanTarget from "lib/gamedata/CanTarget";
 import { getIo } from "lib/ClientFriendlyIo";
 import statusEffects, { StatusEffectId } from "./statusEffects";
 import { StatusEffectToApply } from "lib/types/statuseffect";
+import { getFromOptionalFunc } from "lib/utils";
 
 // IMPORTANT: If you're adding a new target check, add it as a function in CanTarget to avoid circular dependencies.
 // Not sure why that happens, but it does.
+
+function addToDescription(
+  getDescription: OptionalFunc<string, CreatureInstance>,
+  addition: string
+): OptionalFunc<string, CreatureInstance> {
+  return (creature: CreatureInstance) => {
+    const description = getFromOptionalFunc(getDescription, creature);
+    return `${description} ${addition}`;
+  };
+}
 
 export function attack(
   name: string,
@@ -26,7 +37,10 @@ export function attack(
 ): Ability {
   return {
     name,
-    getDescription,
+    getDescription: addToDescription(
+      getDescription,
+      `Inflicts ${damage.map((d) => `${d.amount} ${d.type}`)}.`
+    ),
     getCooldown,
     getTargetCount: 1,
     canTarget: CanTarget.and(
@@ -80,7 +94,17 @@ export function applyStatusEffect(
 ): Ability {
   return {
     name,
-    getDescription,
+    getDescription: addToDescription(
+      getDescription,
+      `Applies ${effects
+        .map(
+          (effect) =>
+            `${statusEffects[effect.id].name} (${effect.strength}) for ${
+              effect.duration
+            }s`
+        )
+        .join(", ")}.`
+    ),
     getCooldown,
     getTargetCount: 1,
     canTarget: CanTarget.and(
@@ -119,17 +143,27 @@ export function attackWithStatusEffect(
     target: Targetable
   ) => boolean)[]
 ): Ability {
-  const attackFunc = attack(
+  const { activate: attackFunc, getDescription: attackDescription } = attack(
     name,
     getDescription,
     getCooldown,
     damage,
     targetRestrictions
-  ).activate;
+  );
+  const {
+    activate: applyStatusEffectFunc,
+    getDescription: applyStatusEffectDescription,
+  } = applyStatusEffect(
+    name,
+    attackDescription as OptionalFunc<string, CreatureInstance>,
+    getCooldown,
+    statusEffectsToApply,
+    targetRestrictions
+  );
 
   return {
     name,
-    getDescription,
+    getDescription: applyStatusEffectDescription,
     getCooldown,
     getTargetCount: 1,
     canTarget: CanTarget.and(
@@ -137,27 +171,9 @@ export function attackWithStatusEffect(
       CanTarget.isTargetACreature,
       ...(targetRestrictions ?? [])
     ),
-    activate: (creature: CreatureInstance, targets: Targetable[], source) => {
-      attackFunc(creature, targets, source);
-
-      const io = getIo();
-
-      for (const rawTarget of targets) {
-        const target = rawTarget as CreatureInstance;
-
-        for (const statusEffect of statusEffectsToApply) {
-          target.addStatusEffect(statusEffect);
-          io.sendMsgToRoom(
-            creature.location,
-            `${creature.name} applied ${statusEffects[statusEffect.id].name} ${
-              statusEffect.strength ? `(${statusEffect.strength}) ` : ""
-            }to ${target.name} for ${statusEffect.duration}s using ${name}!`
-          );
-        }
-      }
-
-      return true;
-    },
+    activate: (creature: CreatureInstance, targets: Targetable[], source) =>
+      attackFunc(creature, targets, source) &&
+      applyStatusEffectFunc(creature, targets, source),
   };
 }
 
