@@ -7,10 +7,10 @@ export default class Guild {
 
   name: string = "Unnamed Guild";
 
-  owner: ObjectId;
+  owner: ObjectId | undefined;
   members: ObjectId[];
 
-  constructor(owner: ObjectId, members: ObjectId[] = []) {
+  constructor(owner: ObjectId | undefined, members: ObjectId[] = []) {
     this.owner = owner;
     this.members = members;
   }
@@ -37,7 +37,7 @@ export default class Guild {
     return undefined;
   }
 
-  static create(guild: Guild) {
+  static upsert(guild: Guild) {
     if (typeof window === "undefined") {
       const func = require("../getCollectionManager").default;
       console.log(func);

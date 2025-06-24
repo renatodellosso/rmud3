@@ -48,7 +48,7 @@ export default function InventoryMenu({ self }: { self: PlayerInstance }) {
               .map(([item, def], index) => (
                 <tr key={index} className="hover:bg-gray-900">
                   <td className="tooltip">
-                    {def.name}
+                    {getFromOptionalFunc(def.getName, item)}
                     <ItemTooltip item={item} creature={self} />
                   </td>
                   <td>
@@ -88,7 +88,7 @@ export default function InventoryMenu({ self }: { self: PlayerInstance }) {
             {inventory.getItems().map((item, index) => (
               <tr key={index} className="hover:bg-gray-900">
                 <td className="tooltip">
-                  {items[item.definitionId].name}
+                  {getFromOptionalFunc(items[item.definitionId].getName, item)}
                   <ItemTooltip item={item} creature={self} />
                 </td>
                 <td>{item.amount}</td>

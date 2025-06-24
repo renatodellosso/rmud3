@@ -5,6 +5,7 @@ import { DamageType, Targetable } from "./types";
 import { OptionalFunc } from "./types";
 import { StatusEffectInstance } from "./statuseffect";
 import statusEffects from "lib/gamedata/statusEffects";
+import { getFromOptionalFunc } from "../utils";
 
 export type AbilitySource =
   | ItemInstance
@@ -52,7 +53,7 @@ export function getAbilitySourceName(source: AbilitySource): string {
       );
     }
 
-    return item.name;
+    return getFromOptionalFunc(item.getName, source);
   } else {
     return statusEffects[source.definitionId]?.name || "Unknown Source";
   }

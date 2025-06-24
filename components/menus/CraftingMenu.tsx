@@ -4,6 +4,8 @@ import { socket } from "lib/socket";
 import items, { ItemId } from "lib/gamedata/items";
 import ItemTooltip from "../ItemTooltip";
 import { CreatureInstance } from "lib/types/entities/creature";
+import { getFromOptionalFunc } from "../../lib/utils";
+import { ItemInstance } from "../../lib/types/item";
 
 export default function CraftingMenu({
   inventory,
@@ -52,8 +54,11 @@ export default function CraftingMenu({
                           : ""
                       } tooltip`}
                     >
-                      {items[id as ItemId].name} x{amt} (
-                      {inventory.getCountById(id as ItemId)})
+                      {getFromOptionalFunc(items[id as ItemId].getName, {
+                        definitionId: id as ItemId,
+                        amount: amt,
+                      })}{" "}
+                      x{amt} ({inventory.getCountById(id as ItemId)})
                       <ItemTooltip
                         item={{
                           definitionId: id as ItemId,
@@ -69,8 +74,11 @@ export default function CraftingMenu({
               <td>
                 {recipe.output.map((item, index) => (
                   <span key={index} className="tooltip">
-                    {items[item.definitionId].name} x{item.amount} (
-                    {inventory.get(item)?.amount ?? 0})
+                    {getFromOptionalFunc(
+                      items[item.definitionId].getName,
+                      item
+                    )}{" "}
+                    x{item.amount} ({inventory.get(item)?.amount ?? 0})
                     <ItemTooltip item={item} creature={self} />
                   </span>
                 ))}

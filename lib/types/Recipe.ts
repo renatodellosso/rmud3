@@ -102,7 +102,10 @@ export default class Recipe {
     return Object.entries(this.input)
       .map(([itemId, quantity]) => {
         const itemDef = items[itemId as ItemId];
-        return `${quantity}x ${itemDef.name}`;
+        return `${quantity}x ${getFromOptionalFunc(itemDef.getName, {
+          definitionId: itemId as ItemId,
+          amount: quantity,
+        })}`;
       })
       .join(", ");
   }
@@ -111,7 +114,7 @@ export default class Recipe {
     return this.output
       .map((item) => {
         const itemDef = items[item.definitionId];
-        return `${itemDef.name} ${item.amount}x`;
+        return `${getFromOptionalFunc(itemDef.getName, item)} ${item.amount}x`;
       })
       .join(", ");
   }

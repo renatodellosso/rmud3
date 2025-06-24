@@ -7,7 +7,6 @@ import {
 } from "lib/types/item";
 import * as Abilities from "lib/gamedata/Abilities";
 import { DamageType } from "lib/types/types";
-import { Location } from "lib/types/Location";
 import { PlayerInstance } from "lib/types/entities/player";
 import { getIo } from "lib/ClientFriendlyIo";
 import Guild from "lib/types/Guild";
@@ -50,18 +49,19 @@ export type ItemId =
   | "ironHelmet"
   | "ironChestplate"
   | "ironBoots"
-  | "carvingStone";
+  | "carvingStone"
+  | "guildStone";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
-    name: "Bone",
+    getName: "Bone",
     tags: [],
     description: "Looks like you had a bone to pick with someone.",
     getWeight: 0.5,
     getSellValue: 1,
   },
   skull: {
-    name: "Skull",
+    getName: "Skull",
     tags: [ItemTag.Equipment],
     description:
       "A well preserved human skull. It could offer some protection.",
@@ -80,14 +80,14 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       })),
   } satisfies EquipmentDefinition,
   eyeball: {
-    name: "Eyeball",
+    getName: "Eyeball",
     tags: [],
     description: "A squishy eyeball that fell from it's socket.",
     getWeight: 0.2,
     getSellValue: 1,
   },
   rustySword: {
-    name: "Rusty Sword",
+    getName: "Rusty Sword",
     tags: [ItemTag.Equipment],
     description: "A rusty old sword, not very effective.",
     getWeight: 3,
@@ -102,14 +102,14 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   } satisfies EquipmentDefinition,
   money: {
-    name: "Silver Coins",
+    getName: "Silver Coins",
     tags: [],
     description: "A small silver coin.",
     getWeight: 0,
     getSellValue: 1,
   },
   healthPotion: {
-    name: "Health Potion",
+    getName: "Health Potion",
     tags: [ItemTag.Consumable],
     description: "A red solution in a small bottle.",
     getWeight: 0.5,
@@ -119,7 +119,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   } as ConsumableDefinition,
   boneNecklace: {
-    name: "Bone Necklace",
+    getName: "Bone Necklace",
     tags: [ItemTag.Equipment],
     description: "A necklace made of thin bones. Increases damage by 1.",
     getWeight: 0.5,
@@ -131,35 +131,35 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       })),
   } as EquipmentDefinition,
   slime: {
-    name: "Slime",
+    getName: "Slime",
     tags: [],
     description: "It's very slimy.",
     getWeight: 0.1,
     getSellValue: 1,
   },
   rottenFlesh: {
-    name: "Rotten Flesh",
+    getName: "Rotten Flesh",
     tags: [],
     description: "A disgusting and rotting chunk of flesh.",
     getWeight: 1,
     getSellValue: 2,
   },
   taintedFlesh: {
-    name: "Tainted Flesh",
+    getName: "Tainted Flesh",
     tags: [],
     description: "A discolored and corrupted slab of meat.",
     getWeight: 1,
     getSellValue: 4,
   },
   trollTooth: {
-    name: "Troll Tooth",
+    getName: "Troll Tooth",
     tags: [],
     description: "This yellow tooth is bigger than any you've seen.",
     getWeight: 0.2,
     getSellValue: 2,
   },
   mushroom: {
-    name: "Mushroom",
+    getName: "Mushroom",
     tags: [ItemTag.Consumable],
     description: "A small white mushroom.",
     getWeight: 0.1,
@@ -169,14 +169,14 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   } satisfies ConsumableDefinition,
   certificateOfAchievement: {
-    name: "Certificate of Achievement",
+    getName: "Certificate of Achievement",
     tags: [],
     description: "Congratulations! You have completed the tutorial!",
     getWeight: 0,
     getSellValue: 0,
   },
   bigStick: {
-    name: "Big Stick",
+    getName: "Big Stick",
     tags: [ItemTag.Equipment],
     description: "Well, if you can't have a sword...",
     getWeight: 5,
@@ -188,14 +188,14 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   },
   leather: {
-    name: "Leather",
+    getName: "Leather",
     description: "Don't mention how you got it.",
     getWeight: 0.5,
     getSellValue: 2,
     tags: [],
   },
   leatherTunic: {
-    name: "Leather Tunic",
+    getName: "Leather Tunic",
     description: "A simple leather tunic. Reduces damage taken by 1.",
     getWeight: 2,
     getSellValue: 5,
@@ -208,7 +208,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       })),
   } satisfies EquipmentDefinition,
   bottle: {
-    name: "Bottle",
+    getName: "Bottle",
     description:
       "A glass bottle, perfect for storing things. Just don't drop it!",
     getWeight: 0.5,
@@ -216,7 +216,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     tags: [],
   },
   slimeJar: {
-    name: "Slime Bottle",
+    getName: "Slime Bottle",
     description: "A bottle filled with a strange, glowing slime.",
     getWeight: 0.5,
     getSellValue: 10,
@@ -237,14 +237,14 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   },
   rope: {
-    name: "Rope",
+    getName: "Rope",
     description: "A sturdy rope, useful for climbing or tying things up.",
     getWeight: 1,
     getSellValue: 3,
     tags: [],
   },
   boneClub: {
-    name: "Bone Club",
+    getName: "Bone Club",
     tags: [ItemTag.Equipment],
     description: "A giant club made of bone.",
     getWeight: 15,
@@ -274,21 +274,21 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   } satisfies EquipmentDefinition,
   memory: {
-    name: "Memory",
+    getName: "Memory",
     description: "A frail figment of someones mind.",
     getWeight: 0.1,
     getSellValue: 5,
     tags: [],
   },
   meat: {
-    name: "Meat",
+    getName: "Meat",
     description: "A chunk of meat from an unknown source.",
     getWeight: 0.5,
     getSellValue: 2,
     tags: [],
   },
   grilledMeat: {
-    name: "Grilled Meat",
+    getName: "Grilled Meat",
     tags: [ItemTag.Consumable],
     description: "A grilled chunk of meat from an unknown source.",
     getWeight: 0.5,
@@ -298,14 +298,14 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   } satisfies ConsumableDefinition,
   ratTail: {
-    name: "Rat Tail",
+    getName: "Rat Tail",
     description: "It's hairless, long, and a bit disturbing.",
     getWeight: 0.1,
     getSellValue: 2,
     tags: [],
   },
   repulsiveNecklace: {
-    name: "Repulsive Necklace",
+    getName: "Repulsive Necklace",
     tags: [ItemTag.Equipment],
     description:
       "A necklace made of all things disturbing. Increases damage by 1.",
@@ -314,21 +314,21 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     // I want this to do something weird but I haven't thought of something clever yet
   } as EquipmentDefinition,
   coal: {
-    name: "Coal",
+    getName: "Coal",
     tags: [],
     description: "A simple lump of coal.",
     getWeight: 0.5,
     getSellValue: 2,
   },
   ironOre: {
-    name: "Iron Ore",
+    getName: "Iron Ore",
     tags: [],
     description: "A simple lump of iron ore.",
     getWeight: 0.5,
     getSellValue: 2,
   },
   ironBar: {
-    name: "Iron Bar",
+    getName: "Iron Bar",
     tags: [],
     description: "The light reflects off the surface of this smooth iron bar.",
     getWeight: 1,
@@ -336,7 +336,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
   },
   // All these basic iron weapons do 3.33 dps
   ironSpear: {
-    name: "Iron Spear",
+    getName: "Iron Spear",
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Hands,
     description: "A simple spear.",
@@ -352,7 +352,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   } satisfies EquipmentDefinition,
   ironAxe: {
-    name: "Iron Axe",
+    getName: "Iron Axe",
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Hands,
     description: "A simple axe.",
@@ -365,7 +365,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   } satisfies EquipmentDefinition,
   ironMace: {
-    name: "Iron Mace",
+    getName: "Iron Mace",
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Hands,
     description: "A simple mace.",
@@ -378,7 +378,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   } satisfies EquipmentDefinition,
   ironShortSword: {
-    name: "Iron Short Sword",
+    getName: "Iron Short Sword",
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Hands,
     description: "A simple short sword.",
@@ -394,7 +394,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   } satisfies EquipmentDefinition,
   ironLongSword: {
-    name: "Iron Long Sword",
+    getName: "Iron Long Sword",
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Hands,
     description: "A simple long sword.",
@@ -410,7 +410,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   } satisfies EquipmentDefinition,
   ironDagger: {
-    name: "Iron Dagger",
+    getName: "Iron Dagger",
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Hands,
     description: "A simple dagger.",
@@ -426,7 +426,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   } satisfies EquipmentDefinition,
   ironHelmet: {
-    name: "Iron Helmet",
+    getName: "Iron Helmet",
     description: "A simple helmet. Reduces damage taken by 2.",
     getWeight: 5,
     getSellValue: 15,
@@ -439,7 +439,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       })),
   } satisfies EquipmentDefinition,
   ironChestplate: {
-    name: "Iron Chestplate",
+    getName: "Iron Chestplate",
     description: "A simple chestplate. Reduces damage taken by 2.",
     getWeight: 8,
     getSellValue: 15,
@@ -452,7 +452,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       })),
   } satisfies EquipmentDefinition,
   ironBoots: {
-    name: "Iron Boots",
+    getName: "Iron Boots",
     description: "A simple pair of boots. Reduces damage taken by 2.",
     getWeight: 6,
     getSellValue: 15,
@@ -465,7 +465,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       })),
   } satisfies EquipmentDefinition,
   carvingStone: {
-    name: "Carving Stone",
+    getName: "Carving Stone",
     description:
       "A stone used for carving. Maybe you could carve the menhir in the clearing?",
     getWeight: 1,
@@ -491,8 +491,10 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
                 }
 
                 const guild = new Guild(creature._id, [creature._id]);
+                guild.name = `${creature.name}'s Guild`;
+
                 (creature as PlayerInstance).guildId = guild._id;
-                Guild.create(guild);
+                Guild.upsert(guild);
 
                 getIo().sendMsgToPlayer(
                   creature._id.toString(),
@@ -505,6 +507,62 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
           ]
         : [],
   } satisfies ConsumableDefinition,
+  guildStone: {
+    getName: (item) =>
+      `Guild Stone of ${
+        Guild.fromId((item as any).guildId)?.name ?? "Unknown Guild"
+      }`,
+    description:
+      "A stone that represents your guild. Give this to someone to invite them to your guild.",
+    getWeight: 1,
+    getSellValue: 100,
+    tags: [ItemTag.Consumable],
+    getAbilities: (creature, item) =>
+      creature.location === "clearing"
+        ? [
+            {
+              name: "Join Guild",
+              getDescription:
+                "Carve your name under the guild's symbol on the menhir.",
+              getCooldown: 10,
+              getTargetCount: 1,
+              canTarget: (creature, target) =>
+                "definitionId" in target && target.definitionId === "menhir",
+              activate: (creature, targets) => {
+                if ((creature as PlayerInstance).guildId) {
+                  getIo().sendMsgToPlayer(
+                    creature._id.toString(),
+                    "You are already in a guild! Leave it first."
+                  );
+                  return false;
+                }
+
+                const guild = Guild.fromId((item as any).guildId);
+                if (!guild) {
+                  getIo().sendMsgToPlayer(
+                    creature._id.toString(),
+                    "This guild stone is invalid."
+                  );
+                  return false;
+                }
+
+                (creature as PlayerInstance).guildId = guild._id;
+                guild.members.push(creature._id);
+                if (!guild.owner) guild.owner = creature._id;
+
+                Guild.upsert(guild);
+
+                getIo().sendMsgToPlayer(
+                  creature._id.toString(),
+                  "You carve your name under the guild's symbol on the menhir, joining the guild."
+                );
+
+                return true;
+              },
+            },
+          ]
+        : [],
+  },
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;

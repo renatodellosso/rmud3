@@ -6,6 +6,7 @@ import { useState } from "react";
 import ItemTooltip from "../ItemTooltip";
 import { PlayerInstance } from "lib/types/entities/player";
 import { CreatureInstance } from "lib/types/entities/creature";
+import { getFromOptionalFunc } from "../../lib/utils";
 
 function ItemEntry({
   item,
@@ -51,7 +52,8 @@ function ItemEntry({
     <tr className="hover:bg-gray-900">
       <td>
         <div className="tooltip">
-          {items[item.definitionId].name} x{item.amount}
+          {getFromOptionalFunc(items[item.definitionId].getName, item)} x
+          {item.amount}
           <ItemTooltip item={item} creature={self} />
         </div>
       </td>

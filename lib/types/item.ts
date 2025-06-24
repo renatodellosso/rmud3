@@ -5,7 +5,7 @@ import StatAndAbilityProvider from "./StatAndAbilityProvider";
 import { OptionalFunc } from "./types";
 
 export type ItemDefinition = {
-  name: string;
+  getName: OptionalFunc<string, [ItemInstance]>;
   tags: ItemTag[];
   description: string;
   getWeight: OptionalFunc<number, [ItemInstance]>;
