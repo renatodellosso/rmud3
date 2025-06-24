@@ -9,6 +9,8 @@ import { getFromOptionalFunc, getTargetId } from "../../lib/utils";
 import { socket } from "lib/socket";
 import { isTargetACreature } from "lib/gamedata/CanTarget";
 import AbilityTooltip from "../AbilityTooltip";
+import { Location } from "lib/types/Location";
+import { EntityInstance } from "lib/types/entity";
 
 export default function CombatMenu({ gameState }: { gameState: GameState }) {
   const [targets, setTargets] = useState<Targetable[]>([]);
@@ -117,36 +119,38 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
           Targets ({targets.length}/{targetCount})
         </h3>
         <div className="flex flex-col gap-1">
-          {Array.from(gameState.location.entities).map((entity) => (
-            <button
-              key={entity._id.toString()}
-              onClick={() => toggleTarget(entity)}
-              className={`w-full px-1 ${
-                targets.map(getTargetId).includes(getTargetId(entity)) &&
-                "bg-red-500 animate-pulse"
-              } ${
-                targets.length === targetCount - 1 && "animate-shake-on-hover"
-              }`}
-              disabled={
-                !selectedAbility ||
-                (selectedAbility?.ability.canTarget &&
-                  !getFromOptionalFunc(
-                    selectedAbility?.ability.canTarget,
-                    gameState.self,
-                    entity,
-                    selectedAbility?.source
-                  )) ||
-                !canAct
-              }
-            >
-              {entity.name}{" "}
-              {isTargetACreature(undefined as any, entity) && (
-                <>
-                  ({entity.health}/{(entity.getMaxHealth as () => number)()})
-                </>
-              )}
-            </button>
-          ))}
+          {(Array.from(gameState.location.entities) as Targetable[])
+            .concat([gameState.location as any as Location])
+            .map((target) => (
+              <button
+                key={"_id" in target ? target._id.toString() : target.id}
+                onClick={() => toggleTarget(target)}
+                className={`w-full px-1 ${
+                  targets.map(getTargetId).includes(getTargetId(target)) &&
+                  "bg-red-500 animate-pulse"
+                } ${
+                  targets.length === targetCount - 1 && "animate-shake-on-hover"
+                }`}
+                disabled={
+                  !selectedAbility ||
+                  (selectedAbility?.ability.canTarget &&
+                    !getFromOptionalFunc(
+                      selectedAbility?.ability.canTarget,
+                      gameState.self,
+                      target,
+                      selectedAbility?.source
+                    )) ||
+                  !canAct
+                }
+              >
+                {target.name}{" "}
+                {isTargetACreature(undefined as any, target) && (
+                  <>
+                    ({target.health}/{(target.getMaxHealth as () => number)()})
+                  </>
+                )}
+              </button>
+            ))}
         </div>
       </div>
     </div>

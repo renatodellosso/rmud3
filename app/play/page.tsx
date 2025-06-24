@@ -3,6 +3,7 @@
 import CombatMenu from "@/components/menus/CombatMenu";
 import ContainerMenu from "@/components/menus/ContainerMenu";
 import CraftingMenu from "@/components/menus/CraftingMenu";
+import GuildMenu from "@/components/menus/GuildMenu";
 import InventoryMenu from "@/components/menus/InventoryMenu";
 import LocationMenu from "@/components/menus/LocationMenu";
 import MapMenu from "@/components/menus/MapMenu";
@@ -12,6 +13,7 @@ import useAnimations from "lib/hooks/useAnimations";
 import useGameState from "lib/hooks/useGameState";
 import useRedirectIfSessionIdIsNotPresent from "lib/hooks/useRedirectIfSessionIdIsNotPresent";
 import React from "react";
+import Guild from "../../lib/types/Guild";
 
 enum Menu {
   PlayerInfo = "Player Info",
@@ -19,6 +21,7 @@ enum Menu {
   Location = "Location",
   Inventory = "Inventory & Equipment",
   Map = "Map",
+  Guild = "Guild",
 }
 
 function LoadingGameState() {
@@ -51,11 +54,17 @@ export default function Play() {
   return (
     <div className="h-screen w-screen overflow-hidden">
       <div className="h-1/30 w-full flex border-b border-white">
-        {Object.values(Menu).map((name) => (
-          <button onClick={() => toggleMenu(name)} key={name} className="px-1">
-            {name}
-          </button>
-        ))}
+        {Object.values(Menu)
+          .filter((name) => name != Menu.Guild || gameState.guild)
+          .map((name) => (
+            <button
+              onClick={() => toggleMenu(name)}
+              key={name}
+              className="px-1"
+            >
+              {name}
+            </button>
+          ))}
       </div>
       <div className="flex flex-row h-29/30">
         <PrimaryMenu gameState={gameState} />
@@ -76,6 +85,9 @@ export default function Play() {
             map={gameState.map}
             currentLocation={gameState.self.location}
           />
+        )}
+        {gameState.guild && openMenus.includes(Menu.Guild) && (
+          <GuildMenu self={gameState.self} guild={gameState.guild} />
         )}
         {gameState.interactions
           .filter((i) => i.type !== "logOnly")

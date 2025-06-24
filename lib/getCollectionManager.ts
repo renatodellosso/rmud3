@@ -5,6 +5,7 @@ import CollectionId, { CollectionIdToType } from "./types/CollectionId";
 import Account from "./types/Account";
 import { PlayerInstance, PlayerProgress } from "./types/entities/player";
 import { getSingleton } from "./utils";
+import Guild from "./types/Guild";
 
 export class CachedCollection<T extends WithId<Document>> {
   private cache: NodeCache;
@@ -109,6 +110,7 @@ export class CollectionManager {
     [CollectionId.Accounts]: CachedCollection<Account>;
     [CollectionId.PlayerInstances]: CachedCollection<PlayerInstance>;
     [CollectionId.PlayerProgresses]: CachedCollection<PlayerProgress>;
+    [CollectionId.Guilds]: CachedCollection<Guild>;
   };
 
   constructor(db: Db | undefined) {
@@ -126,6 +128,7 @@ export class CollectionManager {
         this.db,
         CollectionId.PlayerProgresses
       ),
+      [CollectionId.Guilds]: new CachedCollection(this.db, CollectionId.Guilds),
     };
   }
 

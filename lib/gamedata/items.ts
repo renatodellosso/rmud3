@@ -7,6 +7,10 @@ import {
 } from "lib/types/item";
 import * as Abilities from "lib/gamedata/Abilities";
 import { DamageType } from "lib/types/types";
+import { Location } from "lib/types/Location";
+import { PlayerInstance } from "lib/types/entities/player";
+import { getIo } from "lib/ClientFriendlyIo";
+import Guild from "lib/types/Guild";
 
 export type ItemId =
   | "bone"
@@ -45,7 +49,8 @@ export type ItemId =
   | "ironDagger"
   | "ironHelmet"
   | "ironChestplate"
-  | "ironBoots";
+  | "ironBoots"
+  | "carvingStone";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -459,6 +464,47 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         type: d.type,
       })),
   } satisfies EquipmentDefinition,
+  carvingStone: {
+    name: "Carving Stone",
+    description:
+      "A stone used for carving. Maybe you could carve the menhir in the clearing?",
+    getWeight: 1,
+    getSellValue: 50,
+    tags: [ItemTag.Consumable],
+    getAbilities: (creature, item) =>
+      creature.location === "clearing"
+        ? [
+            {
+              name: "Found Guild",
+              getDescription: "Carve a guild symbol into the menhir.",
+              getCooldown: 10,
+              getTargetCount: 1,
+              canTarget: (creature, target) =>
+                "definitionId" in target && target.definitionId === "menhir",
+              activate: (creature, targets) => {
+                if ((creature as PlayerInstance).guildId) {
+                  getIo().sendMsgToPlayer(
+                    creature._id.toString(),
+                    "You are already in a guild! Leave it first."
+                  );
+                  return false;
+                }
+
+                const guild = new Guild(creature._id, [creature._id]);
+                (creature as PlayerInstance).guildId = guild._id;
+                Guild.create(guild);
+
+                getIo().sendMsgToPlayer(
+                  creature._id.toString(),
+                  "You carve your guild symbol into the menhir, founding your guild."
+                );
+
+                return true;
+              },
+            },
+          ]
+        : [],
+  } satisfies ConsumableDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;

@@ -1,4 +1,9 @@
-import { AbilityScore, DamageType, LootTable, WeightedTable } from "lib/types/types";
+import {
+  AbilityScore,
+  DamageType,
+  LootTable,
+  WeightedTable,
+} from "lib/types/types";
 import {
   CreatureDefinition,
   CreatureInstance,
@@ -49,7 +54,8 @@ export type EntityId =
   | "tavernKeeper"
   | "junkCollector"
   | "banker"
-  | "vault";
+  | "vault"
+  | "menhir";
 
 const entities: Record<EntityId, EntityDefinition> = {
   player: {
@@ -942,6 +948,13 @@ const entities: Record<EntityId, EntityDefinition> = {
             amount: 1,
           }
         ),
+        new Recipe(
+          {},
+          {
+            definitionId: "carvingStone",
+            amount: 1,
+          }
+        ),
       ])
     ),
   },
@@ -1289,6 +1302,12 @@ const entities: Record<EntityId, EntityDefinition> = {
         player.vault.inventory,
         "Vault"
       ),
+  },
+  menhir: {
+    name: "Menhir",
+    canInteract(entity, player) {
+      return player.guildId !== undefined;
+    },
   },
 };
 

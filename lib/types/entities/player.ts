@@ -34,7 +34,7 @@ import { EntityInstance } from "../entity";
 import { xpForNextLevel } from "lib/gamedata/levelling";
 import StatAndAbilityProvider from "../StatAndAbilityProvider";
 import Vault from "../Vault";
-import { io } from "socket.io-client";
+import Guild from "../Guild";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -58,6 +58,8 @@ export class PlayerInstance extends CreatureInstance {
   equipment: EquipmentHotbar = new EquipmentHotbar();
 
   vault: Vault = new Vault();
+
+  guildId: ObjectId | undefined = undefined;
 
   tick(deltaTime: number): void {
     // Update game state if status effects have changed
@@ -283,6 +285,10 @@ export class PlayerInstance extends CreatureInstance {
     }
 
     getIo().updateGameStateForRoom(location.id);
+  }
+
+  getGuild(): Guild | undefined {
+    return this.guildId && Guild.fromId(this.guildId);
   }
 }
 

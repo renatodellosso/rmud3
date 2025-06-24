@@ -11,6 +11,7 @@ import { CreatureId } from "lib/gamedata/entities";
 import Recipe from "lib/types/Recipe";
 import LocationMap from "lib/types/LocationMap";
 import { DirectInventory } from "lib/types/Inventory";
+import Guild from "lib/types/Guild";
 
 export default function useGameState(): GameState | undefined {
   const [gameState, setGameState] = useState<GameState>();
@@ -101,5 +102,12 @@ function restoreMethods(gameState: GameState) {
     if (interaction.inventory) {
       restoreFieldsAndMethods(interaction.inventory, new DirectInventory());
     }
+  }
+
+  if (gameState.guild) {
+    restoreFieldsAndMethods(
+      gameState.guild,
+      new Guild(gameState.guild.owner, gameState.guild.members)
+    );
   }
 }
