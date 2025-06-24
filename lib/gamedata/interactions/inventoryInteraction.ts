@@ -26,34 +26,42 @@ export default function inventoryInteraction(
   if (action === "exit") return undefined;
 
   try {
-    let parsedAction = EJSON.parse(action);
+    let parsedAction = EJSON.parse(action) as {
+      item: ItemInstance;
+      insert: boolean;
+    };
 
-    if (
-      "definitionId" in parsedAction &&
-      "amount" in parsedAction &&
-      "insert" in parsedAction
-    ) {
-      const item: ItemInstance = {
-        definitionId: parsedAction.definitionId,
-        amount: parsedAction.amount,
-      };
+    const item: ItemInstance = parsedAction.item;
+    console.log("Processing inventory interaction:", parsedAction);
+    const foundItem = parsedAction.insert
+      ? player.inventory.get(item)
+      : inventory.get(item);
 
-      if (!parsedAction.insert) {
-        inventory.remove(item);
-        player.inventory.add(item);
-      } else {
-        player.inventory.remove(item);
-        inventory.add(item);
-      }
+    console.log("Found item:", foundItem);
 
-      savePlayer(player);
-
-      return {
-        ...interaction,
-        inventory,
-      };
+    if (!foundItem) {
+      return interaction;
     }
-  } catch {
+
+    foundItem.amount = Math.min(foundItem.amount, item.amount);
+
+    if (!parsedAction.insert) {
+      foundItem.amount = player.inventory.add(foundItem);
+      inventory.remove(foundItem);
+    } else {
+      foundItem.amount = player.inventory.remove(foundItem);
+      inventory.add(foundItem);
+    }
+
+    savePlayer(player);
+
+    return {
+      ...interaction,
+      inventory,
+    };
+  } catch (error) {
+    console.error("Error processing inventory interaction:", error);
+
     return interaction;
   }
 }

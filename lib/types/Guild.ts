@@ -16,6 +16,10 @@ export default class Guild {
   }
 
   static fromId(id: ObjectId): Guild | undefined {
+    if (!id) {
+      return undefined;
+    }
+
     if (typeof window === "undefined") {
       const func = require("../getCollectionManager").default;
       const collectionManager = func();

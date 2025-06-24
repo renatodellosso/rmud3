@@ -31,8 +31,10 @@ function ItemEntry({
     }
 
     const itemData = {
-      definitionId: item.definitionId,
-      amount,
+      item: {
+        ...item,
+        amount,
+      },
       insert: viewPlayerInventory,
     };
 

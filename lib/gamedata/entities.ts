@@ -1349,6 +1349,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           definitionId: "guildStone",
           amount: 1,
           guildId: player.guildId,
+          guildName: guild.name,
         } as ItemInstance);
 
         getIo().sendMsgToPlayer(

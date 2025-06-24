@@ -488,9 +488,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
   } satisfies ConsumableDefinition,
   guildStone: {
     getName: (item) =>
-      `Guild Stone of ${
-        Guild.fromId((item as any).guildId)?.name ?? "Unknown Guild"
-      }`,
+      `Guild Stone of ${(item as any).guildName ?? "No Guild"}`,
     description:
       "A stone that represents your guild. Give this to someone to invite them to your guild.",
     getWeight: 1,
