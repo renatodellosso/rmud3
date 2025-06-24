@@ -34,6 +34,7 @@ import { EntityInstance } from "../entity";
 import { xpForNextLevel } from "lib/gamedata/levelling";
 import StatAndAbilityProvider from "../StatAndAbilityProvider";
 import Vault from "../Vault";
+import Guild from "../Guild";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -58,13 +59,13 @@ export class PlayerInstance extends CreatureInstance {
 
   vault: Vault = new Vault();
 
+  guildId: ObjectId | undefined = undefined;
+
   tick(deltaTime: number): void {
     // Update game state if status effects have changed
     const originalStatusEffectCount = this.statusEffects.length;
     super.tick(deltaTime);
-    if (this.statusEffects.length != originalStatusEffectCount) {
-      getIo().updateGameState(this._id.toString());
-    }
+    getIo().updateGameState(this._id.toString());
   }
 
   getMaxHealth(): number {
@@ -161,7 +162,9 @@ export class PlayerInstance extends CreatureInstance {
     if (locations[this.location].entities.has(this))
       throw new Error("Player not removed from location entities on death.");
 
-    getIo().leaveRoom(this.location, this._id.toString());
+    const io = getIo();
+    io.leaveRoom(this.location, this._id.toString());
+    io.clearInteractions(this._id.toString());
 
     respawn(this);
 
@@ -282,6 +285,10 @@ export class PlayerInstance extends CreatureInstance {
     }
 
     getIo().updateGameStateForRoom(location.id);
+  }
+
+  getGuild(): Guild | undefined {
+    return this.guildId && Guild.fromId(this.guildId);
   }
 }
 

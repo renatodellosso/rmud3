@@ -47,14 +47,14 @@ export default function ItemTooltip({
   return (
     <span className="tooltip-text flex-col w-64 text-white">
       <h1 className="text-lg">
-        {def.name} x{item.amount}
+        {getFromOptionalFunc(def.getName, item)} x{item.amount}
       </h1>
       <div>
         {item.amount * weight} kg total, {weight} kg each
       </div>
       <div>
-        Worth {item.amount * sellValue} {items["money"].name} total, {sellValue}{" "}
-        {items["money"].name} each
+        Worth {item.amount * sellValue} {items["money"].getName as string}{" "}
+        total, {sellValue} {items["money"].getName as string} each
       </div>
       <div>{def.description}</div>
       {isEquipment && (

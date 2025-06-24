@@ -5,6 +5,74 @@ import { ItemInstance } from "lib/types/item";
 import { useState } from "react";
 import ItemTooltip from "../ItemTooltip";
 import { PlayerInstance } from "lib/types/entities/player";
+import { CreatureInstance } from "lib/types/entities/creature";
+import { getFromOptionalFunc } from "../../lib/utils";
+
+function ItemEntry({
+  item,
+  viewPlayerInventory,
+  self,
+  entityId,
+  setError,
+}: {
+  item: ItemInstance;
+  viewPlayerInventory: boolean;
+  self: CreatureInstance;
+  entityId: string;
+  setError: (error: string) => void;
+}) {
+  const [amount, setAmount] = useState(item.amount);
+
+  function transferItem(item: ItemInstance) {
+    if (amount <= 0) {
+      setError("You must transfer at least one item.");
+      return;
+    }
+
+    const itemData = {
+      definitionId: item.definitionId,
+      amount,
+      insert: viewPlayerInventory,
+    };
+
+    socket.emit("interact", entityId, JSON.stringify(itemData));
+  }
+
+  function setValidAmount(amount: number) {
+    if (amount > item.amount) {
+      setError(`You can only transfer up to ${item.amount} of this item.`);
+      return;
+    }
+
+    setError("");
+    setAmount(amount);
+  }
+
+  return (
+    <tr className="hover:bg-gray-900">
+      <td>
+        <div className="tooltip">
+          {getFromOptionalFunc(items[item.definitionId].getName, item)} x
+          {item.amount}
+          <ItemTooltip item={item} creature={self} />
+        </div>
+      </td>
+      <td className="flex justify-end">
+        <input
+          type="number"
+          name="amount"
+          placeholder="amount"
+          value={amount.toString()}
+          onChange={(e) => setValidAmount(e.target.valueAsNumber)}
+          className="px-1 text-right max-w-1/3"
+        />
+        <button onClick={() => transferItem(item)} className="px-1">
+          {viewPlayerInventory ? "Insert" : "Take"}
+        </button>
+      </td>
+    </tr>
+  );
+}
 
 export default function ContainerMenu({
   interaction,
@@ -16,43 +84,6 @@ export default function ContainerMenu({
   const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
   const [viewPlayerInventory, setViewInventory] = useState(false);
-
-  function transferItem(item: ItemInstance) {
-    let amountN: number = 1;
-
-    try {
-      amountN = +amount;
-    } catch (error) {
-      setError("Enter a positive whole number");
-      return;
-    }
-
-    if (amountN < 1) {
-      setError("Enter a positive whole number");
-      return;
-    }
-
-    if (amountN > item.amount) {
-      setError("Cannot take more items than present (" + item.amount + ")");
-      return;
-    }
-
-    setError("");
-
-    item.amount = amountN;
-
-    const itemData = {
-      definitionId: item.definitionId,
-      amount: amountN,
-      insert: viewPlayerInventory,
-    };
-
-    socket.emit(
-      "interact",
-      interaction.entityId.toString(),
-      JSON.stringify(itemData)
-    );
-  }
 
   function switchInventory() {
     if (!viewPlayerInventory) setViewInventory(true);
@@ -91,27 +122,14 @@ export default function ContainerMenu({
         <table className="w-full border-separate border-spacing-y-2">
           <tbody>
             {openInventory!.getItems().map((item, index) => (
-              <tr key={index} className="hover:bg-gray-900">
-                <td>
-                  <div className="tooltip">
-                    {items[item.definitionId].name} x{item.amount}
-                    <ItemTooltip item={item} creature={self} />
-                  </div>
-                </td>
-                <td className="flex justify-end">
-                  <input
-                    type="text"
-                    name="amount"
-                    placeholder="1"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    className="px-1 text-right max-w-1/3"
-                  />
-                  <button onClick={() => transferItem(item)} className="px-1">
-                    {viewPlayerInventory ? "Insert" : "Take"}
-                  </button>
-                </td>
-              </tr>
+              <ItemEntry
+                key={index}
+                item={item}
+                viewPlayerInventory={viewPlayerInventory}
+                self={self}
+                entityId={interaction.entityId.toString()}
+                setError={setError}
+              />
             ))}
           </tbody>
         </table>

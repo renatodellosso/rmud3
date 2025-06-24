@@ -3,9 +3,10 @@ import { xpForNextLevel } from "lib/gamedata/levelling";
 import { AbilityScore, GameState } from "lib/types/types";
 import { difficultyOptions } from "../../lib/types/Difficulty";
 import DifficultyDescription from "../DifficultyDescription";
+import Guild from "lib/types/Guild";
 
 export default function PlayerInfoMenu({
-  gameState: { self },
+  gameState: { self, guild },
 }: {
   gameState: GameState;
 }) {
@@ -24,6 +25,9 @@ export default function PlayerInfoMenu({
       <div>
         Level {self.level} - {self.xp.toLocaleString()}/
         {xpForNextLevel[self.level].toLocaleString()} XP
+      </div>
+      <div>
+        <strong>Guild:</strong> {guild ? guild.name : "None"}
       </div>
       <div>
         <strong>Ability Scores:</strong>

@@ -23,6 +23,7 @@ import entities from "lib/gamedata/entities";
 import { EntityInstance } from "./entity";
 import { CreatureInstance } from "./entities/creature";
 import LocationMap from "./LocationMap";
+import Guild from "./Guild";
 
 export type TypedSocket = Socket<
   ClientToServerEvents,
@@ -193,6 +194,9 @@ function getGameState(socket: TypedSocket): GameState {
 
   player.instance.recalculateMaxWeight();
 
+  const guild =
+    player.instance.guildId && Guild.fromId(player.instance.guildId);
+
   // Clean up player instance
   player.instance.prepForGameState();
 
@@ -217,6 +221,7 @@ function getGameState(socket: TypedSocket): GameState {
     messages: socket.data.session!.messages,
     interactions: socket.data.session!.interactions || [],
     map: socket.data.session!.map,
+    guild,
   };
 }
 

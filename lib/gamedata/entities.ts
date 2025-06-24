@@ -1,4 +1,9 @@
-import { AbilityScore, DamageType, LootTable, WeightedTable } from "lib/types/types";
+import {
+  AbilityScore,
+  DamageType,
+  LootTable,
+  WeightedTable,
+} from "lib/types/types";
 import {
   CreatureDefinition,
   CreatureInstance,
@@ -20,6 +25,8 @@ import inventoryInteraction from "./interactions/inventoryInteraction";
 import { savePlayer } from "lib/utils";
 import { getFromOptionalFunc } from "../utils";
 import { vaultLevelling } from "lib/types/Vault";
+import Guild from "lib/types/Guild";
+import { ItemInstance } from "lib/types/item";
 
 export type CreatureId =
   | "player"
@@ -49,7 +56,8 @@ export type EntityId =
   | "tavernKeeper"
   | "junkCollector"
   | "banker"
-  | "vault";
+  | "vault"
+  | "menhir";
 
 const entities: Record<EntityId, EntityDefinition> = {
   player: {
@@ -950,6 +958,13 @@ const entities: Record<EntityId, EntityDefinition> = {
             amount: 1,
           }
         ),
+        new Recipe(
+          {},
+          {
+            definitionId: "carvingStone",
+            amount: 1,
+          }
+        ),
       ])
     ),
   },
@@ -1205,7 +1220,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           } kg.
           You can upgrade it to level ${nextVaultLevel + 1} for ${
             nextVaultLevelStats.price
-          } ${items["money"].name},
+          } ${items["money"].getName},
           which will increase your vault's maximum weight to ${
             nextVaultLevelStats.maxWeight
           } kg.`
@@ -1215,10 +1230,10 @@ const entities: Record<EntityId, EntityDefinition> = {
           io.sendMsgToPlayer(
             player._id.toString(),
             `You only have ${playerMoney} ${
-              items["money"].name
+              items["money"].getName
             }, which is not enough to upgrade your vault. 
             You need ${nextVaultLevelStats.price - playerMoney} more ${
-              items["money"].name
+              items["money"].getName
             }.`
           );
         }
@@ -1255,10 +1270,10 @@ const entities: Record<EntityId, EntityDefinition> = {
           io.sendMsgToPlayer(
             player._id.toString(),
             `You only have ${playerMoney} ${
-              items["money"].name
+              items["money"].getName
             }, which is not enough to upgrade your vault. 
             You need ${nextVaultLevelStats.price - playerMoney} more ${
-              items["money"].name
+              items["money"].getName
             }.`
           );
           return interaction;
@@ -1297,6 +1312,80 @@ const entities: Record<EntityId, EntityDefinition> = {
         player.vault.inventory,
         "Vault"
       ),
+  },
+  menhir: {
+    name: "Menhir",
+    canInteract(entity, player) {
+      return player.guildId !== undefined;
+    },
+    interact: (entity, player, interaction, action) => {
+      if (!interaction) {
+        return {
+          entityId: entity._id,
+          type: "logOnly",
+          state: undefined,
+          actions: [
+            {
+              id: "getStone",
+              text: "Get Guild Stone",
+            },
+            {
+              id: "leaveGuild",
+              text: "Leave Guild",
+            },
+            {
+              id: "leave",
+              text: "Leave Menhir",
+            },
+          ],
+        };
+      }
+
+      const guild = Guild.fromId(player.guildId!);
+      if (!guild) return;
+
+      if (action === "getStone") {
+        player.inventory.add({
+          definitionId: "guildStone",
+          amount: 1,
+          guildId: player.guildId,
+        } as ItemInstance);
+
+        getIo().sendMsgToPlayer(
+          player._id.toString(),
+          `You receive a guild stone. Give the stone to another player to invite them to your guild.`
+        );
+
+        return interaction;
+      }
+
+      if (action === "leaveGuild") {
+        guild.members.splice(
+          guild.members.findIndex((m) => m.equals(player._id))
+        );
+
+        if (guild.owner?.equals(player._id)) {
+          guild.owner = guild.members.length ? guild.members[0] : undefined;
+        }
+
+        player.guildId = undefined;
+
+        getIo().sendMsgToPlayer(
+          player._id.toString(),
+          `You have left the guild ${guild.name}.`
+        );
+
+        savePlayer(player);
+        Guild.upsert(guild);
+
+        return undefined;
+      }
+
+      if (action === "leave") {
+        getIo().sendMsgToPlayer(player._id.toString(), "You walk away.");
+        return undefined;
+      }
+    },
   },
 };
 

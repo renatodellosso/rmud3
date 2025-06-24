@@ -13,7 +13,8 @@ export default class LocationMap {
   constructor() {
     this.locations = [
       [
-        ["workshop", "north-road-2", undefined  ],
+        [undefined, "clearing", undefined],
+        ["workshop", "north-road-2", undefined],
         ["bank", "north-road-1", "training-ground"],
         ["docks", "town-square", "dungeon-entrance"],
         [undefined, "tavern", undefined],
@@ -67,9 +68,9 @@ export default class LocationMap {
       location.globalCoords[1]
     ] = id;
 
-    this.exits[id] = [];
-
     if (!addExitsToLocations) return;
+
+    this.exits[id] = [];
 
     for (const exit of Array.from(location.exits)) {
       const exitLoc = locations[exit] as DungeonLocation;
