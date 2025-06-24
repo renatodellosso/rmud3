@@ -25,12 +25,15 @@ function DepthMap({
     const width = canvas.width;
     const height = canvas.height;
 
+    const widthPerCell = width / floor[0].length;
+    const heightPerCell = height / floor.length;
+
     ctx.clearRect(0, 0, width, height);
 
-    const cellPadding = width * 0.03;
+    const cellPadding = widthPerCell * 0.05; // 5% of width per cell
 
-    const cellWidth = width / floor[0].length - cellPadding;
-    const cellHeight = cellWidth * (height / width);
+    const cellWidth = widthPerCell - cellPadding;
+    const cellHeight = heightPerCell - cellPadding;
 
     const corridorWidth = cellWidth * 0.25;
 
@@ -136,7 +139,7 @@ function DepthMap({
     }
   }, [depth, map, currentLocation]);
 
-  return <canvas ref={canvasRef} className="w-full h-96 border"></canvas>;
+  return <canvas ref={canvasRef} className="w-full h-96 border" />;
 }
 
 export default function MapMenu({

@@ -13,7 +13,8 @@ export default class LocationMap {
   constructor() {
     this.locations = [
       [
-        [undefined, "bank", "training-ground"],
+        ["workshop", "north-road-2", undefined  ],
+        ["bank", "north-road-1", "training-ground"],
         ["docks", "town-square", "dungeon-entrance"],
         [undefined, "tavern", undefined],
       ],
