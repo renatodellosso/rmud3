@@ -85,6 +85,7 @@ export default function Play() {
                 key={index}
                 inventory={gameState.self.inventory}
                 interaction={interaction}
+                self={gameState.self}
               />
             ) : interaction.type === "container" ? (
               <ContainerMenu

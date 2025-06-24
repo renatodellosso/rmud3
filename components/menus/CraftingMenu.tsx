@@ -3,13 +3,16 @@ import Inventory from "../../lib/types/Inventory";
 import { socket } from "lib/socket";
 import items, { ItemId } from "lib/gamedata/items";
 import ItemTooltip from "../ItemTooltip";
+import { CreatureInstance } from "lib/types/entities/creature";
 
 export default function CraftingMenu({
   inventory,
   interaction,
+  self,
 }: {
   inventory: Inventory;
   interaction: Interaction;
+  self: CreatureInstance;
 }) {
   function craft(index: number) {
     socket.emit("interact", interaction.entityId.toString(), index);
@@ -29,7 +32,7 @@ export default function CraftingMenu({
           Exit
         </button>
       </div>
-      <table className="border-separate border-spacing-y-2">
+      <table className="border-separate border-spacing-y-2 overflow-y-scroll">
         <thead>
           <tr>
             <th>Input (in inventory)</th>
@@ -56,6 +59,7 @@ export default function CraftingMenu({
                           definitionId: id as ItemId,
                           amount: amt,
                         }}
+                        creature={self}
                       />
                     </span>
                     {index < arr.length - 1 ? ", " : ""}
@@ -67,7 +71,7 @@ export default function CraftingMenu({
                   <span key={index} className="tooltip">
                     {items[item.definitionId].name} x{item.amount} (
                     {inventory.get(item)?.amount ?? 0})
-                    <ItemTooltip item={item} />
+                    <ItemTooltip item={item} creature={self} />
                   </span>
                 ))}
               </td>
