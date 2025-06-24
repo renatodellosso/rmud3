@@ -105,6 +105,7 @@ const rawLocations: Partial<OmitType<Location, Function>>[] = [
     exits: new Set<LocationId>(["north-road-2"]),
     entities: new Set<EntityInstance>([
       new EntityInstance("anvil", "workshop"),
+      new EntityInstance("furnace", "workshop"),
       new EntityInstance("workbench", "workshop"),
       new EntityInstance("firepit", "workshop"),
     ]),

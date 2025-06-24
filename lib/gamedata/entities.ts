@@ -30,13 +30,19 @@ export type CreatureId =
   | "troll"
   | "fungalZombie"
   | "fungalTroll"
-  | "sentientFungus";
+  | "sentientFungus"
+  | "lostAdventurer"
+  | "goblin"
+  | "ghost"
+  | "rat"
+  | "giantRat";
 
 export type EntityId =
   | CreatureId
   | "container"
   | "signPost"
   | "anvil"
+  | "furnace"
   | "workbench"
   | "firepit"
   | "mystic"
@@ -369,7 +375,7 @@ const entities: Record<EntityId, EntityDefinition> = {
     health: 10,
     abilityScores: {
       [AbilityScore.Strength]: 5,
-      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Constitution]: 2,
       [AbilityScore.Intelligence]: 0,
     },
     intrinsicAbilities: [
@@ -400,6 +406,284 @@ const entities: Record<EntityId, EntityDefinition> = {
         ]),
         amount: 1,
         chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  } satisfies CreatureDefinition as CreatureDefinition,
+  lostAdventurer: {
+    name: "Lost Adventurer",
+    health: 25,
+    abilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 5,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Slash",
+        "A simple slashing attack.",
+        3,
+        [{ amount: 5, type: DamageType.Slashing }],
+        [CanTarget.isPlayer]
+      ),
+      Abilities.attack(
+        "Slam",
+        "A simple bludgeoning attack.",
+        5,
+        [{ amount: 8, type: DamageType.Bludgeoning }],
+        [CanTarget.isPlayer]
+      ),
+      Abilities.attack(
+        "Stab",
+        "A simple piercing attack.",
+        2.5,
+        [{ amount: 4, type: DamageType.Piercing }],
+        [CanTarget.isPlayer]
+      ),
+    ],
+    xpValue: 40,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "money",
+            amount: [1, 20],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ironSpear",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "ironAxe",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "ironMace",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "ironShortSword",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "ironLongSword",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "ironDagger",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "ironHelmet",
+            amount: 1,
+            weight: 0.5,
+          },
+          {
+            item: "ironChestplate",
+            amount: 1,
+            weight: 0.5,
+          },
+          {
+            item: "ironBoots",
+            amount: 1,
+            weight: 0.5,
+          },
+        ]),
+        amount: 1,
+        chance: 0.5,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  } satisfies CreatureDefinition as CreatureDefinition,
+  goblin: {
+    name: "Goblin",
+    health: 10,
+    abilityScores: {
+      [AbilityScore.Strength]: 1,
+      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Intelligence]: 3,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Spear",
+        "Are these descriptions even displayed anywhere?",
+        3,
+        [{ amount: 5, type: DamageType.Piercing }],
+        [CanTarget.isPlayer]
+      ),
+    ],
+    xpValue: 15,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "money",
+            amount: [3, 5],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "bottle",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "mushroom",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "leather",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "rope",
+            amount: [2, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 0.8,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  } satisfies CreatureDefinition as CreatureDefinition,
+  ghost: {
+    name: "Ghost",
+    health: 25,
+    abilityScores: {
+      [AbilityScore.Strength]: 0,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 1,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Haunt",
+        "A spooky attack on the mind.",
+        5,
+        [{ amount: 5, type: DamageType.Psychic }],
+        [CanTarget.isPlayer]
+      ),
+    ],
+    xpValue: 20,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "memory",
+            amount: [1, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.75,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  } satisfies CreatureDefinition as CreatureDefinition,
+  rat: {
+    name: "Rat",
+    health: 5,
+    abilityScores: {
+      [AbilityScore.Strength]: 0,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 0,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Bite",
+        "The rat nibbles you.",
+        4,
+        [{ amount: 2, type: DamageType.Piercing }],
+        [CanTarget.isPlayer]
+      ),
+    ],
+    xpValue: 5,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "meat",
+            amount: [0, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ratTail",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.5,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  } satisfies CreatureDefinition as CreatureDefinition,
+  giantRat: {
+    name: "Giant Rat",
+    health: 10,
+    abilityScores: {
+      [AbilityScore.Strength]: 1,
+      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Intelligence]: 0,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Bite",
+        "The rat snacks on you.",
+        4,
+        [{ amount: 4, type: DamageType.Piercing }],
+        [CanTarget.isPlayer]
+      ),
+    ],
+    xpValue: 10,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "meat",
+            amount: [1, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ratTail",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.5,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
@@ -484,7 +768,96 @@ const entities: Record<EntityId, EntityDefinition> = {
   },
   anvil: {
     name: "Anvil",
-    interact: craftingInteraction("Crafting at Anvil", new RecipeGroup([])),
+    interact: craftingInteraction(
+      "Crafting at Anvil",
+      new RecipeGroup([
+        new Recipe(
+          { ironBar: 1 },
+          {
+            definitionId: "rustySword",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { ironBar: 3 },
+          {
+            definitionId: "ironSpear",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { ironBar: 3 },
+          {
+            definitionId: "ironAxe",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { ironBar: 3 },
+          {
+            definitionId: "ironMace",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { ironBar: 3 },
+          {
+            definitionId: "ironShortSword",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { ironBar: 3 },
+          {
+            definitionId: "ironLongSword",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { ironBar: 3 },
+          {
+            definitionId: "ironDagger",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { ironBar: 5 },
+          {
+            definitionId: "ironHelmet",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { ironBar: 5 },
+          {
+            definitionId: "ironChestplate",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { ironBar: 5 },
+          {
+            definitionId: "ironBoots",
+            amount: 1,
+          }
+        ),
+      ])
+    ),
+  },
+  furnace: {
+    name: "Furnace",
+    interact: craftingInteraction(
+      "Crafting at Furnace",
+      new RecipeGroup([
+        new Recipe(
+          { coal: 1, ironOre: 3 },
+          {
+            definitionId: "ironBar",
+            amount: 1,
+          }
+        ),
+      ])
+    ),
   },
   workbench: {
     name: "Workbench",
@@ -506,7 +879,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           }
         ),
         new Recipe(
-          { jar: 1, slime: 1 },
+          { bottle: 1, slime: 1 },
           {
             definitionId: "slimeJar",
             amount: 1,
@@ -526,6 +899,27 @@ const entities: Record<EntityId, EntityDefinition> = {
             amount: 1,
           }
         ),
+        new Recipe(
+          { bone: 20 },
+          {
+            definitionId: "boneClub",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          {
+            ratTail: 5,
+            bone: 5,
+            slime: 5,
+            eyeball: 2,
+            trollTooth: 2,
+            skull: 1,
+          },
+          {
+            definitionId: "repulsiveNecklace",
+            amount: 1,
+          }
+        ),
       ])
     ),
   },
@@ -538,6 +932,13 @@ const entities: Record<EntityId, EntityDefinition> = {
           { rottenFlesh: 1 },
           {
             definitionId: "leather",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { meat: 1 },
+          {
+            definitionId: "grilledMeat",
             amount: 1,
           }
         ),

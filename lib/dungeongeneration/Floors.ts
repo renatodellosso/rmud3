@@ -22,18 +22,28 @@ const floors: Record<string, FloorDefinition> = {
       encounters: new WeightedTable<Encounter>([
         {
           item: "skeleton",
-          amount: [1, 2],
-          weight: 0.8,
+          amount: 1,
+          weight: 0.6,
         },
         {
           item: "zombie",
           amount: 1,
-          weight: 0.6,
+          weight: 0.8,
         },
         {
           item: "slime",
           amount: [1, 3],
           weight: 2,
+        },
+        {
+          item: "rat",
+          amount: [1, 3],
+          weight: 0.8,
+        },
+        {
+          item: "giantRat",
+          amount: 1,
+          weight: 0.5,
         },
       ]),
     },
@@ -53,18 +63,33 @@ const floors: Record<string, FloorDefinition> = {
       exitCount: [3, 4],
     },
     populationOptions: {
-      encounterChance: 0.5,
+      encounterChance: 0.8,
       maxEncounters: 3,
       encounters: new WeightedTable<Encounter>([
         {
           item: "skeleton",
-          amount: 1,
+          amount: [1, 2],
           weight: 1,
         },
         {
           item: "zombie",
           amount: 1,
           weight: 0.8,
+        },
+        {
+          item: "ghost",
+          amount: 1,
+          weight: 0.6,
+        },
+        {
+          item: "rat",
+          amount: [1, 3],
+          weight: 0.4,
+        },
+        {
+          item: "giantRat",
+          amount: 1,
+          weight: 0.2,
         },
       ]),
     },
@@ -100,7 +125,22 @@ const floors: Record<string, FloorDefinition> = {
         {
           item: "troll",
           amount: 1,
-          weight: 0.4,
+          weight: 0.5,
+        },
+        {
+          item: "ghost",
+          amount: 1,
+          weight: 0.2,
+        },
+        {
+          item: "rat",
+          amount: [1, 3],
+          weight: 0.3,
+        },
+        {
+          item: "giantRat",
+          amount: 1,
+          weight: 0.3,
         },
       ]),
     },
@@ -120,9 +160,45 @@ const floors: Record<string, FloorDefinition> = {
       exitCount: [3, 4],
     },
     populationOptions: {
-      encounterChance: 0,
-      maxEncounters: 0,
-      encounters: new WeightedTable([]),
+      encounterChance: 0.7,
+      maxEncounters: 2,
+      encounters: new WeightedTable([
+        {
+          item: "skeleton",
+          amount: [1, 2],
+          weight: 0.5,
+        },
+        {
+          item: "lostAdventurer",
+          amount: 1,
+          weight: 1,
+        },
+        {
+          item: "goblin",
+          amount: [2, 3],
+          weight: 1,
+        },
+        {
+          item: "troll",
+          amount: 1,
+          weight: 0.8,
+        },
+        {
+          item: "ghost",
+          amount: 1,
+          weight: 0.2,
+        },
+        {
+          item: "rat",
+          amount: [1, 3],
+          weight: 0.5,
+        },
+        {
+          item: "giantRat",
+          amount: 1,
+          weight: 0.5,
+        },
+      ]),
     },
   },
   fungalCaverns: {
@@ -173,7 +249,7 @@ const floors: Record<string, FloorDefinition> = {
   },
   ruins: {
     name: "Ruins",
-    depths: [2],
+    depths: [2, 3],
     appearanceWeight: 1.1,
     blendChance: 0.2,
     visualizerColor: "#B8860B",
@@ -186,9 +262,30 @@ const floors: Record<string, FloorDefinition> = {
       exitCount: [6, 7],
     },
     populationOptions: {
-      encounterChance: 0,
-      maxEncounters: 0,
-      encounters: new WeightedTable([]),
+      encounterChance: 0.6,
+      maxEncounters: 3,
+      encounters: new WeightedTable([
+        {
+          item: "ghost",
+          amount: 1,
+          weight: 0.5,
+        },
+        {
+          item: "lostAdventurer",
+          amount: 1,
+          weight: 1,
+        },
+        {
+          item: "troll",
+          amount: 1,
+          weight: 0.5,
+        },
+        {
+          item: "giantRat",
+          amount: [1, 2],
+          weight: 0.2,
+        },
+      ]),
     },
   },
 };
