@@ -1,4 +1,4 @@
-import { AbilityScore, DamageType, WeightedTable } from "lib/types/types";
+import { AbilityScore, DamageType, LootTable, WeightedTable } from "lib/types/types";
 import {
   CreatureDefinition,
   CreatureInstance,
@@ -93,12 +93,17 @@ const entities: Record<EntityId, EntityDefinition> = {
       ),
     ],
     xpValue: 100,
-    maxDrops: 1,
-    lootTable: new WeightedTable<ItemId>([
+    lootTable: new LootTable([
       {
-        item: "certificateOfAchievement",
+        item: new WeightedTable<ItemId>([
+          {
+            item: "certificateOfAchievement",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
         amount: 1,
-        weight: 1,
+        chance: 1,
       },
     ]),
     tick: (creature, delta) =>
@@ -126,17 +131,22 @@ const entities: Record<EntityId, EntityDefinition> = {
       ),
     ],
     xpValue: 15,
-    maxDrops: 2,
-    lootTable: new WeightedTable<ItemId>([
+    lootTable: new LootTable([
       {
-        item: "rottenFlesh",
-        amount: [1, 2],
-        weight: 1.2,
-      },
-      {
-        item: "eyeball",
-        amount: [0, 2],
-        weight: 1,
+        item: new WeightedTable<ItemId>([
+          {
+            item: "rottenFlesh",
+            amount: [1, 2],
+            weight: 1.2,
+          },
+          {
+            item: "eyeball",
+            amount: [0, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
@@ -159,17 +169,22 @@ const entities: Record<EntityId, EntityDefinition> = {
       ),
     ],
     xpValue: 10,
-    maxDrops: 3,
-    lootTable: new WeightedTable<ItemId>([
+    lootTable: new LootTable([
       {
-        item: "bone",
-        amount: [1, 2],
-        weight: 1,
-      },
-      {
-        item: "skull",
-        amount: [0, 1],
-        weight: 0.2,
+        item: new WeightedTable<ItemId>([
+          {
+            item: "bone",
+            amount: [1, 4],
+            weight: 1,
+          },
+          {
+            item: "skull",
+            amount: 1,
+            weight: 0.2,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
@@ -192,12 +207,17 @@ const entities: Record<EntityId, EntityDefinition> = {
       ),
     ],
     xpValue: 5,
-    maxDrops: 1,
-    lootTable: new WeightedTable<ItemId>([
+    lootTable: new LootTable([
       {
-        item: "slime",
-        amount: [1, 3],
-        weight: 1,
+        item: new WeightedTable<ItemId>([
+          {
+            item: "slime",
+            amount: [1, 4],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
@@ -223,17 +243,22 @@ const entities: Record<EntityId, EntityDefinition> = {
       ]),
     ],
     xpValue: 20,
-    maxDrops: 2,
-    lootTable: new WeightedTable<ItemId>([
+    lootTable: new LootTable([
       {
-        item: "taintedFlesh",
-        amount: [1, 2],
-        weight: 1,
-      },
-      {
-        item: "trollTooth",
-        amount: [1, 3],
-        weight: 0.8,
+        item: new WeightedTable<ItemId>([
+          {
+            item: "taintedFlesh",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "trollTooth",
+            amount: [1, 2],
+            weight: 0.8,
+          },
+        ]),
+        amount: 2,
+        chance: 0.8,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
@@ -256,22 +281,33 @@ const entities: Record<EntityId, EntityDefinition> = {
       ),
     ],
     xpValue: 20,
-    maxDrops: 3,
-    lootTable: new WeightedTable<ItemId>([
+    lootTable: new LootTable([
       {
-        item: "rottenFlesh",
-        amount: [1, 2],
-        weight: 1.2,
+        item: new WeightedTable<ItemId>([
+          {
+            item: "mushroom",
+            amount: [1, 2],
+            weight: 1.5,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
       },
       {
-        item: "eyeball",
-        amount: [0, 2],
-        weight: 1,
-      },
-      {
-        item: "mushroom",
-        amount: [1, 2],
-        weight: 1.5,
+        item: new WeightedTable<ItemId>([
+          {
+            item: "rottenFlesh",
+            amount: [1, 2],
+            weight: 1.2,
+          },
+          {
+            item: "eyeball",
+            amount: [0, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 0.8,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
@@ -297,22 +333,33 @@ const entities: Record<EntityId, EntityDefinition> = {
       ]),
     ],
     xpValue: 30,
-    maxDrops: 2,
-    lootTable: new WeightedTable<ItemId>([
+    lootTable: new LootTable([
       {
-        item: "taintedFlesh",
-        amount: [1, 2],
-        weight: 1,
+        item: new WeightedTable<ItemId>([
+          {
+            item: "mushroom",
+            amount: [1, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
       },
       {
-        item: "trollTooth",
-        amount: [1, 3],
-        weight: 0.8,
-      },
-      {
-        item: "mushroom",
-        amount: [1, 2],
-        weight: 2,
+        item: new WeightedTable<ItemId>([
+          {
+            item: "taintedFlesh",
+            amount: [1, 2],
+            weight: 1.2,
+          },
+          {
+            item: "trollTooth",
+            amount: [0, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 0.8,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
@@ -342,12 +389,17 @@ const entities: Record<EntityId, EntityDefinition> = {
       ),
     ],
     xpValue: 25,
-    maxDrops: 1,
-    lootTable: new WeightedTable<ItemId>([
+    lootTable: new LootTable([
       {
-        item: "mushroom",
-        amount: [2, 5],
-        weight: 1,
+        item: new WeightedTable<ItemId>([
+          {
+            item: "mushroom",
+            amount: [2, 5],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
