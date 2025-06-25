@@ -1,3 +1,4 @@
+import { ReforgeId } from "lib/gamedata/Reforges";
 import { ItemId } from "../gamedata/items";
 import { AbilitySource } from "./Ability";
 import { CreatureInstance } from "./entities/creature";
@@ -34,6 +35,7 @@ export type EquipmentDefinition = ActivatableItemDefinition<ItemInstance> &
   Omit<ItemDefinition, "tags" | "definitionId"> & {
     tags: [ItemTag.Equipment, ...ItemTag[]]; // Ensure Equipment always has the Equipment tag
     slot?: EquipmentSlot;
+    reforge?: ReforgeId;
   };
 
 export enum EquipmentSlot {
