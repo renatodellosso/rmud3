@@ -25,7 +25,7 @@ type Ability = {
     [CreatureInstance, Targetable, AbilitySource]
   >;
   /**
-   * @returns the message to send to the room
+   * @returns
    */
   activate: (
     creature: CreatureInstance,

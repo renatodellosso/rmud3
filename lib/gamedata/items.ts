@@ -11,6 +11,7 @@ import { PlayerInstance } from "lib/types/entities/player";
 import { getIo } from "lib/ClientFriendlyIo";
 import Guild from "lib/types/Guild";
 import { savePlayer } from "lib/utils";
+import reforges from '../gamedata/Reforges';
 
 export type ItemId =
   | "bone"
@@ -351,9 +352,9 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 4,
     getSellValue: 10,
     getAbilities: (creature, item) => [
-      Abilities.attack("Chop", "A basic chop attack with a simple axe.", 1.8, [
-        { amount: 6, type: DamageType.Piercing },
-      ]),
+      Abilities.attack("Chop", "A basic chop attack with a simple axe.", 1.8,
+        [{ amount: 6, type: DamageType.Piercing }]
+      ),
     ],
   } satisfies EquipmentDefinition,
   ironMace: {
