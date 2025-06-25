@@ -1,4 +1,4 @@
-import Ability from "lib/types/Ability";
+import Ability, { AbilitySource } from "lib/types/Ability";
 import { CreatureInstance } from "lib/types/entities/creature";
 import {
   OptionalFunc,
@@ -11,6 +11,8 @@ import { getIo } from "lib/ClientFriendlyIo";
 import statusEffects, { StatusEffectId } from "./statusEffects";
 import { StatusEffectToApply } from "lib/types/statuseffect";
 import { getFromOptionalFunc } from "lib/utils";
+import { ItemInstance } from "lib/types/item";
+import reforges from "./Reforges";
 
 // IMPORTANT: If you're adding a new target check, add it as a function in CanTarget to avoid circular dependencies.
 // Not sure why that happens, but it does.
@@ -48,27 +50,42 @@ export function attack(
       CanTarget.isTargetACreature,
       ...(targetRestrictions ?? [])
     ),
-    activate: (creature: CreatureInstance, targets: Targetable[]) => {
+    activate: (
+      creature: CreatureInstance,
+      targets: Targetable[],
+      source: AbilitySource
+    ) => {
       if (targets.length !== 1) {
         throw new Error(
           `Expected exactly one target for ability ${name}, but got ${targets.length}.`
         );
       }
 
+      let damagePercent: number = 1;
+
+      if ((source as ItemInstance) && (source as ItemInstance).reforge) {
+        let reforge = reforges[(source as ItemInstance).reforge!];
+
+        damagePercent = reforge.damageBonusPercent
+          ? reforge.damageBonusPercent
+          : 1;
+      }
+
       const target = targets[0] as CreatureInstance;
 
-      const finalDamage: DamageWithType[] = [];
+      let newDamage = damage.map((d) => ({
+        amount: Math.ceil(d.amount * damagePercent),
+        type: d.type,
+      }));
 
-      let newDamage = creature.getDamageToDeal(damage);
+      newDamage = creature.getDamageToDeal(newDamage);
 
       const damageDealt: { amount: number; type: DamageType }[] =
         target.takeDamage(newDamage, creature);
 
-      finalDamage.push(...damageDealt);
-
       getIo().sendMsgToRoom(
         creature.location,
-        `${creature.name} hit ${target.name} using ${name} for ${finalDamage
+        `${creature.name} hit ${target.name} using ${name} for ${damageDealt
           .map((d) => `${d.amount} ${d.type}`)
           .join(", ")}!`
       );

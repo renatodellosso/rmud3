@@ -76,7 +76,6 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Intelligence: 1,
     },
     getDamageResistances: [
-      { amount: 1, type: "*" },
       { amount: 1, type: DamageType.Slashing },
     ],
   } satisfies EquipmentDefinition,

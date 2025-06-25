@@ -1,14 +1,13 @@
-
-
 export type ReforgeDefinition = {
   name: string;
   type: ReforgeType;
-  damagePercent?: number;
+  damageBonusPercent?: number;
   cooldownPercent?: number;
-}
+  damageResistancePercent?: number;
+};
 
 export enum ReforgeType {
   Weapon,
   Armor,
-  Other
+  Other,
 }
