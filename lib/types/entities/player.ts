@@ -287,8 +287,10 @@ export class PlayerInstance extends CreatureInstance {
     getIo().updateGameStateForRoom(location.id);
   }
 
-  getGuild(): Guild | undefined {
-    return this.guildId && Guild.fromId(this.guildId);
+  getGuild(): Promise<Guild | undefined> {
+    return (
+      (this.guildId && Guild.fromId(this.guildId)) || Promise.resolve(undefined)
+    );
   }
 }
 
