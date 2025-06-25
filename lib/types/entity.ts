@@ -27,7 +27,7 @@ export type EntityDefinition = {
     player: PlayerInstance,
     interaction: Interaction | undefined,
     action: any
-  ) => Interaction | undefined;
+  ) => Promise<Interaction | undefined>;
   canInteract?: (entity: EntityInstance, player: PlayerInstance) => boolean;
 };
 

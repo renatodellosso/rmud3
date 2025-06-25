@@ -10,6 +10,7 @@ import { DamageType } from "lib/types/types";
 import { PlayerInstance } from "lib/types/entities/player";
 import { getIo } from "lib/ClientFriendlyIo";
 import Guild from "lib/types/Guild";
+import { savePlayer } from "lib/utils";
 
 export type ItemId =
   | "bone"
@@ -473,6 +474,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
                 guild.name = `${creature.name}'s Guild`;
 
                 (creature as PlayerInstance).guildId = guild._id;
+
+                savePlayer(creature as PlayerInstance);
                 Guild.upsert(guild);
 
                 getIo().sendMsgToPlayer(
@@ -514,25 +517,26 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
                   return false;
                 }
 
-                const guild = Guild.fromId((item as any).guildId);
-                if (!guild) {
+                Guild.fromId((item as any).guildId).then((guild) => {
+                  if (!guild) {
+                    getIo().sendMsgToPlayer(
+                      creature._id.toString(),
+                      "This guild stone is invalid."
+                    );
+                    return false;
+                  }
+
+                  (creature as PlayerInstance).guildId = guild._id;
+                  guild.members.push(creature._id);
+                  if (!guild.owner) guild.owner = creature._id;
+
+                  Guild.upsert(guild);
+
                   getIo().sendMsgToPlayer(
                     creature._id.toString(),
-                    "This guild stone is invalid."
+                    "You carve your name under the guild's symbol on the menhir, joining the guild."
                   );
-                  return false;
-                }
-
-                (creature as PlayerInstance).guildId = guild._id;
-                guild.members.push(creature._id);
-                if (!guild.owner) guild.owner = creature._id;
-
-                Guild.upsert(guild);
-
-                getIo().sendMsgToPlayer(
-                  creature._id.toString(),
-                  "You carve your name under the guild's symbol on the menhir, joining the guild."
-                );
+                });
 
                 return true;
               },

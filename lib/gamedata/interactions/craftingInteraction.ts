@@ -12,34 +12,34 @@ export default function craftingInteraction(
   player: PlayerInstance,
   interaction: Interaction | undefined,
   action: any
-) => Interaction | undefined {
+) => Promise<Interaction | undefined> {
   return (
     entity: EntityInstance,
     player: PlayerInstance,
     interaction: Interaction | undefined,
     action: any
-  ): Interaction | undefined => {
+  ): Promise<Interaction | undefined> => {
     if (interaction === undefined) {
       // Initialize interaction if not provided
-      return {
+      return Promise.resolve({
         entityId: entity._id,
         type: "crafting",
         title,
         recipes: recipes.getAllowedRecipes(player),
-      };
+      });
     } else interaction.recipes = recipes.getAllowedRecipes(player); // Always keep recipes updated
 
-    if (action === "exit") return undefined; // Close the interaction
+    if (action === "exit") return Promise.resolve(undefined); // Close the interaction
 
-    if (typeof action !== "number") return interaction;
+    if (typeof action !== "number") return Promise.resolve(interaction);
 
     if (action < 0 || action >= recipes.getAllowedRecipes(player).length) {
-      return interaction; // Invalid action index
+      return Promise.resolve(interaction); // Invalid action index
     }
 
     const recipe = recipes.getAllowedRecipes(player)[action];
     if (!recipe) {
-      return interaction; // No recipe found for the action
+      return Promise.resolve(interaction); // No recipe found for the action
     }
 
     if (recipe.isAllowToCraft && !recipe.isAllowToCraft(player)) {
@@ -47,7 +47,7 @@ export default function craftingInteraction(
         player._id.toString(),
         `You are not allowed to craft ${recipe.getOutputText()}.`
       );
-      return interaction; // Player is not allowed to craft this recipe
+      return Promise.resolve(interaction); // Player is not allowed to craft this recipe
     }
 
     if (!recipe.hasInput(player.inventory)) {
@@ -55,7 +55,7 @@ export default function craftingInteraction(
         player._id.toString(),
         `You do not have the required items to craft ${recipe.getOutputText()}.`
       );
-      return interaction; // Crafting failed due to insufficient items
+      return Promise.resolve(interaction); // Crafting failed due to insufficient items
     }
 
     if (!recipe.hasRoomForOutput(player.inventory)) {
@@ -63,7 +63,7 @@ export default function craftingInteraction(
         player._id.toString(),
         `You do not have enough room in your inventory to craft ${recipe.getOutputText()}.`
       );
-      return interaction; // Crafting failed due to insufficient inventory space
+      return Promise.resolve(interaction); // Crafting failed due to insufficient inventory space
     }
 
     if (!recipe.craft(player.inventory)) {
@@ -71,7 +71,7 @@ export default function craftingInteraction(
         player._id.toString(),
         `Failed to craft: ${recipe.getOutputText()}.`
       );
-      return interaction; // Crafting failed due to insufficient items
+      return Promise.resolve(interaction); // Crafting failed due to insufficient items
     }
 
     getIo().sendMsgToPlayer(
@@ -81,6 +81,6 @@ export default function craftingInteraction(
 
     savePlayer(player);
 
-    return interaction;
+    return Promise.resolve(interaction);
   };
 }

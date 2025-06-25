@@ -6,7 +6,7 @@ import { LocationId } from "lib/gamedata/rawLocations";
 import LocationMap from "./LocationMap";
 import items, { ItemId } from "lib/gamedata/items";
 import { ItemDefinition, ItemInstance } from "./item";
-import Guild from "./Guild";
+import Guild, { ClientGuild } from "./Guild";
 
 export type Targetable = EntityInstance | Location;
 
@@ -66,7 +66,7 @@ export type GameState = {
   messages: string[];
   interactions: Interaction[];
   map: LocationMap;
-  guild: Guild | undefined;
+  guild: ClientGuild | undefined;
 };
 
 export enum DamageType {

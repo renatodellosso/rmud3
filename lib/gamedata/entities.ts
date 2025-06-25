@@ -706,7 +706,7 @@ const entities: Record<EntityId, EntityDefinition> = {
   } satisfies CreatureDefinition as CreatureDefinition,
   container: {
     name: "Container",
-    interact: (entity, player, interaction, action) =>
+    interact: async (entity, player, interaction, action) =>
       inventoryInteraction(
         entity as ContainerInstance,
         player,
@@ -718,7 +718,7 @@ const entities: Record<EntityId, EntityDefinition> = {
   },
   signPost: {
     name: "Sign Post",
-    interact: (entity, player, interaction, action) => {
+    interact: async (entity, player, interaction, action) => {
       if (!interaction) {
         interaction = {
           entityId: entity._id,
@@ -970,7 +970,7 @@ const entities: Record<EntityId, EntityDefinition> = {
   },
   mystic: {
     name: "Mystic",
-    interact: (entity, player, interaction, action) => {
+    interact: async (entity, player, interaction, action) => {
       if (
         player.abilityScoreIncreases <= 0 &&
         (!interaction || (action !== "reset" && action !== "leave"))
@@ -1118,7 +1118,7 @@ const entities: Record<EntityId, EntityDefinition> = {
   },
   tavernKeeper: {
     name: "Tavern Keeper",
-    interact: (entity, player, interaction, action) => {
+    interact: async (entity, player, interaction, action) => {
       if (!interaction) {
         return {
           entityId: entity._id,
@@ -1175,7 +1175,7 @@ const entities: Record<EntityId, EntityDefinition> = {
   },
   junkCollector: {
     name: "Junk Collector",
-    interact: (entity, player, interaction, action) => {
+    interact: async (entity, player, interaction, action) => {
       const recipes = new RecipeGroup(
         player.inventory.items
           .filter((i) => i.definitionId !== "money")
@@ -1203,7 +1203,7 @@ const entities: Record<EntityId, EntityDefinition> = {
     name: "Banker",
     canInteract: (entity, player) =>
       player.vault.level < vaultLevelling.length - 1,
-    interact: (entity, player, interaction, action) => {
+    interact: async (entity, player, interaction, action) => {
       const nextVaultLevel = player.vault.level + 1;
       const nextVaultLevelStats = vaultLevelling[nextVaultLevel];
       const playerMoney = player.inventory.getCountById("money");
@@ -1303,7 +1303,7 @@ const entities: Record<EntityId, EntityDefinition> = {
   },
   vault: {
     name: "Vault",
-    interact: (entity, player, interaction, action) =>
+    interact: async (entity, player, interaction, action) =>
       inventoryInteraction(
         entity,
         player,
@@ -1318,7 +1318,7 @@ const entities: Record<EntityId, EntityDefinition> = {
     canInteract(entity, player) {
       return player.guildId !== undefined;
     },
-    interact: (entity, player, interaction, action) => {
+    interact: async (entity, player, interaction, action) => {
       if (!interaction) {
         return {
           entityId: entity._id,
@@ -1341,7 +1341,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         };
       }
 
-      const guild = Guild.fromId(player.guildId!);
+      const guild = await Guild.fromId(player.guildId!);
       if (!guild) return;
 
       if (action === "getStone") {

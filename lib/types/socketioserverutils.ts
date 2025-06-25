@@ -23,7 +23,7 @@ import entities from "lib/gamedata/entities";
 import { EntityInstance } from "./entity";
 import { CreatureInstance } from "./entities/creature";
 import LocationMap from "./LocationMap";
-import Guild from "./Guild";
+import Guild, { ClientGuild, GuildMember } from "./Guild";
 
 export type TypedSocket = Socket<
   ClientToServerEvents,
@@ -149,8 +149,8 @@ export function getPlayer(socket: TypedSocket) {
   return player;
 }
 
-export function updateGameState(socket: TypedSocket) {
-  const gameState = getGameState(socket);
+export async function updateGameState(socket: TypedSocket) {
+  const gameState = await getGameState(socket);
 
   socket.emit("setGameState", EJSON.stringify(gameState));
 
@@ -169,7 +169,7 @@ export async function updateGameStateForRoom(roomId: string) {
   ).then(() => {});
 }
 
-function getGameState(socket: TypedSocket): GameState {
+async function getGameState(socket: TypedSocket): Promise<GameState> {
   const player = getPlayer(socket);
 
   const location = locations[player.instance.location];
@@ -199,7 +199,8 @@ function getGameState(socket: TypedSocket): GameState {
   player.instance.recalculateMaxWeight();
 
   const guild =
-    player.instance.guildId && Guild.fromId(player.instance.guildId);
+    player.instance.guildId && (await Guild.fromId(player.instance.guildId));
+  const clientGuild = guild ? await getClientGuild(guild) : undefined;
 
   // Clean up player instance
   player.instance.prepForGameState();
@@ -229,8 +230,37 @@ function getGameState(socket: TypedSocket): GameState {
     messages: socket.data.session!.messages,
     interactions: socket.data.session!.interactions || [],
     map: socket.data.session!.map,
-    guild,
+    guild: clientGuild,
   };
+}
+
+async function getClientGuild(guild: Guild): Promise<ClientGuild> {
+  const playerManager = getPlayerManager()!;
+
+  const memberInstances: GuildMember[] = (
+    await Promise.all(
+      guild.members.map((memberId) =>
+        playerManager.getInstanceById(memberId, true)
+      )
+    )
+  )
+    .filter((m) => m !== undefined)
+    .map(
+      (m) =>
+        restoreFieldsAndMethods(
+          {
+            ...m,
+            isOnline: playerManager.isOnline.get(m._id.toString()),
+            isOwner: m._id.equals(guild.owner),
+          } as GuildMember,
+          new PlayerInstance()
+        ) as GuildMember
+    );
+
+  return restoreFieldsAndMethods(guild, {
+    ...guild,
+    memberInstances,
+  });
 }
 
 export class Io implements ClientFriendlyIo {

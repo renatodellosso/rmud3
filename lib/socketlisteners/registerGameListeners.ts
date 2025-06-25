@@ -11,12 +11,17 @@ import entities from "lib/gamedata/entities";
 import getSessionManager from "lib/SessionManager";
 import { getIo } from "lib/ClientFriendlyIo";
 import { getFromOptionalFunc, savePlayer } from "lib/utils";
-import { EJSON } from "bson";
+import { EJSON, ObjectId } from "bson";
 import { ItemInstance } from "lib/types/item";
 import { EntityInstance } from "lib/types/entity";
 import items from "lib/gamedata/items";
 import { ContainerInstance } from "lib/types/entities/container";
 import { DirectInventory } from "lib/types/Inventory";
+import getPlayerManager from "lib/PlayerManager";
+import getCollectionManager from "lib/getCollectionManager";
+import CollectionId from "lib/types/CollectionId";
+import { getMongoClient } from "lib/getMongoClient";
+import Guild from "lib/types/Guild";
 
 export default function registerGameListeners(socket: TypedSocket) {
   socket.on("requestGameState", () => {
@@ -91,7 +96,7 @@ export default function registerGameListeners(socket: TypedSocket) {
     }
   );
 
-  socket.on("startInteraction", (entityId: string) => {
+  socket.on("startInteraction", async (entityId: string) => {
     if (
       socket.data.session?.interactions.find(
         (i) => i.entityId.toString() === entityId
@@ -119,7 +124,7 @@ export default function registerGameListeners(socket: TypedSocket) {
       );
     }
 
-    const interaction = def.interact(
+    const interaction = await def.interact(
       entity,
       player.instance,
       undefined,
@@ -131,7 +136,7 @@ export default function registerGameListeners(socket: TypedSocket) {
     getIo().updateGameState(player.instance._id.toString());
   });
 
-  socket.on("interact", (entityId: string, action: any) => {
+  socket.on("interact", async (entityId: string, action: any) => {
     const player = getPlayer(socket);
     const entity = Array.from(
       locations[player.instance.location].entities
@@ -156,7 +161,7 @@ export default function registerGameListeners(socket: TypedSocket) {
       );
     }
 
-    const newInteraction = def.interact(
+    const newInteraction = await def.interact(
       entity,
       player.instance,
       interaction,
@@ -268,7 +273,7 @@ export default function registerGameListeners(socket: TypedSocket) {
     }
 
     foundItem.amount = Math.min(foundItem.amount, item.amount);
-    
+
     foundItem.amount = player.instance.inventory.remove(foundItem);
 
     const inventory = new DirectInventory([foundItem]);
@@ -292,5 +297,59 @@ export default function registerGameListeners(socket: TypedSocket) {
       )} x${item.amount}.`
     );
     getIo().updateGameStateForRoom(location.id);
+  });
+
+  socket.on("kickGuildMember", async (guildId: string, memberId: string) => {
+    const playerManager = getPlayerManager();
+
+    const kicker = getPlayer(socket);
+    const kickee = await playerManager.getInstanceById(
+      new ObjectId(memberId),
+      true
+    );
+
+    if (!kickee) {
+      throw new Error(`Player with ID ${memberId} not found.`);
+    }
+
+    const guild = await Guild.fromId(new ObjectId(guildId));
+
+    if (!guild) {
+      throw new Error(`Guild with ID ${guildId} not found.`);
+    }
+
+    if (!guild.members.some((id) => id.equals(kicker.instance._id))) {
+      throw new Error(
+        `Player ${kicker.instance.name} is not a member of the guild ${guild.name}.`
+      );
+    }
+
+    if (!guild.owner || !kicker.instance._id.equals(guild.owner)) {
+      throw new Error(
+        `Player ${kicker.instance.name} is not the owner of the guild ${guild.name}.`
+      );
+    }
+
+    kickee.guildId = undefined;
+    guild.members = guild.members.filter(
+      (member) => !member.equals(kickee._id)
+    );
+
+    Guild.upsert(guild);
+    savePlayer(kickee);
+
+    const io = getIo();
+
+    io.sendMsgToRoom(
+      kicker.instance.location,
+      `${kicker.instance.name} has kicked ${kickee.name} from the guild ${guild.name}.`
+    );
+    io.updateGameStateForRoom(kicker.instance.location);
+
+    io.sendMsgToPlayer(
+      kickee._id.toString(),
+      `You have been kicked from the guild ${guild.name} by ${kicker.instance.name}.`
+    );
+    io.updateGameState(kickee._id.toString());
   });
 }

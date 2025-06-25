@@ -35,6 +35,33 @@ export class PlayerManager {
     };
   }
 
+  public async getInstanceById(
+    id: ObjectId,
+    includeOffline = false
+  ): Promise<PlayerInstance | undefined> {
+    const instance = this.instances.get(id.toString());
+    if (instance) {
+      return instance;
+    }
+
+    if (!includeOffline) {
+      return undefined;
+    }
+
+    const db = await getMongoClient();
+    const collectionManager = getCollectionManager(db);
+    const instanceCollection = collectionManager.getCollection(
+      CollectionId.PlayerInstances
+    );
+
+    const instanceData = await instanceCollection.get(id);
+    if (!instanceData) {
+      return undefined;
+    }
+
+    return restoreFieldsAndMethods(instanceData, new PlayerInstance());
+  }
+
   public getPlayerByProgressId(id: ObjectId) {
     const progress = this.progresses.get(id.toString());
     if (!progress) {

@@ -1,6 +1,7 @@
 import { ObjectId } from "bson";
 import { restoreFieldsAndMethods } from "lib/utils";
 import CollectionId from "./CollectionId";
+import { PlayerInstance } from "./entities/player";
 
 export default class Guild {
   _id: ObjectId = new ObjectId();
@@ -15,7 +16,7 @@ export default class Guild {
     this.members = members;
   }
 
-  static fromId(id: ObjectId): Guild | undefined {
+  static async fromId(id: ObjectId): Promise<Guild | undefined> {
     if (!id) {
       return undefined;
     }
@@ -27,7 +28,7 @@ export default class Guild {
         CollectionId.Guilds
       );
 
-      const guildData = guildCollection.get(id);
+      const guildData = await guildCollection.get(id);
 
       if (!guildData) {
         return undefined;
@@ -55,3 +56,12 @@ export default class Guild {
     return undefined;
   }
 }
+
+export type GuildMember = PlayerInstance & {
+  isOnline: boolean;
+  isOwner: boolean;
+};
+
+export type ClientGuild = Guild & {
+  memberInstances: GuildMember[];
+};
