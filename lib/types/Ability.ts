@@ -6,6 +6,7 @@ import { OptionalFunc } from "./types";
 import { StatusEffectInstance } from "./statuseffect";
 import statusEffects from "lib/gamedata/statusEffects";
 import { getFromOptionalFunc } from "../utils";
+import reforges from 'lib/gamedata/Reforges';
 
 export type AbilitySource =
   | ItemInstance
@@ -25,7 +26,7 @@ type Ability = {
     [CreatureInstance, Targetable, AbilitySource]
   >;
   /**
-   * @returns the message to send to the room
+   * @returns
    */
   activate: (
     creature: CreatureInstance,

@@ -25,6 +25,7 @@ import {
 import statusEffects, { StatusEffectId } from "lib/gamedata/statusEffects";
 import { DungeonLocation, FloorInstance } from "lib/dungeongeneration/types";
 import { DamageWithType } from '../types';
+import reforges from "lib/gamedata/Reforges";
 
 export type CreatureDefinition = EntityDefinition & {
   health: number;
@@ -176,7 +177,22 @@ export class CreatureInstance extends EntityInstance {
   ): { amount: number; type: DamageType }[] {
     let newDamage = damage.map((d) => ({ amount: d.amount, type: d.type}));
 
-    for (const provider of this.getStatAndAbilityProviders()) {
+    let damageResistancePercent: number = 1;
+
+    for (let provider of this.getStatAndAbilityProviders()) {
+      let providerSource = provider.source;
+
+      if (
+        (providerSource as ItemInstance) &&
+        (providerSource as ItemInstance).reforge
+      ) {
+        let reforge = reforges[(providerSource as ItemInstance).reforge!];
+
+        damageResistancePercent = reforge.damageResistancePercent
+          ? reforge.damageResistancePercent
+          : 1;
+      }
+
       if (provider.provider.getDamageResistances) {
         for (const damageResistance of getFromOptionalFunc(
           provider.provider.getDamageResistances,
@@ -187,7 +203,8 @@ export class CreatureInstance extends EntityInstance {
           for (const damageEntry of newDamage) {
             if (!isDamageResisted && (damageEntry.type === damageResistance.type)) {
               damageEntry.amount = Math.max(
-                damageEntry.amount - damageResistance.amount,
+                damageEntry.amount -
+                  Math.ceil(damageResistance.amount * damageResistancePercent),
                 0
               );
               isDamageResisted = true;
@@ -218,7 +235,8 @@ export class CreatureInstance extends EntityInstance {
                 damageResistance.amount
               );
               damageEntry.amount = Math.max(
-                damageEntry.amount - damageResistance.amount,
+                damageEntry.amount -
+                  Math.ceil(damageResistance.amount * damageResistancePercent),
                 0
               );
               isDamageResisted = true;
@@ -295,6 +313,8 @@ export class CreatureInstance extends EntityInstance {
 
     this.lastActedAt = new Date();
     this.canActAt = new Date();
+
+
 
     let cooldown = getFromOptionalFunc(ability.getCooldown, this, source);
     for (const provider of this.getStatAndAbilityProviders()) {

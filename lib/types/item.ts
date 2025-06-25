@@ -16,6 +16,7 @@ export type ItemDefinition = {
 export type ItemInstance = {
   definitionId: ItemId;
   amount: number;
+  reforge?: ReforgeId;
 };
 
 export enum ItemTag {
@@ -35,7 +36,6 @@ export type EquipmentDefinition = ActivatableItemDefinition<ItemInstance> &
   Omit<ItemDefinition, "tags" | "definitionId"> & {
     tags: [ItemTag.Equipment, ...ItemTag[]]; // Ensure Equipment always has the Equipment tag
     slot?: EquipmentSlot;
-    reforge?: ReforgeId;
   };
 
 export enum EquipmentSlot {

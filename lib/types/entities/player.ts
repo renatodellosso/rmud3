@@ -35,6 +35,7 @@ import { xpForNextLevel } from "lib/gamedata/levelling";
 import StatAndAbilityProvider from "../StatAndAbilityProvider";
 import Vault from "../Vault";
 import Guild from "../Guild";
+import reforges from "lib/gamedata/Reforges";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -246,6 +247,14 @@ export class PlayerInstance extends CreatureInstance {
     targets: Targetable[],
     source: AbilitySource
   ) {
+    let cooldownPercent: number = 1;
+
+    if ((source as ItemInstance) && (source as ItemInstance).reforge) {
+      let reforge = reforges[(source as ItemInstance).reforge!];
+
+      cooldownPercent = reforge.cooldownPercent ? reforge.cooldownPercent : 1;
+    }
+
     const wasAbilitySuccessful: boolean = ability.activate(
       this,
       targets,
@@ -259,7 +268,8 @@ export class PlayerInstance extends CreatureInstance {
     this.lastActedAt = new Date();
     this.canActAt = new Date();
 
-    let cooldown = getFromOptionalFunc(ability.getCooldown, this, source);
+    let cooldown =
+      getFromOptionalFunc(ability.getCooldown, this, source) * cooldownPercent;
     for (const provider of this.getStatAndAbilityProviders()) {
       if (provider.provider.getCooldown) {
         cooldown = provider.provider.getCooldown(

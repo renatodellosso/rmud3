@@ -99,15 +99,15 @@ const entities: Record<EntityId, EntityDefinition> = {
         0.5,
         [
           {
-            amount: 1,
+            amount: 2,
             type: DamageType.Slashing,
           },
           {
-            amount: 1,
+            amount: 2,
             type: DamageType.Piercing,
           },
           {
-            amount: 1,
+            amount: 2,
             type: DamageType.Bludgeoning,
           },
         ],
