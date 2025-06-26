@@ -2,9 +2,9 @@ import {
   StatusEffectDefinition,
   StatusEffectStacking,
 } from "lib/types/statuseffect";
-import { DamageType } from "lib/types/types";
+import { AbilityScore, DamageType } from "lib/types/types";
 
-export type StatusEffectId = "stunned" | "infested";
+export type StatusEffectId = "stunned" | "infested" | "cursed" | "burning";
 
 const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   stunned: {
@@ -31,6 +31,31 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
         source
       );
     },
+  },
+  cursed: {
+    name: "Cursed",
+    description: "You are cursed, reducing your ability scores.",
+    stacking: StatusEffectStacking.AddStrengthMaxDuration,
+    getAbilityScores: {
+      [AbilityScore.Strength]: (creature, source) => -source.strength,
+      [AbilityScore.Constitution]: (creature, source) => -source.strength,
+      [AbilityScore.Intelligence]: (creature, source) => -source.strength,
+    },
+  },
+  burning: {
+    name: "Burning",
+    description: "You are on fire, taking damage each turn.",
+    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    tick: (creature, deltaTime, source) =>
+      creature.takeDamage(
+        [
+          {
+            amount: source.strength * deltaTime,
+            type: DamageType.Fire,
+          },
+        ],
+        source
+      ),
   },
 };
 

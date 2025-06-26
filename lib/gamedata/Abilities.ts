@@ -121,7 +121,8 @@ export function applyStatusEffect(
         )
         .join(", ")}.`
     ),
-    getCooldown,
+    getCooldown: (creature, source) =>
+      creature.scaleAbility(getFromOptionalFunc(getCooldown, creature, source)),
     getTargetCount: 1,
     canTarget: CanTarget.and(
       CanTarget.isTargetACreature,
@@ -132,13 +133,19 @@ export function applyStatusEffect(
         const target = rawTarget as CreatureInstance;
 
         for (const statusEffect of effects) {
-          target.addStatusEffect(statusEffect);
+          const scaledEffect: StatusEffectToApply = {
+            ...statusEffect,
+            strength: creature.scaleAbility(statusEffect.strength),
+            duration: creature.scaleAbility(statusEffect.duration),
+          };
+
+          target.addStatusEffect(scaledEffect);
 
           getIo().sendMsgToRoom(
             creature.location,
-            `${creature.name} applied ${statusEffects[statusEffect.id].name} ${
-              statusEffect.strength ? `(${statusEffect.strength}) ` : ""
-            }to ${target.name} for ${statusEffect.duration}s using ${name}!`
+            `${creature.name} applied ${statusEffects[scaledEffect.id].name} ${
+              scaledEffect.strength ? `(${scaledEffect.strength}) ` : ""
+            }to ${target.name} for ${scaledEffect.duration}s using ${name}!`
           );
         }
       }

@@ -36,6 +36,11 @@ const floors: Record<string, FloorDefinition> = {
           weight: 2,
         },
         {
+          item: "slimeSplitter",
+          amount: 1,
+          weight: 1,
+        },
+        {
           item: "rat",
           amount: [1, 3],
           weight: 0.8,
@@ -164,11 +169,6 @@ const floors: Record<string, FloorDefinition> = {
       maxEncounters: 2,
       encounters: new WeightedTable([
         {
-          item: "skeleton",
-          amount: [1, 2],
-          weight: 0.5,
-        },
-        {
           item: "lostAdventurer",
           amount: 1,
           weight: 1,
@@ -179,14 +179,19 @@ const floors: Record<string, FloorDefinition> = {
           weight: 1,
         },
         {
-          item: "troll",
+          item: "goblinShaman",
           amount: 1,
+          weight: 0.5,
+        },
+        {
+          item: "hobgoblin",
+          amount: [1, 2],
           weight: 0.8,
         },
         {
-          item: "ghost",
+          item: "troll",
           amount: 1,
-          weight: 0.2,
+          weight: 0.8,
         },
         {
           item: "rat",
@@ -244,6 +249,11 @@ const floors: Record<string, FloorDefinition> = {
           amount: 1,
           weight: 0.5,
         },
+        {
+          item: "fungalCore",
+          amount: 1,
+          weight: 0.3,
+        },
       ]),
     },
   },
@@ -267,7 +277,7 @@ const floors: Record<string, FloorDefinition> = {
       encounters: new WeightedTable([
         {
           item: "ghost",
-          amount: 1,
+          amount: [1, 2],
           weight: 0.5,
         },
         {

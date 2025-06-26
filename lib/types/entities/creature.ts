@@ -14,7 +14,12 @@ import { getFromOptionalFunc, savePlayer } from "lib/utils";
 import { LocationId } from "lib/gamedata/rawLocations";
 import { ContainerInstance } from "./container";
 import Inventory, { DirectInventory } from "../Inventory";
-import { ConsumableDefinition, EquipmentDefinition, ItemDefinition, ItemInstance } from "../item";
+import {
+  ConsumableDefinition,
+  EquipmentDefinition,
+  ItemDefinition,
+  ItemInstance,
+} from "../item";
 import items, { ItemId } from "lib/gamedata/items";
 import StatAndAbilityProvider from "../StatAndAbilityProvider";
 import {
@@ -24,7 +29,7 @@ import {
 } from "../statuseffect";
 import statusEffects, { StatusEffectId } from "lib/gamedata/statusEffects";
 import { DungeonLocation, FloorInstance } from "lib/dungeongeneration/types";
-import { DamageWithType } from '../types';
+import { DamageWithType } from "../types";
 import reforges from "lib/gamedata/Reforges";
 
 export type CreatureDefinition = EntityDefinition & {
@@ -33,6 +38,7 @@ export type CreatureDefinition = EntityDefinition & {
   intrinsicAbilities?: Ability[];
   lootTable: LootTable;
   xpValue: number;
+  onDie?: (creature: CreatureInstance) => void;
 };
 
 export class CreatureInstance extends EntityInstance {
@@ -144,13 +150,17 @@ export class CreatureInstance extends EntityInstance {
           let isDamageAdded = false;
 
           for (const damageEntry of damage) {
-            if (!isDamageAdded && (damageEntry.type === damageBonus.type || damageBonus.type === "*")) {
+            if (
+              !isDamageAdded &&
+              (damageEntry.type === damageBonus.type ||
+                damageBonus.type === "*")
+            ) {
               damageEntry.amount += damageBonus.amount;
               isDamageAdded = true;
             }
           }
 
-          if (!isDamageAdded && damageBonus.type as DamageType) {
+          if (!isDamageAdded && (damageBonus.type as DamageType)) {
             damage.push({
               amount: damageBonus.amount,
               type: damageBonus.type as DamageType,
@@ -158,7 +168,7 @@ export class CreatureInstance extends EntityInstance {
           }
         }
       }
-      
+
       if (provider.provider.getDamageToDeal) {
         damage = provider.provider.getDamageToDeal(
           this,
@@ -175,7 +185,7 @@ export class CreatureInstance extends EntityInstance {
     damage: { amount: number; type: DamageType }[],
     source: EntityInstance | StatusEffectInstance
   ): { amount: number; type: DamageType }[] {
-    let newDamage = damage.map((d) => ({ amount: d.amount, type: d.type}));
+    let newDamage = damage.map((d) => ({ amount: d.amount, type: d.type }));
 
     let damageResistancePercent: number = 1;
 
@@ -201,7 +211,10 @@ export class CreatureInstance extends EntityInstance {
         )) {
           let isDamageResisted = false;
           for (const damageEntry of newDamage) {
-            if (!isDamageResisted && (damageEntry.type === damageResistance.type)) {
+            if (
+              !isDamageResisted &&
+              damageEntry.type === damageResistance.type
+            ) {
               damageEntry.amount = Math.max(
                 damageEntry.amount -
                   Math.ceil(damageResistance.amount * damageResistancePercent),
@@ -219,16 +232,21 @@ export class CreatureInstance extends EntityInstance {
           provider.source,
           newDamage
         );
-      } 
+      }
 
       if (provider.provider.getDamageResistances) {
-        for (const damageResistance of getFromOptionalFunc(provider.provider.getDamageResistances,
+        for (const damageResistance of getFromOptionalFunc(
+          provider.provider.getDamageResistances,
           this,
           provider.provider as ItemInstance
         )) {
           let isDamageResisted = false;
           for (const damageEntry of newDamage) {
-            if (!isDamageResisted && damageResistance.type === "*" && damageEntry.amount > 0) {
+            if (
+              !isDamageResisted &&
+              damageResistance.type === "*" &&
+              damageEntry.amount > 0
+            ) {
               console.log(
                 isDamageResisted,
                 damageResistance.type,
@@ -269,6 +287,8 @@ export class CreatureInstance extends EntityInstance {
     const io = getIo();
     io.sendMsgToRoom(location.id, `${this.name} has died.`);
 
+    this.getDef().onDie?.(this);
+
     this.damagers.distributeXp(
       (entities[this.definitionId] as CreatureDefinition).xpValue
     );
@@ -280,7 +300,7 @@ export class CreatureInstance extends EntityInstance {
 
       for (const rolledItem of rolledInventory) {
         inventory.add(rolledItem);
-      }      
+      }
     }
 
     const corpse = new ContainerInstance(
@@ -313,8 +333,6 @@ export class CreatureInstance extends EntityInstance {
 
     this.lastActedAt = new Date();
     this.canActAt = new Date();
-
-
 
     let cooldown = getFromOptionalFunc(ability.getCooldown, this, source);
     for (const provider of this.getStatAndAbilityProviders()) {
@@ -471,6 +489,10 @@ export class CreatureInstance extends EntityInstance {
       }
     }
     return arr;
+  }
+
+  scaleAbility(base: number) {
+    return base * (1 + 0.01 * this.getAbilityScore(AbilityScore.Intelligence));
   }
 }
 

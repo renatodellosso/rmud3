@@ -79,7 +79,7 @@ export class PlayerInstance extends CreatureInstance {
       val += getFromOptionalFunc(def.getMaxHealth, this, equipment);
     }
 
-    return val;
+    return Math.max(val, 1);
   }
 
   getBaseHealth(): number {

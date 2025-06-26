@@ -27,6 +27,8 @@ import { getFromOptionalFunc } from "../utils";
 import { vaultLevelling } from "lib/types/Vault";
 import Guild from "lib/types/Guild";
 import { ItemInstance } from "lib/types/item";
+import { StatusEffectId } from "./statusEffects";
+import locations from "lib/locations";
 
 export type CreatureId =
   | "player"
@@ -34,12 +36,17 @@ export type CreatureId =
   | "zombie"
   | "skeleton"
   | "slime"
+  | "slimeSplitter"
   | "troll"
   | "fungalZombie"
   | "fungalTroll"
   | "sentientFungus"
+  | "fungalCore"
+  | "farulu"
   | "lostAdventurer"
   | "goblin"
+  | "goblinShaman"
+  | "hobgoblin"
   | "ghost"
   | "rat"
   | "giantRat";
@@ -133,7 +140,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         delta,
         selectRandomAbility
       ),
-  } satisfies CreatureDefinition as CreatureDefinition,
+  },
   zombie: {
     name: "Zombie",
     health: 15,
@@ -171,7 +178,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
-  } satisfies CreatureDefinition as CreatureDefinition,
+  },
   skeleton: {
     name: "Skeleton",
     health: 15,
@@ -209,7 +216,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
-  } satisfies CreatureDefinition as CreatureDefinition,
+  },
   slime: {
     name: "Slime",
     health: 25,
@@ -242,7 +249,67 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
-  } satisfies CreatureDefinition as CreatureDefinition,
+  },
+  slimeSplitter: {
+    name: "Splitter Slime",
+    health: 35,
+    abilityScores: {
+      [AbilityScore.Strength]: 0,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 0,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Slime",
+        "Slime.",
+        4,
+        [{ amount: 1, type: DamageType.Bludgeoning }],
+        [CanTarget.isPlayer]
+      ),
+      Abilities.applyStatusEffect(
+        "Infest",
+        "Infest an enemy with slime.",
+        2,
+        [
+          {
+            id: "infested",
+            strength: 7,
+            duration: 5,
+          },
+        ],
+        [CanTarget.isPlayer]
+      ),
+    ],
+    xpValue: 15,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "slime",
+            amount: [3, 6],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    onDie: (creature) => {
+      const location = locations[creature.location];
+
+      for (let i = 0; i < 3; i++) {
+        location.entities.add(new CreatureInstance("slime", creature.location));
+      }
+
+      const io = getIo();
+      io.sendMsgToRoom(
+        creature.location,
+        `${creature.name} splits into 3 smaller slimes!`
+      );
+      io.updateGameStateForRoom(creature.location);
+    },
+  },
   troll: {
     name: "Troll",
     health: 25,
@@ -277,13 +344,18 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             amount: [1, 2],
             weight: 0.8,
           },
+          {
+            item: "trollHeart",
+            amount: 1,
+            weight: 0.5,
+          },
         ]),
         amount: 2,
         chance: 0.8,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
-  } satisfies CreatureDefinition as CreatureDefinition,
+  },
   fungalZombie: {
     name: "Fungal Zombie",
     health: 20,
@@ -326,13 +398,18 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             amount: [0, 2],
             weight: 1,
           },
+          {
+            item: "spore",
+            amount: [1, 3],
+            weight: 1.5,
+          },
         ]),
         amount: 2,
         chance: 0.8,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
-  } satisfies CreatureDefinition as CreatureDefinition,
+  },
   fungalTroll: {
     name: "Fungal Troll",
     health: 25,
@@ -362,6 +439,11 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             amount: [1, 2],
             weight: 1,
           },
+          {
+            item: "spore",
+            amount: [1, 3],
+            weight: 1.5,
+          },
         ]),
         amount: 1,
         chance: 1,
@@ -378,13 +460,18 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             amount: [0, 2],
             weight: 1,
           },
+          {
+            item: "trollHeart",
+            amount: 1,
+            weight: 0.5,
+          },
         ]),
         amount: 2,
         chance: 0.8,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
-  } satisfies CreatureDefinition as CreatureDefinition,
+  },
   sentientFungus: {
     name: "Sentient Fungus",
     health: 10,
@@ -418,13 +505,161 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             amount: [2, 5],
             weight: 1,
           },
+          {
+            item: "spore",
+            amount: [1, 3],
+            weight: 1.5,
+          },
         ]),
         amount: 1,
         chance: 1,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
-  } satisfies CreatureDefinition as CreatureDefinition,
+  },
+  fungalCore: {
+    name: "Sentient Fungus",
+    health: 20,
+    abilityScores: {
+      [AbilityScore.Strength]: 2,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 1,
+    },
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Spore Injection",
+        "Infest an enemy with spores.",
+        3,
+        [{ amount: 6, type: DamageType.Piercing }],
+        [
+          {
+            id: "infested",
+            strength: 10,
+            duration: 3,
+          },
+        ],
+        [CanTarget.isPlayer]
+      ),
+      Abilities.attackWithStatusEffect(
+        "Mind Infect",
+        "Infects the mind of an enemy.",
+        2,
+        [{ amount: 6, type: DamageType.Psychic }],
+        [
+          {
+            id: "stunned",
+            strength: 2,
+            duration: 2,
+          },
+        ],
+        [CanTarget.isPlayer]
+      ),
+    ],
+    xpValue: 50,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "mushroom",
+            amount: [2, 5],
+            weight: 1,
+          },
+          {
+            item: "spore",
+            amount: [1, 3],
+            weight: 1.5,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "fungalCore",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  },
+  farulu: {
+    name: "Farulu, Fungal Abomination",
+    health: 50,
+    abilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 10,
+    },
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Spore Injection",
+        "Infest an enemy with spores.",
+        2,
+        [{ amount: 10, type: DamageType.Piercing }],
+        [
+          {
+            id: "infested",
+            strength: 10,
+            duration: 2,
+          },
+        ],
+        [CanTarget.isPlayer]
+      ),
+      Abilities.attackWithStatusEffect(
+        "Mind Infect",
+        "Infects the mind of an enemy.",
+        2,
+        [{ amount: 10, type: DamageType.Psychic }],
+        [
+          {
+            id: "stunned",
+            strength: 4,
+            duration: 2,
+          },
+        ],
+        [CanTarget.isPlayer]
+      ),
+      Abilities.heal("Regenerate", "Regenerate health.", 5, 5, [
+        CanTarget.isSelf,
+      ]),
+    ],
+    xpValue: 250,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "mushroom",
+            amount: [5, 10],
+            weight: 1,
+          },
+          {
+            item: "spore",
+            amount: [5, 10],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "faruluHead",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  },
   lostAdventurer: {
     name: "Lost Adventurer",
     health: 25,
@@ -522,7 +757,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
-  } satisfies CreatureDefinition as CreatureDefinition,
+  },
   goblin: {
     name: "Goblin",
     health: 10,
@@ -581,7 +816,128 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
-  } satisfies CreatureDefinition as CreatureDefinition,
+  },
+  goblinShaman: {
+    name: "Goblin Shaman",
+    health: 8,
+    abilityScores: {
+      [AbilityScore.Strength]: 0,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 5,
+    },
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Fireball",
+        "A fiery explosion of magic.",
+        6,
+        [{ amount: 10, type: DamageType.Fire }],
+        [
+          {
+            id: "burning",
+            strength: 3,
+            duration: 3,
+          },
+        ],
+        [CanTarget.isPlayer]
+      ),
+      Abilities.applyStatusEffect(
+        "Curse",
+        "Curses an enemy.",
+        3,
+        [
+          {
+            id: "cursed",
+            strength: 2,
+            duration: 3,
+          },
+        ],
+        [CanTarget.isPlayer]
+      ),
+    ],
+    xpValue: 20,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "money",
+            amount: [5, 10],
+            weight: 1,
+          },
+          {
+            item: "bottle",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "mushroom",
+            amount: [2, 4],
+            weight: 1,
+          },
+          {
+            item: "fireballRing",
+            amount: 1,
+            weight: 0.5,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+  },
+  hobgoblin: {
+    name: "Hobgoblin",
+    health: 15,
+    abilityScores: {
+      [AbilityScore.Strength]: 2,
+      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Intelligence]: 4,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Spear",
+        "Are these descriptions even displayed anywhere?",
+        2,
+        [{ amount: 6, type: DamageType.Piercing }],
+        [CanTarget.isPlayer]
+      ),
+    ],
+    xpValue: 25,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "money",
+            amount: [5, 10],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "leather",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "rope",
+            amount: [2, 3],
+            weight: 1,
+          },
+          {
+            item: "ironSpear",
+            amount: 1,
+            weight: 0.5,
+          },
+        ]),
+        amount: 2,
+        chance: 0.8,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  },
   ghost: {
     name: "Ghost",
     health: 25,
@@ -614,7 +970,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
-  } satisfies CreatureDefinition as CreatureDefinition,
+  },
   rat: {
     name: "Rat",
     health: 5,
@@ -658,7 +1014,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
-  } satisfies CreatureDefinition as CreatureDefinition,
+  },
   giantRat: {
     name: "Giant Rat",
     health: 10,
@@ -702,7 +1058,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
-  } satisfies CreatureDefinition as CreatureDefinition,
+  },
 };
 
 const entities: Record<EntityId, EntityDefinition> = {
@@ -886,6 +1242,19 @@ const entities: Record<EntityId, EntityDefinition> = {
           { meat: 1 },
           {
             definitionId: "grilledMeat",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          {
+            trollHeart: 1,
+            fungalCore: 1,
+            slimeEgg: 1,
+            spore: 10,
+            slime: 10,
+          },
+          {
+            definitionId: "unnaturalHeart",
             amount: 1,
           }
         ),

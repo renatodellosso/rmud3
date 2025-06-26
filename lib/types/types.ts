@@ -74,6 +74,7 @@ export enum DamageType {
   Piercing = "Piercing",
   Bludgeoning = "Bludgeoning",
   Psychic = "Psychic",
+  Fire = "Fire",
 }
 
 type WeightedTableEntry<T> = {

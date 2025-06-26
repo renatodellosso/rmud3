@@ -11,7 +11,12 @@ import { PlayerInstance } from "lib/types/entities/player";
 import { getIo } from "lib/ClientFriendlyIo";
 import Guild from "lib/types/Guild";
 import { savePlayer } from "lib/utils";
-import reforges from '../gamedata/Reforges';
+import reforges from "../gamedata/Reforges";
+import * as CanTarget from "lib/gamedata/CanTarget";
+import { Location } from "lib/types/Location";
+import { DungeonLocation } from "lib/dungeongeneration/types";
+import { CreatureInstance } from "lib/types/entities/creature";
+import locations from "lib/locations";
 
 export type ItemId =
   | "bone"
@@ -22,16 +27,18 @@ export type ItemId =
   | "healthPotion"
   | "boneNecklace"
   | "slime"
+  | "slimeJar"
+  | "slimeEgg"
   | "rottenFlesh"
   | "taintedFlesh"
   | "trollTooth"
+  | "trollHeart"
   | "mushroom"
   | "certificateOfAchievement"
   | "bigStick"
   | "leather"
   | "leatherTunic"
   | "bottle"
-  | "slimeJar"
   | "rope"
   | "boneClub"
   | "memory"
@@ -52,7 +59,12 @@ export type ItemId =
   | "ironChestplate"
   | "ironBoots"
   | "carvingStone"
-  | "guildStone";
+  | "guildStone"
+  | "fireballRing"
+  | "spore"
+  | "fungalCore"
+  | "unnaturalHeart"
+  | "faruluHead";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -75,9 +87,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Constitution: 0,
       Intelligence: 1,
     },
-    getDamageResistances: [
-      { amount: 1, type: DamageType.Slashing },
-    ],
+    getDamageResistances: [{ amount: 1, type: DamageType.Slashing }],
   } satisfies EquipmentDefinition,
   eyeball: {
     getName: "Eyeball",
@@ -133,6 +143,13 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0.1,
     getSellValue: 1,
   },
+  slimeEgg: {
+    getName: "Slime Embryo",
+    tags: [],
+    description: "A small, pulsating ball of slime. Maybe it will hatch?",
+    getWeight: 1,
+    getSellValue: 25,
+  },
   rottenFlesh: {
     getName: "Rotten Flesh",
     tags: [],
@@ -153,6 +170,13 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: "This yellow tooth is bigger than any you've seen.",
     getWeight: 0.2,
     getSellValue: 2,
+  },
+  trollHeart: {
+    getName: "Troll Heart",
+    tags: [],
+    description: "A overgrown, pulsating heart. It feels warm to the touch.",
+    getWeight: 2,
+    getSellValue: 10,
   },
   mushroom: {
     getName: "Mushroom",
@@ -351,9 +375,9 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 4,
     getSellValue: 10,
     getAbilities: (creature, item) => [
-      Abilities.attack("Chop", "A basic chop attack with a simple axe.", 1.8,
-        [{ amount: 6, type: DamageType.Piercing }]
-      ),
+      Abilities.attack("Chop", "A basic chop attack with a simple axe.", 1.8, [
+        { amount: 6, type: DamageType.Piercing },
+      ]),
     ],
   } satisfies EquipmentDefinition,
   ironMace: {
@@ -544,6 +568,110 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
           ]
         : [],
   },
+  fireballRing: {
+    getName: "Fireball Ring",
+    tags: [ItemTag.Equipment],
+    description: "A ring that allows you to cast fireball.",
+    getWeight: 0.5,
+    getSellValue: 100,
+    slot: EquipmentSlot.Hands,
+    getAbilities: (creature, item) => [
+      Abilities.attackWithStatusEffect(
+        "Fireball",
+        "Throw a fireball.",
+        5,
+        [{ amount: 10, type: DamageType.Fire }],
+        [
+          {
+            id: "burning",
+            strength: 5,
+            duration: 3, // Duration in seconds
+          },
+        ]
+      ),
+    ],
+  },
+  spore: {
+    getName: "Spore",
+    tags: [ItemTag.Consumable],
+    description: "A small spore.",
+    getWeight: 0.1,
+    getSellValue: 5,
+  },
+  fungalCore: {
+    getName: "Fungal Core",
+    tags: [],
+    description: "A core of a giant mushroom.",
+    getWeight: 5,
+    getSellValue: 40,
+  },
+  unnaturalHeart: {
+    getName: "Unnatural Heart",
+    tags: [ItemTag.Consumable],
+    description:
+      "A troll heart, infested with spores and covered in slime, that beats unnaturally.",
+    getWeight: 10,
+    getSellValue: 100,
+    getAbilities: (creature, item) =>
+      creature.location.startsWith("dungeon-") &&
+      creature.location !== "dungeon-entrance"
+        ? [
+            {
+              name: "Challenge Farulu, Fungal Abomination",
+              getDescription: "Challenge Farulu, the Fungal Abomination.",
+              getCooldown: 60,
+              getTargetCount: 1,
+              canTarget: CanTarget.isTargetALocation,
+              activate: (creature, targets) => {
+                const target = targets[0] as DungeonLocation;
+
+                if (!("floor" in target)) {
+                  getIo().sendMsgToPlayer(
+                    creature._id.toString(),
+                    "You can only challenge Farulu in the dungeon."
+                  );
+                  return false;
+                }
+
+                target.entities.add(new CreatureInstance("farulu", target.id));
+
+                const io = getIo();
+                io.sendMsgToPlayer(
+                  creature._id.toString(),
+                  "You challenge Farulu, the Fungal Abomination!"
+                );
+                io.updateGameStateForRoom(target.id);
+
+                return true;
+              },
+            },
+          ]
+        : [],
+  } satisfies ConsumableDefinition,
+  faruluHead: {
+    getName: "Farulu's Head",
+    tags: [ItemTag.Equipment],
+    description:
+      "The head of Farulu, the Fungal Abomination. It is still twitching.",
+    getWeight: 10,
+    getSellValue: 200,
+    slot: EquipmentSlot.Head,
+    getAbilities: (creature, item) => [
+      Abilities.attackWithStatusEffect(
+        "Spore Explosion",
+        "Explode with spores, dealing damage and infesting nearby creatures.",
+        5,
+        [{ amount: 15, type: DamageType.Piercing }],
+        [
+          {
+            id: "infested",
+            strength: 10,
+            duration: 5, // Duration in seconds
+          },
+        ]
+      ),
+    ],
+  } satisfies EquipmentDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;

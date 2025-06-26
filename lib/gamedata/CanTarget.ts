@@ -1,4 +1,5 @@
 import { CreatureInstance } from "lib/types/entities/creature";
+import { Location } from "lib/types/Location";
 import { Targetable } from "lib/types/types";
 
 export function and(
@@ -29,6 +30,13 @@ export function isTargetACreature(
   return "definitionId" in target && "health" in target;
 }
 
+export function isTargetALocation(
+  creature: CreatureInstance,
+  target: Targetable
+): target is Location {
+  return "entities" in target && "exits" in target;
+}
+
 export function isPlayer(
   creature: CreatureInstance,
   target: Targetable
@@ -43,9 +51,7 @@ export function isSelf(
   creature: CreatureInstance,
   target: Targetable
 ): boolean {
-  return (
-    (isTargetACreature(creature, target) && creature === target)
-  );
+  return isTargetACreature(creature, target) && creature === target;
 }
 
 export function notAtMaxHealth(
