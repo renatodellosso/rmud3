@@ -16,7 +16,6 @@ import * as CanTarget from "lib/gamedata/CanTarget";
 import { Location } from "lib/types/Location";
 import { DungeonLocation } from "lib/dungeongeneration/types";
 import { CreatureInstance } from "lib/types/entities/creature";
-import locations from "lib/locations";
 
 export type ItemId =
   | "bone"
@@ -64,7 +63,11 @@ export type ItemId =
   | "spore"
   | "fungalCore"
   | "unnaturalHeart"
-  | "faruluHead";
+  | "faruluHead"
+  | "faruluHands"
+  | "fungalSpear"
+  | "fungalSword"
+  | "paddedBoots";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -652,7 +655,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getName: "Farulu's Head",
     tags: [ItemTag.Equipment],
     description:
-      "The head of Farulu, the Fungal Abomination. It is still twitching.",
+      "The head of Farulu, the Fungal Abomination. It is still twitching. Reduces all damage taken by 1.",
     getWeight: 10,
     getSellValue: 200,
     slot: EquipmentSlot.Head,
@@ -671,7 +674,92 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         ]
       ),
     ],
+    getDamageResistances: [{ amount: 1, type: "*" }],
   } satisfies EquipmentDefinition,
+  faruluHands: {
+    getName: "Farulu's Hands",
+    tags: [ItemTag.Equipment],
+    description:
+      "The hands of Farulu, the Fungal Abomination. Slimy, but you could stick your hands in. Reduces all damage taken by 1.",
+    getWeight: 10,
+    getSellValue: 200,
+    slot: EquipmentSlot.Hands,
+    getAbilities: (creature, item) => [
+      Abilities.attackWithStatusEffect(
+        "Spore Punch",
+        "A powerful punch that infests the target with spores.",
+        2.5,
+        [{ amount: 7, type: DamageType.Bludgeoning }],
+        [
+          {
+            id: "infested",
+            strength: 8,
+            duration: 4, // Duration in seconds
+          },
+        ]
+      ),
+    ],
+    getDamageResistances: [{ amount: 1, type: "*" }],
+  } satisfies EquipmentDefinition,
+  fungalSpear: {
+    getName: "Fungal Spear",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: "A fungus-covered spear.",
+    getWeight: 4,
+    getSellValue: 40,
+    getAbilities: (creature, item) => [
+      Abilities.attackWithStatusEffect(
+        "Stab",
+        "A basic stab attack.",
+        1.5,
+        [{ amount: 7, type: DamageType.Piercing }],
+        [
+          {
+            id: "infested",
+            strength: 5,
+            duration: 3, // Duration in seconds
+          },
+        ]
+      ),
+    ],
+  } satisfies EquipmentDefinition,
+  fungalSword: {
+    getName: "Fungal Sword",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: "A fungus-covered sword.",
+    getWeight: 4,
+    getSellValue: 40,
+    getAbilities: (creature, item) => [
+      Abilities.attackWithStatusEffect(
+        "Slash",
+        "A basic slash attack.",
+        3,
+        [{ amount: 12, type: DamageType.Slashing }],
+        [
+          {
+            id: "infested",
+            strength: 6,
+            duration: 3, // Duration in seconds
+          },
+        ]
+      ),
+    ],
+  } satisfies EquipmentDefinition,
+  paddedBoots: {
+    getName: "Padded Boots",
+    tags: [ItemTag.Equipment],
+    description:
+      "A pair of boots, padded with- well, don't ask. Reduces all damage taken by 2 and bludgeoning damage by an extra 1.",
+    getWeight: 2,
+    getSellValue: 40,
+    slot: EquipmentSlot.Legs,
+    getDamageResistances: [
+      { amount: 2, type: "*" },
+      { amount: 1, type: DamageType.Bludgeoning },
+    ],
+  },
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;

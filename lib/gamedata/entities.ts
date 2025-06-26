@@ -653,6 +653,11 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             amount: 1,
             weight: 1,
           },
+          {
+            item: "faruluHands",
+            amount: 1,
+            weight: 1,
+          },
         ]),
         amount: 1,
         chance: 1,
@@ -1213,6 +1218,27 @@ const entities: Record<EntityId, EntityDefinition> = {
           { ironBar: 5 },
           {
             definitionId: "ironBoots",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { ironBar: 10, spore: 5 },
+          {
+            definitionId: "fungalSpear",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { ironBar: 10, spore: 5 },
+          {
+            definitionId: "fungalSpear",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { ironBar: 10, spore: 5, slime: 5, leather: 5 },
+          {
+            definitionId: "paddedBoots",
             amount: 1,
           }
         ),
