@@ -49,6 +49,7 @@ export default function ItemTooltip({
       <h1 className="text-lg">
         {getFromOptionalFunc(def.getName, item)} x{item.amount}
       </h1>
+      {def.tags.length ? <div>Tags: {def.tags.join(", ")}</div> : <></>}
       <div>
         {item.amount * weight} kg total, {weight} kg each
       </div>

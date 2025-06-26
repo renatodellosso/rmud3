@@ -67,7 +67,10 @@ export type ItemId =
   | "faruluHands"
   | "fungalSpear"
   | "fungalSword"
-  | "paddedBoots";
+  | "paddedBoots"
+  | "finalStandEarring"
+  | "possessedSkull"
+  | "hordeFlute";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -327,10 +330,20 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getName: "Repulsive Necklace",
     tags: [ItemTag.Equipment],
     description:
-      "A necklace made of all things disturbing. Increases damage by 1.",
+      "A necklace made of all things disturbing. Turns physical damage you deal into psychic damage.",
     getWeight: 0.5,
     getSellValue: 15,
     // I want this to do something weird but I haven't thought of something clever yet
+    getDamageToDeal: (creature, source, damage) =>
+      damage.map((d) => ({
+        amount: d.amount,
+        type:
+          d.type == DamageType.Bludgeoning ||
+          d.type === DamageType.Slashing ||
+          d.type === DamageType.Piercing
+            ? DamageType.Psychic
+            : d.type,
+      })),
   } as EquipmentDefinition,
   coal: {
     getName: "Coal",
@@ -522,7 +535,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description:
       "A stone that represents your guild. Give this to someone to invite them to your guild.",
     getWeight: 1,
-    getSellValue: 100,
+    getSellValue: 0,
     tags: [ItemTag.Consumable],
     getAbilities: (creature, item) =>
       creature.location === "clearing"
@@ -612,44 +625,40 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getName: "Unnatural Heart",
     tags: [ItemTag.Consumable],
     description:
-      "A troll heart, infested with spores and covered in slime, that beats unnaturally.",
+      "A troll heart, infested with spores and covered in slime, that beats unnaturally. Use to challenge Farulu, the Fungal Abomination.",
     getWeight: 10,
     getSellValue: 100,
-    getAbilities: (creature, item) =>
-      creature.location.startsWith("dungeon-") &&
-      creature.location !== "dungeon-entrance"
-        ? [
-            {
-              name: "Challenge Farulu, Fungal Abomination",
-              getDescription: "Challenge Farulu, the Fungal Abomination.",
-              getCooldown: 60,
-              getTargetCount: 1,
-              canTarget: CanTarget.isTargetALocation,
-              activate: (creature, targets) => {
-                const target = targets[0] as DungeonLocation;
+    getAbilities: (creature, item) => [
+      {
+        name: "Challenge Farulu, Fungal Abomination",
+        getDescription: "Challenge Farulu, the Fungal Abomination.",
+        getCooldown: 60,
+        getTargetCount: 1,
+        canTarget: CanTarget.isTargetALocation,
+        activate: (creature, targets) => {
+          const target = targets[0] as DungeonLocation;
 
-                if (!("floor" in target)) {
-                  getIo().sendMsgToPlayer(
-                    creature._id.toString(),
-                    "You can only challenge Farulu in the dungeon."
-                  );
-                  return false;
-                }
+          if (!("floor" in target)) {
+            getIo().sendMsgToPlayer(
+              creature._id.toString(),
+              "You can only challenge Farulu in the dungeon."
+            );
+            return false;
+          }
 
-                target.entities.add(new CreatureInstance("farulu", target.id));
+          target.entities.add(new CreatureInstance("farulu", target.id));
 
-                const io = getIo();
-                io.sendMsgToPlayer(
-                  creature._id.toString(),
-                  "You challenge Farulu, the Fungal Abomination!"
-                );
-                io.updateGameStateForRoom(target.id);
+          const io = getIo();
+          io.sendMsgToPlayer(
+            creature._id.toString(),
+            "You challenge Farulu, the Fungal Abomination!"
+          );
+          io.updateGameStateForRoom(target.id);
 
-                return true;
-              },
-            },
-          ]
-        : [],
+          return true;
+        },
+      },
+    ],
   } satisfies ConsumableDefinition,
   faruluHead: {
     getName: "Farulu's Head",
@@ -760,6 +769,81 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       { amount: 1, type: DamageType.Bludgeoning },
     ],
   },
+  finalStandEarring: {
+    getName: "Final Stand Earring",
+    tags: [ItemTag.Equipment],
+    description: `Somehow, the piercing never stops bleeding. Deal 50% more damage when below 20% health, 
+      but take 10% more damage at any amount of health.`,
+    getWeight: 0.1,
+    getSellValue: 100,
+    getDamageToDeal: (creature, source, damage) =>
+      damage.map((d) => ({
+        amount:
+          creature.health < 0.2 * creature.getMaxHealth()
+            ? d.amount * 1.5
+            : d.amount,
+        type: d.type,
+      })),
+    getDamageToTake: (creature, source, damage) =>
+      damage.map((d) => ({
+        amount: d.amount * 1.1,
+        type: d.type,
+      })),
+  } satisfies EquipmentDefinition,
+  possessedSkull: {
+    getName: "Possessed Skull",
+    tags: [ItemTag.Equipment],
+    description: `A skull that seems to have a mind of its own. It whispers to you, but you can't understand it. 
+      Reduces damage you take by 20%, if that damage would otherwise kill you`,
+    getWeight: 1,
+    getSellValue: 50,
+    slot: EquipmentSlot.Head,
+    getDamageToTake: (creature, source, damage) =>
+      damage.map((d) => ({
+        amount: d.amount >= creature.health ? d.amount * 0.8 : d.amount,
+        type: d.type,
+      })),
+  } satisfies EquipmentDefinition,
+  hordeFlute: {
+    getName: "Horde Flute",
+    tags: [ItemTag.Consumable],
+    description: "A flute that summons a horde of zombies. Use wisely.",
+    getWeight: 0.5,
+    getSellValue: 25,
+    getAbilities: (creature, item) => [
+      {
+        name: "Summon Horde",
+        getDescription: "Summon a horde of zombies.",
+        getCooldown: 60,
+        getTargetCount: 1,
+        canTarget: CanTarget.isTargetALocation,
+        activate: (creature, targets) => {
+          const target = targets[0] as DungeonLocation;
+
+          if (!("floor" in target)) {
+            getIo().sendMsgToPlayer(
+              creature._id.toString(),
+              "You can only summon a horde in the dungeon."
+            );
+            return false;
+          }
+
+          for (let i = 0; i < 5; i++) {
+            target.entities.add(new CreatureInstance("zombie", target.id));
+          }
+
+          const io = getIo();
+          io.sendMsgToPlayer(
+            creature._id.toString(),
+            "You play the horde flute, summoning a horde of creatures!"
+          );
+          io.updateGameStateForRoom(target.id);
+
+          return true;
+        },
+      },
+    ],
+  } satisfies ConsumableDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;

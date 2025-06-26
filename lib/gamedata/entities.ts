@@ -1242,6 +1242,13 @@ const entities: Record<EntityId, EntityDefinition> = {
             amount: 1,
           }
         ),
+        new Recipe(
+          { ironBar: 5, bone: 5, memory: 5, trollTooth: 2 },
+          {
+            definitionId: "finalStandEarring",
+            amount: 1,
+          }
+        ),
       ])
     ),
   },
@@ -1356,6 +1363,28 @@ const entities: Record<EntityId, EntityDefinition> = {
           },
           {
             definitionId: "carvingStone",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          {
+            skull: 1,
+            memory: 10,
+            slime: 3,
+          },
+          {
+            definitionId: "possessedSkull",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          {
+            skull: 1,
+            bone: 5,
+            rottenFlesh: 5,
+          },
+          {
+            definitionId: "hordeFlute",
             amount: 1,
           }
         ),
