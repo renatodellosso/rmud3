@@ -140,6 +140,12 @@ input {
   transition: opacity 0.3s;
 }
 
+.tooltip .tooltip-text-right {
+  left: 100%;
+  margin-left: 8px;
+  right: auto;
+}
+
 .tooltip:hover .tooltip-text {
   visibility: visible;
   opacity: 1;

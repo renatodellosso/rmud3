@@ -18,10 +18,14 @@ import Ability from "lib/types/Ability";
 export default function ItemTooltip({
   item,
   creature,
+  side,
 }: {
   item: ItemInstance;
   creature: CreatureInstance;
+  side?: "left" | "right";
 }) {
+  side ??= "left"; // Default to left if side is not provided
+
   const def = items[item.definitionId];
 
   const isEquipment = def.tags.includes(ItemTag.Equipment);
@@ -45,7 +49,7 @@ export default function ItemTooltip({
     : [];
 
   return (
-    <span className="tooltip-text flex-col w-64 text-white">
+    <span className={`tooltip-text ${side === "right" && "tooltip-text-right"} flex-col w-64 text-white`}>
       <h1 className="text-lg">
         {getFromOptionalFunc(def.getName, item)} x{item.amount}
       </h1>

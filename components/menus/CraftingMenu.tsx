@@ -34,9 +34,9 @@ export default function CraftingMenu({
           Exit
         </button>
       </div>
-      <div className="h-full overflow-y-scroll">
+      <div className="h-full overflow-y-scroll overflow-x-hidden">
         <table className="border-separate border-spacing-y-2">
-          <thead className="sticky">
+          <thead>
             <tr>
               <th>Input (in inventory)</th>
               <th>Output (in inventory)</th>
@@ -66,6 +66,7 @@ export default function CraftingMenu({
                             amount: amt,
                           }}
                           creature={self}
+                          side="right"
                         />
                       </span>
                       {index < arr.length - 1 ? ", " : ""}
