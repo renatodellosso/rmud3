@@ -51,7 +51,6 @@ export type EntityId =
   | "anvil"
   | "furnace"
   | "workbench"
-  | "firepit"
   | "mystic"
   | "tavernKeeper"
   | "junkCollector"
@@ -59,7 +58,7 @@ export type EntityId =
   | "vault"
   | "menhir";
 
-const entities: Record<EntityId, EntityDefinition> = {
+const creatures: Record<CreatureId, CreatureDefinition> = {
   player: {
     name: "Player",
     health: 40,
@@ -704,6 +703,10 @@ const entities: Record<EntityId, EntityDefinition> = {
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
   } satisfies CreatureDefinition as CreatureDefinition,
+};
+
+const entities: Record<EntityId, EntityDefinition> = {
+  ...creatures,
   container: {
     name: "Container",
     interact: async (entity, player, interaction, action) =>
@@ -872,6 +875,20 @@ const entities: Record<EntityId, EntityDefinition> = {
             amount: 1,
           }
         ),
+        new Recipe(
+          { rottenFlesh: 1 },
+          {
+            definitionId: "leather",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { meat: 1 },
+          {
+            definitionId: "grilledMeat",
+            amount: 1,
+          }
+        ),
       ])
     ),
   },
@@ -936,30 +953,12 @@ const entities: Record<EntityId, EntityDefinition> = {
             amount: 1,
           }
         ),
-      ])
-    ),
-  },
-  firepit: {
-    name: "Firepit",
-    interact: craftingInteraction(
-      "Cooking at Firepit",
-      new RecipeGroup([
         new Recipe(
-          { rottenFlesh: 1 },
           {
-            definitionId: "leather",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { meat: 1 },
-          {
-            definitionId: "grilledMeat",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          {},
+            ironOre: 1,
+            bone: 5,
+            memory: 5,
+          },
           {
             definitionId: "carvingStone",
             amount: 1,
