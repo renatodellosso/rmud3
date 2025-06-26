@@ -14,6 +14,7 @@ import useGameState from "lib/hooks/useGameState";
 import useRedirectIfSessionIdIsNotPresent from "lib/hooks/useRedirectIfSessionIdIsNotPresent";
 import React from "react";
 import Guild from "../../lib/types/Guild";
+import { SnowOverlay } from "react-snow-overlay";
 
 enum Menu {
   PlayerInfo = "Player Info",
@@ -53,6 +54,12 @@ export default function Play() {
 
   return (
     <div className="h-screen w-screen overflow-hidden">
+      {gameState.self.health < 0.2 * gameState.self.getMaxHealth() && (
+        <SnowOverlay
+          color="rgba(255, 0, 0, 0.5)"
+          disabledOnSingleCpuDevices={true}
+        />
+      )}
       <div className="h-1/30 w-full flex border-b border-white">
         {Object.values(Menu)
           .filter((name) => name != Menu.Guild || gameState.guild)
