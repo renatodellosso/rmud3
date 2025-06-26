@@ -34,71 +34,73 @@ export default function CraftingMenu({
           Exit
         </button>
       </div>
-      <table className="border-separate border-spacing-y-2 overflow-y-scroll">
-        <thead>
-          <tr>
-            <th>Input (in inventory)</th>
-            <th>Output (in inventory)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {interaction.recipes!.map((recipe, index) => (
-            <tr key={index} className="hover:bg-gray-900">
-              <td>
-                {Object.entries(recipe.input).map(([id, amt], index, arr) => (
-                  <span key={id}>
-                    <span
-                      className={`${
-                        inventory.getCountById(id as ItemId) < amt
-                          ? "text-red-500"
-                          : ""
-                      } tooltip`}
-                    >
-                      {getFromOptionalFunc(items[id as ItemId].getName, {
-                        definitionId: id as ItemId,
-                        amount: amt,
-                      })}{" "}
-                      x{amt} ({inventory.getCountById(id as ItemId)})
-                      <ItemTooltip
-                        item={{
+      <div className="h-full overflow-y-scroll">
+        <table className="border-separate border-spacing-y-2">
+          <thead className="sticky">
+            <tr>
+              <th>Input (in inventory)</th>
+              <th>Output (in inventory)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {interaction.recipes!.map((recipe, index) => (
+              <tr key={index} className="hover:bg-gray-900">
+                <td>
+                  {Object.entries(recipe.input).map(([id, amt], index, arr) => (
+                    <span key={id}>
+                      <span
+                        className={`${
+                          inventory.getCountById(id as ItemId) < amt
+                            ? "text-red-500"
+                            : ""
+                        } tooltip`}
+                      >
+                        {getFromOptionalFunc(items[id as ItemId].getName, {
                           definitionId: id as ItemId,
                           amount: amt,
-                        }}
-                        creature={self}
-                      />
+                        })}{" "}
+                        x{amt} ({inventory.getCountById(id as ItemId)})
+                        <ItemTooltip
+                          item={{
+                            definitionId: id as ItemId,
+                            amount: amt,
+                          }}
+                          creature={self}
+                        />
+                      </span>
+                      {index < arr.length - 1 ? ", " : ""}
                     </span>
-                    {index < arr.length - 1 ? ", " : ""}
-                  </span>
-                ))}
-              </td>
-              <td>
-                {recipe.output.map((item, index) => (
-                  <span key={index} className="tooltip">
-                    {getFromOptionalFunc(
-                      items[item.definitionId].getName,
-                      item
-                    )}{" "}
-                    x{item.amount} ({inventory.get(item)?.amount ?? 0})
-                    <ItemTooltip item={item} creature={self} />
-                  </span>
-                ))}
-              </td>
-              <td>
-                <button
-                  onClick={() => craft(index)}
-                  disabled={
-                    !recipe.hasInput(inventory) ||
-                    !recipe.hasRoomForOutput(inventory)
-                  }
-                  className="px-1"
-                >
-                  Craft
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  ))}
+                </td>
+                <td>
+                  {recipe.output.map((item, index) => (
+                    <span key={index} className="tooltip">
+                      {getFromOptionalFunc(
+                        items[item.definitionId].getName,
+                        item
+                      )}{" "}
+                      x{item.amount} ({inventory.get(item)?.amount ?? 0})
+                      <ItemTooltip item={item} creature={self} />
+                    </span>
+                  ))}
+                </td>
+                <td>
+                  <button
+                    onClick={() => craft(index)}
+                    disabled={
+                      !recipe.hasInput(inventory) ||
+                      !recipe.hasRoomForOutput(inventory)
+                    }
+                    className="px-1"
+                  >
+                    Craft
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
