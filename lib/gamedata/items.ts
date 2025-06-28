@@ -613,6 +613,20 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: "A small spore.",
     getWeight: 0.1,
     getSellValue: 5,
+    getAbilities: (creature, item) => [
+      Abilities.applyStatusEffect(
+        "Infest",
+        "Infest a target with spores, dealing damage after a period of time.",
+        2,
+        [
+          {
+            id: "infested",
+            strength: 2,
+            duration: 4, // Duration in seconds
+          },
+        ]
+      ),
+    ],
   },
   fungalCore: {
     getName: "Fungal Core",
