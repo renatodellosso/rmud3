@@ -32,7 +32,7 @@ const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
   robust: {
     name: "Robust",
     type: ReforgeType.Other,
-    getMaxHealth: 1000,
+    getMaxHealth: 10,
   },
 } satisfies Record<ReforgeId, ReforgeDefinition>);
 
