@@ -4,7 +4,8 @@ export type ReforgeId =
   | "sharp" 
   | "fast"
   | "elegant"
-  | "reinforced";
+  | "reinforced"
+  | "robust";
 
 const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
   sharp: {
@@ -27,7 +28,12 @@ const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
     name: "Reinforced",
     type: ReforgeType.Armor,
     damageResistancePercent: 1.1,
-  }
+  },
+  robust: {
+    name: "Robust",
+    type: ReforgeType.Other,
+    getMaxHealth: 1000,
+  },
 } satisfies Record<ReforgeId, ReforgeDefinition>);
 
 export default reforges;
