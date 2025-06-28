@@ -180,7 +180,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
   trollHeart: {
     getName: "Troll Heart",
     tags: [],
-    description: "A overgrown, pulsating heart. It feels warm to the touch.",
+    description: "An overgrown, pulsating heart. It feels warm to the touch.",
     getWeight: 2,
     getSellValue: 10,
   },

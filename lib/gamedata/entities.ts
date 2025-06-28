@@ -518,7 +518,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
   },
   fungalCore: {
-    name: "Sentient Fungus",
+    name: "Fungal Core",
     health: 20,
     abilityScores: {
       [AbilityScore.Strength]: 2,
