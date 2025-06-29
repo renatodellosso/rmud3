@@ -1,4 +1,4 @@
-import { createServer } from "http";
+import { createServer, Server } from "http";
 import { parse } from "url";
 import next from "next";
 import dotenv from "dotenv";
@@ -17,36 +17,35 @@ const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev, turbopack: dev });
 const handle = app.getRequestHandler();
 
-const io = getSingleton(
-  "io",
-  () =>
-    new TypedServer({
-      cors: {
-        origin: "http://localhost:3000",
-      },
-      connectionStateRecovery: {
-        maxDisconnectionDuration: 10000, // 10 seconds
-      },
-    })
-)!;
+function startSocketIoServer(httpServer: Server) {
+  const io = getSingleton(
+    "io",
+    () =>
+      new TypedServer(httpServer, {
+        connectionStateRecovery: {
+          maxDisconnectionDuration: 10000, // 10 seconds
+        },
+      })
+  )!;
+
+  registerListeners(io);
+
+  io.listen(socketPort);
+  console.log(`> Socket.io server listening`);
+}
 
 app.prepare().then(() => {
-  createServer((req, res) => {
+  const httpServer = createServer((req, res) => {
     const parsedUrl = parse(req.url!, true);
     handle(req, res, parsedUrl);
-  }).listen(nextPort);
+  });
 
-  console.log(
-    `> Next.js Server listening at http://localhost:${nextPort} as ${
-      dev ? "development" : process.env.NODE_ENV
-    }`
-  );
+  startSocketIoServer(httpServer);
+
+  httpServer.listen(nextPort, () => {
+    console.log(`> Next.js server listening at http://localhost:${nextPort}`);
+  });
 });
-
-registerListeners(io);
-
-io.listen(socketPort);
-console.log(`> Socket.io server listening at http://localhost:${socketPort}`);
 
 setupLocations();
 startTicking();
