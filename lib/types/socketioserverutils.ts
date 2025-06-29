@@ -250,8 +250,8 @@ async function getClientGuild(guild: Guild): Promise<ClientGuild> {
         restoreFieldsAndMethods(
           {
             ...m,
-            isOnline: playerManager.isOnline.get(m._id.toString()),
-            isOwner: m._id.equals(guild.owner),
+            isOnline: playerManager.isOnline.get(m!._id.toString()),
+            isOwner: m!._id.equals(guild.owner),
           } as GuildMember,
           new PlayerInstance()
         ) as GuildMember
