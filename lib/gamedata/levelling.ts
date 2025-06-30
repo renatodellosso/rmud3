@@ -2,7 +2,7 @@ export function getXpForNextLevel(level: number): number {
   if (level < 1) {
     return 100;
   }
-  return 100 * Math.pow(1.1, level) + getXpForNextLevel(level - 1);
+  return Math.round(100 * Math.pow(1.1, level) + getXpForNextLevel(level - 1));
 }
 
 export const equipmentLimitByLevel: Record<number, number> = {
