@@ -923,7 +923,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   } satisfies EquipmentDefinition,
   dreamripper: {
-    getName: "dreamripper",
+    getName: "Dreamripper",
     tags: [ItemTag.Equipment],
     description:
       "A wicked dagger that seems to shimmer with a dark light. Voices from the other side whisper to you in your sleep.",
