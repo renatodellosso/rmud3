@@ -56,8 +56,6 @@ export default function reforgeInteraction(
       ) as ReforgeId;
     }
 
-    if (equipmentType === EquipmentSlot.Hands)
-
     player.equipment.items.at(action)!.reforge = newReforge;
 
     getIo().sendMsgToPlayer(
