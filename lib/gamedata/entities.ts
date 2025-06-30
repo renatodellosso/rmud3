@@ -1,6 +1,5 @@
 import {
   AbilityScore,
-  DamageType,
   LootTable,
   WeightedTable,
 } from "lib/types/types";
@@ -30,6 +29,7 @@ import { ItemInstance } from "lib/types/item";
 import { StatusEffectId } from "./statusEffects";
 import locations from "lib/locations";
 import reforgeInteraction from "./interactions/reforgeInteraction";
+import { DamageType } from "lib/types/Damage";
 
 export type CreatureId =
   | "player"
@@ -1305,117 +1305,35 @@ const entities: Record<EntityId, EntityDefinition> = {
     interact: craftingInteraction(
       "Crafting at Anvil",
       new RecipeGroup([
-        new Recipe(
-          { ironBar: 1 },
-          {
-            definitionId: "rustySword",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { ironBar: 3 },
-          {
-            definitionId: "ironSpear",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { ironBar: 3 },
-          {
-            definitionId: "ironAxe",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { ironBar: 3 },
-          {
-            definitionId: "ironMace",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { ironBar: 3 },
-          {
-            definitionId: "ironShortSword",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { ironBar: 3 },
-          {
-            definitionId: "ironLongSword",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { ironBar: 3 },
-          {
-            definitionId: "ironDagger",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { ironBar: 5 },
-          {
-            definitionId: "ironHelmet",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { ironBar: 5 },
-          {
-            definitionId: "ironChestplate",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { ironBar: 5 },
-          {
-            definitionId: "ironBoots",
-            amount: 1,
-          }
-        ),
+        new Recipe({ ironBar: 1 }, new ItemInstance("rustySword", 1)),
+        new Recipe({ ironBar: 3 }, new ItemInstance("ironSpear", 1)),
+        new Recipe({ ironBar: 3 }, new ItemInstance("ironAxe", 1)),
+        new Recipe({ ironBar: 3 }, new ItemInstance("ironMace", 1)),
+        new Recipe({ ironBar: 3 }, new ItemInstance("ironShortSword", 1)),
+        new Recipe({ ironBar: 3 }, new ItemInstance("ironLongSword", 1)),
+        new Recipe({ ironBar: 3 }, new ItemInstance("ironDagger", 1)),
+        new Recipe({ ironBar: 5 }, new ItemInstance("ironHelmet", 1)),
+        new Recipe({ ironBar: 5 }, new ItemInstance("ironChestplate", 1)),
+        new Recipe({ ironBar: 5 }, new ItemInstance("ironBoots", 1)),
         new Recipe(
           { ironBar: 10, spore: 5 },
-          {
-            definitionId: "fungalSpear",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { ironBar: 10, spore: 5 },
-          {
-            definitionId: "fungalSpear",
-            amount: 1,
-          }
+          new ItemInstance("fungalSpear", 1)
         ),
         new Recipe(
           { ironBar: 10, spore: 5, slime: 5, leather: 5 },
-          {
-            definitionId: "paddedBoots",
-            amount: 1,
-          }
+          new ItemInstance("paddedBoots", 1)
         ),
         new Recipe(
           { ironBar: 5, bone: 5, memory: 5, trollTooth: 2 },
-          {
-            definitionId: "finalStandEarring",
-            amount: 1,
-          }
+          new ItemInstance("finalStandEarring", 1)
         ),
         new Recipe(
           { ironBar: 12, memory: 10, nightmare: 1, ectoplasm: 5 },
-          {
-            definitionId: "spectralShield",
-            amount: 1,
-          }
+          new ItemInstance("spectralShield", 1)
         ),
         new Recipe(
           { ironBar: 10, trollTooth: 3, memory: 5, nightmare: 3, ectoplasm: 3 },
-          {
-            definitionId: "dreamripper",
-            amount: 1,
-          }
+          new ItemInstance("dreamripper", 1)
         ),
       ])
     ),
@@ -1425,40 +1343,16 @@ const entities: Record<EntityId, EntityDefinition> = {
     interact: craftingInteraction(
       "Crafting at Furnace",
       new RecipeGroup([
-        new Recipe(
-          { coal: 1, ironOre: 3 },
-          {
-            definitionId: "ironBar",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { rottenFlesh: 1 },
-          {
-            definitionId: "leather",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { meat: 1, coal: 1 },
-          {
-            definitionId: "grilledMeat",
-            amount: 1,
-          }
-        ),
+        new Recipe({ coal: 1, ironOre: 3 }, new ItemInstance("ironBar", 1)),
+        new Recipe({ rottenFlesh: 1 }, new ItemInstance("leather", 1)),
+        new Recipe({ meat: 1, coal: 1 }, new ItemInstance("grilledMeat", 1)),
         new Recipe(
           { salt: 3, meat: 1, coal: 1 },
-          {
-            definitionId: "saltedMeat",
-            amount: 1,
-          }
+          new ItemInstance("saltedMeat", 1)
         ),
         new Recipe(
           { salt: 5, meat: 2, mushroom: 3, coal: 3 },
-          {
-            definitionId: "delversMeal",
-            amount: 1,
-          }
+          new ItemInstance("delversMeal", 1)
         ),
         new Recipe(
           {
@@ -1468,20 +1362,14 @@ const entities: Record<EntityId, EntityDefinition> = {
             spore: 10,
             slime: 10,
           },
-          {
-            definitionId: "unnaturalHeart",
-            amount: 1,
-          }
+          new ItemInstance("unnaturalHeart", 1)
         ),
         new Recipe(
           {
             ectoplasm: 3,
             coal: 1,
           },
-          {
-            definitionId: "spectralDust",
-            amount: 2,
-          }
+          new ItemInstance("spectralDust", 1)
         ),
         new Recipe(
           {
@@ -1489,10 +1377,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             spectralDust: 1,
             spore: 3,
           },
-          {
-            definitionId: "dreamingDust",
-            amount: 1,
-          }
+          new ItemInstance("dreamingDust", 1)
         ),
       ])
     ),
@@ -1502,48 +1387,15 @@ const entities: Record<EntityId, EntityDefinition> = {
     interact: craftingInteraction(
       "Crafting at Workbench",
       new RecipeGroup([
-        new Recipe(
-          {},
-          {
-            definitionId: "bigStick",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { leather: 5 },
-          {
-            definitionId: "leatherTunic",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { bottle: 1, slime: 1 },
-          {
-            definitionId: "slimeJar",
-            amount: 1,
-          }
-        ),
-        new Recipe(
-          { leather: 1 },
-          {
-            definitionId: "rope",
-            amount: 5,
-          }
-        ),
+        new Recipe({}, new ItemInstance("bigStick", 1)),
+        new Recipe({ leather: 5 }, new ItemInstance("leatherTunic", 1)),
+        new Recipe({ bottle: 1, slime: 1 }, new ItemInstance("slimeJar", 1)),
+        new Recipe({ leather: 1 }, new ItemInstance("rope", 1)),
         new Recipe(
           { bone: 1, rope: 10, trollTooth: 1 },
-          {
-            definitionId: "boneNecklace",
-            amount: 1,
-          }
+          new ItemInstance("boneNecklace", 1)
         ),
-        new Recipe(
-          { bone: 20 },
-          {
-            definitionId: "boneClub",
-            amount: 1,
-          }
-        ),
+        new Recipe({ bone: 20 }, new ItemInstance("boneClub", 1)),
         new Recipe(
           {
             ratTail: 5,
@@ -1553,10 +1405,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             trollTooth: 2,
             skull: 1,
           },
-          {
-            definitionId: "repulsiveNecklace",
-            amount: 1,
-          }
+          new ItemInstance("repulsiveNecklace", 1)
         ),
         new Recipe(
           {
@@ -1564,10 +1413,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             bone: 5,
             memory: 5,
           },
-          {
-            definitionId: "carvingStone",
-            amount: 1,
-          }
+          new ItemInstance("carvingStone", 1)
         ),
         new Recipe(
           {
@@ -1575,10 +1421,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             memory: 10,
             slime: 3,
           },
-          {
-            definitionId: "possessedSkull",
-            amount: 1,
-          }
+          new ItemInstance("possessedSkull", 1)
         ),
         new Recipe(
           {
@@ -1586,10 +1429,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             bone: 5,
             rottenFlesh: 5,
           },
-          {
-            definitionId: "hordeFlute",
-            amount: 1,
-          }
+          new ItemInstance("hordeFlute", 1)
         ),
       ])
     ),
@@ -1809,13 +1649,10 @@ const entities: Record<EntityId, EntityDefinition> = {
             (item) =>
               new Recipe(
                 { [item.definitionId]: 1 },
-                {
-                  definitionId: "money",
-                  amount: getFromOptionalFunc(
-                    items[item.definitionId].getSellValue,
-                    item
-                  ),
-                }
+                new ItemInstance("money", getFromOptionalFunc(
+                  items[item.definitionId].getSellValue,
+                  item
+                ))
               )
           )
       );

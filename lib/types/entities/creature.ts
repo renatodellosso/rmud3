@@ -1,7 +1,6 @@
 import entities, { CreatureId, EntityId } from "lib/gamedata/entities";
 import {
   AbilityScore,
-  DamageType,
   LootTable,
   Targetable,
   WeightedTable,
@@ -31,6 +30,7 @@ import statusEffects, { StatusEffectId } from "lib/gamedata/statusEffects";
 import { DungeonLocation, FloorInstance } from "lib/dungeongeneration/types";
 import { DamageWithType } from "../types";
 import reforges from "lib/gamedata/Reforges";
+import { DamageType } from "../Damage";
 
 export type CreatureDefinition = EntityDefinition & {
   health: number;

@@ -1,8 +1,8 @@
 import Ability, { AbilitySource } from "./Ability";
+import { DamageType } from "./Damage";
 import { CreatureInstance } from "./entities/creature";
 import {
   AbilityScore,
-  DamageType,
   DamageWithType,
   OptionalFunc,
 } from "./types";

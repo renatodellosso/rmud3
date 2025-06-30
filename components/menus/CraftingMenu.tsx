@@ -5,7 +5,7 @@ import items, { ItemId } from "lib/gamedata/items";
 import ItemTooltip from "../ItemTooltip";
 import { CreatureInstance } from "lib/types/entities/creature";
 import { getFromOptionalFunc } from "../../lib/utils";
-import { ItemInstance } from "../../lib/types/item";
+import { ItemInstance } from '../../lib/types/item';
 
 export default function CraftingMenu({
   inventory,
@@ -55,16 +55,13 @@ export default function CraftingMenu({
                             : ""
                         } tooltip`}
                       >
-                        {getFromOptionalFunc(items[id as ItemId].getName, {
-                          definitionId: id as ItemId,
-                          amount: amt,
-                        })}{" "}
+                        {getFromOptionalFunc(
+                          items[id as ItemId].getName,
+                          new ItemInstance(id as ItemId, amt)
+                        )}{" "}
                         x{amt} ({inventory.getCountById(id as ItemId)})
                         <ItemTooltip
-                          item={{
-                            definitionId: id as ItemId,
-                            amount: amt,
-                          }}
+                          item={new ItemInstance(id as ItemId, amt)}
                           creature={self}
                           side="right"
                         />

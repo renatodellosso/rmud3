@@ -1,8 +1,8 @@
+import { DamageType } from "lib/types/Damage";
 import {
   StatusEffectDefinition,
   StatusEffectStacking,
 } from "lib/types/statuseffect";
-import { AbilityScore, DamageType } from "lib/types/types";
 
 export type StatusEffectId =
   | "stunned"
@@ -43,9 +43,9 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     description: "You are cursed, reducing your ability scores.",
     stacking: StatusEffectStacking.AddStrengthMaxDuration,
     getAbilityScores: {
-      [AbilityScore.Strength]: (creature, source) => -source.strength,
-      [AbilityScore.Constitution]: (creature, source) => -source.strength,
-      [AbilityScore.Intelligence]: (creature, source) => -source.strength,
+      Strength: (creature, source) => -source.strength,
+      Constitution: (creature, source) => -source.strength,
+      Intelligence: (creature, source) => -source.strength,
     },
   },
   burning: {
@@ -84,7 +84,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     description: "You are in a dream state, recovering health over time.",
     stacking: StatusEffectStacking.AddDurationMaxStrength,
     getAbilityScores: {
-      [AbilityScore.Intelligence]: (creature, source) => source.strength,
+      Intelligence: (creature, source) => source.strength,
     },
     getCooldown(creature, source, ability, cooldown) {
       return (cooldown * source.strength) / 10;

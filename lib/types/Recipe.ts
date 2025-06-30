@@ -23,7 +23,7 @@ export default class Recipe {
       ? output
       : typeof output === "object"
       ? [output]
-      : [{ definitionId: output, amount: 1 }];
+      : [new ItemInstance(output, 1)];
     this.isAllowToCraft = isAllowToCraft;
   }
 
@@ -42,10 +42,8 @@ export default class Recipe {
       : typeof output === "object"
       ? output.amount *
         getFromOptionalFunc(items[output.definitionId].getSellValue, output)
-      : getFromOptionalFunc(items[output].getSellValue, {
-          definitionId: output,
-          amount: 1,
-        });
+      : getFromOptionalFunc(items[output].getSellValue, 
+          new ItemInstance(output, 1));
 
     return new Recipe(
       {
@@ -102,10 +100,8 @@ export default class Recipe {
     return Object.entries(this.input)
       .map(([itemId, quantity]) => {
         const itemDef = items[itemId as ItemId];
-        return `${quantity}x ${getFromOptionalFunc(itemDef.getName, {
-          definitionId: itemId as ItemId,
-          amount: quantity,
-        })}`;
+        return `${quantity}x ${getFromOptionalFunc(itemDef.getName, 
+          new ItemInstance(itemId as ItemId, quantity))}`;
       })
       .join(", ");
   }

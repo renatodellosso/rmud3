@@ -73,7 +73,7 @@ export class DirectInventory implements Inventory {
       existingItem.amount += amountToAdd;
       return amountToAdd;
     } else {
-      this.items.push({ ...item, amount: amountToAdd });
+      this.items.push(new ItemInstance(item.definitionId, amountToAdd));
       return amountToAdd;
     }
   }

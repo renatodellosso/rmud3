@@ -1,9 +1,11 @@
-import { ReforgeId } from "lib/gamedata/Reforges";
-import { ItemId } from "../gamedata/items";
+import reforges, { ReforgeId } from "lib/gamedata/Reforges";
+import items, { EquipmentSlot, ItemId, ItemTag } from "../gamedata/items";
 import { AbilitySource } from "./Ability";
 import { CreatureInstance } from "./entities/creature";
 import StatAndAbilityProvider from "./StatAndAbilityProvider";
 import { DamageWithType, OptionalFunc } from "./types";
+import { getFromOptionalFunc } from "lib/utils";
+import { ObjectId } from "bson";
 
 export type ItemDefinition = {
   getName: OptionalFunc<string, [ItemInstance]>;
@@ -13,16 +15,35 @@ export type ItemDefinition = {
   getSellValue: OptionalFunc<number, [ItemInstance]>;
 };
 
-export type ItemInstance = {
+export class ItemInstance {
   definitionId: ItemId;
   amount: number;
   reforge?: ReforgeId;
-};
+  guildId?: ObjectId | undefined;
+  guildName?: string;
 
-export enum ItemTag {
-  Equipment = "Equipment",
-  Consumable = "Consumable",
-}
+  constructor(
+    definitionId: ItemId,
+    amount: number,
+    guildId?: ObjectId | undefined,
+    guildName?: string
+  ) {
+    this.definitionId = definitionId;
+    this.amount = amount;
+    this.guildId = guildId ?? undefined;
+    this.guildName = guildName ?? undefined;
+  }
+
+  getName(): string {
+    if (!this.reforge) {
+      return getFromOptionalFunc(items[this.definitionId].getName, this);
+    }
+    return `${reforges[this.reforge].name} ${getFromOptionalFunc(
+      items[this.definitionId].getName,
+      this
+    )}`;
+  }
+};
 
 export interface ActivatableItemDefinition<TSource extends AbilitySource>
   extends StatAndAbilityProvider<TSource> {
@@ -37,13 +58,6 @@ export type EquipmentDefinition = ActivatableItemDefinition<ItemInstance> &
     tags: [ItemTag.Equipment, ...ItemTag[]]; // Ensure Equipment always has the Equipment tag
     slot?: EquipmentSlot;
   };
-
-export enum EquipmentSlot {
-  Legs = "Legs",
-  Chest = "Chest",
-  Head = "Head",
-  Hands = "Hands",
-}
 
 export const equipmentSlotToMaxEquipped: Record<EquipmentSlot, number> = {
   Legs: 1,

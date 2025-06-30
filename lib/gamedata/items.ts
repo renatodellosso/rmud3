@@ -1,12 +1,9 @@
 import {
   ConsumableDefinition,
   EquipmentDefinition,
-  EquipmentSlot,
   ItemDefinition,
-  ItemTag,
 } from "lib/types/item";
 import * as Abilities from "lib/gamedata/Abilities";
-import { DamageType } from "lib/types/types";
 import { PlayerInstance } from "lib/types/entities/player";
 import { getIo } from "lib/ClientFriendlyIo";
 import Guild from "lib/types/Guild";
@@ -16,6 +13,19 @@ import * as CanTarget from "lib/gamedata/CanTarget";
 import { Location } from "lib/types/Location";
 import { DungeonLocation } from "lib/dungeongeneration/types";
 import { CreatureInstance } from "lib/types/entities/creature";
+import { DamageType } from "lib/types/Damage";
+
+export enum ItemTag {
+  Equipment = "Equipment",
+  Consumable = "Consumable",
+}
+
+export enum EquipmentSlot {
+  Legs = "Legs",
+  Chest = "Chest",
+  Head = "Head",
+  Hands = "Hands",
+}
 
 export type ItemId =
   | "bone"

@@ -1,8 +1,8 @@
 import { PlayerInstance } from "lib/types/entities/player";
 import { EntityInstance, Interaction } from "lib/types/entity";
 import reforges, { ReforgeId } from "../Reforges";
-import items from 'lib/gamedata/items';
-import { EquipmentDefinition, EquipmentSlot } from "lib/types/item";
+import items, { EquipmentSlot } from 'lib/gamedata/items';
+import { EquipmentDefinition } from "lib/types/item";
 import { getFromOptionalFunc, randInRangeInt } from "lib/utils";
 import { ReforgeType } from "lib/types/Reforge";
 import { getIo } from "lib/ClientFriendlyIo";

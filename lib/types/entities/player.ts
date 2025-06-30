@@ -4,7 +4,6 @@ import Inventory, { DirectInventory } from "../Inventory";
 import {
   AbilityScore,
   CannotDirectlyCreateInstanceError,
-  DamageType,
   OmitType,
   PlayerSave,
   Targetable,
@@ -17,10 +16,9 @@ import {
   ConsumableDefinition,
   EquipmentDefinition,
   ItemInstance,
-  ItemTag,
 } from "../item";
 import Ability, { AbilitySource, AbilityWithSource } from "../Ability";
-import items from "lib/gamedata/items";
+import items, { ItemTag } from "lib/gamedata/items";
 import { EquipmentHotbar } from "../Hotbar";
 import {
   getFromOptionalFunc,
@@ -36,6 +34,7 @@ import StatAndAbilityProvider from "../StatAndAbilityProvider";
 import Vault from "../Vault";
 import Guild from "../Guild";
 import reforges from "lib/gamedata/Reforges";
+import { DamageType } from "../Damage";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -308,10 +307,7 @@ export class PlayerInstance extends CreatureInstance {
       "amount" in source &&
       items[source.definitionId].tags.includes(ItemTag.Consumable)
     ) {
-      this.inventory.remove({
-        definitionId: source.definitionId,
-        amount: 1,
-      });
+      this.inventory.remove(new ItemInstance(source.definitionId, 1));
     }
 
     getIo().updateGameStateForRoom(location.id);
@@ -361,10 +357,7 @@ export function getDefaultPlayerAndProgress(
 
   instance.health = instance.getMaxHealth();
 
-  instance.equipment.equip(instance, {
-    definitionId: "rustySword",
-    amount: 1,
-  });
+  instance.equipment.equip(instance, new ItemInstance("rustySword", 1));
 
   const progress: PlayerProgress = {
     _id: instance.progressId,

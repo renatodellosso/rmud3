@@ -7,6 +7,7 @@ import LocationMap from "./LocationMap";
 import items, { ItemId } from "lib/gamedata/items";
 import { ItemDefinition, ItemInstance } from "./item";
 import Guild, { ClientGuild } from "./Guild";
+import { DamageType } from "./Damage";
 
 export type Targetable = EntityInstance | Location;
 
@@ -68,15 +69,6 @@ export type GameState = {
   map: LocationMap;
   guild: ClientGuild | undefined;
 };
-
-export enum DamageType {
-  Slashing = "Slashing",
-  Piercing = "Piercing",
-  Bludgeoning = "Bludgeoning",
-  Psychic = "Psychic",
-  Fire = "Fire",
-  Poison = "Poison",
-}
 
 type WeightedTableEntry<T> = {
   item: T;
@@ -154,10 +146,7 @@ export class LootTable {
         if (Math.random() <= entry.chance) {
           let rolledItem = entry.item.roll();
 
-          rolledItems.push({
-            definitionId: rolledItem.item,
-            amount: rolledItem.amount,
-          });
+          rolledItems.push(new ItemInstance(rolledItem.item, rolledItem.amount));
         }
       }
     }

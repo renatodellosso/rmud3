@@ -1,9 +1,8 @@
-import items from "lib/gamedata/items";
+import items, { ItemTag } from "lib/gamedata/items";
 import {
   EquipmentDefinition,
   equipmentSlotToMaxEquipped,
   ItemInstance,
-  ItemTag,
 } from "lib/types/item";
 import { getFromOptionalFunc } from "../lib/utils";
 import { CreatureInstance } from "lib/types/entities/creature";

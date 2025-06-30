@@ -1,9 +1,8 @@
-import items from "lib/gamedata/items";
+import items, { ItemTag } from "lib/gamedata/items";
 import {
   EquipmentDefinition,
   equipmentSlotToMaxEquipped,
   ItemInstance,
-  ItemTag,
 } from "./item";
 import { CreatureInstance } from "./entities/creature";
 import { PlayerInstance } from "./entities/player";
