@@ -10,17 +10,17 @@ export type ReforgeId =
 const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
   sharp: {
     name: "Sharp",
-    type: ReforgeType.Weapon,
+    type: ReforgeType.Hand,
     damageBonusPercent: 1.1,
   },
   fast: {
     name: "Fast",
-    type: ReforgeType.Weapon,
+    type: ReforgeType.Hand,
     cooldownPercent: 0.9,
   },
   elegant: {
     name: "Elegant",
-    type: ReforgeType.Weapon,
+    type: ReforgeType.Hand,
     damageBonusPercent: 1.05,
     cooldownPercent: 0.95,
   },

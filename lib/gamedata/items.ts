@@ -116,6 +116,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         [{ amount: 2, type: DamageType.Slashing }]
       ),
     ],
+    slot: EquipmentSlot.Hands,
   } satisfies EquipmentDefinition,
   money: {
     getName: "Silver Coins",
@@ -212,6 +213,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         { amount: 5, type: DamageType.Bludgeoning },
       ]),
     ],
+    slot: EquipmentSlot.Hands,
   },
   leather: {
     getName: "Leather",
@@ -271,6 +273,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: "A giant club made of bone.",
     getWeight: 15,
     getSellValue: 20,
+    slot: EquipmentSlot.Hands,
     getAbilityScores: {
       Strength: 3,
       Constitution: 0,

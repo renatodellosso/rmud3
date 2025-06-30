@@ -29,6 +29,7 @@ import Guild from "lib/types/Guild";
 import { ItemInstance } from "lib/types/item";
 import { StatusEffectId } from "./statusEffects";
 import locations from "lib/locations";
+import reforgeInteraction from "./interactions/reforgeInteraction";
 
 export type CreatureId =
   | "player"
@@ -63,7 +64,8 @@ export type EntityId =
   | "junkCollector"
   | "banker"
   | "vault"
-  | "menhir";
+  | "menhir"
+  | "reforgeAnvil";
 
 const creatures: Record<CreatureId, CreatureDefinition> = {
   player: {
@@ -1810,6 +1812,11 @@ const entities: Record<EntityId, EntityDefinition> = {
         return undefined;
       }
     },
+  },
+  reforgeAnvil: {
+    name: "Reforge Anvil",
+    interact: async (entity, player, interaction, action) =>
+      reforgeInteraction(entity, player, interaction, action, "Reforge Anvil"),
   },
 };
 

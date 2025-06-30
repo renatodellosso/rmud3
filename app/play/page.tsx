@@ -15,6 +15,7 @@ import useRedirectIfSessionIdIsNotPresent from "lib/hooks/useRedirectIfSessionId
 import React from "react";
 import Guild from "../../lib/types/Guild";
 import { SnowOverlay } from "react-snow-overlay";
+import ReforgeMenu from "@/components/menus/ReforgeMenu";
 
 enum Menu {
   PlayerInfo = "Player Info",
@@ -108,6 +109,12 @@ export default function Play() {
               />
             ) : interaction.type === "container" ? (
               <ContainerMenu
+                key={index}
+                interaction={interaction}
+                self={gameState.self}
+              />
+            ) : interaction.type === "reforge" ? (
+              <ReforgeMenu
                 key={index}
                 interaction={interaction}
                 self={gameState.self}
