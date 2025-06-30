@@ -41,8 +41,13 @@ export type ItemId =
   | "rope"
   | "boneClub"
   | "memory"
+  | "nightmare"
+  | "ectoplasm"
   | "meat"
   | "grilledMeat"
+  | "salt"
+  | "saltedMeat"
+  | "delversMeal"
   | "ratTail"
   | "repulsiveNecklace"
   | "coal"
@@ -70,7 +75,11 @@ export type ItemId =
   | "paddedBoots"
   | "finalStandEarring"
   | "possessedSkull"
-  | "hordeFlute";
+  | "hordeFlute"
+  | "spectralDust"
+  | "spectralShield"
+  | "dreamripper"
+  | "dreamingDust";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -302,6 +311,21 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 5,
     tags: [],
   },
+  nightmare: {
+    getName: "Nightmare",
+    description:
+      "A dark, twisted memory that haunts your dreams. It weighs on your mind.",
+    getWeight: 0.1,
+    getSellValue: 20,
+    tags: [],
+  },
+  ectoplasm: {
+    getName: "Ectoplasm",
+    description: "A slimy, ghostly substance that feels cold to the touch.",
+    getWeight: 0.2,
+    getSellValue: 5,
+    tags: [],
+  },
   meat: {
     getName: "Meat",
     description: "A chunk of meat from an unknown source.",
@@ -316,7 +340,27 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0.5,
     getSellValue: 3,
     getAbilities: (creature, item) => [
-      Abilities.heal("Heal", "Heal a small amount of health.", 0, 3),
+      Abilities.heal("Heal", "Heal a small amount of health.", 0, 5),
+    ],
+  } satisfies ConsumableDefinition,
+  saltedMeat: {
+    getName: "Salted Meat",
+    tags: [ItemTag.Consumable],
+    description: "A grilled and salted chunk of meat from an unknown source.",
+    getWeight: 0.6,
+    getSellValue: 5,
+    getAbilities: (creature, item) => [
+      Abilities.heal("Heal", "Heal a small amount of health.", 0, 10),
+    ],
+  } satisfies ConsumableDefinition,
+  delversMeal: {
+    getName: "Delver's Meal",
+    tags: [ItemTag.Consumable],
+    description: "A hearty meal made for dungeon delvers.",
+    getWeight: 2,
+    getSellValue: 25,
+    getAbilities: (creature, item) => [
+      Abilities.heal("Heal", "Heal a moderate amount of health.", 0, 20),
     ],
   } satisfies ConsumableDefinition,
   ratTail: {
@@ -856,6 +900,117 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
           return true;
         },
       },
+    ],
+  } satisfies ConsumableDefinition,
+  salt: {
+    getName: "Salt",
+    tags: [],
+    description: "A pinch of salt, useful for seasoning food.",
+    getWeight: 0.1,
+    getSellValue: 5,
+  },
+  spectralShield: {
+    getName: "Spectral Shield",
+    tags: [ItemTag.Equipment],
+    description:
+      "A shield that seems to be made of pure energy. It shimmers in the light.",
+    getWeight: 5,
+    getSellValue: 100,
+    slot: EquipmentSlot.Hands,
+    getDamageResistances: [
+      { amount: 3, type: "*" },
+      { amount: 5, type: DamageType.Psychic },
+    ],
+  } satisfies EquipmentDefinition,
+  dreamripper: {
+    getName: "dreamripper",
+    tags: [ItemTag.Equipment],
+    description:
+      "A wicked dagger that seems to shimmer with a dark light. Voices from the other side whisper to you in your sleep.",
+    getWeight: 0.2,
+    getSellValue: 150,
+    slot: EquipmentSlot.Hands,
+    getAbilities: (creature, item) => [
+      Abilities.attackWithStatusEffect(
+        "Dream Slash",
+        "A quick slash that rips through the fabric of dreams.",
+        1.2,
+        [
+          { amount: 8, type: DamageType.Piercing },
+          { amount: 2, type: DamageType.Psychic },
+        ],
+        [
+          {
+            id: "cursed",
+            strength: 1,
+            duration: 3, // Duration in seconds
+          },
+        ]
+      ),
+      Abilities.attackWithStatusEffect(
+        "Pierce the Veil",
+        "Pierce the veil between worlds, dealing damage and applying a curse. Deals 5 damage to yourself.",
+        3,
+        [
+          { amount: 10, type: DamageType.Piercing },
+          { amount: 5, type: DamageType.Psychic },
+        ],
+        [
+          {
+            id: "cursed",
+            strength: 2,
+            duration: 5, // Duration in seconds
+          },
+        ],
+        {
+          onActivate: (creature, targets, source) => {
+            const damage = creature.takeDamage(
+              [
+                {
+                  amount: 5,
+                  type: DamageType.Psychic,
+                },
+              ],
+              source
+            );
+
+            getIo().sendMsgToPlayer(
+              creature._id.toString(),
+              `You pierce the veil, dealing ${damage
+                .map((d) => `${d.amount} ${d.type}`)
+                .join(", ")} damage to yourself!`
+            );
+          },
+        }
+      ),
+    ],
+  },
+  spectralDust: {
+    getName: "Spectral Dust",
+    description: "A fine dust that seems to shimmer in the light.",
+    tags: [],
+    getWeight: 0.1,
+    getSellValue: 20,
+  },
+  dreamingDust: {
+    getName: "Dreaming Dust",
+    description: "A dust that seems to shimmer with a dark light.",
+    tags: [ItemTag.Consumable],
+    getWeight: 0.1,
+    getSellValue: 50,
+    getAbilities: (creature, item) => [
+      Abilities.applyStatusEffect(
+        "Inhale",
+        "Put the target into a dreaming state, slowing their mind, but heightening their senses.",
+        0,
+        [
+          {
+            id: "dreaming",
+            strength: 25,
+            duration: 60,
+          },
+        ]
+      ),
     ],
   } satisfies ConsumableDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);

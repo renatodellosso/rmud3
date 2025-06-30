@@ -1,6 +1,9 @@
-export const xpForNextLevel: number[] = [
-  100, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000,
-];
+export function getXpForNextLevel(level: number): number {
+  if (level < 1) {
+    return 100;
+  }
+  return 100 * Math.pow(1.1, level) + getXpForNextLevel(level - 1);
+}
 
 export const equipmentLimitByLevel: Record<number, number> = {
   1: 2,

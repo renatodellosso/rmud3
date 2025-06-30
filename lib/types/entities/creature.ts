@@ -183,7 +183,7 @@ export class CreatureInstance extends EntityInstance {
 
   takeDamage(
     damage: { amount: number; type: DamageType }[],
-    source: EntityInstance | StatusEffectInstance
+    source: AbilitySource
   ): { amount: number; type: DamageType }[] {
     let newDamage = damage.map((d) => ({ amount: d.amount, type: d.type }));
 

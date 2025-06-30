@@ -1,6 +1,11 @@
 import Ability, { AbilitySource } from "./Ability";
 import { CreatureInstance } from "./entities/creature";
-import { AbilityScore, DamageType, DamageWithType, OptionalFunc } from "./types";
+import {
+  AbilityScore,
+  DamageType,
+  DamageWithType,
+  OptionalFunc,
+} from "./types";
 
 export default interface StatAndAbilityProvider<
   TSource extends AbilitySource = AbilitySource
@@ -8,7 +13,7 @@ export default interface StatAndAbilityProvider<
   getAbilities?: OptionalFunc<Ability[], [CreatureInstance, TSource]>;
   getMaxHealth?: OptionalFunc<number, [CreatureInstance, TSource]>;
   getAbilityScores?: {
-    [score in AbilityScore]:
+    [score in AbilityScore]?:
       | OptionalFunc<number, [CreatureInstance, TSource]>
       | undefined;
   };
