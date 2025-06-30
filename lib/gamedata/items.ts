@@ -7,7 +7,7 @@ import * as Abilities from "lib/gamedata/Abilities";
 import { PlayerInstance } from "lib/types/entities/player";
 import { getIo } from "lib/ClientFriendlyIo";
 import Guild from "lib/types/Guild";
-import { savePlayer } from "lib/utils";
+import { chance, savePlayer } from "lib/utils";
 import reforges from "../gamedata/Reforges";
 import * as CanTarget from "lib/gamedata/CanTarget";
 import { Location } from "lib/types/Location";
@@ -63,6 +63,7 @@ export type ItemId =
   | "ironHelmet"
   | "ironChestplate"
   | "ironBoots"
+  | "backpack"
   | "carvingStone"
   | "guildStone"
   | "fireballRing"
@@ -75,7 +76,9 @@ export type ItemId =
   | "fungalSword"
   | "fungalChestplate"
   | "paddedBoots"
+  | "fungalBackpack"
   | "finalStandEarring"
+  | "indomitableEarring"
   | "possessedSkull"
   | "hordeFlute"
   | "spectralDust"
@@ -86,11 +89,14 @@ export type ItemId =
   | "dreamripper"
   | "dreamingDust"
   | "wakingDust"
+  | "phaseOutRing"
   | "spiderFang"
   | "venom"
   | "antidote"
   | "fangbearerAnklet"
-  | "spiderCloak";
+  | "spiderCloak"
+  | "mandibleHelmet"
+  | "theMaw";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -562,6 +568,15 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     slot: EquipmentSlot.Legs,
     getDamageResistances: [{ amount: 2, type: "*" }],
   } satisfies EquipmentDefinition,
+  backpack: {
+    getName: "Backpack",
+    description: "A sturdy backpack to carry your items.",
+    getWeight: 1,
+    getSellValue: 20,
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Back,
+    getCarryingCapacity: 25,
+  } satisfies EquipmentDefinition,
   carvingStone: {
     getName: "Carving Stone",
     description:
@@ -878,6 +893,16 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       { amount: 1, type: DamageType.Bludgeoning },
     ],
   },
+  fungalBackpack: {
+    getName: "Fungal Backpack",
+    tags: [ItemTag.Equipment],
+    description:
+      "A backpack made of tough fungal material. It has a strange smell.",
+    getWeight: 3,
+    getSellValue: 50,
+    slot: EquipmentSlot.Back,
+    getCarryingCapacity: 40,
+  } satisfies EquipmentDefinition,
   finalStandEarring: {
     getName: "Final Stand Earring",
     tags: [ItemTag.Equipment],
@@ -896,6 +921,27 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getDamageToTake: (creature, source, damage) =>
       damage.map((d) => ({
         amount: d.amount * 1.1,
+        type: d.type,
+      })),
+  } satisfies EquipmentDefinition,
+  indomitableEarring: {
+    getName: "Indomitable Earring",
+    tags: [ItemTag.Equipment],
+    description: `Somehow, the piercing never stops bleeding. Deal 70% more damage when below 30% health, 
+      but take 20% more damage at any amount of health.`,
+    getWeight: 0.1,
+    getSellValue: 100,
+    getDamageToDeal: (creature, source, damage) =>
+      damage.map((d) => ({
+        amount:
+          creature.health < 0.3 * creature.getMaxHealth()
+            ? d.amount * 1.7
+            : d.amount,
+        type: d.type,
+      })),
+    getDamageToTake: (creature, source, damage) =>
+      damage.map((d) => ({
+        amount: d.amount * 1.2,
         type: d.type,
       })),
   } satisfies EquipmentDefinition,
@@ -1128,6 +1174,14 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       },
     ],
   } satisfies ConsumableDefinition,
+  phaseOutRing: {
+    getName: "Phasing Ring",
+    tags: [ItemTag.Equipment],
+    description: `A ring that allows the wearer to phase out of reality temporarily. Grants a 5% chance to avoid damage taken.`,
+    getWeight: 0.2,
+    getSellValue: 400,
+    getDamageToTake: (creature, source, damage) => (chance(0.05) ? [] : damage),
+  } satisfies EquipmentDefinition,
   spiderFang: {
     getName: "Spider Fang",
     tags: [],
@@ -1206,6 +1260,65 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getDamageResistances: () => [
       {
         amount: 10,
+        type: DamageType.Poison,
+      },
+      {
+        amount: 3,
+        type: "*",
+      },
+    ],
+  } satisfies EquipmentDefinition,
+  mandibleHelmet: {
+    getName: "Mandible Helmet",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Head,
+    description: `A helmet made from the mandibles of giant spiders. Adds 3 poison damage to all attacks.`,
+    getWeight: 0.5,
+    getSellValue: 350,
+    getDamageResistances: () => [
+      {
+        amount: 5,
+        type: DamageType.Poison,
+      },
+      {
+        amount: 2,
+        type: "*",
+      },
+    ],
+    getDamageToDeal: (creature, source, damage) => [
+      ...damage,
+      {
+        amount: 3,
+        type: DamageType.Poison,
+      },
+    ],
+  } satisfies EquipmentDefinition,
+  theMaw: {
+    getName: "The Maw",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: `A savage helmet, covered in teeth and fangs`,
+    getWeight: 10,
+    getSellValue: 500,
+    getAbilities: (creature, item) => [
+      Abilities.attackWithStatusEffect(
+        "Bite",
+        "A powerful attack that bites into the target's flesh.",
+        5,
+        [{ amount: 20, type: DamageType.Piercing }],
+        [
+          {
+            id: "poisoned",
+            strength: 2,
+            duration: 10, // Duration in seconds
+          },
+        ]
+      ),
+    ],
+    getCooldown: (creature, source, ability, cooldown) => cooldown * 0.9,
+    getDamageResistances: () => [
+      {
+        amount: 8,
         type: DamageType.Poison,
       },
       {

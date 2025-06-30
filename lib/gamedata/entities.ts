@@ -1551,6 +1551,16 @@ const entities: Record<EntityId, EntityDefinition> = {
           new ItemInstance("finalStandEarring", 1)
         ),
         new Recipe(
+          {
+            finalStandEarring: 1,
+            spore: 10,
+            slime: 10,
+            slimeEgg: 1,
+            spiderFang: 1,
+          },
+          new ItemInstance("indomitableEarring", 1)
+        ),
+        new Recipe(
           { ironBar: 12, memory: 10, nightmare: 1, ectoplasm: 5 },
           new ItemInstance("spectralShield", 1)
         ),
@@ -1563,8 +1573,36 @@ const entities: Record<EntityId, EntityDefinition> = {
           new ItemInstance("dreamripper", 1)
         ),
         new Recipe(
+          {
+            ironBar: 10,
+            spectralDust: 5,
+            inertDust: 5,
+            salt: 5,
+            antidote: 2,
+          },
+          new ItemInstance("phaseOutRing", 1)
+        ),
+        new Recipe(
           { ironBar: 5, ironDagger: 1, venom: 5 },
           new ItemInstance("fangbearerAnklet", 1)
+        ),
+        new Recipe(
+          {
+            ironHelmet: 1,
+            silk: 5,
+            venom: 5,
+            spiderFang: 2,
+          },
+          new ItemInstance("mandibleHelmet", 1)
+        ),
+        new Recipe(
+          {
+            mandibleHelmet: 1,
+            spiderFang: 8,
+            venom: 12,
+            silk: 5,
+          },
+          new ItemInstance("theMaw", 1)
         ),
       ])
     ),
@@ -1657,6 +1695,22 @@ const entities: Record<EntityId, EntityDefinition> = {
             skull: 1,
           },
           new ItemInstance("repulsiveNecklace", 1)
+        ),
+        new Recipe(
+          {
+            leather: 5,
+            rope: 5,
+          },
+          new ItemInstance("backpack", 1)
+        ),
+        new Recipe(
+          {
+            backpack: 1,
+            spore: 5,
+            mushroom: 5,
+            slime: 5,
+          },
+          new ItemInstance("fungalBackpack", 1)
         ),
         new Recipe(
           {

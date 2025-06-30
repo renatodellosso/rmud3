@@ -65,6 +65,7 @@ export const equipmentSlotToMaxEquipped: Record<EquipmentSlot, number> = {
   Chest: 1,
   Head: 1,
   Hands: 2,
+  Back: 1,
 };
 
 export type ConsumableDefinition = ActivatableItemDefinition<ItemInstance> &

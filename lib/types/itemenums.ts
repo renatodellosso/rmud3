@@ -8,4 +8,5 @@ export enum EquipmentSlot {
   Chest = "Chest",
   Head = "Head",
   Hands = "Hands",
+  Back = "Back",
 }
