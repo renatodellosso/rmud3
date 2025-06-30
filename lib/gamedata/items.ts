@@ -73,6 +73,7 @@ export type ItemId =
   | "faruluHands"
   | "fungalSpear"
   | "fungalSword"
+  | "fungalChestplate"
   | "paddedBoots"
   | "finalStandEarring"
   | "possessedSkull"
@@ -846,6 +847,23 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         ]
       ),
     ],
+  } satisfies EquipmentDefinition,
+  fungalChestplate: {
+    getName: "Fungal Chestplate",
+    tags: [ItemTag.Equipment],
+    description: `A chestplate made of tough fungal material.`,
+    getWeight: 12,
+    getSellValue: 150,
+    slot: EquipmentSlot.Chest,
+    getDamageResistances: [
+      { amount: 2, type: "*" },
+      { amount: 1, type: DamageType.Bludgeoning },
+    ],
+    getAbilityScores: {
+      [AbilityScore.Strength]: 1,
+      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Intelligence]: 1,
+    },
   } satisfies EquipmentDefinition,
   paddedBoots: {
     getName: "Padded Boots",

@@ -1539,6 +1539,10 @@ const entities: Record<EntityId, EntityDefinition> = {
           new ItemInstance("fungalSpear", 1)
         ),
         new Recipe(
+          { ironBar: 10, spore: 5, slime: 5 },
+          new ItemInstance("fungalChestplate", 1)
+        ),
+        new Recipe(
           { ironBar: 10, spore: 5, slime: 5, leather: 5 },
           new ItemInstance("paddedBoots", 1)
         ),

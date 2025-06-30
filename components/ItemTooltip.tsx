@@ -10,6 +10,7 @@ import { CreatureInstance } from "lib/types/entities/creature";
 import AbilityDescription from "./AbilityDescription";
 import AbilityScore from "lib/types/AbilityScore";
 import Ability from "lib/types/Ability";
+import { DamageType } from "lib/types/Damage";
 
 /**
  * Put the class "tooltip" on the element that should show the tooltip.
@@ -115,6 +116,10 @@ function EquipmentDescription({
         .filter(({ value }) => value != 0) // Filter out undefined values
     : [];
 
+  const resistances = def.getDamageResistances
+    ? getFromOptionalFunc(def.getDamageResistances, creature, equipment)
+    : [];
+
   return (
     <div>
       <div>
@@ -139,6 +144,20 @@ function EquipmentDescription({
         </div>
       ) : (
         <div>No ability scores</div>
+      )}
+      {resistances.length > 0 ? (
+        <div>
+          <div><strong>Resistances</strong> (type: reduction)</div>
+          <ul>
+            {resistances.map((resistance) => (
+              <li key={resistance.type}>
+                {resistance.type === "*" ? "All" : resistance.type}: {resistance.amount}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <div>No resistances</div>
       )}
     </div>
   );
