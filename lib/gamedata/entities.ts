@@ -51,7 +51,8 @@ export type CreatureId =
   | "giantRat"
   | "saltGolem"
   | "spider"
-  | "spiderSpitter";
+  | "spiderSpitter"
+  | "ancientTroll";
 
 export type EntityId =
   | CreatureId
@@ -1352,6 +1353,89 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  },
+  ancientTroll: {
+    name: "Ancient Troll",
+    health: 60,
+    abilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 3,
+      [AbilityScore.Intelligence]: 1,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Slam",
+        "A powerful slam attack.",
+        4,
+        [{ amount: 15, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.isPlayer] }
+      ),
+      Abilities.attackWithStatusEffect(
+        "Ancient Rage",
+        "Unleash ancient rage.",
+        6,
+        [{ amount: 20, type: DamageType.Bludgeoning }],
+        [
+          {
+            id: "cursed",
+            strength: 2,
+            duration: 15,
+          },
+        ]
+      ),
+      Abilities.heal(
+        "Regenerate",
+        "Regenerate a large amount of health.",
+        20,
+        10,
+        {
+          targetRestrictions: [CanTarget.isSelf],
+        }
+      ),
+    ],
+    xpValue: 300,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "trollHeart",
+            amount: [2, 3],
+            weight: 1,
+          },
+          {
+            item: "trollTooth",
+            amount: [4, 6],
+            weight: 1,
+          },
+          {
+            item: "taintedFlesh",
+            amount: [3, 6],
+            weight: 1,
+          },
+          {
+            item: "dreamingDust",
+            amount: [1, 2],
+            weight: 0.5,
+          },
+          {
+            item: "carvingStone",
+            amount: 1,
+            weight: 0.5,
+          },
+        ]),
+        amount: 3,
+        chance: 1,
+      },
+    ]),
+    tick: (entity, deltaTime) => {
+      (entity as CreatureInstance).addHealth(deltaTime);
+
+      activateAbilityAndMoveRandomlyOnTick(
+        0.5,
+        selectRandomAbility,
+        0.03
+      )(entity, deltaTime);
+    },
   },
 };
 
