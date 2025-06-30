@@ -3,7 +3,7 @@ import { EntityInstance, Interaction } from "lib/types/entity";
 import reforges, { ReforgeId } from "../Reforges";
 import items from 'lib/gamedata/items';
 import { EquipmentDefinition, EquipmentSlot } from "lib/types/item";
-import { randInRangeInt } from "lib/utils";
+import { getFromOptionalFunc, randInRangeInt } from "lib/utils";
 import { ReforgeType } from "lib/types/Reforge";
 import { getIo } from "lib/ClientFriendlyIo";
 
@@ -60,7 +60,7 @@ export default function reforgeInteraction(
 
     getIo().sendMsgToPlayer(
       player._id.toString(),
-      `Reforged ${items[player.equipment.items.at(action)!.definitionId].getName} to ${reforges[newReforge].name}`
+      `Reforged ${getFromOptionalFunc(items[player.equipment.items.at(action)!.definitionId].getName, player.equipment.items.at(action)!)} to ${reforges[newReforge].name}`
     );
 
     return interaction;

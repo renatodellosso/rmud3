@@ -30,7 +30,7 @@ export default function ReforgeMenu({
         <table className="w-full border-separate border-spacing-y-2">
           <tbody>
             {self.equipment.items.map((item, index) => (
-              <tr>
+              <tr key={index}>
                 <td>
                   {getFromOptionalFunc(items[item.definitionId].getName, item)}
                 </td>
