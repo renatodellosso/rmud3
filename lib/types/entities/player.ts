@@ -136,7 +136,7 @@ export class PlayerInstance extends CreatureInstance {
 
   takeDamage(
     damage: { amount: number; type: DamageType }[],
-    source: EntityInstance
+    source: AbilitySource
   ): { amount: number; type: DamageType }[] {
     const damageTaken = super.takeDamage(damage, source);
 
