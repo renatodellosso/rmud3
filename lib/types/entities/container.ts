@@ -23,7 +23,7 @@ export class ContainerInstance extends EntityInstance {
       inventory = new DirectInventory(inventory);
     }
 
-    this.inventory = inventory;
+    this.inventory = inventory ?? new DirectInventory();
     this.deleteIfEmpty = deleteIfEmpty;
   }
 

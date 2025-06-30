@@ -1,4 +1,4 @@
-import { chance, randInRangeInt } from "lib/utils";
+import { chance, randInRangeInt, restoreFieldsAndMethods } from "lib/utils";
 import { Location } from "lib/types/Location";
 import { Dungeon, DungeonLocation, FloorInstance } from "./types";
 import { CreatureInstance } from "lib/types/entities/creature";
@@ -101,11 +101,14 @@ export function randomContainer(
       const entry = items.roll();
       const item =
         typeof entry.item === "string"
-          ? { definitionId: entry.item, amount: 1 }
-          : {
-              ...entry.item,
-              amount: entry.amount,
-            };
+          ? new ItemInstance(entry.item as ItemId, entry.amount)
+          : restoreFieldsAndMethods(
+              {
+                ...entry.item,
+                amount: entry.amount,
+              },
+              new ItemInstance(entry.item.definitionId, entry.amount)
+            );
 
       for (let j = 0; j < entry.amount; j++) {
         container.inventory.add(item);
