@@ -1,12 +1,13 @@
 import { socket } from "lib/socket";
 import { PlayerInstance } from "lib/types/entities/player";
 import { Interaction } from "lib/types/entity";
-import items from 'lib/gamedata/items';
+import items from "lib/gamedata/items";
 import { getFromOptionalFunc } from "lib/utils";
+import ItemTooltip from "../ItemTooltip";
 
 export default function ReforgeMenu({
-  interaction, 
-  self
+  interaction,
+  self,
 }: {
   interaction: Interaction;
   self: PlayerInstance;
@@ -31,8 +32,9 @@ export default function ReforgeMenu({
           <tbody>
             {self.equipment.items.map((item, index) => (
               <tr key={index}>
-                <td>
+                <td className="tooltip">
                   {getFromOptionalFunc(items[item.definitionId].getName, item)}
+                  <ItemTooltip item={item} creature={self} />
                 </td>
                 <td>
                   <button
