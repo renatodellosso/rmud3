@@ -1,9 +1,10 @@
 import { EntityId } from "lib/gamedata/entities";
 import { LocationId } from "lib/gamedata/rawLocations";
 import { EntityDefinition, EntityInstance } from "../entity";
-import Inventory from "../Inventory";
+import Inventory, { DirectInventory } from "../Inventory";
 import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";
+import { ItemInstance } from "../item";
 
 export class ContainerInstance extends EntityInstance {
   inventory: Inventory = undefined as unknown as Inventory;
@@ -11,13 +12,16 @@ export class ContainerInstance extends EntityInstance {
   deleteIfEmpty: boolean = false;
 
   constructor(
-    definitionId: EntityId = undefined as any,
     locationId: LocationId = undefined as any,
     name: string = undefined as any,
-    inventory: Inventory = undefined as any,
+    inventory: Inventory | ItemInstance[] = undefined as any,
     deleteIfEmpty: boolean = false
   ) {
-    super(definitionId, locationId, name);
+    super("container", locationId, name);
+
+    if (Array.isArray(inventory)) {
+      inventory = new DirectInventory(inventory);
+    }
 
     this.inventory = inventory;
     this.deleteIfEmpty = deleteIfEmpty;

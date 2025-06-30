@@ -278,7 +278,6 @@ export default function registerGameListeners(socket: TypedSocket) {
 
     const inventory = new DirectInventory([foundItem]);
     const container = new ContainerInstance(
-      "container",
       location.id,
       `${getFromOptionalFunc(items[item.definitionId].getName, foundItem)} x${
         foundItem.amount

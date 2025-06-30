@@ -4,6 +4,10 @@ import { Dungeon, DungeonLocation, FloorInstance } from "./types";
 import { CreatureInstance } from "lib/types/entities/creature";
 import entities, { CreatureId, EntityId } from "lib/gamedata/entities";
 import { EntityInstance } from "lib/types/entity";
+import { ItemInstance } from "lib/types/item";
+import { ContainerInstance } from "lib/types/entities/container";
+import { WeightedTable } from "lib/types/types";
+import { ItemId } from "lib/gamedata/items";
 
 export default function populateDungeon(dungeon: Dungeon) {
   let creatureCount = 0;
@@ -79,4 +83,36 @@ function addEntityToLocation(location: Location, defId: EntityId) {
       : new EntityInstance(defId, location.id);
   location.entities.add(entity);
   return entity;
+}
+
+export function randomContainer(
+  name: string,
+  items: WeightedTable<ItemInstance | ItemId>,
+  itemCount: number | [number, number] = 1
+): (location: DungeonLocation) => EntityInstance {
+  return (location) => {
+    const container = new ContainerInstance(location.id, name, undefined, true);
+
+    itemCount =
+      typeof itemCount === "number"
+        ? itemCount
+        : randInRangeInt(itemCount[0], itemCount[1]);
+    for (let i = 0; i < itemCount; i++) {
+      const entry = items.roll();
+      const item =
+        typeof entry.item === "string"
+          ? { definitionId: entry.item, amount: 1 }
+          : {
+              ...entry.item,
+              amount: entry.amount,
+            };
+
+      for (let j = 0; j < entry.amount; j++) {
+        container.inventory.add(item);
+      }
+    }
+
+    location.entities.add(container);
+    return container;
+  };
 }

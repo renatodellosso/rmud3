@@ -1,5 +1,8 @@
 import { WeightedTable } from "lib/types/types";
 import { Encounter, FloorDefinition } from "./types";
+import { ContainerInstance } from "lib/types/entities/container";
+import { randInRangeInt } from "lib/utils";
+import { randomContainer } from "./populateDungeon";
 
 const floors: Record<string, FloorDefinition> = {
   sewers: {
@@ -96,6 +99,21 @@ const floors: Record<string, FloorDefinition> = {
           amount: 1,
           weight: 0.2,
         },
+        {
+          item: randomContainer(
+            "Bone Pile",
+            new WeightedTable([
+              {
+                item: "bone",
+                amount: [1, 3],
+                weight: 1,
+              },
+            ]),
+            [1, 2]
+          ),
+          amount: 1,
+          weight: 0.3,
+        },
       ]),
     },
   },
@@ -167,7 +185,7 @@ const floors: Record<string, FloorDefinition> = {
     populationOptions: {
       encounterChance: 0.7,
       maxEncounters: 2,
-      encounters: new WeightedTable([
+      encounters: new WeightedTable<Encounter>([
         {
           item: "lostAdventurer",
           amount: 1,
@@ -208,6 +226,26 @@ const floors: Record<string, FloorDefinition> = {
           amount: 1,
           weight: 0.3,
         },
+        {
+          item: randomContainer(
+            "Ore Deposit",
+            new WeightedTable([
+              {
+                item: "salt",
+                amount: [1, 5],
+                weight: 1,
+              },
+              {
+                item: "coal",
+                amount: [1, 3],
+                weight: 1,
+              },
+            ]),
+            [1, 2]
+          ),
+          amount: 1,
+          weight: 0.4,
+        },
       ]),
     },
   },
@@ -228,7 +266,7 @@ const floors: Record<string, FloorDefinition> = {
     populationOptions: {
       encounterChance: 0.7,
       maxEncounters: 2,
-      encounters: new WeightedTable([
+      encounters: new WeightedTable<Encounter>([
         {
           item: "fungalZombie",
           amount: [1, 2],
@@ -258,6 +296,26 @@ const floors: Record<string, FloorDefinition> = {
           item: "fungalCore",
           amount: 1,
           weight: 0.3,
+        },
+        {
+          item: randomContainer(
+            "Mushroom Patch",
+            new WeightedTable([
+              {
+                item: "mushroom",
+                amount: [1, 3],
+                weight: 1,
+              },
+              {
+                item: "spore",
+                amount: [1, 4],
+                weight: 0.5,
+              },
+            ]),
+            [1, 2]
+          ),
+          amount: 1,
+          weight: 0.4,
         },
       ]),
     },

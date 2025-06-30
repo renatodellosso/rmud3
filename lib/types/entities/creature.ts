@@ -304,7 +304,6 @@ export class CreatureInstance extends EntityInstance {
     }
 
     const corpse = new ContainerInstance(
-      "container",
       this.location,
       `${this.name}'s Corpse`,
       inventory
