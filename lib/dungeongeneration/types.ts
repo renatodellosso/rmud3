@@ -1,6 +1,7 @@
 import { Range, Point, WeightedTable } from "../types/types";
 import { Location } from "../types/Location";
 import entities, { EntityId } from "lib/gamedata/entities";
+import { EntityInstance } from "lib/types/entity";
 
 export type Dungeon = {
   locations: (DungeonLocation | undefined)[][][];
@@ -79,7 +80,8 @@ export class MissingRoomsError extends Error {
 
 export type Encounter =
   | {
-      creature: EntityId;
+      entity: EntityId | ((location: DungeonLocation) => EntityInstance);
       amount: Range | number;
     }[]
-  | EntityId;
+  | EntityId
+  | ((location: DungeonLocation) => EntityInstance);
