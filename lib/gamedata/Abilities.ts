@@ -17,6 +17,18 @@ import reforges from "./Reforges";
 // IMPORTANT: If you're adding a new target check, add it as a function in CanTarget to avoid circular dependencies.
 // Not sure why that happens, but it does.
 
+export type AbilityOptions = {
+  onActivate?: (
+    creature: CreatureInstance,
+    targets: Targetable[],
+    source: AbilitySource
+  ) => void;
+  targetRestrictions?: ((
+    creature: CreatureInstance,
+    target: Targetable
+  ) => boolean)[];
+};
+
 function addToDescription(
   getDescription: OptionalFunc<string, CreatureInstance>,
   addition: string
@@ -32,10 +44,7 @@ export function attack(
   getDescription: OptionalFunc<string, CreatureInstance>,
   getCooldown: OptionalFunc<number, CreatureInstance>,
   damage: DamageWithType[],
-  targetRestrictions?: ((
-    creature: CreatureInstance,
-    target: Targetable
-  ) => boolean)[]
+  options: AbilityOptions = {}
 ): Ability {
   return {
     name,
@@ -48,7 +57,7 @@ export function attack(
     canTarget: CanTarget.and(
       CanTarget.notSelf,
       CanTarget.isTargetACreature,
-      ...(targetRestrictions ?? [])
+      ...(options.targetRestrictions ?? [])
     ),
     activate: (
       creature: CreatureInstance,
@@ -90,6 +99,8 @@ export function attack(
           .join(", ")}!`
       );
 
+      options.onActivate?.(creature, targets, source);
+
       return true;
     },
   };
@@ -103,10 +114,7 @@ export function applyStatusEffect(
   getDescription: OptionalFunc<string, CreatureInstance>,
   getCooldown: OptionalFunc<number, CreatureInstance>,
   effects: StatusEffectToApply[],
-  targetRestrictions?: ((
-    creature: CreatureInstance,
-    target: Targetable
-  ) => boolean)[]
+  options: AbilityOptions = {}
 ): Ability {
   return {
     name,
@@ -126,9 +134,9 @@ export function applyStatusEffect(
     getTargetCount: 1,
     canTarget: CanTarget.and(
       CanTarget.isTargetACreature,
-      ...(targetRestrictions ?? [])
+      ...(options.targetRestrictions ?? [])
     ),
-    activate: (creature: CreatureInstance, targets: Targetable[]) => {
+    activate: (creature: CreatureInstance, targets: Targetable[], source) => {
       for (const rawTarget of targets) {
         const target = rawTarget as CreatureInstance;
 
@@ -150,6 +158,8 @@ export function applyStatusEffect(
         }
       }
 
+      options.onActivate?.(creature, targets, source);
+
       return true;
     },
   };
@@ -161,17 +171,16 @@ export function attackWithStatusEffect(
   getCooldown: OptionalFunc<number, CreatureInstance>,
   damage: DamageWithType[],
   statusEffectsToApply: StatusEffectToApply[],
-  targetRestrictions?: ((
-    creature: CreatureInstance,
-    target: Targetable
-  ) => boolean)[]
+  options: AbilityOptions = {}
 ): Ability {
+  const { onActivate, ...otherOptions } = options;
+
   const { activate: attackFunc, getDescription: attackDescription } = attack(
     name,
     getDescription,
     getCooldown,
     damage,
-    targetRestrictions
+    options
   );
   const {
     activate: applyStatusEffectFunc,
@@ -181,9 +190,8 @@ export function attackWithStatusEffect(
     attackDescription as OptionalFunc<string, CreatureInstance>,
     getCooldown,
     statusEffectsToApply,
-    targetRestrictions
+    otherOptions
   );
-
   return {
     name,
     getDescription: applyStatusEffectDescription,
@@ -192,7 +200,7 @@ export function attackWithStatusEffect(
     canTarget: CanTarget.and(
       CanTarget.notSelf,
       CanTarget.isTargetACreature,
-      ...(targetRestrictions ?? [])
+      ...(options.targetRestrictions ?? [])
     ),
     activate: (creature: CreatureInstance, targets: Targetable[], source) =>
       attackFunc(creature, targets, source) &&
@@ -205,10 +213,7 @@ export function heal(
   getDescription: OptionalFunc<string, CreatureInstance>,
   getCooldown: OptionalFunc<number, CreatureInstance>,
   health: number,
-  targetRestrictions?: ((
-    creature: CreatureInstance,
-    target: Targetable
-  ) => boolean)[]
+  options: AbilityOptions = {}
 ): Ability {
   return {
     name,
@@ -218,9 +223,9 @@ export function heal(
     canTarget: CanTarget.and(
       CanTarget.isTargetACreature,
       CanTarget.notAtMaxHealth,
-      ...(targetRestrictions ?? [])
+      ...(options.targetRestrictions ?? [])
     ),
-    activate: (creature: CreatureInstance, targets: Targetable[]) => {
+    activate: (creature: CreatureInstance, targets: Targetable[], source) => {
       if (targets.length !== 1) {
         throw new Error(
           `Expected exactly one target for ability ${name}, but got ${targets.length}.`
@@ -239,6 +244,8 @@ export function heal(
           target === creature ? "themself" : target.name
         } for ${healthAdded} using ${name}!`
       );
+
+      options.onActivate?.(creature, targets, source);
 
       return true;
     },

@@ -49,8 +49,10 @@ export type CreatureId =
   | "goblinShaman"
   | "hobgoblin"
   | "ghost"
+  | "wraith"
   | "rat"
-  | "giantRat";
+  | "giantRat"
+  | "saltGolem";
 
 export type EntityId =
   | CreatureId
@@ -119,7 +121,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             type: DamageType.Bludgeoning,
           },
         ],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 100,
@@ -157,7 +159,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Bite an enemy.",
         3,
         [{ amount: 1, type: DamageType.Piercing }],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 15,
@@ -195,7 +197,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Slash an enemy with a bone sword.",
         4,
         [{ amount: 1, type: DamageType.Slashing }],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 10,
@@ -233,7 +235,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Slime.",
         4,
         [{ amount: 1, type: DamageType.Bludgeoning }],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 5,
@@ -266,7 +268,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Slime.",
         4,
         [{ amount: 1, type: DamageType.Bludgeoning }],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
       Abilities.applyStatusEffect(
         "Infest",
@@ -279,7 +281,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 5,
           },
         ],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 15,
@@ -326,11 +328,11 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Slam.",
         6,
         [{ amount: 5, type: DamageType.Bludgeoning }],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
-      Abilities.heal("Heal", "Recover a small amount of health.", 10, 5, [
-        CanTarget.isSelf,
-      ]),
+      Abilities.heal("Heal", "Recover a small amount of health.", 10, 5, {
+        targetRestrictions: [CanTarget.isSelf],
+      }),
     ],
     xpValue: 20,
     lootTable: new LootTable([
@@ -358,6 +360,69 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
   },
+  saltGolem: {
+    name: "Salt Golem",
+    health: 35,
+    abilityScores: {
+      [AbilityScore.Strength]: 3,
+      [AbilityScore.Constitution]: 2,
+      [AbilityScore.Intelligence]: 1,
+    },
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Slam",
+        "Slam.",
+        5,
+        [{ amount: 5, type: DamageType.Bludgeoning }],
+        [
+          {
+            id: "poisoned",
+            strength: 2,
+            duration: 10,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isPlayer] }
+      ),
+      Abilities.applyStatusEffect(
+        "Salt Poison",
+        "Inflict salt poison on an enemy.",
+        3,
+        [
+          {
+            id: "poisoned",
+            strength: 5,
+            duration: 3,
+          },
+        ]
+      ),
+    ],
+    xpValue: 25,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "carvingStone",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.2,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "salt",
+            amount: [1, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.2,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  },
   fungalZombie: {
     name: "Fungal Zombie",
     health: 20,
@@ -372,7 +437,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Bite an enemy.",
         3,
         [{ amount: 2, type: DamageType.Piercing }],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 20,
@@ -426,11 +491,11 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Slam.",
         5,
         [{ amount: 5, type: DamageType.Bludgeoning }],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
-      Abilities.heal("Heal", "Recover a small amount of health.", 10, 8, [
-        CanTarget.isSelf,
-      ]),
+      Abilities.heal("Heal", "Recover a small amount of health.", 10, 8, {
+        targetRestrictions: [CanTarget.isSelf],
+      }),
     ],
     xpValue: 30,
     lootTable: new LootTable([
@@ -495,7 +560,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 5,
           },
         ],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 25,
@@ -540,7 +605,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 3,
           },
         ],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
       Abilities.attackWithStatusEffect(
         "Mind Infect",
@@ -554,7 +619,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 2,
           },
         ],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 50,
@@ -610,7 +675,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 2,
           },
         ],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
       Abilities.attackWithStatusEffect(
         "Mind Infect",
@@ -624,11 +689,11 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 2,
           },
         ],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
-      Abilities.heal("Regenerate", "Regenerate health.", 5, 5, [
-        CanTarget.isSelf,
-      ]),
+      Abilities.heal("Regenerate", "Regenerate health.", 5, 5, {
+        targetRestrictions: [CanTarget.isSelf],
+      }),
     ],
     xpValue: 250,
     lootTable: new LootTable([
@@ -681,21 +746,21 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "A simple slashing attack.",
         3,
         [{ amount: 5, type: DamageType.Slashing }],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
       Abilities.attack(
         "Slam",
         "A simple bludgeoning attack.",
         5,
         [{ amount: 8, type: DamageType.Bludgeoning }],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
       Abilities.attack(
         "Stab",
         "A simple piercing attack.",
         2.5,
         [{ amount: 4, type: DamageType.Piercing }],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 40,
@@ -779,7 +844,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Are these descriptions even displayed anywhere?",
         3,
         [{ amount: 5, type: DamageType.Piercing }],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 15,
@@ -845,7 +910,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 3,
           },
         ],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
       Abilities.applyStatusEffect(
         "Curse",
@@ -858,7 +923,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 3,
           },
         ],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 20,
@@ -905,7 +970,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Are these descriptions even displayed anywhere?",
         2,
         [{ amount: 6, type: DamageType.Piercing }],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 25,
@@ -959,7 +1024,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "A spooky attack on the mind.",
         5,
         [{ amount: 5, type: DamageType.Psychic }],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 20,
@@ -974,6 +1039,93 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         ]),
         amount: 1,
         chance: 0.75,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ectoplasm",
+            amount: [1, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  },
+  wraith: {
+    name: "Wraith",
+    health: 45,
+    abilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 4,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Haunt",
+        "An invasive attack on the mind.",
+        4,
+        [{ amount: 9, type: DamageType.Psychic }],
+        { targetRestrictions: [CanTarget.isPlayer] }
+      ),
+      Abilities.applyStatusEffect(
+        "Fear",
+        "Instills a sense of dread in the target.",
+        3,
+        [
+          {
+            id: "cursed",
+            strength: 2,
+            duration: 3,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isPlayer] }
+      ),
+      Abilities.attackWithStatusEffect(
+        "Soul Drain",
+        "Drains the life force of an enemy.",
+        6,
+        [{ amount: 10, type: DamageType.Psychic }],
+        [
+          {
+            id: "cursed",
+            strength: 2,
+            duration: 3,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isPlayer] }
+      ),
+    ],
+    xpValue: 40,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "memory",
+            amount: [1, 3],
+            weight: 1,
+          },
+          {
+            item: "nightmare",
+            amount: 1,
+            weight: 0.5,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ectoplasm",
+            amount: [1, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
@@ -992,7 +1144,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "The rat nibbles you.",
         4,
         [{ amount: 2, type: DamageType.Piercing }],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 5,
@@ -1036,7 +1188,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "The rat snacks on you.",
         4,
         [{ amount: 4, type: DamageType.Piercing }],
-        [CanTarget.isPlayer]
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 10,
@@ -1251,6 +1403,20 @@ const entities: Record<EntityId, EntityDefinition> = {
             amount: 1,
           }
         ),
+        new Recipe(
+          { ironBar: 12, memory: 10, nightmare: 1, ectoplasm: 5 },
+          {
+            definitionId: "spectralShield",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { ironBar: 10, trollTooth: 3, memory: 5, nightmare: 3, ectoplasm: 3 },
+          {
+            definitionId: "dreamripper",
+            amount: 1,
+          }
+        ),
       ])
     ),
   },
@@ -1274,9 +1440,23 @@ const entities: Record<EntityId, EntityDefinition> = {
           }
         ),
         new Recipe(
-          { meat: 1 },
+          { meat: 1, coal: 1 },
           {
             definitionId: "grilledMeat",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { salt: 3, meat: 1, coal: 1 },
+          {
+            definitionId: "saltedMeat",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          { salt: 5, meat: 2, mushroom: 3, coal: 3 },
+          {
+            definitionId: "delversMeal",
             amount: 1,
           }
         ),
@@ -1290,6 +1470,27 @@ const entities: Record<EntityId, EntityDefinition> = {
           },
           {
             definitionId: "unnaturalHeart",
+            amount: 1,
+          }
+        ),
+        new Recipe(
+          {
+            ectoplasm: 3,
+            coal: 1,
+          },
+          {
+            definitionId: "spectralDust",
+            amount: 2,
+          }
+        ),
+        new Recipe(
+          {
+            nightmare: 1,
+            spectralDust: 1,
+            spore: 3,
+          },
+          {
+            definitionId: "dreamingDust",
             amount: 1,
           }
         ),

@@ -4,7 +4,13 @@ import {
 } from "lib/types/statuseffect";
 import { AbilityScore, DamageType } from "lib/types/types";
 
-export type StatusEffectId = "stunned" | "infested" | "cursed" | "burning";
+export type StatusEffectId =
+  | "stunned"
+  | "infested"
+  | "cursed"
+  | "burning"
+  | "poisoned"
+  | "dreaming";
 
 const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   stunned: {
@@ -44,7 +50,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   },
   burning: {
     name: "Burning",
-    description: "You are on fire, taking damage each turn.",
+    description: "You are on fire, taking a flat amount of damage each turn.",
     stacking: StatusEffectStacking.AddDurationMaxStrength,
     tick: (creature, deltaTime, source) =>
       creature.takeDamage(
@@ -56,6 +62,33 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
         ],
         source
       ),
+  },
+  poisoned: {
+    name: "Poisoned",
+    description:
+      "You are poisoned, taking damage each turn based on your current health.",
+    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    tick: (creature, deltaTime, source) =>
+      creature.takeDamage(
+        [
+          {
+            amount: ((source.strength * deltaTime) / 100) * creature.health,
+            type: DamageType.Poison,
+          },
+        ],
+        source
+      ),
+  },
+  dreaming: {
+    name: "Dreaming",
+    description: "You are in a dream state, recovering health over time.",
+    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    getAbilityScores: {
+      [AbilityScore.Intelligence]: (creature, source) => source.strength,
+    },
+    getCooldown(creature, source, ability, cooldown) {
+      return (cooldown * source.strength) / 10;
+    },
   },
 };
 

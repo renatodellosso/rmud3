@@ -31,7 +31,7 @@ import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";
 import { LocationId } from "lib/gamedata/rawLocations";
 import { EntityInstance } from "../entity";
-import { xpForNextLevel } from "lib/gamedata/levelling";
+import { getXpForNextLevel } from "lib/gamedata/levelling";
 import StatAndAbilityProvider from "../StatAndAbilityProvider";
 import Vault from "../Vault";
 import Guild from "../Guild";
@@ -190,7 +190,7 @@ export class PlayerInstance extends CreatureInstance {
     const io = getIo();
     io.sendMsgToPlayer(this._id.toString(), `You gained ${amount} XP!`);
 
-    if (this.xp >= xpForNextLevel[this.level]) this.levelUp();
+    if (this.xp >= getXpForNextLevel(this.level)) this.levelUp();
 
     io.updateGameState(this._id.toString());
     savePlayer(this);
