@@ -1,9 +1,9 @@
 import statusEffects from "lib/gamedata/statusEffects";
 import { getXpForNextLevel } from "lib/gamedata/levelling";
-import { AbilityScore, GameState } from "lib/types/types";
+import { GameState } from "lib/types/types";
+import AbilityScore from "lib/types/AbilityScore";
 import { difficultyOptions } from "../../lib/types/Difficulty";
 import DifficultyDescription from "../DifficultyDescription";
-import Guild from "lib/types/Guild";
 
 export default function PlayerInfoMenu({
   gameState: { self, guild },

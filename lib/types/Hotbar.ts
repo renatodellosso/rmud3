@@ -1,4 +1,5 @@
-import items, { ItemTag } from "lib/gamedata/items";
+import items from "lib/gamedata/items";
+import { ItemTag } from "lib/types/itemenums";
 import {
   EquipmentDefinition,
   equipmentSlotToMaxEquipped,

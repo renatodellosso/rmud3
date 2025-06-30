@@ -6,7 +6,7 @@ import entities, { CreatureId, EntityId } from "lib/gamedata/entities";
 import { EntityInstance } from "lib/types/entity";
 import { ItemInstance } from "lib/types/item";
 import { ContainerInstance } from "lib/types/entities/container";
-import { WeightedTable } from "lib/types/types";
+import { WeightedTable } from "lib/types/WeightedTable";
 import { ItemId } from "lib/gamedata/items";
 
 export default function populateDungeon(dungeon: Dungeon) {

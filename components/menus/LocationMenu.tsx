@@ -1,5 +1,5 @@
 import { socket } from "lib/socket";
-import { AbilityScore, GameState } from "lib/types/types";
+import { GameState } from "lib/types/types";
 
 export default function LocationMenu({ gameState }: { gameState: GameState }) {
   return (

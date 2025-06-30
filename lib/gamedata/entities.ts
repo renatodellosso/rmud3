@@ -1,8 +1,6 @@
-import {
-  AbilityScore,
-  LootTable,
-  WeightedTable,
-} from "lib/types/types";
+import { WeightedTable } from "lib/types/WeightedTable";
+import { LootTable } from "lib/types/LootTable";
+import AbilityScore from "lib/types/AbilityScore";
 import {
   CreatureDefinition,
   CreatureInstance,
@@ -26,7 +24,6 @@ import { getFromOptionalFunc } from "../utils";
 import { vaultLevelling } from "lib/types/Vault";
 import Guild from "lib/types/Guild";
 import { ItemInstance } from "lib/types/item";
-import { StatusEffectId } from "./statusEffects";
 import locations from "lib/locations";
 import reforgeInteraction from "./interactions/reforgeInteraction";
 import { DamageType } from "lib/types/Damage";
@@ -52,7 +49,9 @@ export type CreatureId =
   | "wraith"
   | "rat"
   | "giantRat"
-  | "saltGolem";
+  | "saltGolem"
+  | "spider"
+  | "spiderSpitter";
 
 export type EntityId =
   | CreatureId
@@ -1218,6 +1217,142 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
   },
+  spider: {
+    name: "Spider",
+    health: 10,
+    abilityScores: {
+      [AbilityScore.Strength]: 1,
+      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Intelligence]: 0,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Bite",
+        "The spider bites you.",
+        4,
+        [
+          { amount: 10, type: DamageType.Piercing },
+          { amount: 2, type: DamageType.Poison },
+        ],
+        { targetRestrictions: [CanTarget.isPlayer] }
+      ),
+      Abilities.applyStatusEffect(
+        "Poison",
+        "Inflicts poison on an enemy.",
+        8,
+        [
+          {
+            id: "poisoned",
+            strength: 5,
+            duration: 3,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isPlayer] }
+      ),
+    ],
+    xpValue: 45,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "silk",
+            amount: [1, 3],
+            weight: 1,
+          },
+          {
+            item: "meat",
+            amount: [1, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "spiderFang",
+            amount: 2,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.8,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  },
+
+  spiderSpitter: {
+    name: "Spitter Spider",
+    health: 15,
+    abilityScores: {
+      [AbilityScore.Strength]: 1,
+      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Intelligence]: 0,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Bite",
+        "The spider bites you.",
+        3,
+        [
+          { amount: 12, type: DamageType.Piercing },
+          { amount: 4, type: DamageType.Poison },
+        ],
+        { targetRestrictions: [CanTarget.isPlayer] }
+      ),
+      Abilities.applyStatusEffect(
+        "Spit",
+        "Inflicts poison on an enemy.",
+        5,
+        [
+          {
+            id: "poisoned",
+            strength: 10,
+            duration: 2,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isPlayer] }
+      ),
+    ],
+    xpValue: 65,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "silk",
+            amount: [2, 5],
+            weight: 1,
+          },
+          {
+            item: "venom",
+            amount: [1, 3],
+            weight: 0.5,
+          },
+          {
+            item: "meat",
+            amount: [1, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "spiderFang",
+            amount: 2,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.8,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+  },
 };
 
 const entities: Record<EntityId, EntityDefinition> = {
@@ -1332,8 +1467,16 @@ const entities: Record<EntityId, EntityDefinition> = {
           new ItemInstance("spectralShield", 1)
         ),
         new Recipe(
+          { ironBar: 10, leather: 5, memory: 5, nightmare: 3, ectoplasm: 3 },
+          new ItemInstance("spectralBoots", 1)
+        ),
+        new Recipe(
           { ironBar: 10, trollTooth: 3, memory: 5, nightmare: 3, ectoplasm: 3 },
           new ItemInstance("dreamripper", 1)
+        ),
+        new Recipe(
+          { ironBar: 5, ironDagger: 1, venom: 5 },
+          new ItemInstance("fangbearerAnklet", 1)
         ),
       ])
     ),
@@ -1369,15 +1512,35 @@ const entities: Record<EntityId, EntityDefinition> = {
             ectoplasm: 3,
             coal: 1,
           },
-          new ItemInstance("spectralDust", 1)
+          [
+            new ItemInstance("spectralDust", 1),
+            new ItemInstance("inertDust", 2),
+          ]
         ),
         new Recipe(
           {
+            coal: 1,
+            salt: 1,
+            spectralDust: 1,
+          },
+          new ItemInstance("inertDust", 3)
+        ),
+        new Recipe(
+          {
+            coal: 1,
             nightmare: 1,
             spectralDust: 1,
             spore: 3,
           },
           new ItemInstance("dreamingDust", 1)
+        ),
+        new Recipe(
+          {
+            coal: 1,
+            salt: 3,
+            inertDust: 15,
+          },
+          new ItemInstance("wakingDust", 1)
         ),
       ])
     ),
@@ -1430,6 +1593,38 @@ const entities: Record<EntityId, EntityDefinition> = {
             rottenFlesh: 5,
           },
           new ItemInstance("hordeFlute", 1)
+        ),
+        new Recipe(
+          {
+            silk: 10,
+            memory: 5,
+            nightmare: 3,
+            dreamingDust: 5,
+          },
+          new ItemInstance("dreamersMask", 1)
+        ),
+        new Recipe(
+          {
+            spiderFang: 1,
+          },
+          [new ItemInstance("venom", 1), new ItemInstance("bone", 1)]
+        ),
+        new Recipe(
+          {
+            venom: 5,
+            inertDust: 2,
+            bottle: 1,
+          },
+          new ItemInstance("antidote", 1)
+        ),
+        new Recipe(
+          {
+            venom: 10,
+            silk: 5,
+            ironBar: 1,
+            spiderFang: 2,
+          },
+          new ItemInstance("spiderCloak", 1)
         ),
       ])
     ),
@@ -1649,10 +1844,13 @@ const entities: Record<EntityId, EntityDefinition> = {
             (item) =>
               new Recipe(
                 { [item.definitionId]: 1 },
-                new ItemInstance("money", getFromOptionalFunc(
-                  items[item.definitionId].getSellValue,
-                  item
-                ))
+                new ItemInstance(
+                  "money",
+                  getFromOptionalFunc(
+                    items[item.definitionId].getSellValue,
+                    item
+                  )
+                )
               )
           )
       );

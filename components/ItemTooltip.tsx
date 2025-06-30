@@ -1,4 +1,5 @@
-import items, { ItemTag } from "lib/gamedata/items";
+import items from "lib/gamedata/items";
+import { ItemTag } from "lib/types/itemenums";
 import {
   EquipmentDefinition,
   equipmentSlotToMaxEquipped,
@@ -7,7 +8,7 @@ import {
 import { getFromOptionalFunc } from "../lib/utils";
 import { CreatureInstance } from "lib/types/entities/creature";
 import AbilityDescription from "./AbilityDescription";
-import { AbilityScore } from "lib/types/types";
+import AbilityScore from "lib/types/AbilityScore";
 import Ability from "lib/types/Ability";
 
 /**
@@ -48,7 +49,11 @@ export default function ItemTooltip({
     : [];
 
   return (
-    <span className={`tooltip-text ${side === "right" && "tooltip-text-right"} flex-col w-64 text-white`}>
+    <span
+      className={`tooltip-text ${
+        side === "right" && "tooltip-text-right"
+      } flex-col w-64 text-white`}
+    >
       <h1 className="text-lg">
         {getFromOptionalFunc(def.getName, item)} x{item.amount}
       </h1>

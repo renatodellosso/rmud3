@@ -1,10 +1,7 @@
 import entities, { CreatureId, EntityId } from "lib/gamedata/entities";
-import {
-  AbilityScore,
-  LootTable,
-  Targetable,
-  WeightedTable,
-} from "lib/types/types";
+import { Targetable } from "lib/types/types";
+import { LootTable } from "lib/types/LootTable";
+import AbilityScore from "lib/types/AbilityScore";
 import Ability, { AbilitySource, AbilityWithSource } from "lib/types/Ability";
 import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";

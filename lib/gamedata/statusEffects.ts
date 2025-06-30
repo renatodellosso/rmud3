@@ -10,7 +10,8 @@ export type StatusEffectId =
   | "cursed"
   | "burning"
   | "poisoned"
-  | "dreaming";
+  | "dreaming"
+  | "satiated";
 
 const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   stunned: {
@@ -87,7 +88,15 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
       Intelligence: (creature, source) => source.strength,
     },
     getCooldown(creature, source, ability, cooldown) {
-      return (cooldown * source.strength) / 10;
+      return (cooldown * source.strength) / 50;
+    },
+  },
+  satiated: {
+    name: "Satiated",
+    description: "You are well-fed, improving your XP gain.",
+    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    getXpToAdd(creature, source, amount) {
+      return amount * (1 + source.strength / 100);
     },
   },
 };

@@ -2,7 +2,7 @@ import items, { ItemId } from "../gamedata/items";
 import { ItemInstance } from "./item";
 import { areItemInstancesEqual, getFromOptionalFunc } from "../utils";
 import { PlayerInstance } from "./entities/player";
-import { AbilityScore } from "./types";
+import AbilityScore from "lib/types/AbilityScore";
 
 export default interface Inventory {
   /**

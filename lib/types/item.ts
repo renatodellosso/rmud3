@@ -1,5 +1,6 @@
 import reforges, { ReforgeId } from "lib/gamedata/Reforges";
-import items, { EquipmentSlot, ItemId, ItemTag } from "../gamedata/items";
+import items, { ItemId } from "../gamedata/items";
+import { EquipmentSlot, ItemTag } from "./itemenums";
 import { AbilitySource } from "./Ability";
 import { CreatureInstance } from "./entities/creature";
 import StatAndAbilityProvider from "./StatAndAbilityProvider";
@@ -43,7 +44,7 @@ export class ItemInstance {
       this
     )}`;
   }
-};
+}
 
 export interface ActivatableItemDefinition<TSource extends AbilitySource>
   extends StatAndAbilityProvider<TSource> {

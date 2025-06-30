@@ -1,4 +1,4 @@
-import { WeightedTable } from "lib/types/types";
+import { WeightedTable } from "lib/types/WeightedTable";
 import { Encounter, FloorDefinition } from "./types";
 import { randomContainer } from "./populateDungeon";
 
@@ -446,9 +446,14 @@ const floors: Record<string, FloorDefinition> = {
           weight: 0.5,
         },
         {
-          item: "giantRat",
-          amount: [1, 2],
-          weight: 0.2,
+          item: "spider",
+          amount: [1, 3],
+          weight: 1,
+        },
+        {
+          item: "spiderSpitter",
+          amount: 1,
+          weight: 0.5,
         },
       ]),
     },

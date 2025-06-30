@@ -1,7 +1,8 @@
 import { PlayerInstance } from "lib/types/entities/player";
 import { EntityInstance, Interaction } from "lib/types/entity";
 import reforges, { ReforgeId } from "../Reforges";
-import items, { EquipmentSlot } from 'lib/gamedata/items';
+import items from "lib/gamedata/items";
+import { EquipmentSlot } from "lib/types/itemenums";
 import { EquipmentDefinition } from "lib/types/item";
 import { getFromOptionalFunc, randInRangeInt } from "lib/utils";
 import { ReforgeType } from "lib/types/Reforge";
@@ -12,7 +13,7 @@ export default function reforgeInteraction(
   player: PlayerInstance,
   interaction: Interaction | undefined,
   action: any,
-  title: string,
+  title: string
 ): Interaction | undefined {
   if (interaction === undefined) {
     // Initialize interaction if not provided
@@ -27,7 +28,11 @@ export default function reforgeInteraction(
 
   if (typeof action !== "number") return interaction;
   else {
-    const equipmentType: EquipmentSlot = (items[player.equipment.items.at(action)!.definitionId] as EquipmentDefinition).slot as EquipmentSlot;
+    const equipmentType: EquipmentSlot = (
+      items[
+        player.equipment.items.at(action)!.definitionId
+      ] as EquipmentDefinition
+    ).slot as EquipmentSlot;
 
     let reforgeList = Array.from(Object.keys(reforges));
 
@@ -36,20 +41,16 @@ export default function reforgeInteraction(
     ) as ReforgeId;
 
     while (
-      !((
-        reforges[newReforge].type === ReforgeType.Hand &&
-        equipmentType === EquipmentSlot.Hands
-      ) ||
-      (
-        reforges[newReforge].type === ReforgeType.Armor &&
-        (equipmentType === EquipmentSlot.Head ||
-          equipmentType === EquipmentSlot.Chest ||
-          equipmentType === EquipmentSlot.Legs)
-      ) ||
-      (
-        reforges[newReforge].type === ReforgeType.Other &&
-        equipmentType === undefined
-      ))
+      !(
+        (reforges[newReforge].type === ReforgeType.Hand &&
+          equipmentType === EquipmentSlot.Hands) ||
+        (reforges[newReforge].type === ReforgeType.Armor &&
+          (equipmentType === EquipmentSlot.Head ||
+            equipmentType === EquipmentSlot.Chest ||
+            equipmentType === EquipmentSlot.Legs)) ||
+        (reforges[newReforge].type === ReforgeType.Other &&
+          equipmentType === undefined)
+      )
     ) {
       newReforge = reforgeList.at(
         randInRangeInt(0, reforgeList.length - 1)
@@ -60,7 +61,10 @@ export default function reforgeInteraction(
 
     getIo().sendMsgToPlayer(
       player._id.toString(),
-      `Reforged ${getFromOptionalFunc(items[player.equipment.items.at(action)!.definitionId].getName, player.equipment.items.at(action)!)} to ${reforges[newReforge].name}`
+      `Reforged ${getFromOptionalFunc(
+        items[player.equipment.items.at(action)!.definitionId].getName,
+        player.equipment.items.at(action)!
+      )} to ${reforges[newReforge].name}`
     );
 
     return interaction;

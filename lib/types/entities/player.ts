@@ -2,12 +2,12 @@ import { ObjectId } from "bson";
 import { CreatureInstance } from "../entities/creature";
 import Inventory, { DirectInventory } from "../Inventory";
 import {
-  AbilityScore,
   CannotDirectlyCreateInstanceError,
   OmitType,
   PlayerSave,
   Targetable,
 } from "../types";
+import AbilityScore from "../AbilityScore";
 import Difficulty, {
   difficultyOptions,
   InventoryHandlingOnDeath,
@@ -18,7 +18,8 @@ import {
   ItemInstance,
 } from "../item";
 import Ability, { AbilitySource, AbilityWithSource } from "../Ability";
-import items, { ItemTag } from "lib/gamedata/items";
+import items from "lib/gamedata/items";
+import { ItemTag } from "../itemenums";
 import { EquipmentHotbar } from "../Hotbar";
 import {
   getFromOptionalFunc,
@@ -184,6 +185,12 @@ export class PlayerInstance extends CreatureInstance {
   }
 
   addXp(amount: number): void {
+    for (const provider of this.getStatAndAbilityProviders()) {
+      if (provider.provider.getXpToAdd) {
+        amount = provider.provider.getXpToAdd(this, provider.source, amount);
+      }
+    }
+
     this.xp += amount;
 
     const io = getIo();

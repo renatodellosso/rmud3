@@ -2,7 +2,6 @@ import Ability, { AbilitySource } from "lib/types/Ability";
 import { CreatureInstance } from "lib/types/entities/creature";
 import {
   OptionalFunc,
-  DamageType,
   Targetable,
   DamageWithType,
 } from "lib/types/types";
@@ -13,6 +12,7 @@ import { StatusEffectToApply } from "lib/types/statuseffect";
 import { getFromOptionalFunc } from "lib/utils";
 import { ItemInstance } from "lib/types/item";
 import reforges from "./Reforges";
+import { DamageType } from "lib/types/Damage";
 
 // IMPORTANT: If you're adding a new target check, add it as a function in CanTarget to avoid circular dependencies.
 // Not sure why that happens, but it does.
@@ -249,5 +249,48 @@ export function heal(
 
       return true;
     },
+  };
+}
+
+export function healWithStatusEffect(
+  name: string,
+  getDescription: OptionalFunc<string, CreatureInstance>,
+  getCooldown: OptionalFunc<number, CreatureInstance>,
+  health: number,
+  statusEffectsToApply: StatusEffectToApply[],
+  options: AbilityOptions = {}
+): Ability {
+  const { onActivate, ...otherOptions } = options;
+
+  const { activate: healFunc, getDescription: healDescription } = heal(
+    name,
+    getDescription,
+    getCooldown,
+    health,
+    options
+  );
+  const {
+    activate: applyStatusEffectFunc,
+    getDescription: applyStatusEffectDescription,
+  } = applyStatusEffect(
+    name,
+    healDescription as OptionalFunc<string, CreatureInstance>,
+    getCooldown,
+    statusEffectsToApply,
+    otherOptions
+  );
+  return {
+    name,
+    getDescription: applyStatusEffectDescription,
+    getCooldown,
+    getTargetCount: 1,
+    canTarget: CanTarget.and(
+      CanTarget.isTargetACreature,
+      CanTarget.notAtMaxHealth,
+      ...(options.targetRestrictions ?? [])
+    ),
+    activate: (creature: CreatureInstance, targets: Targetable[], source) =>
+      healFunc(creature, targets, source) &&
+      applyStatusEffectFunc(creature, targets, source),
   };
 }

@@ -14,18 +14,8 @@ import { Location } from "lib/types/Location";
 import { DungeonLocation } from "lib/dungeongeneration/types";
 import { CreatureInstance } from "lib/types/entities/creature";
 import { DamageType } from "lib/types/Damage";
-
-export enum ItemTag {
-  Equipment = "Equipment",
-  Consumable = "Consumable",
-}
-
-export enum EquipmentSlot {
-  Legs = "Legs",
-  Chest = "Chest",
-  Head = "Head",
-  Hands = "Hands",
-}
+import AbilityScore from "lib/types/AbilityScore";
+import { ItemTag, EquipmentSlot } from "lib/types/itemenums";
 
 export type ItemId =
   | "bone"
@@ -46,6 +36,7 @@ export type ItemId =
   | "certificateOfAchievement"
   | "bigStick"
   | "leather"
+  | "silk"
   | "leatherTunic"
   | "bottle"
   | "rope"
@@ -87,9 +78,18 @@ export type ItemId =
   | "possessedSkull"
   | "hordeFlute"
   | "spectralDust"
+  | "inertDust"
   | "spectralShield"
+  | "spectralBoots"
+  | "dreamersMask"
   | "dreamripper"
-  | "dreamingDust";
+  | "dreamingDust"
+  | "wakingDust"
+  | "spiderFang"
+  | "venom"
+  | "antidote"
+  | "fangbearerAnklet"
+  | "spiderCloak";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -241,6 +241,13 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 2,
     tags: [],
   },
+  silk: {
+    getName: "Silk",
+    description: "A soft, smooth fabric. Feels luxurious.",
+    getWeight: 0.2,
+    getSellValue: 15,
+    tags: [],
+  },
   leatherTunic: {
     getName: "Leather Tunic",
     description: "A simple leather tunic. Reduces damage taken by 1.",
@@ -369,11 +376,24 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
   delversMeal: {
     getName: "Delver's Meal",
     tags: [ItemTag.Consumable],
-    description: "A hearty meal made for dungeon delvers.",
+    description:
+      "A hearty meal made for dungeon delvers. Grants Satiated (10) for 300s.",
     getWeight: 2,
     getSellValue: 25,
     getAbilities: (creature, item) => [
-      Abilities.heal("Heal", "Heal a moderate amount of health.", 0, 20),
+      Abilities.healWithStatusEffect(
+        "Heal",
+        "Heal a moderate amount of health.",
+        0,
+        20,
+        [
+          {
+            id: "satiated",
+            strength: 10,
+            duration: 300,
+          },
+        ]
+      ),
     ],
   } satisfies ConsumableDefinition,
   ratTail: {
@@ -935,6 +955,20 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       { amount: 5, type: DamageType.Psychic },
     ],
   } satisfies EquipmentDefinition,
+  spectralBoots: {
+    getName: "Spectral Boots",
+    tags: [ItemTag.Equipment],
+    description:
+      "Boots that seem to be made of pure energy. They shimmer in the light. Reduces cooldowns by 5%.",
+    getWeight: 5,
+    getSellValue: 100,
+    slot: EquipmentSlot.Legs,
+    getDamageResistances: [
+      { amount: 2, type: "*" },
+      { amount: 3, type: DamageType.Psychic },
+    ],
+    getCooldown: (creature, source, ability, cooldown) => cooldown * 0.95,
+  } satisfies EquipmentDefinition,
   dreamripper: {
     getName: "Dreamripper",
     tags: [ItemTag.Equipment],
@@ -998,12 +1032,33 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       ),
     ],
   },
+  dreamersMask: {
+    getName: "Dreamer's Veil",
+    tags: [ItemTag.Equipment],
+    description: "A translucent veil, filled with dreaming dust.",
+    getWeight: 1,
+    getSellValue: 100,
+    slot: EquipmentSlot.Head,
+    getAbilityScores: {
+      Strength: 0,
+      Constitution: 0,
+      Intelligence: 15,
+    },
+    getDamageResistances: [{ amount: 7, type: DamageType.Psychic }],
+  } satisfies EquipmentDefinition,
   spectralDust: {
     getName: "Spectral Dust",
     description: "A fine dust that seems to shimmer in the light.",
     tags: [],
     getWeight: 0.1,
     getSellValue: 20,
+  },
+  inertDust: {
+    getName: "Inert Dust",
+    description: "A fine, grey dust that seems to have no effect.",
+    tags: [],
+    getWeight: 0.1,
+    getSellValue: 10,
   },
   dreamingDust: {
     getName: "Dreaming Dust",
@@ -1026,6 +1081,121 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       ),
     ],
   } satisfies ConsumableDefinition,
+  wakingDust: {
+    getName: "Waking Dust",
+    description: "A dust that seems to shimmer with a bright light.",
+    tags: [ItemTag.Consumable],
+    getWeight: 0.1,
+    getSellValue: 50,
+    getAbilities: (creature, item) => [
+      {
+        name: "Inhale",
+        getDescription:
+          "Put the target into a waking state, slowing their mind, but heightening their senses.",
+        getCooldown: 0,
+        getTargetCount: 1,
+        canTarget: CanTarget.isSelf,
+        activate: (creature, targets) => {
+          const target = targets[0] as CreatureInstance;
+
+          target.statusEffects = [];
+
+          getIo().sendMsgToPlayer(
+            creature._id.toString(),
+            `You removed all status effects from ${target.name}.`
+          );
+
+          return true;
+        },
+      },
+    ],
+  } satisfies ConsumableDefinition,
+  spiderFang: {
+    getName: "Spider Fang",
+    tags: [],
+    description: "A sharp fang from a giant spider.",
+    getWeight: 0.1,
+    getSellValue: 15,
+  },
+  venom: {
+    getName: "Venom",
+    tags: [],
+    description: "A vial of spider venom, still bubbling.",
+    getWeight: 0.1,
+    getSellValue: 20,
+  },
+  antidote: {
+    getName: "Antidote",
+    tags: [ItemTag.Consumable],
+    description: "A vial of antidote, used to cure poison.",
+    getWeight: 0.1,
+    getSellValue: 35,
+    getAbilities: (creature, item) => [
+      {
+        name: "Cure Poison",
+        getDescription: "Cure poison from the target.",
+        getCooldown: 0,
+        getTargetCount: 1,
+        canTarget: CanTarget.and(CanTarget.isSelf, (creature, target) =>
+          (target as CreatureInstance).statusEffects?.some(
+            (s) => s.definitionId === "poisoned"
+          )
+        ),
+        activate: (creature, targets) => {
+          const target = targets[0] as CreatureInstance;
+
+          target.statusEffects = target.statusEffects.filter(
+            (s) => s.definitionId !== "poisoned"
+          );
+
+          getIo().sendMsgToPlayer(
+            creature._id.toString(),
+            `You cured poison from ${target.name}.`
+          );
+
+          return true;
+        },
+      },
+    ],
+  } satisfies ConsumableDefinition,
+  fangbearerAnklet: {
+    getName: "Fangbearer Anklet",
+    tags: [ItemTag.Equipment],
+    description: `An iron anklet, continually injecting venom into your bloodstream. 
+      Adds Poisoned (1) for 1s every second, but increases your intelligence by 15 and all XP gain by 10%.`,
+    getWeight: 0.5,
+    getSellValue: 250,
+    tick: (creature) => {
+      if (!creature.statusEffects.some((s) => s.definitionId === "poisoned")) {
+        creature.addStatusEffect({
+          id: "poisoned",
+          strength: 1,
+          duration: 1, // Duration in seconds
+        });
+      }
+    },
+    getAbilityScores: {
+      [AbilityScore.Intelligence]: 15,
+    },
+    getXpToAdd: (player, source, amount) => amount * 1.1,
+  } satisfies EquipmentDefinition,
+  spiderCloak: {
+    getName: "Spider Cloak",
+    tags: [ItemTag.Equipment],
+    description: `A cloak made from the silk of giant spiders. Grants the wearer increased stealth and agility.`,
+    getWeight: 0.5,
+    getSellValue: 300,
+    getDamageResistances: () => [
+      {
+        amount: 10,
+        type: DamageType.Poison,
+      },
+      {
+        amount: 3,
+        type: "*",
+      },
+    ],
+  } satisfies EquipmentDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;

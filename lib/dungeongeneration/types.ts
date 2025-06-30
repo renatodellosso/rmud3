@@ -1,4 +1,5 @@
-import { Range, Point, WeightedTable } from "../types/types";
+import { Range, Point } from "../types/types";
+import { WeightedTable } from "../types/WeightedTable";
 import { Location } from "../types/Location";
 import entities, { EntityId } from "lib/gamedata/entities";
 import { EntityInstance } from "lib/types/entity";

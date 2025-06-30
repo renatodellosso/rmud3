@@ -1,11 +1,9 @@
 import Ability, { AbilitySource } from "./Ability";
 import { DamageType } from "./Damage";
 import { CreatureInstance } from "./entities/creature";
-import {
-  AbilityScore,
-  DamageWithType,
-  OptionalFunc,
-} from "./types";
+import { PlayerInstance } from "./entities/player";
+import { DamageWithType, OptionalFunc } from "./types";
+import AbilityScore from "lib/types/AbilityScore";
 
 export default interface StatAndAbilityProvider<
   TSource extends AbilitySource = AbilitySource
@@ -50,4 +48,9 @@ export default interface StatAndAbilityProvider<
     deltaTime: number,
     source: TSource
   ) => void;
+  getXpToAdd?: (
+    player: PlayerInstance,
+    source: TSource,
+    amount: number
+  ) => number;
 }
