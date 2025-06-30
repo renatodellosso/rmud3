@@ -1,6 +1,6 @@
 import { chance, randInRangeInt } from "lib/utils";
 import { Location } from "lib/types/Location";
-import { Dungeon, FloorInstance } from "./types";
+import { Dungeon, DungeonLocation, FloorInstance } from "./types";
 import { CreatureInstance } from "lib/types/entities/creature";
 import entities, { CreatureId, EntityId } from "lib/gamedata/entities";
 import { EntityInstance } from "lib/types/entity";
@@ -26,7 +26,7 @@ export default function populateDungeon(dungeon: Dungeon) {
 /**
  * @returns how many creatures were added to the room
  */
-export function populateRoom(floor: FloorInstance, location: Location) {
+export function populateRoom(floor: FloorInstance, location: DungeonLocation) {
   let creatureCount = 0;
   for (let i = 0; i < floor.definition.populationOptions.maxEncounters; i++) {
     if (!chance(floor.definition.populationOptions.encounterChance)) continue;
@@ -41,14 +41,27 @@ export function populateRoom(floor: FloorInstance, location: Location) {
         continue;
       }
 
-      for (const creatureGroup of encounter.item) {
+      if (typeof encounter.item === "function") {
+        const entity = encounter.item(location);
+
+        location.entities.add(entity);
+        creatureCount++;
+        continue;
+      }
+
+      for (const entityGroup of encounter.item) {
         const amount =
-          typeof creatureGroup.amount === "number"
-            ? creatureGroup.amount
-            : randInRangeInt(creatureGroup.amount[0], creatureGroup.amount[1]);
+          typeof entityGroup.amount === "number"
+            ? entityGroup.amount
+            : randInRangeInt(entityGroup.amount[0], entityGroup.amount[1]);
 
         for (let j = 0; j < amount; j++) {
-          addEntityToLocation(location, creatureGroup.creature);
+          if (typeof entityGroup.entity === "string") {
+            addEntityToLocation(location, entityGroup.entity);
+          } else if (typeof entityGroup.entity === "function") {
+            const entity = entityGroup.entity(location);
+            location.entities.add(entity);
+          }
 
           creatureCount++;
         }
