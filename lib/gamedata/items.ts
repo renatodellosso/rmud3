@@ -1103,7 +1103,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
                   type: DamageType.Psychic,
                 },
               ],
-              source
+              source, creature
             );
 
             getIo().sendMsgToPlayer(

@@ -92,7 +92,6 @@ export function sendMsgToSocket(socket: TypedSocket, msg: string) {
 
   addMsgToSession(socket.data.session, msg);
   socket.emit("addMessage", msg);
-  console.log(`Message sent to player ${socket.id}: ${msg}`);
 
   return Promise.resolve();
 }

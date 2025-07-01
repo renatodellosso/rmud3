@@ -180,7 +180,8 @@ export class CreatureInstance extends EntityInstance {
 
   takeDamage(
     damage: { amount: number; type: DamageType }[],
-    source: AbilitySource
+    source: AbilitySource,
+    entitySource: EntityInstance
   ): { amount: number; type: DamageType }[] {
     let newDamage = damage.map((d) => ({ amount: d.amount, type: d.type }));
 
@@ -264,8 +265,7 @@ export class CreatureInstance extends EntityInstance {
     for (let d of newDamage) {
       d.amount = Math.min(Math.max(d.amount, 0), this.health);
 
-      if (source instanceof EntityInstance)
-        this.damagers.addDamage(source, d.amount);
+      this.damagers.addDamage(entitySource, d.amount);
 
       this.health -= d.amount;
 
@@ -286,6 +286,9 @@ export class CreatureInstance extends EntityInstance {
 
     this.getDef().onDie?.(this);
 
+    console.log(
+      `Creature ${this.name} has died at ${this.location}. Distributing XP and dropping loot.`
+    );
     this.damagers.distributeXp(
       (entities[this.definitionId] as CreatureDefinition).xpValue
     );
@@ -516,7 +519,9 @@ class DamagerList {
     console.log(
       `Distributing ${xp} XP among ${
         Object.keys(this.damagers).length
-      } damagers`
+      } damagers: ${Object.keys(this.damagers).join(
+        ", "
+      )}. Total damage: ${this.getTotalDamage()}`
     );
 
     let totalDamage = this.getTotalDamage();

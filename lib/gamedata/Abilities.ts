@@ -1,10 +1,6 @@
 import Ability, { AbilitySource } from "lib/types/Ability";
 import { CreatureInstance } from "lib/types/entities/creature";
-import {
-  OptionalFunc,
-  Targetable,
-  DamageWithType,
-} from "lib/types/types";
+import { OptionalFunc, Targetable, DamageWithType } from "lib/types/types";
 import * as CanTarget from "lib/gamedata/CanTarget";
 import { getIo } from "lib/ClientFriendlyIo";
 import statusEffects, { StatusEffectId } from "./statusEffects";
@@ -90,7 +86,7 @@ export function attack(
       newDamage = creature.getDamageToDeal(newDamage);
 
       const damageDealt: { amount: number; type: DamageType }[] =
-        target.takeDamage(newDamage, creature);
+        target.takeDamage(newDamage, creature, creature);
 
       getIo().sendMsgToRoom(
         creature.location,

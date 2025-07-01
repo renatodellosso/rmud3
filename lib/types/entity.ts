@@ -79,10 +79,6 @@ export class EntityInstance {
     if (this.definitionId === "player") {
       savePlayer(this as unknown as PlayerInstance);
     }
-
-    console.log(
-      `Creature ${this.name} moved from ${currentLocation.name} to ${this.location}.`
-    );
   }
 
   moveToRandomLocation(canChangeDepths = false) {

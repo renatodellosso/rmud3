@@ -22,14 +22,14 @@ const ADJACENCY = [
 ];
 
 export default function regenerateDungeon(dungeon: Dungeon, deltaTime: number) {
-  console.time("Regenerated Dungeon");
+  // console.time("Regenerated Dungeon");
 
   randomlyDeleteRooms(dungeon, deltaTime);
   randomlyDeleteExits(dungeon, deltaTime);
   randomlyGenerateNewRooms(dungeon, deltaTime);
   randomlyGenerateNewExits(dungeon, deltaTime);
 
-  console.timeEnd("Regenerated Dungeon");
+  // console.timeEnd("Regenerated Dungeon");
 }
 
 function getAdjacentCoords(dungeon: Dungeon, coords: [number, number, number]) {

@@ -22,8 +22,6 @@ export class Location {
   }
 
   enter(entity: EntityInstance) {
-    console.log(`Creature ${entity.name} is entering location ${this.name}.`);
-
     this.entities.add(entity);
     entity.location = this.id;
 
@@ -50,8 +48,6 @@ export class Location {
   }
 
   exit(entity: EntityInstance) {
-    console.log(`Creature ${entity.name} is exiting location ${this.name}.`);
-
     this.entities.delete(entity);
 
     const io = getIo();

@@ -35,7 +35,8 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
             type: DamageType.Piercing,
           },
         ],
-        source
+        source,
+        creature
       );
     },
   },
@@ -61,7 +62,8 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
             type: DamageType.Fire,
           },
         ],
-        source
+        source,
+        creature
       ),
   },
   poisoned: {
@@ -77,7 +79,8 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
             type: DamageType.Poison,
           },
         ],
-        source
+        source,
+        creature
       ),
   },
   dreaming: {
