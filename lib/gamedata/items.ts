@@ -165,7 +165,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0.5,
     getSellValue: 10,
     getAbilities: (creature, item) => [
-      Abilities.heal("Heal", "Heal a small amount of health.", 0, 5),
+      Abilities.heal("Heal", "Heal 5 health.", 0, 5),
     ],
   } as ConsumableDefinition,
   boneNecklace: {
@@ -225,7 +225,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0.1,
     getSellValue: 1,
     getAbilities: (creature, item) => [
-      Abilities.heal("Heal", "Heal a small amount of health.", 0, 1),
+      Abilities.heal("Heal", "Heal 1 health.", 0, 1),
     ],
   } satisfies ConsumableDefinition,
   certificateOfAchievement: {
@@ -374,7 +374,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0.5,
     getSellValue: 3,
     getAbilities: (creature, item) => [
-      Abilities.heal("Heal", "Heal a small amount of health.", 0, 5),
+      Abilities.heal("Heal", "Heal 5 health.", 0, 5),
     ],
   } satisfies ConsumableDefinition,
   saltedMeat: {
@@ -384,7 +384,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0.6,
     getSellValue: 5,
     getAbilities: (creature, item) => [
-      Abilities.heal("Heal", "Heal a small amount of health.", 0, 10),
+      Abilities.heal("Heal", "Heal 10 health.", 0, 10),
     ],
   } satisfies ConsumableDefinition,
   delversMeal: {
