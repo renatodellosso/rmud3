@@ -32,12 +32,9 @@ export default function inventoryInteraction(
     };
 
     const item: ItemInstance = parsedAction.item;
-    console.log("Processing inventory interaction:", parsedAction);
     const foundItem = parsedAction.insert
       ? player.inventory.get(item)
       : inventory.get(item);
-
-    console.log("Found item:", foundItem);
 
     if (!foundItem) {
       return interaction;

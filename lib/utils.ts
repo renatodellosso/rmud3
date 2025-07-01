@@ -90,7 +90,12 @@ export function areItemInstancesEqual(
 
     if (ObjectId.isValid(v1) && ObjectId.isValid(v2)) {
       if (!new ObjectId(v1).equals(new ObjectId(v2))) return false;
-    } else if (v1 !== v2) return false;
+    } else if (
+      (v1 === undefined || v1 === null) &&
+      (v2 === undefined || v2 === null)
+    )
+      continue;
+    else if (v1 !== v2) return false;
   }
 
   return true;
