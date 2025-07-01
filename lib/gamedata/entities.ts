@@ -1938,6 +1938,9 @@ const entities: Record<EntityId, EntityDefinition> = {
       player.abilityScores[abilityScore] += 1;
       player.abilityScoreIncreases--;
 
+      if (abilityScore === AbilityScore.Constitution)
+        player.health += player.getHealthBonusFromConstitution();
+
       getIo().sendMsgToPlayer(
         player._id.toString(),
         `The mystic increases your ${abilityScore} by 1. You now have ${player.getAbilityScore(

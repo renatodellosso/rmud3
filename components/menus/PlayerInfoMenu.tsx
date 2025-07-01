@@ -20,7 +20,7 @@ export default function PlayerInfoMenu({
         </div>
       </div>
       <div>
-        HP: {self.health}/{self.getMaxHealth()}
+        HP: {self.health.toFixed()}/{self.getMaxHealth().toFixed()}
       </div>
       <div>
         Level {self.level} - {self.xp.toLocaleString()}/
@@ -50,10 +50,10 @@ export default function PlayerInfoMenu({
         <ul>
           {self.statusEffects.map((effect) => (
             <li key={effect.definitionId}>
-              {statusEffects[effect.definitionId].name} {effect.strength}{" "}
-              (expires in{" "}
-              {Math.round((Date.now() - effect.expiresAt.getTime()) / 1000)}s) -{" "}
-              {statusEffects[effect.definitionId].description}
+              {statusEffects[effect.definitionId].name}{" "}
+              {effect.strength.toFixed()} (expires in{" "}
+              {((Date.now() - effect.expiresAt.getTime()) / 1000).toFixed(1)}s)
+              - {statusEffects[effect.definitionId].description}
             </li>
           ))}
         </ul>

@@ -91,7 +91,7 @@ export function attack(
       getIo().sendMsgToRoom(
         creature.location,
         `${creature.name} hit ${target.name} using ${name} for ${damageDealt
-          .map((d) => `${d.amount} ${d.type}`)
+          .map((d) => `${d.amount.toFixed()} ${d.type}`)
           .join(", ")}!`
       );
 
@@ -119,9 +119,9 @@ export function applyStatusEffect(
       `Applies ${effects
         .map(
           (effect) =>
-            `${statusEffects[effect.id].name} (${effect.strength}) for ${
-              effect.duration
-            }s`
+            `${
+              statusEffects[effect.id].name
+            } (${effect.strength.toFixed()}) for ${effect.duration.toFixed(1)}s`
         )
         .join(", ")}.`
     ),
@@ -148,8 +148,12 @@ export function applyStatusEffect(
           getIo().sendMsgToRoom(
             creature.location,
             `${creature.name} applied ${statusEffects[scaledEffect.id].name} ${
-              scaledEffect.strength ? `(${scaledEffect.strength}) ` : ""
-            }to ${target.name} for ${scaledEffect.duration}s using ${name}!`
+              scaledEffect.strength
+                ? `(${scaledEffect.strength.toFixed()}) `
+                : ""
+            }to ${target.name} for ${scaledEffect.duration.toFixed(
+              1
+            )}s using ${name}!`
           );
         }
       }
@@ -238,7 +242,7 @@ export function heal(
         creature.location,
         `${creature.name} healed ${
           target === creature ? "themself" : target.name
-        } for ${healthAdded} using ${name}!`
+        } for ${healthAdded.toFixed()} using ${name}!`
       );
 
       options.onActivate?.(creature, targets, source);

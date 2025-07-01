@@ -13,7 +13,8 @@ export default function LocationMenu({ gameState }: { gameState: GameState }) {
               {entity.name}{" "}
               {"health" in entity && "getMaxHealth" in entity && (
                 <>
-                  ({entity.health}/{(entity.getMaxHealth as () => number)()})
+                  ({(entity.health as number).toFixed()}/
+                  {(entity.getMaxHealth as () => number)().toFixed()})
                 </>
               )}
             </li>

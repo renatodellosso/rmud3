@@ -78,7 +78,7 @@ export default function Play() {
         </div>
         <div className="flex gap-2">
           <p className="h-full w-full text-right">
-            Level {gameState.self.level} - {gameState.self.xp.toLocaleString()}/
+            Level {gameState.self.level} - {Math.round(gameState.self.xp).toLocaleString()}/
             {getXpForNextLevel(gameState.self.level).toLocaleString()} XP
           </p>
           <progress

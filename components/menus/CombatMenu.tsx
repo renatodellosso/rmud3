@@ -147,7 +147,8 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
                 {target.name}{" "}
                 {isTargetACreature(undefined as any, target) && (
                   <>
-                    ({target.health}/{(target.getMaxHealth as () => number)()})
+                    ({target.health.toFixed()}/
+                    {(target.getMaxHealth as () => number)().toFixed()})
                   </>
                 )}
               </button>
@@ -159,10 +160,13 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
         <ul>
           {gameState.self.statusEffects.map((effect) => (
             <li key={effect.definitionId} className="tooltip">
-              {statusEffects[effect.definitionId].name} {effect.strength}{" "}
-              (expires in{" "}
-              {Math.round((Date.now() - effect.expiresAt.getTime()) / 1000)}s) -{" "}
-              <div className="tooltip-text">{statusEffects[effect.definitionId].description}</div>
+              {statusEffects[effect.definitionId].name}{" "}
+              {effect.strength.toFixed()} (expires in{" "}
+              {((Date.now() - effect.expiresAt.getTime()) / 1000).toFixed(1)}s)
+              -{" "}
+              <div className="tooltip-text">
+                {statusEffects[effect.definitionId].description}
+              </div>
             </li>
           ))}
         </ul>
