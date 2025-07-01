@@ -16,6 +16,7 @@ import React from "react";
 import Guild from "../../lib/types/Guild";
 import { SnowOverlay } from "react-snow-overlay";
 import ReforgeMenu from "@/components/menus/ReforgeMenu";
+import { getXpForNextLevel } from "lib/gamedata/levelling";
 
 enum Menu {
   PlayerInfo = "Player Info",
@@ -61,20 +62,33 @@ export default function Play() {
           disabledOnSingleCpuDevices={true}
         />
       )}
-      <div className="h-1/30 w-full flex border-b border-white">
-        {Object.values(Menu)
-          .filter((name) => name != Menu.Guild || gameState.guild)
-          .map((name) => (
-            <button
-              onClick={() => toggleMenu(name)}
-              key={name}
-              className="px-1"
-            >
-              {name}
-            </button>
-          ))}
+      <div className="flex justify-between h-1/30 border-b border-white">
+        <div className="w-full flex">
+          {Object.values(Menu)
+            .filter((name) => name != Menu.Guild || gameState.guild)
+            .map((name) => (
+              <button
+                onClick={() => toggleMenu(name)}
+                key={name}
+                className="px-1"
+              >
+                {name}
+              </button>
+            ))}
+        </div>
+        <div className="flex gap-2">
+          <p className="h-full w-full text-right">
+            Level {gameState.self.level} - {gameState.self.xp.toLocaleString()}/
+            {getXpForNextLevel(gameState.self.level).toLocaleString()} XP
+          </p>
+          <progress
+            value={gameState.self.xp}
+            max={getXpForNextLevel(gameState.self.level)}
+            className="h-full"
+          />
+        </div>
       </div>
-      <div className="flex flex-row h-29/30">
+      <div className="flex h-29/30">
         <PrimaryMenu gameState={gameState} />
         {openMenus.includes(Menu.PlayerInfo) && (
           <PlayerInfoMenu gameState={gameState} />

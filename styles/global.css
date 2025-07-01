@@ -150,3 +150,7 @@ input {
   visibility: visible;
   opacity: 1;
 }
+
+progress[value]::-webkit-progress-bar {
+  background-color: #000;
+}
