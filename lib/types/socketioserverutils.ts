@@ -182,6 +182,8 @@ async function getGameState(socket: TypedSocket): Promise<GameState> {
     interactable: boolean;
   })[];
 
+  player.instance.prepForGameState();
+
   for (const entity of entityList) {
     const def = entities[entity.definitionId];
 
