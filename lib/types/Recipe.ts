@@ -98,20 +98,17 @@ export default class Recipe {
 
   getInputText(): string {
     return Object.entries(this.input)
-      .map(([itemId, quantity]) => {
-        const itemDef = items[itemId as ItemId];
-        return `${quantity}x ${getFromOptionalFunc(itemDef.getName, 
-          new ItemInstance(itemId as ItemId, quantity))}`;
-      })
+      .map(([itemId, quantity]) => 
+        `${quantity}x ${new ItemInstance(itemId as ItemId, quantity).getName()}`
+      )
       .join(", ");
   }
 
   getOutputText(): string {
     return this.output
-      .map((item) => {
-        const itemDef = items[item.definitionId];
-        return `${getFromOptionalFunc(itemDef.getName, item)} ${item.amount}x`;
-      })
+      .map((item) => 
+        `${item.getName()} ${item.amount}x`
+      )
       .join(", ");
   }
 }

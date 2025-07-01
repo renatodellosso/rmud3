@@ -12,6 +12,7 @@ import Recipe from "lib/types/Recipe";
 import LocationMap from "lib/types/LocationMap";
 import { DirectInventory } from "lib/types/Inventory";
 import Guild from "lib/types/Guild";
+import { ItemInstance } from "lib/types/item";
 
 export default function useGameState(): GameState | undefined {
   const [gameState, setGameState] = useState<GameState>();
@@ -92,15 +93,35 @@ function restoreMethods(gameState: GameState) {
     );
   }
 
+  for (const item of gameState.self.inventory.items) {
+    restoreFieldsAndMethods(
+      item,
+      new ItemInstance(item.definitionId, item.amount)
+    );
+  }
+
+  for (const item of gameState.self.equipment.items) {
+    restoreFieldsAndMethods(
+      item,
+      new ItemInstance(item.definitionId, item.amount)
+    );
+  }
+
   for (const interaction of gameState.interactions) {
     if (interaction.recipes) {
       for (const recipe of interaction.recipes) {
-        restoreFieldsAndMethods(recipe, new Recipe({}, []));
+        const newRecipe: Recipe = restoreFieldsAndMethods(recipe, new Recipe({}, []));
+        for (const output of newRecipe.output) {
+          restoreFieldsAndMethods(output, new ItemInstance(output.definitionId, output.amount));
+        }
       }
     }
 
     if (interaction.inventory) {
-      restoreFieldsAndMethods(interaction.inventory, new DirectInventory());
+      const newInventory: DirectInventory = restoreFieldsAndMethods(interaction.inventory, new DirectInventory());
+      for (const item of newInventory.items) {
+        restoreFieldsAndMethods(item, new ItemInstance(item.definitionId, item.amount));
+      }
     }
   }
 

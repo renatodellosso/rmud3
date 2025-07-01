@@ -4,6 +4,7 @@ import { Interaction } from "lib/types/entity";
 import items from "lib/gamedata/items";
 import { getFromOptionalFunc } from "lib/utils";
 import ItemTooltip from "../ItemTooltip";
+import { ItemInstance } from "lib/types/item";
 
 export default function ReforgeMenu({
   interaction,
@@ -32,8 +33,16 @@ export default function ReforgeMenu({
           <tbody>
             {self.equipment.items.map((item, index) => (
               <tr key={index}>
+                <td 
+                  className={self.inventory.getCountById("money") < 10
+                    ? "text-red-500"
+                    : ""
+                  }
+                >
+                  {getFromOptionalFunc(items["money"].getName, new ItemInstance("money", 1))} x10
+                </td>
                 <td className="tooltip">
-                  {getFromOptionalFunc(items[item.definitionId].getName, item)}
+                  {item.getName()}
                   <ItemTooltip item={item} creature={self} />
                 </td>
                 <td>

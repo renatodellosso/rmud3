@@ -55,7 +55,7 @@ function ItemEntry({
     <tr className="hover:bg-gray-900">
       <td>
         <div className="tooltip">
-          {getFromOptionalFunc(items[item.definitionId].getName, item)} x
+          {item.getName()} x
           {item.amount}
           <ItemTooltip item={item} creature={self} />
         </div>

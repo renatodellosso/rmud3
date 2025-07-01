@@ -11,6 +11,7 @@ import { socket } from "lib/socket";
 import { getFromOptionalFunc } from "../../lib/utils";
 import { useState } from "react";
 import { EJSON } from "bson";
+import useGameState from "lib/hooks/useGameState";
 
 function ItemEntry({
   item,
@@ -47,7 +48,7 @@ function ItemEntry({
   return (
     <tr className="hover:bg-gray-900">
       <td className="tooltip">
-        {getFromOptionalFunc(items[item.definitionId].getName, item)}
+        {item.getName()}
         <ItemTooltip item={item} creature={self} />
       </td>
       <td>{item.amount}</td>
@@ -119,7 +120,7 @@ export default function InventoryMenu({ self }: { self: PlayerInstance }) {
               .map(([item, def], index) => (
                 <tr key={index} className="hover:bg-gray-900">
                   <td className="tooltip">
-                    {getFromOptionalFunc(def.getName, item)}
+                    {item.getName()}
                     <ItemTooltip item={item} creature={self} />
                   </td>
                   <td>

@@ -270,9 +270,7 @@ export default function registerGameListeners(socket: TypedSocket) {
     const inventory = new DirectInventory([foundItem]);
     const container = new ContainerInstance(
       location.id,
-      `${getFromOptionalFunc(items[item.definitionId].getName, foundItem)} x${
-        foundItem.amount
-      }`,
+      `${foundItem.getName()} x${foundItem.amount}`,
       inventory,
       true
     );
@@ -281,10 +279,7 @@ export default function registerGameListeners(socket: TypedSocket) {
 
     getIo().sendMsgToRoom(
       location.id,
-      `${player.instance.name} dropped ${getFromOptionalFunc(
-        items[item.definitionId].getName,
-        item
-      )} x${item.amount}.`
+      `${player.instance.name} dropped ${item.getName()} x${item.amount}.`
     );
     getIo().updateGameStateForRoom(location.id);
   });
