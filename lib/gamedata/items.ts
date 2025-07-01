@@ -56,6 +56,8 @@ export type ItemId =
   | "coal"
   | "ironOre"
   | "ironBar"
+  | "goldOre"
+  | "goldBar"
   | "ironSpear"
   | "ironAxe"
   | "ironMace"
@@ -454,6 +456,20 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: "The light reflects off the surface of this smooth iron bar.",
     getWeight: 1,
     getSellValue: 5,
+  },
+  goldOre: {
+    getName: "Gold Ore",
+    tags: [],
+    description: "A simple lump of gold ore.",
+    getWeight: 0.75,
+    getSellValue: 4,
+  },
+  goldBar: {
+    getName: "Gold Bar",
+    tags: [],
+    description: "You can see your reflection on the surface of this smooth gold bar.",
+    getWeight: 1.5,
+    getSellValue: 10,
   },
   // All these basic iron weapons do 3.33 dps
   ironSpear: {
