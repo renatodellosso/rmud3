@@ -10,7 +10,8 @@ export default class Vault {
 }
 
 export const vaultLevelling = [
-  { maxWeight: 100, price: 0 },
+  { maxWeight: 0, price: 0 },
+  { maxWeight: 100, price: 50 },
   { maxWeight: 200, price: 150 },
   { maxWeight: 350, price: 500 },
   {

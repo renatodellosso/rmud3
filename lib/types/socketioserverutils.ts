@@ -183,6 +183,7 @@ async function getGameState(socket: TypedSocket): Promise<GameState> {
   })[];
 
   player.instance.prepForGameState();
+  player.instance.recalculateStats();
 
   for (const entity of entityList) {
     const def = entities[entity.definitionId];

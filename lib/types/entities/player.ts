@@ -226,6 +226,11 @@ export class PlayerInstance extends CreatureInstance {
     }
   }
 
+  recalculateStats() {
+    this.recalculateMaxWeight();
+    this.vault.recalculateVaultSize();
+  }
+
   recalculateMaxWeight() {
     this.inventory.maxWeight = 100;
 

@@ -71,17 +71,20 @@ export class DirectInventory implements Inventory {
 
     if (existingItem) {
       existingItem.amount += amountToAdd;
-      return amountToAdd;
     } else {
       this.items.push(new ItemInstance(item.definitionId, amountToAdd));
-      return amountToAdd;
     }
+
+    return amountToAdd;
   }
 
   remove(item: ItemInstance) {
     const existingItem = this.items.find((i) =>
       areItemInstancesEqual(i, item, true)
     );
+
+    console.log("Removing:", item, "Found:", existingItem);
+
     if (!existingItem) return 0;
 
     if (existingItem.amount > item.amount) {

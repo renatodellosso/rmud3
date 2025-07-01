@@ -2073,7 +2073,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             player.vault.level + 1
           } and has a capacity of ${
             vaultLevelling[player.vault.level].maxWeight
-          } kg.
+          } kg."
           `
         );
 
@@ -2172,15 +2172,18 @@ const entities: Record<EntityId, EntityDefinition> = {
   },
   vault: {
     name: "Vault",
-    interact: async (entity, player, interaction, action) =>
-      inventoryInteraction(
+    interact: async (entity, player, interaction, action) => {
+      player.vault.recalculateVaultSize();
+
+      return inventoryInteraction(
         entity,
         player,
         interaction,
         action,
         player.vault.inventory,
         "Vault"
-      ),
+      );
+    },
   },
   menhir: {
     name: "Menhir",
