@@ -1639,6 +1639,7 @@ const entities: Record<EntityId, EntityDefinition> = {
       "Crafting at Furnace",
       new RecipeGroup([
         new Recipe({ coal: 1, ironOre: 3 }, new ItemInstance("ironBar", 1)),
+        new Recipe({ coal: 1, goldOre: 3 }, new ItemInstance("goldBar", 1)),
         new Recipe({ rottenFlesh: 1 }, new ItemInstance("leather", 1)),
         new Recipe({ meat: 1, coal: 1 }, new ItemInstance("grilledMeat", 1)),
         new Recipe(
