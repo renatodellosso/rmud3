@@ -489,7 +489,7 @@ export class CreatureInstance extends EntityInstance {
   }
 
   scaleAbility(base: number) {
-    return base * (1 + 0.01 * this.getAbilityScore(AbilityScore.Intelligence));
+    return base * (1 + 0.03 * this.getAbilityScore(AbilityScore.Intelligence));
   }
 }
 

@@ -1879,7 +1879,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           You feel a strange energy in the air, as if the stars themselves are waiting for 
           you to make a choice. You have ${player.abilityScoreIncreases} ability score increases left. 
           Constitution grants +5 health, strength grants +10 kg carrying capacity, and intelligence improves
-          abilities.`
+          abilities by 3%.`
         );
 
         return {
