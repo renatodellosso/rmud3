@@ -13,13 +13,13 @@ import useAnimations from "lib/hooks/useAnimations";
 import useGameState from "lib/hooks/useGameState";
 import useRedirectIfSessionIdIsNotPresent from "lib/hooks/useRedirectIfSessionIdIsNotPresent";
 import React from "react";
-import Guild from "../../lib/types/Guild";
 import { SnowOverlay } from "react-snow-overlay";
 import ReforgeMenu from "@/components/menus/ReforgeMenu";
 import { getXpForNextLevel } from "lib/gamedata/levelling";
 import PrimaryActionBar from "@/components/menus/PrimaryActionBar";
+import HeaderBar from "@/components/HeaderBar";
 
-enum Menu {
+export enum Menu {
   PlayerInfo = "Player Info",
   Combat = "Combat",
   Location = "Location",
@@ -63,33 +63,7 @@ export default function Play() {
           disabledOnSingleCpuDevices={true}
         />
       )}
-      <div className="flex justify-between h-1/30 border-b border-white">
-        <div className="w-full flex">
-          {Object.values(Menu)
-            .filter((name) => name != Menu.Guild || gameState.guild)
-            .map((name) => (
-              <button
-                onClick={() => toggleMenu(name)}
-                key={name}
-                className="px-1"
-              >
-                {name}
-              </button>
-            ))}
-        </div>
-        <div className="flex gap-2">
-          <p className="h-full w-full text-right">
-            Level {gameState.self.level} -{" "}
-            {Math.round(gameState.self.xp).toLocaleString()}/
-            {getXpForNextLevel(gameState.self.level).toLocaleString()} XP
-          </p>
-          <progress
-            value={gameState.self.xp}
-            max={getXpForNextLevel(gameState.self.level)}
-            className="h-full"
-          />
-        </div>
-      </div>
+      <HeaderBar gameState={gameState} toggleMenu={toggleMenu} />
       <div className="flex h-11/12">
         <PrimaryMenu gameState={gameState} />
         {openMenus.includes(Menu.PlayerInfo) && (
