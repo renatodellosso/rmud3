@@ -145,8 +145,8 @@ export default function InventoryMenu({ self }: { self: PlayerInstance }) {
       </div>
       <div className="w-full">
         <h2 className="text-xl">
-          Inventory ({inventory.getUsedWeight()}/
-          {inventory.getMaxWeight() ?? "∞"} kg)
+          Inventory ({inventory.getUsedWeight().toFixed(1)}/
+          {inventory.getMaxWeight()?.toFixed(1) ?? "∞"} kg)
         </h2>
         <table className="w-full">
           <thead>
