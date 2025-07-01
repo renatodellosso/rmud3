@@ -16,6 +16,7 @@ import React from "react";
 import { SnowOverlay } from "react-snow-overlay";
 import ReforgeMenu from "@/components/menus/ReforgeMenu";
 import { getXpForNextLevel } from "lib/gamedata/levelling";
+import PrimaryActionBar from "@/components/menus/PrimaryActionBar";
 import HeaderBar from "@/components/HeaderBar";
 
 export enum Menu {
@@ -112,6 +113,9 @@ export default function Play() {
               <></>
             )
           )}
+      </div>
+      <div className="flex h-1/20">
+        <PrimaryActionBar gameState={gameState} className="w-full" />
       </div>
     </div>
   );
