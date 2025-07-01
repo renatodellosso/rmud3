@@ -286,9 +286,6 @@ export class CreatureInstance extends EntityInstance {
 
     this.getDef().onDie?.(this);
 
-    console.log(
-      `Creature ${this.name} has died at ${this.location}. Distributing XP and dropping loot.`
-    );
     this.damagers.distributeXp(
       (entities[this.definitionId] as CreatureDefinition).xpValue
     );
@@ -516,13 +513,13 @@ class DamagerList {
   }
 
   distributeXp(xp: number) {
-    console.log(
-      `Distributing ${xp} XP among ${
-        Object.keys(this.damagers).length
-      } damagers: ${Object.keys(this.damagers).join(
-        ", "
-      )}. Total damage: ${this.getTotalDamage()}`
-    );
+    // console.log(
+    //   `Distributing ${xp} XP among ${
+    //     Object.keys(this.damagers).length
+    //   } damagers: ${Object.keys(this.damagers).join(
+    //     ", "
+    //   )}. Total damage: ${this.getTotalDamage()}`
+    // );
 
     let totalDamage = this.getTotalDamage();
 
