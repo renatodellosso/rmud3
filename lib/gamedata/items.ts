@@ -16,6 +16,8 @@ import { CreatureInstance } from "lib/types/entities/creature";
 import { DamageType } from "lib/types/Damage";
 import AbilityScore from "lib/types/AbilityScore";
 import { ItemTag, EquipmentSlot } from "lib/types/itemenums";
+import locations from "lib/locations";
+import { teleportScroll } from "./itemtemplate";
 
 export type ItemId =
   | "bone"
@@ -96,7 +98,10 @@ export type ItemId =
   | "fangbearerAnklet"
   | "spiderCloak"
   | "mandibleHelmet"
-  | "theMaw";
+  | "theMaw"
+  | "paper"
+  | "returnScroll"
+  | "teleportScroll3";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -1327,6 +1332,42 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       },
     ],
   } satisfies EquipmentDefinition,
+  paper: {
+    getName: "Paper",
+    description: "A simple piece of paper.",
+    getWeight: 0.01,
+    getSellValue: 1,
+    tags: [],
+  },
+  returnScroll: {
+    getName: "Return Scroll",
+    tags: [ItemTag.Consumable],
+    description: "A scroll that returns you to the town.",
+    getWeight: 0.1,
+    getSellValue: 75,
+    getAbilities: (creature, item) => [
+      {
+        name: "Return",
+        getDescription: "Return to the town.",
+        getCooldown: 0,
+        getTargetCount: 1,
+        canTarget: CanTarget.isSelf,
+        activate: (creature, targets) => {
+          const target = targets[0] as CreatureInstance;
+
+          locations["dungeon-entrance"].enter(target);
+
+          getIo().sendMsgToPlayer(
+            creature._id.toString(),
+            `You return to the town.`
+          );
+
+          return true;
+        },
+      },
+    ],
+  } satisfies ConsumableDefinition,
+  teleportScroll3: teleportScroll(3),
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;

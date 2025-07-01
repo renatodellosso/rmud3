@@ -1768,6 +1768,29 @@ const entities: Record<EntityId, EntityDefinition> = {
           },
           new ItemInstance("spiderCloak", 1)
         ),
+        new Recipe(
+          {
+            leather: 1,
+            inertDust: 1,
+          },
+          new ItemInstance("paper", 1)
+        ),
+        new Recipe(
+          {
+            paper: 1,
+            money: 40,
+            ectoplasm: 1,
+          },
+          new ItemInstance("returnScroll", 1)
+        ),
+        new Recipe(
+          {
+            paper: 1,
+            silk: 3,
+            spiderFang: 1,
+          },
+          new ItemInstance("teleportScroll3", 1)
+        )
       ])
     ),
   },
