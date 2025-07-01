@@ -64,7 +64,7 @@ export default function Play() {
         />
       )}
       <HeaderBar gameState={gameState} toggleMenu={toggleMenu} />
-      <div className="flex h-29/30">
+      <div className="flex h-11/12">
         <PrimaryMenu gameState={gameState} />
         {openMenus.includes(Menu.PlayerInfo) && (
           <PlayerInfoMenu gameState={gameState} />
