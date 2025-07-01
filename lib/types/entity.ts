@@ -6,11 +6,11 @@ import { PlayerInstance } from "./entities/player";
 import { LocationId } from "lib/gamedata/rawLocations";
 import Recipe, { RecipeGroup } from "./Recipe";
 import Inventory from "./Inventory";
-import { ItemInstance } from "./item";
 import { DungeonLocation, FloorInstance } from "lib/dungeongeneration/types";
-import { activateAbilityOnTick } from "lib/entityutils";
-import { CreatureInstance } from "./entities/creature";
-import { AbilityWithSource } from "./Ability";
+import { isTargetACreature } from "lib/gamedata/CanTarget";
+
+// Includes the player
+const MAX_ENEMIES = 4;
 
 export type EntityDefinition = {
   name: string;
@@ -94,6 +94,15 @@ export class EntityInstance {
         );
       if ("floor" in targetLocation != "floor" in location) return false;
       if (!("floor" in targetLocation)) return true;
+
+      if (
+        Array.from(targetLocation.entities).filter(
+          (c) =>
+            isTargetACreature(undefined as any, c) &&
+            c.definitionId !== "player"
+        ).length >= MAX_ENEMIES
+      )
+        return false;
 
       return (
         (targetLocation.floor as FloorInstance).depth ===
