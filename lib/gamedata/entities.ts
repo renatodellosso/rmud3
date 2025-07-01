@@ -1938,8 +1938,11 @@ const entities: Record<EntityId, EntityDefinition> = {
       player.abilityScores[abilityScore] += 1;
       player.abilityScoreIncreases--;
 
-      if (abilityScore === AbilityScore.Constitution)
-        player.health += player.getHealthBonusFromConstitution();
+      if (abilityScore === AbilityScore.Constitution) {
+        const bonus = player.getHealthBonusFromConstitution();
+        if (player.health + bonus < player.getMaxHealth())
+          player.health += player.getHealthBonusFromConstitution();
+      }
 
       getIo().sendMsgToPlayer(
         player._id.toString(),
