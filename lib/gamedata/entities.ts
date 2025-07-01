@@ -1711,7 +1711,21 @@ const entities: Record<EntityId, EntityDefinition> = {
           { bone: 1, rope: 10, trollTooth: 1 },
           new ItemInstance("boneNecklace", 1)
         ),
-        new Recipe({ bone: 20 }, new ItemInstance("boneClub", 1)),
+        new Recipe({ bone: 10 }, new ItemInstance("boneClub", 1)),
+        new Recipe(
+          {
+            bone: 4,
+            ratTail: 4,
+          },
+          new ItemInstance("tailFlail", 1)
+        ),
+        new Recipe(
+          {
+            rope: 3,
+            leather: 1,
+          },
+          new ItemInstance("sling", 1)
+        ),
         new Recipe(
           {
             ratTail: 5,

@@ -43,6 +43,8 @@ export type ItemId =
   | "bottle"
   | "rope"
   | "boneClub"
+  | "tailFlail"
+  | "sling"
   | "memory"
   | "nightmare"
   | "ectoplasm"
@@ -336,6 +338,35 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
           },
         ]
       ),
+    ],
+  } satisfies EquipmentDefinition,
+  tailFlail: {
+    getName: "Tail Flail",
+    description: "A rat tail flail. Makes your enemies pale.",
+    getWeight: 10,
+    getSellValue: 15,
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    getAbilities: (creature, item) => [
+      Abilities.attack("Flail", "A wild swing of the tail flail.", 3, [
+        { amount: 8, type: DamageType.Bludgeoning },
+      ]),
+    ],
+  } satisfies EquipmentDefinition,
+  sling: {
+    getName: "Sling",
+    description: "A simple sling for throwing stones.",
+    getWeight: 0.5,
+    getSellValue: 5,
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    getAbilities: (creature, item) => [
+      Abilities.attack("Throw Pebble", "A simple throw of the sling.", 1.5, [
+        { amount: 5, type: DamageType.Piercing },
+      ]),
+      Abilities.attack("Throw Stone", "A simple throw of the sling.", 3, [
+        { amount: 8, type: DamageType.Bludgeoning },
+      ]),
     ],
   } satisfies EquipmentDefinition,
   memory: {
