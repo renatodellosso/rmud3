@@ -12,6 +12,7 @@ import AbilityTooltip from "../AbilityTooltip";
 import { Location } from "lib/types/Location";
 import { EntityInstance } from "lib/types/entity";
 import statusEffects from "lib/gamedata/statusEffects";
+import StatusEffectList from "../StatusEffectList";
 
 export default function CombatMenu({ gameState }: { gameState: GameState }) {
   const [targets, setTargets] = useState<Targetable[]>([]);
@@ -155,22 +156,7 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
             ))}
         </div>
       </div>
-      <div>
-        <strong>Status Effects</strong>
-        <ul>
-          {gameState.self.statusEffects.map((effect) => (
-            <li key={effect.definitionId} className="tooltip">
-              {statusEffects[effect.definitionId].name}{" "}
-              {effect.strength.toFixed()} (expires in{" "}
-              {((Date.now() - effect.expiresAt.getTime()) / 1000).toFixed(1)}s)
-              -{" "}
-              <div className="tooltip-text">
-                {statusEffects[effect.definitionId].description}
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <StatusEffectList effects={gameState.self.statusEffects} />
     </div>
   );
 }

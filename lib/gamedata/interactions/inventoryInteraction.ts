@@ -32,9 +32,11 @@ export default function inventoryInteraction(
     };
 
     const item: ItemInstance = parsedAction.item;
-    const foundItem = parsedAction.insert
-      ? player.inventory.get(item)
-      : inventory.get(item);
+    const foundItem = EJSON.parse(
+      EJSON.stringify(
+        parsedAction.insert ? player.inventory.get(item) : inventory.get(item)
+      )
+    );
 
     if (!foundItem) {
       return interaction;
@@ -46,9 +48,14 @@ export default function inventoryInteraction(
       foundItem.amount = player.inventory.add(foundItem);
       inventory.remove(foundItem);
     } else {
-      foundItem.amount = player.inventory.remove(foundItem);
-      inventory.add(foundItem);
+      foundItem.amount = inventory.add(foundItem);
+      player.inventory.remove(foundItem);
     }
+
+    console.log(
+      `Inventory interaction: ${parsedAction.insert ? "Added" : "Removed"}:`,
+      foundItem
+    );
 
     savePlayer(player);
 

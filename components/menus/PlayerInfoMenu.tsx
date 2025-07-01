@@ -4,6 +4,7 @@ import { GameState } from "lib/types/types";
 import AbilityScore from "lib/types/AbilityScore";
 import { difficultyOptions } from "../../lib/types/Difficulty";
 import DifficultyDescription from "../DifficultyDescription";
+import StatusEffectList from "../StatusEffectList";
 
 export default function PlayerInfoMenu({
   gameState: { self, guild },
@@ -45,19 +46,7 @@ export default function PlayerInfoMenu({
           })}
         </ul>
       </div>
-      <div>
-        <strong>Status Effects:</strong>
-        <ul>
-          {self.statusEffects.map((effect) => (
-            <li key={effect.definitionId}>
-              {statusEffects[effect.definitionId].name}{" "}
-              {effect.strength.toFixed()} (expires in{" "}
-              {((Date.now() - effect.expiresAt.getTime()) / 1000).toFixed(1)}s)
-              - {statusEffects[effect.definitionId].description}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <StatusEffectList effects={self.statusEffects} />
     </div>
   );
 }

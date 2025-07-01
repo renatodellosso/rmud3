@@ -55,8 +55,7 @@ function ItemEntry({
     <tr className="hover:bg-gray-900">
       <td>
         <div className="tooltip">
-          {item.getName()} x
-          {item.amount}
+          {item.getName()} x{item.amount}
           <ItemTooltip item={item} creature={self} />
         </div>
       </td>
@@ -89,10 +88,7 @@ export default function ContainerMenu({
   const [viewPlayerInventory, setViewInventory] = useState(false);
 
   function switchInventory() {
-    if (!viewPlayerInventory) setViewInventory(true);
-    else setViewInventory(false);
-
-    socket.emit("interact", interaction.entityId.toString(), "switchInventory");
+    setViewInventory((prev) => !prev);
   }
 
   const openInventory = viewPlayerInventory
@@ -119,8 +115,8 @@ export default function ContainerMenu({
       <div>
         <div className="text-center">
           {viewPlayerInventory ? "Inventory" : "Container"} Items (
-          {openInventory!.getUsedWeight()}/
-          {openInventory!.getMaxWeight() ?? "∞"} kg)
+          {openInventory!.getUsedWeight().toFixed(1)}/
+          {openInventory!.getMaxWeight()?.toFixed(1) ?? "∞"} kg)
         </div>
         <table className="w-full border-separate border-spacing-y-2">
           <tbody>
