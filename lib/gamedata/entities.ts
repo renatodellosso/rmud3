@@ -1790,7 +1790,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             spiderFang: 1,
           },
           new ItemInstance("teleportScroll3", 1)
-        )
+        ),
       ])
     ),
   },
@@ -2044,13 +2044,26 @@ const entities: Record<EntityId, EntityDefinition> = {
           } and has a capacity of ${
             vaultLevelling[player.vault.level].maxWeight
           } kg.
-          You can upgrade it to level ${nextVaultLevel + 1} for ${
-            nextVaultLevelStats.price
-          } ${items["money"].getName},
-          which will increase your vault's maximum weight to ${
-            nextVaultLevelStats.maxWeight
-          } kg.`
+          `
         );
+
+        if (nextVaultLevel >= vaultLevelling.length) {
+          io.sendMsgToPlayer(
+            player._id.toString(),
+            "Your vault is already at the maximum level."
+          );
+          return undefined;
+        } else {
+          io.sendMsgToPlayer(
+            player._id.toString(),
+            `You can upgrade it to level ${nextVaultLevel + 1} for ${
+              nextVaultLevelStats.price
+            } ${items["money"].getName},
+            which will increase your vault's maximum weight to ${
+              nextVaultLevelStats.maxWeight
+            } kg.`
+          );
+        }
 
         if (playerMoney < nextVaultLevelStats.price) {
           io.sendMsgToPlayer(
