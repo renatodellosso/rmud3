@@ -35,6 +35,7 @@ export interface ClientToServerEvents {
   getSaves: (callback: (saves: SerializedEJSON<PlayerSave[]>) => void) => void;
   createNewSave: (saveName: string, difficulty: Difficulty) => void;
   selectSave: (progressId: string) => void;
+  deleteSave: (progressId: string) => void;
   requestGameState: () => void;
   move: (newLocationId: LocationId) => void;
   activateAbility: (

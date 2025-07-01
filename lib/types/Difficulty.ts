@@ -17,7 +17,7 @@ type DifficultyOptions = {
   name: string;
   description: string;
   baseHealthMultiplier: number;
-  healthBonusFromConstitution?: number;
+  healthBonusFromConstitution: number;
   inventoryHandlingOnDeath: InventoryHandlingOnDeath;
 };
 
@@ -26,6 +26,7 @@ export const difficultyOptions: Record<Difficulty, DifficultyOptions> = {
     name: "Adventurer",
     description: "The standard experience.",
     baseHealthMultiplier: 1,
+    healthBonusFromConstitution: 5,
     inventoryHandlingOnDeath: InventoryHandlingOnDeath.KeepItems,
   },
   [Difficulty.Hard]: {

@@ -15,11 +15,31 @@ function PlayerSaveCard({ save }: { save: PlayerSave }) {
     location.href = "/play";
   }
 
+  function deleteSave() {
+    if (
+      !confirm(
+        `Are you sure you want to delete the save: ${save.instance.saveName} ${
+          difficultyOptions[save.instance.difficulty]?.name
+        }?`
+      )
+    ) {
+      return;
+    }
+
+    socket.emit("deleteSave", save.progress._id.toString());
+    location.reload();
+  }
+
   return (
-    <button onClick={selectSave} className="w-full">
-      {save.instance.saveName} (
-      {difficultyOptions[save.instance.difficulty]?.name})
-    </button>
+    <div className="flex gap-2 w-full">
+      <button onClick={selectSave} className="w-full">
+        {save.instance.saveName} (
+        {difficultyOptions[save.instance.difficulty]?.name})
+      </button>
+      <button onClick={deleteSave} className="px-1 hover:bg-red-500!">
+        Delete
+      </button>
+    </div>
   );
 }
 

@@ -210,6 +210,78 @@ export default function registerSaveListeners(socket: TypedSocket) {
     startPlaySession(socket, instance, progress);
   });
 
+  socket.on("deleteSave", async (strProgressId: string) => {
+    const progressId = new ObjectId(strProgressId);
+
+    const db = await getMongoClient();
+    const collectionManager = getCollectionManager(db);
+
+    const accountsCollection = collectionManager.getCollection(
+      CollectionId.Accounts
+    );
+
+    const account = (
+      await accountsCollection.findWithOneFilter({
+        _id: socket.data.session?.accountId,
+      })
+    )[0];
+
+    if (!account) {
+      console.error("No account found for session:", socket.data.session?._id);
+      return;
+    }
+
+    if (!account.playerProgresses.find((p) => p.equals(progressId))) {
+      console.error(
+        `Progress ID ${progressId} not found in account's player progresses.`
+      );
+      return;
+    }
+
+    const progressesCollection = collectionManager.getCollection(
+      CollectionId.PlayerProgresses
+    );
+
+    const progress = (
+      await progressesCollection.findWithOneFilter({
+        _id: progressId,
+      })
+    )[0];
+
+    if (!progress) {
+      console.error(`No progress found for ID: ${progressId}`);
+      return;
+    }
+
+    await progressesCollection.delete(progressId);
+
+    account.playerProgresses = account.playerProgresses.filter(
+      (p) => !p.equals(progressId)
+    );
+    accountsCollection.upsert(account);
+
+    // Find instance
+    const instancesCollection = collectionManager.getCollection(
+      CollectionId.PlayerInstances
+    );
+
+    const instance = (
+      await instancesCollection.findWithOneFilter({
+        _id: progress.playerInstanceId,
+      })
+    )[0];
+
+    if (!instance) {
+      console.error(
+        `No instance found for player instance ID: ${progress.playerInstanceId}`
+      );
+      return;
+    }
+
+    // Delete instance
+    await instancesCollection.delete(instance._id);
+  });
+
   socket.onAny((event, ...args) => {
     const session = socket.data.session;
     if (!session || !session.playerInstanceId) {

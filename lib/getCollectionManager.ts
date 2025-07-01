@@ -102,6 +102,14 @@ export class CachedCollection<T extends WithId<Document>> {
   async setInCache(key: ObjectId, data: T): Promise<void> {
     this.cache.set(key.toString(), data);
   }
+
+  async delete(key: ObjectId): Promise<void> {
+    this.cache.del(key.toString());
+    const collection = this.getCollection();
+    if (collection) {
+      await collection.deleteOne({ _id: key });
+    }
+  }
 }
 
 export class CollectionManager {
