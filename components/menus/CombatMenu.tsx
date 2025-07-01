@@ -11,6 +11,7 @@ import { isTargetACreature } from "lib/gamedata/CanTarget";
 import AbilityTooltip from "../AbilityTooltip";
 import { Location } from "lib/types/Location";
 import { EntityInstance } from "lib/types/entity";
+import statusEffects from "lib/gamedata/statusEffects";
 
 export default function CombatMenu({ gameState }: { gameState: GameState }) {
   const [targets, setTargets] = useState<Targetable[]>([]);
@@ -91,7 +92,7 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
     <div className="border w-1/6 flex flex-col gap-2">
       <h2 className="text-xl">Combat</h2>
       <div>
-        <h3>Abilities</h3>
+        <strong>Abilities</strong>
         <div className="flex flex-col gap-1">
           {gameState.self.getAbilities().map((ability) => (
             <button
@@ -115,9 +116,9 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
         </div>
       </div>
       <div>
-        <h3>
+        <strong>
           Targets ({targets.length}/{targetCount})
-        </h3>
+        </strong>
         <div className="flex flex-col gap-1">
           {(Array.from(gameState.location.entities) as Targetable[])
             .concat([gameState.location as any as Location])
@@ -152,6 +153,19 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
               </button>
             ))}
         </div>
+      </div>
+      <div>
+        <strong>Status Effects</strong>
+        <ul>
+          {gameState.self.statusEffects.map((effect) => (
+            <li key={effect.definitionId} className="tooltip">
+              {statusEffects[effect.definitionId].name} {effect.strength}{" "}
+              (expires in{" "}
+              {Math.round((Date.now() - effect.expiresAt.getTime()) / 1000)}s) -{" "}
+              <div className="tooltip-text">{statusEffects[effect.definitionId].description}</div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

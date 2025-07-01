@@ -247,8 +247,18 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             amount: [1, 4],
             weight: 1,
           },
+          {
+            item: "ironOre",
+            amount: [1, 3],
+            weight: 0.5,
+          },
+          {
+            item: "coal",
+            amount: [1, 3],
+            weight: 0.5,
+          },
         ]),
-        amount: 1,
+        amount: 2,
         chance: 1,
       },
     ]),
@@ -356,6 +366,22 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         ]),
         amount: 2,
         chance: 0.8,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ironOre",
+            amount: [1, 5],
+            weight: 1,
+          },
+          {
+            item: "coal",
+            amount: [1, 5],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 0.6,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
