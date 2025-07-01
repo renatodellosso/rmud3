@@ -61,10 +61,7 @@ export default function reforgeInteraction(
 
     getIo().sendMsgToPlayer(
       player._id.toString(),
-      `Reforged ${getFromOptionalFunc(
-        items[player.equipment.items.at(action)!.definitionId].getName,
-        player.equipment.items.at(action)!
-      )} to ${reforges[newReforge].name}`
+      `Reforged ${player.equipment.items.at(action)!.getName()} to ${reforges[newReforge].name}`
     );
 
     return interaction;

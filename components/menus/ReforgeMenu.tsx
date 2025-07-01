@@ -33,7 +33,7 @@ export default function ReforgeMenu({
             {self.equipment.items.map((item, index) => (
               <tr key={index}>
                 <td className="tooltip">
-                  {getFromOptionalFunc(items[item.definitionId].getName, item)}
+                  {item.getName()}
                   <ItemTooltip item={item} creature={self} />
                 </td>
                 <td>

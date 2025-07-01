@@ -55,10 +55,7 @@ export default function CraftingMenu({
                             : ""
                         } tooltip`}
                       >
-                        {getFromOptionalFunc(
-                          items[id as ItemId].getName,
-                          new ItemInstance(id as ItemId, amt)
-                        )}{" "}
+                        {new ItemInstance(id as ItemId, amt).getName()}{" "}
                         x{amt} ({inventory.getCountById(id as ItemId)})
                         <ItemTooltip
                           item={new ItemInstance(id as ItemId, amt)}
@@ -73,10 +70,7 @@ export default function CraftingMenu({
                 <td>
                   {recipe.output.map((item, index) => (
                     <span key={index} className="tooltip">
-                      {getFromOptionalFunc(
-                        items[item.definitionId].getName,
-                        item
-                      )}{" "}
+                      {item.getName()}{" "}
                       x{item.amount} ({inventory.get(item)?.amount ?? 0})
                       <ItemTooltip item={item} creature={self} />
                     </span>

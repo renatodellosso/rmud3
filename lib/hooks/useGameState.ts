@@ -12,6 +12,7 @@ import Recipe from "lib/types/Recipe";
 import LocationMap from "lib/types/LocationMap";
 import { DirectInventory } from "lib/types/Inventory";
 import Guild from "lib/types/Guild";
+import { ItemInstance } from "lib/types/item";
 
 export default function useGameState(): GameState | undefined {
   const [gameState, setGameState] = useState<GameState>();
@@ -89,6 +90,20 @@ function restoreMethods(gameState: GameState) {
         : isTargetACreature(gameState.self, creature)
         ? new CreatureInstance(creature.definitionId as CreatureId)
         : new EntityInstance(creature.definitionId)
+    );
+  }
+
+  for (const item of gameState.self.inventory.items) {
+    restoreFieldsAndMethods(
+      item,
+      new ItemInstance(item.definitionId, item.amount)
+    );
+  }
+
+  for (const item of gameState.self.equipment.items) {
+    restoreFieldsAndMethods(
+      item,
+      new ItemInstance(item.definitionId, item.amount)
     );
   }
 

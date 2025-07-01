@@ -56,7 +56,7 @@ export default function ItemTooltip({
       } flex-col w-64 text-white`}
     >
       <h1 className="text-lg">
-        {getFromOptionalFunc(def.getName, item)} x{item.amount}
+        {item.getName()} x{item.amount}
       </h1>
       {def.tags.length ? <div>Tags: {def.tags.join(", ")}</div> : <></>}
       <div>

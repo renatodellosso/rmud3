@@ -46,15 +46,7 @@ export function getAbilitySourceName(source: AbilitySource): string {
   if (source instanceof CreatureInstance) {
     return source.name;
   } else if ("definitionId" in source && "amount" in source) {
-    const item = items[source.definitionId];
-
-    if (!item) {
-      throw new Error(
-        `Item with definitionId ${source.definitionId} not found`
-      );
-    }
-
-    return getFromOptionalFunc(item.getName, source);
+    return source.getName();
   } else {
     return statusEffects[source.definitionId]?.name || "Unknown Source";
   }
