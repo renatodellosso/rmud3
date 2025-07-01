@@ -33,7 +33,14 @@ export default function ReforgeMenu({
           <tbody>
             {self.equipment.items.map((item, index) => (
               <tr key={index}>
-                <td>{getFromOptionalFunc(items["money"].getName, new ItemInstance("money", 1))} x10</td>
+                <td 
+                  className={self.inventory.getCountById("money") < 10
+                    ? "text-red-500"
+                    : ""
+                  }
+                >
+                  {getFromOptionalFunc(items["money"].getName, new ItemInstance("money", 1))} x10
+                </td>
                 <td className="tooltip">
                   {item.getName()}
                   <ItemTooltip item={item} creature={self} />
