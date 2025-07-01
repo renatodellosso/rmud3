@@ -28,6 +28,14 @@ export default function reforgeInteraction(
 
   if (typeof action !== "number") return interaction;
   else {
+    if (
+      !player.inventory.getById("money") ||
+      player.inventory.getById("money")!.amount < 10
+    ) {
+      getIo().sendMsgToPlayer(player._id.toString(), `Can't afford to reforge, at least 10 ${items["money"].getName} are needed!`);
+      return interaction;
+    }
+
     const equipmentType: EquipmentSlot = (
       items[
         player.equipment.items.at(action)!.definitionId
@@ -61,8 +69,13 @@ export default function reforgeInteraction(
 
     getIo().sendMsgToPlayer(
       player._id.toString(),
-      `Reforged ${player.equipment.items.at(action)!.getName()} to ${reforges[newReforge].name}`
+      `Reforged ${getFromOptionalFunc(
+        items[player.equipment.items.at(action)!.definitionId].getName,
+        player.equipment.items.at(action)!
+      )} to ${reforges[newReforge].name}`
     );
+
+    player.inventory.removeById("money", 10);
 
     return interaction;
   }
