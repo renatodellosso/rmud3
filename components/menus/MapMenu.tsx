@@ -139,7 +139,7 @@ function DepthMap({
     }
   }, [depth, map, currentLocation]);
 
-  return <canvas ref={canvasRef} className="w-full h-96 border" />;
+  return <canvas ref={canvasRef} className="w-full aspect-square border" />;
 }
 
 export default function MapMenu({
