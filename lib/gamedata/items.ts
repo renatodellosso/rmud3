@@ -146,7 +146,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         "Rusty Slash",
         "A basic slash attack with the rusty sword.",
         1,
-        [{ amount: 2, type: DamageType.Slashing }]
+        [{ amount: 3, type: DamageType.Slashing }]
       ),
     ],
     slot: EquipmentSlot.Hands,
@@ -467,7 +467,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
   goldBar: {
     getName: "Gold Bar",
     tags: [],
-    description: "You can see your reflection on the surface of this smooth gold bar.",
+    description:
+      "You can see your reflection on the surface of this smooth gold bar.",
     getWeight: 1.5,
     getSellValue: 10,
   },
@@ -1103,7 +1104,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
                   type: DamageType.Psychic,
                 },
               ],
-              source, creature
+              source,
+              creature
             );
 
             getIo().sendMsgToPlayer(
