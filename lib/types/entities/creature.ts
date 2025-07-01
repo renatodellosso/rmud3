@@ -303,7 +303,8 @@ export class CreatureInstance extends EntityInstance {
     const corpse = new ContainerInstance(
       this.location,
       `${this.name}'s Corpse`,
-      inventory
+      inventory,
+      true
     );
     location.entities.add(corpse);
 
