@@ -46,14 +46,14 @@ function ItemEntry({
   }
 
   return (
-    <tr className="hover:bg-gray-900">
+    <tr className="hover:bg-gray-900 w-full">
       <td className="tooltip">
         {item.getName()}
         <ItemTooltip item={item} creature={self} />
       </td>
       <td>{item.amount}</td>
       <td>{getFromOptionalFunc(items[item.definitionId].getWeight, item)}</td>
-      {items[item.definitionId].tags.includes(ItemTag.Equipment) && (
+      {items[item.definitionId].tags.includes(ItemTag.Equipment) ? (
         <td>
           <button
             onClick={() => equip(item)}
@@ -62,6 +62,8 @@ function ItemEntry({
             Equip
           </button>
         </td>
+      ) : (
+        <td></td>
       )}
       <td className="flex justify-end">
         <input
