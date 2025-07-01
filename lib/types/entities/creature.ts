@@ -245,11 +245,6 @@ export class CreatureInstance extends EntityInstance {
               damageResistance.type === "*" &&
               damageEntry.amount > 0
             ) {
-              console.log(
-                isDamageResisted,
-                damageResistance.type,
-                damageResistance.amount
-              );
               damageEntry.amount = Math.max(
                 damageEntry.amount -
                   Math.ceil(damageResistance.amount * damageResistancePercent),
