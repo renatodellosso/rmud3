@@ -42,8 +42,10 @@ export default class Recipe {
       : typeof output === "object"
       ? output.amount *
         getFromOptionalFunc(items[output.definitionId].getSellValue, output)
-      : getFromOptionalFunc(items[output].getSellValue, 
-          new ItemInstance(output, 1));
+      : getFromOptionalFunc(
+          items[output].getSellValue,
+          new ItemInstance(output, 1)
+        );
 
     return new Recipe(
       {
@@ -90,7 +92,7 @@ export default class Recipe {
     }
 
     for (const item of this.output) {
-      inventory.add(structuredClone(item));
+      inventory.add(structuredClone(item), true);
     }
 
     return true;
@@ -98,17 +100,19 @@ export default class Recipe {
 
   getInputText(): string {
     return Object.entries(this.input)
-      .map(([itemId, quantity]) => 
-        `${quantity}x ${new ItemInstance(itemId as ItemId, quantity).getName()}`
+      .map(
+        ([itemId, quantity]) =>
+          `${quantity}x ${new ItemInstance(
+            itemId as ItemId,
+            quantity
+          ).getName()}`
       )
       .join(", ");
   }
 
   getOutputText(): string {
     return this.output
-      .map((item) => 
-        `${item.getName()} ${item.amount}x`
-      )
+      .map((item) => `${item.getName()} ${item.amount}x`)
       .join(", ");
   }
 }
