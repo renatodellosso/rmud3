@@ -17,6 +17,7 @@ import Guild from "../../lib/types/Guild";
 import { SnowOverlay } from "react-snow-overlay";
 import ReforgeMenu from "@/components/menus/ReforgeMenu";
 import { getXpForNextLevel } from "lib/gamedata/levelling";
+import PrimaryActionBar from "@/components/menus/PrimaryActionBar";
 
 enum Menu {
   PlayerInfo = "Player Info",
@@ -78,7 +79,8 @@ export default function Play() {
         </div>
         <div className="flex gap-2">
           <p className="h-full w-full text-right">
-            Level {gameState.self.level} - {Math.round(gameState.self.xp).toLocaleString()}/
+            Level {gameState.self.level} -{" "}
+            {Math.round(gameState.self.xp).toLocaleString()}/
             {getXpForNextLevel(gameState.self.level).toLocaleString()} XP
           </p>
           <progress
@@ -88,7 +90,7 @@ export default function Play() {
           />
         </div>
       </div>
-      <div className="flex h-29/30">
+      <div className="flex h-11/12">
         <PrimaryMenu gameState={gameState} />
         {openMenus.includes(Menu.PlayerInfo) && (
           <PlayerInfoMenu gameState={gameState} />
@@ -137,6 +139,9 @@ export default function Play() {
               <></>
             )
           )}
+      </div>
+      <div className="flex h-1/20">
+        <PrimaryActionBar gameState={gameState} className="w-full" />
       </div>
     </div>
   );
