@@ -72,6 +72,17 @@ export default class LocationMap {
 
     this.exits[id] = [];
 
+    // Iterate through adjacent locations and remove exits to this location
+    for (const loc of Object.entries(this.exits)) {
+      if (loc[0] === id || !loc[1]) continue;
+      this.exits[loc[0] as LocationId] = loc[1]?.filter(
+        (exit) =>
+          exit[0] !== location.floor.depth + 1 ||
+          exit[1] !== location.globalCoords[0] ||
+          exit[2] !== location.globalCoords[1]
+      );
+    }
+
     for (const exit of Array.from(location.exits)) {
       const exitLoc = locations[exit] as DungeonLocation;
 
