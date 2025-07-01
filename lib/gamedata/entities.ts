@@ -1980,7 +1980,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           actions: [
             {
               id: "rent",
-              text: "Rent Room (5 gold, restores health)",
+              text: `Rent Room (${items["money"].getName} x5, restores health)`,
             },
             {
               id: "leave",
