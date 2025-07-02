@@ -24,6 +24,7 @@ import { EntityInstance } from "./entity";
 import { CreatureInstance } from "./entities/creature";
 import LocationMap from "./LocationMap";
 import Guild, { ClientGuild, GuildMember } from "./Guild";
+import { socket } from "../socket";
 
 export type TypedSocket = Socket<
   ClientToServerEvents,
@@ -283,6 +284,13 @@ export class Io implements ClientFriendlyIo {
     }
 
     return sendMsgToSocket(socket, msg);
+  }
+
+  sendMsgToAll(msg: string): Promise<void> {
+    const io = getRawIoSingleton();
+    io!.emit("addMessage", msg);
+
+    return Promise.resolve();
   }
 
   updateGameState(playerId: string) {

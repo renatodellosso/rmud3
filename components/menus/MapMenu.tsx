@@ -11,6 +11,15 @@ function DepthMap({
   depth: number;
   currentLocation: LocationId;
 }) {
+  if (depth >= map.locations.length) {
+    depth = map.locations.length - 1;
+    console.warn(
+      `Depth ${depth} is out of bounds, using ${
+        map.locations.length - 1
+      } instead`
+    );
+  }
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const floor = map.locations[depth];
@@ -154,6 +163,12 @@ export default function MapMenu({
   useEffect(() => {
     setDepth(map.getDepth(currentLocation));
   }, [currentLocation]);
+
+  useEffect(() => {
+    if (depth >= map.locations.length) {
+      setDepth(map.locations.length - 1);
+    }
+  }, [map]);
 
   return (
     <div className="border w-1/3">

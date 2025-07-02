@@ -3,6 +3,7 @@ import { ServerToClientEvents } from "./types/socketiotypes";
 export default interface ClientFriendlyIo {
   sendMsgToRoom(room: string, msg: string): Promise<void>;
   sendMsgToPlayer(playerId: string, msg: string): Promise<void>;
+  sendMsgToAll(msg: string): Promise<void>;
   updateGameState(playerId: string): Promise<void>;
   updateGameStateForRoom(roomId: string): Promise<void>;
   joinRoom(roomId: string, playerId: string): Promise<void>;
@@ -21,6 +22,9 @@ export class DisabledIo implements ClientFriendlyIo {
     return Promise.resolve();
   }
   sendMsgToPlayer(playerId: string, msg: string): Promise<void> {
+    return Promise.resolve();
+  }
+  sendMsgToAll(msg: string): Promise<void> {
     return Promise.resolve();
   }
   updateGameState(playerId: string): Promise<void> {

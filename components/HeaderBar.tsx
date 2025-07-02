@@ -38,8 +38,18 @@ export default function HeaderBar({
           {getXpForNextLevel(gameState.self.level).toLocaleString()} XP
         </p>
         <progress
-          value={gameState.self.xp}
-          max={getXpForNextLevel(gameState.self.level)}
+          value={
+            gameState.self.xp -
+            (gameState.self.level > 0
+              ? getXpForNextLevel(gameState.self.level - 1)
+              : 0)
+          }
+          max={
+            getXpForNextLevel(gameState.self.level) -
+            (gameState.self.level > 0
+              ? getXpForNextLevel(gameState.self.level - 1)
+              : 0)
+          }
           className="h-full border"
         />
       </div>

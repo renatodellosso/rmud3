@@ -135,6 +135,19 @@ export function getSingleton<T>(
   return singletons[name];
 }
 
+export function setSingleton<T>(name: SingletonId, value: T): void {
+  if (!(globalThis as any).singletons) {
+    (globalThis as any).singletons = {} as Record<string, any>;
+  }
+
+  const singletons = (globalThis as any).singletons as any as Record<
+    string,
+    any
+  >;
+
+  singletons[name] = value;
+}
+
 export function randInRangeInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }

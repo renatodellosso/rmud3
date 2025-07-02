@@ -6,7 +6,10 @@ import { getSingleton } from "./utils";
 
 export function setupLocations() {
   addRawLocations(locations);
+  setupDungeonLocations();
+}
 
+export function setupDungeonLocations() {
   const dungeon = getSingleton("dungeon", () => {
     const dungeon = generateDungeon();
     console.log("Generated dungeon!");

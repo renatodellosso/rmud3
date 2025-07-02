@@ -25,7 +25,7 @@ export default function StatusEffectList({
             {statusEffects[effect.definitionId].name}{" "}
             {effect.strength.toFixed()} (expires in{" "}
             {((effect.expiresAt.getTime() - Date.now()) / 1000).toFixed(1)}s)
-            <div className="tooltip-text w-16">
+            <div className="tooltip-text w-32">
               {statusEffects[effect.definitionId].description}
             </div>
           </li>

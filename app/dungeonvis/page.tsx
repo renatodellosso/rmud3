@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import generateDungeonLayout from "lib/dungeongeneration/generateDungeonLayout";
 import { getCoordsFromId as getCoordsFromLocationId } from "lib/dungeongeneration/utils";
 import generateDungeon from "lib/dungeongeneration/generateDungeon";
-import regenerateDungeon from "lib/dungeongeneration/regenerateDungeon";
+import regenerateDungeonContinually from "lib/dungeongeneration/regenerateDungeon";
 
 export default function DungeonVis() {
   const [dungeon, setDungeon] = useState<Dungeon>();
@@ -132,7 +132,7 @@ export default function DungeonVis() {
     if (!dungeon) return;
 
     for (let i = 0; i < times; i++) {
-      regenerateDungeon(dungeon, 1);
+      regenerateDungeonContinually(dungeon, 1);
     }
     setDungeon({ ...dungeon }); // Trigger re-render
   }
