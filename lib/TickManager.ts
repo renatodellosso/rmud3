@@ -4,7 +4,7 @@ import { regenerateDungeon } from "./dungeongeneration/regenerateDungeon";
 import { getIo } from "./ClientFriendlyIo";
 
 const TICK_INTERVAL = 1000; // 1 second
-const REGENERATE_DUNGEON_INTERVAL = 30 * 1000; // 30 minutes
+const REGENERATE_DUNGEON_INTERVAL = 30 * 60 * 1000; // 30 minutes
 
 export function startTicking() {
   const locations = getSingleton("locations");
