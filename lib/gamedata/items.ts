@@ -403,7 +403,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     slot: EquipmentSlot.Hands,
     getAbilities: (creature, item) => [
       Abilities.summon(
-        "Slime Companion",
+        "Call Slime",
         "Summon a friendly slime to aid you in battle.",
         15,
         "friendlySlime"

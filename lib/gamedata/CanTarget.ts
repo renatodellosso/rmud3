@@ -47,6 +47,20 @@ export function isPlayer(
   );
 }
 
+/**
+ * @returns true if the target is a player or a friendly creature.
+ */
+export function isAlly(
+  creature: CreatureInstance,
+  target: Targetable
+): boolean {
+  return (
+    isTargetACreature(creature, target) &&
+    (target.definitionId === "player" ||
+      target.definitionId.startsWith("friendly"))
+  );
+}
+
 export function isSelf(
   creature: CreatureInstance,
   target: Targetable

@@ -122,7 +122,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             type: DamageType.Bludgeoning,
           },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 100,
@@ -160,7 +160,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Bite an enemy.",
         3,
         [{ amount: 1, type: DamageType.Piercing }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 15,
@@ -198,7 +198,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Slash an enemy with a bone sword.",
         4,
         [{ amount: 1, type: DamageType.Slashing }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 10,
@@ -237,7 +237,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Slime.",
         4,
         [{ amount: 1, type: DamageType.Bludgeoning }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 5,
@@ -281,7 +281,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Slime.",
         4,
         [{ amount: 1, type: DamageType.Bludgeoning }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.applyStatusEffect(
         "Infest",
@@ -294,7 +294,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 5,
           },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 15,
@@ -357,7 +357,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Slam.",
         6,
         [{ amount: 5, type: DamageType.Bludgeoning }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.heal("Heal", "Recover a small amount of health.", 10, 5, {
         targetRestrictions: [CanTarget.isSelf],
@@ -427,7 +427,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 10,
           },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.applyStatusEffect(
         "Salt Poison",
@@ -440,7 +440,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 3,
           },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 25,
@@ -484,7 +484,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Bite an enemy.",
         3,
         [{ amount: 2, type: DamageType.Piercing }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 20,
@@ -543,7 +543,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Slam.",
         5,
         [{ amount: 5, type: DamageType.Bludgeoning }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.heal("Heal", "Recover a small amount of health.", 10, 8, {
         targetRestrictions: [CanTarget.isSelf],
@@ -613,7 +613,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 5,
           },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 25,
@@ -659,7 +659,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 3,
           },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.attackWithStatusEffect(
         "Mind Infect",
@@ -673,7 +673,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 2,
           },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 50,
@@ -733,7 +733,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 2,
           },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.attackWithStatusEffect(
         "Mind Infect",
@@ -747,7 +747,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 2,
           },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.heal("Regenerate", "Regenerate health.", 5, 5, {
         targetRestrictions: [CanTarget.isSelf],
@@ -804,21 +804,21 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "A simple slashing attack.",
         3,
         [{ amount: 5, type: DamageType.Slashing }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.attack(
         "Slam",
         "A simple bludgeoning attack.",
         5,
         [{ amount: 8, type: DamageType.Bludgeoning }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.attack(
         "Stab",
         "A simple piercing attack.",
         2.5,
         [{ amount: 4, type: DamageType.Piercing }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 40,
@@ -902,7 +902,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Are these descriptions even displayed anywhere?",
         3,
         [{ amount: 5, type: DamageType.Piercing }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 15,
@@ -968,7 +968,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 3,
           },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.applyStatusEffect(
         "Curse",
@@ -981,7 +981,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 3,
           },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 20,
@@ -1028,7 +1028,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Are these descriptions even displayed anywhere?",
         2,
         [{ amount: 6, type: DamageType.Piercing }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 25,
@@ -1083,7 +1083,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "A spooky attack on the mind.",
         5,
         [{ amount: 5, type: DamageType.Psychic }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 20,
@@ -1128,7 +1128,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "An invasive attack on the mind.",
         4,
         [{ amount: 9, type: DamageType.Psychic }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.applyStatusEffect(
         "Fear",
@@ -1141,7 +1141,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 3,
           },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.attackWithStatusEffect(
         "Soul Drain",
@@ -1155,7 +1155,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 3,
           },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 40,
@@ -1204,7 +1204,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "The rat nibbles you.",
         4,
         [{ amount: 2, type: DamageType.Piercing }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 5,
@@ -1248,7 +1248,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "The rat snacks on you.",
         4,
         [{ amount: 4, type: DamageType.Piercing }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 10,
@@ -1295,7 +1295,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           { amount: 10, type: DamageType.Piercing },
           { amount: 2, type: DamageType.Poison },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.applyStatusEffect(
         "Poison",
@@ -1308,7 +1308,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 3,
           },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 45,
@@ -1361,7 +1361,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           { amount: 12, type: DamageType.Piercing },
           { amount: 4, type: DamageType.Poison },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.applyStatusEffect(
         "Spit",
@@ -1374,7 +1374,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             duration: 2,
           },
         ],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
     xpValue: 65,
@@ -1433,7 +1433,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "A powerful slam attack.",
         4,
         [{ amount: 15, type: DamageType.Bludgeoning }],
-        { targetRestrictions: [CanTarget.isPlayer] }
+        { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.attackWithStatusEffect(
         "Ancient Rage",
@@ -1448,7 +1448,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           },
         ],
         {
-          targetRestrictions: [CanTarget.isPlayer],
+          targetRestrictions: [CanTarget.isAlly],
         }
       ),
       Abilities.heal(
@@ -1520,7 +1520,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Slime.",
         1,
         [{ amount: 3, type: DamageType.Bludgeoning }],
-        { targetRestrictions: [CanTarget.not(CanTarget.isPlayer)] }
+        { targetRestrictions: [CanTarget.not(CanTarget.isAlly)] }
       ),
     ],
     xpValue: 5,
