@@ -1351,7 +1351,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getName: "The Maw",
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Hands,
-    description: `A savage helmet, covered in teeth and fangs`,
+    description: `A savage helmet, covered in teeth and fangs. Reduces cooldowns by 10%.`,
     getWeight: 10,
     getSellValue: 500,
     getAbilities: (creature, item) => [
