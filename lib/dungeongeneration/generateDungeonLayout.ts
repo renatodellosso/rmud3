@@ -10,6 +10,8 @@ import {
 import { Point } from "lib/types/types";
 import { getLocationId, mapFloor } from "./utils";
 
+const BLEND_CHANCE = 0.5;
+
 export default function generateDungeonLayout(): Dungeon {
   const dungeon: Dungeon = {
     locations: [],
@@ -146,49 +148,31 @@ function connectFloors(dungeon: Dungeon, lowerDepth: number, points: Point[]) {
 
 function generateFloorDefinitionArray(depth: number): FloorDefinition[] {
   const definitions: Set<FloorDefinition> = new Set(); // Use a Set to avoid duplicates
-  let blendChance = 1;
+  
+  const definition = Object.values(floors).filter((floor) =>
+    floor.depths.includes(depth)
+  )[0];
 
-  while (chance(blendChance)) {
-    const definition = selectFloorDefinition(depth);
+  definitions.add(definition);
 
-    definitions.add(definition);
-    blendChance *= definition.blendChance;
+  if (chance(BLEND_CHANCE)) {
+    let secondDefinition;
+
+    if (randInRangeInt(0, 1) === 0 && depth > 0) {
+      secondDefinition = Object.values(floors).filter((floor) =>
+        floor.depths.includes(depth - 1)
+      )[0];
+    }
+    else {
+      secondDefinition = Object.values(floors).filter((floor) =>
+        floor.depths.includes(depth + 1)
+      )[0];
+    }
+
+    definitions.add(secondDefinition);
   }
 
   return Array.from(definitions);
-}
-
-function selectFloorDefinition(depth: number): FloorDefinition {
-  let totalWeight = 0;
-
-  const floorDefinitions = Object.values(floors)
-    .filter((floor) => floor.depths.includes(depth))
-    .reduce((table, curr) => {
-      totalWeight += curr.appearanceWeight;
-
-      if (table.length === 0) {
-        return [
-          {
-            weight: curr.appearanceWeight,
-            definition: curr,
-          },
-        ];
-      }
-
-      return table.concat({
-        weight: table[table.length - 1].weight + curr.appearanceWeight,
-        definition: curr,
-      });
-    }, [] as { weight: number; definition: FloorDefinition }[]);
-
-  const randomValue = Math.random() * totalWeight;
-  for (const floor of floorDefinitions) {
-    if (randomValue < floor.weight) {
-      return floor.definition;
-    }
-  }
-
-  throw new Error(`No floor definition found for depth ${depth}`);
 }
 
 function assignFloorStartingPoints(
