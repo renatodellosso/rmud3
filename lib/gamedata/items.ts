@@ -348,7 +348,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Hands,
     getAbilities: (creature, item) => [
-      Abilities.attack("Flail", "A wild swing of the tail flail.", 3, [
+      Abilities.attack("Flail", "A wild swing of the tail flail.", 1.5, [
         { amount: 8, type: DamageType.Bludgeoning },
       ]),
     ],
@@ -361,10 +361,10 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Hands,
     getAbilities: (creature, item) => [
-      Abilities.attack("Throw Pebble", "A simple throw of the sling.", 1.5, [
+      Abilities.attack("Throw Pebble", "A simple throw of the sling.", 1.2, [
         { amount: 5, type: DamageType.Piercing },
       ]),
-      Abilities.attack("Throw Stone", "A simple throw of the sling.", 3, [
+      Abilities.attack("Throw Stone", "A simple throw of the sling.", 2, [
         { amount: 8, type: DamageType.Bludgeoning },
       ]),
     ],
