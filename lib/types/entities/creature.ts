@@ -305,10 +305,10 @@ export class CreatureInstance extends EntityInstance {
       this.damagers.addDamage(entitySource, d.amount);
 
       this.health -= d.amount;
+    }
 
-      if (this.health <= 0) {
-        this.die();
-      }
+    if (this.health <= 0) {
+      this.die();
     }
 
     return newDamage;
