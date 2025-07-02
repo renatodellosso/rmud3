@@ -2,7 +2,7 @@ import { Interaction } from "lib/types/entity";
 import { socket } from "lib/socket";
 import items from "lib/gamedata/items";
 import { ItemInstance } from "lib/types/item";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ItemTooltip from "../ItemTooltip";
 import { PlayerInstance } from "lib/types/entities/player";
 import { CreatureInstance } from "lib/types/entities/creature";
@@ -23,6 +23,11 @@ function ItemEntry({
   setError: (error: string) => void;
 }) {
   const [amount, setAmount] = useState(item.amount);
+
+  useEffect(() => {
+    // Reset amount when switching inventories
+    setAmount(item.amount);
+  }, [viewPlayerInventory, item.amount]);
 
   function transferItem(item: ItemInstance) {
     if (amount <= 0) {
