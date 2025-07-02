@@ -25,15 +25,6 @@ export type FloorDefinition = {
    * Depth values the floor can appear on
    */
   depths: number[];
-  /**
-   * How likely this floor is to appear in a dungeon.
-   * Higher values mean more likely.
-   */
-  appearanceWeight: number;
-  /**
-   * How likely a second floor is to be generated on the same depth.
-   */
-  blendChance: number;
   visualizerColor: string;
   layoutGenerationOptions: FloorLayoutGenerationOptions;
   populationOptions: FloorPopulationOptions;

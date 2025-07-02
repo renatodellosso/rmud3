@@ -7,8 +7,6 @@ const floors: Record<string, FloorDefinition> = {
   sewers: {
     name: "Sewers",
     depths: [0],
-    appearanceWeight: 1,
-    blendChance: 0,
     visualizerColor: "#2F4F4F",
     layoutGenerationOptions: {
       roomChance: 0.5,
@@ -103,8 +101,6 @@ const floors: Record<string, FloorDefinition> = {
   caves: {
     name: "Caves",
     depths: [1],
-    appearanceWeight: 1,
-    blendChance: 0.4,
     visualizerColor: "#4682B4",
     layoutGenerationOptions: {
       roomChance: 0.7,
@@ -184,8 +180,6 @@ const floors: Record<string, FloorDefinition> = {
   crypts: {
     name: "Crypts",
     depths: [2],
-    appearanceWeight: 1,
-    blendChance: 0.4,
     visualizerColor: "#8B4513",
     layoutGenerationOptions: {
       roomChance: 0.6,
@@ -245,8 +239,6 @@ const floors: Record<string, FloorDefinition> = {
   mines: {
     name: "Mines",
     depths: [3],
-    appearanceWeight: 1,
-    blendChance: 0.5,
     visualizerColor: "#A9A9A9",
     layoutGenerationOptions: {
       roomChance: 0.6,
@@ -365,8 +357,6 @@ const floors: Record<string, FloorDefinition> = {
   fungalCaverns: {
     name: "Fungal Caverns",
     depths: [4],
-    appearanceWeight: 1,
-    blendChance: 0.3,
     visualizerColor: "#228B22",
     layoutGenerationOptions: {
       roomChance: 0.8,
@@ -436,8 +426,6 @@ const floors: Record<string, FloorDefinition> = {
   ruins: {
     name: "Ruins",
     depths: [5],
-    appearanceWeight: 1,
-    blendChance: 0.2,
     visualizerColor: "#B8860B",
     layoutGenerationOptions: {
       roomChance: 0.5,
