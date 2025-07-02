@@ -151,7 +151,7 @@ function DepthMap({
   return <canvas ref={canvasRef} className="w-full aspect-square border" />;
 }
 
-export default function MapMenu({
+export function MapWithControls({
   map,
   currentLocation,
 }: {
@@ -171,7 +171,7 @@ export default function MapMenu({
   }, [map]);
 
   return (
-    <div className="border w-1/3">
+    <div>
       <h1 className="text-xl">Map</h1>
       <div className="flex gap-2 mb-2">
         <h2 className="text-lg">Viewing depth {depth}</h2>
@@ -193,6 +193,17 @@ export default function MapMenu({
         </button>
       </div>
       <DepthMap map={map} depth={depth} currentLocation={currentLocation} />
+    </div>
+  );
+}
+
+export default function MapMenu(props: {
+  map: LocationMap;
+  currentLocation: LocationId;
+}) {
+  return (
+    <div className="border w-1/3">
+      <MapWithControls {...props} />
     </div>
   );
 }
