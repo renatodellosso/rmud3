@@ -181,7 +181,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   skeleton: {
     name: "Skeleton",
@@ -219,7 +219,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   slime: {
     name: "Slime",
@@ -391,7 +391,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.6,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   saltGolem: {
     name: "Salt Golem",
@@ -455,7 +455,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.2,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   fungalZombie: {
     name: "Fungal Zombie",
@@ -509,7 +509,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   fungalTroll: {
     name: "Fungal Troll",
@@ -576,7 +576,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   sentientFungus: {
     name: "Sentient Fungus",
@@ -622,7 +622,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   fungalCore: {
     name: "Fungal Core",
@@ -693,7 +693,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   farulu: {
     name: "Farulu, Fungal Abomination",
@@ -775,7 +775,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.005),
   },
   lostAdventurer: {
     name: "Lost Adventurer",
@@ -873,7 +873,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.5,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   goblin: {
     name: "Goblin",
@@ -932,7 +932,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   goblinShaman: {
     name: "Goblin Shaman",
@@ -1053,7 +1053,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   ghost: {
     name: "Ghost",
@@ -1098,7 +1098,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   wraith: {
     name: "Wraith",
@@ -1175,7 +1175,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   rat: {
     name: "Rat",
@@ -1219,7 +1219,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.5,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   giantRat: {
     name: "Giant Rat",
@@ -1263,7 +1263,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.5,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   spider: {
     name: "Spider",
@@ -1328,7 +1328,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
 
   spiderSpitter: {
@@ -1399,7 +1399,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.03),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   ancientTroll: {
     name: "Ancient Troll",
@@ -1485,7 +1485,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       activateAbilityAndMoveRandomlyOnTick(
         0.5,
         selectRandomAbility,
-        0.03
+        0.01
       )(entity, deltaTime);
     },
   },
@@ -1981,7 +1981,10 @@ const entities: Record<EntityId, EntityDefinition> = {
       player.abilityScoreIncreases--;
 
       if (abilityScore === AbilityScore.Constitution) {
-        player.health = Math.min(player.health + player.getHealthBonusFromConstitution(), player.getMaxHealth());
+        player.health = Math.min(
+          player.health + player.getHealthBonusFromConstitution(),
+          player.getMaxHealth()
+        );
       }
 
       getIo().sendMsgToPlayer(
