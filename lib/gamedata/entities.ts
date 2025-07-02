@@ -1944,6 +1944,8 @@ const entities: Record<EntityId, EntityDefinition> = {
           player.abilityScores[score] = 0;
         }
 
+        player.health = player.getMaxHealth();
+
         getIo().sendMsgToPlayer(
           player._id.toString(),
           `The mystic waves their hand and resets your ability scores. 
@@ -1979,9 +1981,7 @@ const entities: Record<EntityId, EntityDefinition> = {
       player.abilityScoreIncreases--;
 
       if (abilityScore === AbilityScore.Constitution) {
-        const bonus = player.getHealthBonusFromConstitution();
-        if (player.health + bonus < player.getMaxHealth())
-          player.health += player.getHealthBonusFromConstitution();
+        player.health = Math.min(player.health + player.getHealthBonusFromConstitution(), player.getMaxHealth());
       }
 
       getIo().sendMsgToPlayer(
