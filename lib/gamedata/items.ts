@@ -121,7 +121,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description:
       "A well preserved human skull. It could offer some protection.",
     getWeight: 1,
-    getSellValue: 2,
+    getSellValue: 5,
     slot: EquipmentSlot.Head,
     getAbilityScores: {
       Strength: 0,
