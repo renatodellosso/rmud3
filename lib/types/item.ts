@@ -20,17 +20,19 @@ export class ItemInstance {
   definitionId: ItemId;
   amount: number;
   reforge?: ReforgeId;
-  guildId?: ObjectId | undefined;
+  guildId?: ObjectId;
   guildName?: string;
 
   constructor(
     definitionId: ItemId,
     amount: number,
-    guildId?: ObjectId | undefined,
+    reforge?: ReforgeId,
+    guildId?: ObjectId,
     guildName?: string
   ) {
     this.definitionId = definitionId;
     this.amount = amount;
+    this.reforge = reforge ?? undefined;
     this.guildId = guildId ?? undefined;
     this.guildName = guildName ?? undefined;
   }

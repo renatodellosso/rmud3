@@ -51,6 +51,8 @@ export class DirectInventory implements Inventory {
   add(item: ItemInstance, ignoreWeight = false): number {
     const existingItem = this.items.find((i) => areItemInstancesEqual(i, item));
 
+    console.log("Adding:", item, "Found:", existingItem);
+
     const maxWeight = this.getMaxWeight();
     const usedWeight = this.getUsedWeight();
 
@@ -72,7 +74,7 @@ export class DirectInventory implements Inventory {
     if (existingItem) {
       existingItem.amount += amountToAdd;
     } else {
-      this.items.push(new ItemInstance(item.definitionId, amountToAdd));
+      this.items.push(new ItemInstance(item.definitionId, amountToAdd, item.reforge));
     }
 
     return amountToAdd;

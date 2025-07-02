@@ -98,6 +98,23 @@ export function areItemInstancesEqual(
     else if (v1 !== v2) return false;
   }
 
+  for (const key in item2) {
+    if (!(key in item1)) return false;
+    if (skipAmount && key === "amount") continue;
+
+    const v1 = (item1 as Record<string, any>)[key];
+    const v2 = (item2 as Record<string, any>)[key];
+
+    if (ObjectId.isValid(v1) && ObjectId.isValid(v2)) {
+      if (!new ObjectId(v1).equals(new ObjectId(v2))) return false;
+    } else if (
+      (v1 === undefined || v1 === null) &&
+      (v2 === undefined || v2 === null)
+    )
+      continue;
+    else if (v1 !== v2) return false;
+  }
+
   return true;
 }
 
