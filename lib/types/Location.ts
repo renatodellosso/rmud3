@@ -32,7 +32,7 @@ export class Location {
       io.joinRoom(this.id, playerId);
 
       io.sendMsgToRoom(
-        this.name,
+        this.id,
         `${entity.name} has entered ${this.name}.`
       ).then(() => {
         if (this.description) {
@@ -58,6 +58,6 @@ export class Location {
       io.sendMsgToPlayer(entity._id.toString(), `You have left ${this.name}.`);
     }
 
-    io.sendMsgToRoom(this.name, `${entity.name} has left ${this.name}.`);
+    io.sendMsgToRoom(this.id, `${entity.name} has left ${this.name}.`);
   }
 }
