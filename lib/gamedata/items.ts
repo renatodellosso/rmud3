@@ -1358,7 +1358,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.attackWithStatusEffect(
         "Bite",
         "A powerful attack that bites into the target's flesh.",
-        5,
+        3,
         [{ amount: 20, type: DamageType.Piercing }],
         [
           {
