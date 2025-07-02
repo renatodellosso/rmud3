@@ -96,14 +96,14 @@ function restoreMethods(gameState: GameState) {
   for (const item of gameState.self.inventory.items) {
     restoreFieldsAndMethods(
       item,
-      new ItemInstance(item.definitionId, item.amount)
+      new ItemInstance(item.definitionId, item.amount, item.reforge)
     );
   }
 
   for (const item of gameState.self.equipment.items) {
     restoreFieldsAndMethods(
       item,
-      new ItemInstance(item.definitionId, item.amount)
+      new ItemInstance(item.definitionId, item.amount, item.reforge)
     );
   }
 
@@ -112,7 +112,10 @@ function restoreMethods(gameState: GameState) {
       for (const recipe of interaction.recipes) {
         const newRecipe: Recipe = restoreFieldsAndMethods(recipe, new Recipe({}, []));
         for (const output of newRecipe.output) {
-          restoreFieldsAndMethods(output, new ItemInstance(output.definitionId, output.amount));
+          restoreFieldsAndMethods(
+            output,
+            new ItemInstance(output.definitionId, output.amount)
+          );
         }
       }
     }
@@ -120,7 +123,10 @@ function restoreMethods(gameState: GameState) {
     if (interaction.inventory) {
       const newInventory: DirectInventory = restoreFieldsAndMethods(interaction.inventory, new DirectInventory());
       for (const item of newInventory.items) {
-        restoreFieldsAndMethods(item, new ItemInstance(item.definitionId, item.amount));
+        restoreFieldsAndMethods(
+          item,
+          new ItemInstance(item.definitionId, item.amount, item.reforge)
+        );
       }
     }
   }
