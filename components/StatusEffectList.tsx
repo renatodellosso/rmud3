@@ -12,7 +12,7 @@ export default function StatusEffectList({
   useEffect(() => {
     const id = setInterval(() => {
       setRender((prev) => prev + 1);
-    }, 100);
+    }, 25);
     return () => clearInterval(id);
   }, []);
 
