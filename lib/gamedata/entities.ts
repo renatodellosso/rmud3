@@ -427,7 +427,8 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             strength: 5,
             duration: 3,
           },
-        ]
+        ],
+        { targetRestrictions: [CanTarget.isPlayer] }
       ),
     ],
     xpValue: 25,
@@ -1433,7 +1434,10 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             strength: 2,
             duration: 15,
           },
-        ]
+        ],
+        {
+          targetRestrictions: [CanTarget.isPlayer],
+        }
       ),
       Abilities.heal(
         "Regenerate",
