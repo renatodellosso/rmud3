@@ -8,23 +8,13 @@ import {
 } from "lib/types/socketioserverutils";
 import { Targetable } from "lib/types/types";
 import entities from "lib/gamedata/entities";
-import getSessionManager from "lib/SessionManager";
 import { getIo } from "lib/ClientFriendlyIo";
-import {
-  getFromOptionalFunc,
-  restoreFieldsAndMethods,
-  savePlayer,
-} from "lib/utils";
+import { restoreFieldsAndMethods, savePlayer } from "lib/utils";
 import { EJSON, ObjectId } from "bson";
 import { ItemInstance } from "lib/types/item";
-import { EntityInstance } from "lib/types/entity";
-import items from "lib/gamedata/items";
 import { ContainerInstance } from "lib/types/entities/container";
 import { DirectInventory } from "lib/types/Inventory";
 import getPlayerManager from "lib/PlayerManager";
-import getCollectionManager from "lib/getCollectionManager";
-import CollectionId from "lib/types/CollectionId";
-import { getMongoClient } from "lib/getMongoClient";
 import Guild from "lib/types/Guild";
 
 export default function registerGameListeners(socket: TypedSocket) {
@@ -34,6 +24,8 @@ export default function registerGameListeners(socket: TypedSocket) {
 
   socket.on("move", (exitId: LocationId) => {
     const player = getPlayer(socket);
+
+    if (player.instance.health <= 0) return;
 
     player.instance.move(exitId);
 
@@ -50,7 +42,10 @@ export default function registerGameListeners(socket: TypedSocket) {
     (abilityName: string, sourceName: string, targetIds: string[]) => {
       const player = getPlayer(socket);
 
-      if (new Date() < player.instance.canActAt) {
+      if (
+        new Date() < player.instance.canActAt ||
+        player.instance.health <= 0
+      ) {
         return;
       }
 
@@ -110,6 +105,10 @@ export default function registerGameListeners(socket: TypedSocket) {
     }
 
     const player = getPlayer(socket);
+
+    if (player.instance.health <= 0)
+      return;
+
     const entity = Array.from(
       locations[player.instance.location].entities
     ).find((e) => e._id.toString() === entityId);
@@ -142,6 +141,9 @@ export default function registerGameListeners(socket: TypedSocket) {
 
   socket.on("interact", async (entityId: string, action: any) => {
     const player = getPlayer(socket);
+    
+    if (player.instance.health <= 0) return;
+
     const entity = Array.from(
       locations[player.instance.location].entities
     ).find((e) => e._id.toString() === entityId);
@@ -190,6 +192,8 @@ export default function registerGameListeners(socket: TypedSocket) {
   socket.on("equip", (item) => {
     const player = getPlayer(socket);
 
+    if (player.instance.health <= 0) return;
+
     if (
       player.instance.equipment.items.length >=
       player.instance.equipment.getCapacity(player.instance)
@@ -227,6 +231,8 @@ export default function registerGameListeners(socket: TypedSocket) {
 
   socket.on("unequip", (item) => {
     const player = getPlayer(socket);
+    
+    if (player.instance.health <= 0) return;
 
     // Check if the item is equipped
     if (!player.instance.equipment.isEquipped(item)) {
@@ -250,6 +256,9 @@ export default function registerGameListeners(socket: TypedSocket) {
     const item = EJSON.parse(itemEjson) as ItemInstance;
 
     const player = getPlayer(socket);
+
+    if (player.instance.health <= 0) return;
+
     const location = locations[player.instance.location];
 
     if (!player.instance.inventory.get(item)) {
