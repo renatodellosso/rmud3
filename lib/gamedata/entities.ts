@@ -332,6 +332,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 5,
       [AbilityScore.Intelligence]: 1,
     },
+    damageResistances: [{ amount: 1, type: "*" }],
     intrinsicAbilities: [
       Abilities.attack(
         "Slam",
@@ -511,6 +512,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 7,
       [AbilityScore.Intelligence]: 0,
     },
+    damageResistances: [{ amount: 1, type: "*" }],
     intrinsicAbilities: [
       Abilities.attack(
         "Slam",
@@ -1388,6 +1390,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 3,
       [AbilityScore.Intelligence]: 1,
     },
+    damageResistances: [{ amount: 2, type: "*" }],
     intrinsicAbilities: [
       Abilities.attack(
         "Slam",

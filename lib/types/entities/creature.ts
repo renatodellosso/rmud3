@@ -35,6 +35,7 @@ export type CreatureDefinition = EntityDefinition & {
   intrinsicAbilities?: Ability[];
   lootTable: LootTable;
   xpValue: number;
+  damageResistances?: { amount: number; type: DamageType | "*" }[];
   onDie?: (creature: CreatureInstance) => void;
 };
 
@@ -187,6 +188,23 @@ export class CreatureInstance extends EntityInstance {
 
     let damageResistancePercent: number = 1;
 
+    let damageResistances = (entities[this.definitionId] as CreatureDefinition).damageResistances;
+
+    if (damageResistances) {
+      for (const damageResistance of damageResistances) {
+        let isDamageResisted = false;
+        for (const damageEntry of newDamage) {
+          if (!isDamageResisted && damageEntry.type === damageResistance.type) {
+            damageEntry.amount = Math.max(
+              damageEntry.amount - damageResistance.amount,
+              0
+            );
+            isDamageResisted = true;
+          }
+        }
+      }
+    }
+
     for (let provider of this.getStatAndAbilityProviders()) {
       let providerSource = provider.source;
 
@@ -199,6 +217,9 @@ export class CreatureInstance extends EntityInstance {
         damageResistancePercent = reforge.damageResistancePercent
           ? reforge.damageResistancePercent
           : 1;
+      }
+      else {
+        damageResistancePercent = 1;
       }
 
       if (provider.provider.getDamageResistances) {
@@ -252,6 +273,25 @@ export class CreatureInstance extends EntityInstance {
               );
               isDamageResisted = true;
             }
+          }
+        }
+      }
+    }
+
+    if (damageResistances) {
+      for (const damageResistance of damageResistances) {
+        let isDamageResisted = false;
+        for (const damageEntry of newDamage) {
+          if (
+            !isDamageResisted &&
+            damageResistance.type === "*" &&
+            damageEntry.amount > 0
+          ) {
+            damageEntry.amount = Math.max(
+              damageEntry.amount - damageResistance.amount,
+              0
+            );
+            isDamageResisted = true;
           }
         }
       }
