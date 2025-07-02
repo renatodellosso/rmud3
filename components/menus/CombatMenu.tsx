@@ -4,7 +4,7 @@ import Ability, {
   getAbilitySourceName,
 } from "lib/types/Ability";
 import { GameState, Targetable } from "lib/types/types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getFromOptionalFunc, getTargetId } from "../../lib/utils";
 import { socket } from "lib/socket";
 import { isTargetACreature } from "lib/gamedata/CanTarget";
@@ -19,6 +19,7 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   const [selectedAbility, setSelectedAbility] = useState<AbilityWithSource>();
   const [targetCount, setTargetCount] = useState<number>(1);
   const [canAct, setCanAct] = useState<boolean>(true);
+  const cooldownRef = useRef<HTMLDivElement>(null);
 
   function toggleTarget(target: Targetable) {
     const newTargets = targets.includes(target)
@@ -81,17 +82,49 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   }
 
   useEffect(() => {
-    const interval = setInterval(
-      () => setCanAct(gameState.self.canActAt <= new Date()),
-      25
-    );
+    const interval = setInterval(() => {
+      setCanAct(gameState.self.canActAt <= new Date());
+    }, 100);
 
     return () => clearInterval(interval);
   }, [gameState]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!cooldownRef.current) return;
+
+      const canAct = gameState.self.canActAt <= new Date();
+      if (canAct) {
+        cooldownRef.current.innerText = "Can act now!";
+      } else {
+        const timeLeftSecs =
+          Math.max(
+            0,
+            gameState.self.canActAt.getTime() - new Date().getTime()
+          ) / 1000;
+
+        cooldownRef.current.innerText = `Can act in ${timeLeftSecs.toFixed(
+          1
+        )}s`;
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [gameState.self.canActAt]);
+
   return (
     <div className="border w-1/6 flex flex-col gap-2">
       <h2 className="text-xl">Combat</h2>
+      <div ref={cooldownRef}>
+        Can act in{" "}
+        {(
+          Math.max(
+            0,
+            gameState.self.canActAt.getTime() - new Date().getTime()
+          ) / 1000
+        ).toFixed(1)}
+        s
+      </div>
       <div>
         <strong>Abilities</strong>
         <div className="flex flex-col gap-1">
