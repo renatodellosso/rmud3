@@ -19,7 +19,9 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   const [selectedAbility, setSelectedAbility] = useState<AbilityWithSource>();
   const [targetCount, setTargetCount] = useState<number>(1);
   const [canAct, setCanAct] = useState<boolean>(true);
-  const cooldownRef = useRef<HTMLDivElement>(null);
+
+  const [cooldownRemaining, setCooldownRemaining] = useState<number>(0);
+  const [totalCooldown, setTotalCooldown] = useState<number>(0);
 
   function toggleTarget(target: Targetable) {
     const newTargets = targets.includes(target)
@@ -90,40 +92,36 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   }, [gameState]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (!cooldownRef.current) return;
-
-      const canAct = gameState.self.canActAt <= new Date();
-      if (canAct) {
-        cooldownRef.current.innerText = "Can act now!";
-      } else {
-        const timeLeftSecs =
-          Math.max(
-            0,
-            gameState.self.canActAt.getTime() - new Date().getTime()
-          ) / 1000;
-
-        cooldownRef.current.innerText = `Can act in ${timeLeftSecs.toFixed(
-          1
-        )}s`;
-      }
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, [gameState.self.canActAt]);
-
-  return (
-    <div className="border w-1/6 flex flex-col gap-2">
-      <h2 className="text-xl">Combat</h2>
-      <div ref={cooldownRef}>
-        Can act in{" "}
-        {(
+    const interval = setInterval(
+      () =>
+        setCooldownRemaining(
           Math.max(
             0,
             gameState.self.canActAt.getTime() - new Date().getTime()
           ) / 1000
-        ).toFixed(1)}
-        s
+        ),
+      25
+    );
+
+    return () => clearInterval(interval);
+  }, [gameState.self.canActAt]);
+
+  useEffect(
+    () =>
+      setTotalCooldown(
+        (gameState.self.canActAt.getTime() -
+          gameState.self.lastActedAt.getTime()) /
+          1000
+      ),
+    [gameState.self]
+  );
+
+  return (
+    <div className="border w-1/6 flex flex-col gap-2">
+      <h2 className="text-xl">Combat</h2>
+      <div>
+        Can act{" "}
+        {cooldownRemaining > 0 ? `in ${cooldownRemaining.toFixed(1)}s` : "now!"}
       </div>
       <div>
         <strong>Abilities</strong>
@@ -132,13 +130,24 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
             <button
               key={ability.ability.name}
               onClick={() => selectAbility(ability.ability, ability.source)}
-              className={`tooltip w-full px-1 ${
+              className={`tooltip w-full ${
                 selectedAbility?.ability.name === ability.ability.name &&
                 selectedAbility?.source.definitionId ===
                   ability.source.definitionId
                   ? "bg-blue-500"
                   : ""
               }`}
+              style={
+                selectedAbility?.ability.name === ability.ability.name &&
+                selectedAbility?.source.definitionId ===
+                  ability.source.definitionId
+                  ? {
+                      background: `linear-gradient(to right, green, green ${
+                        (1 - cooldownRemaining / totalCooldown) * 100
+                      }%, blue 1rem, blue 100%)`,
+                    }
+                  : {}
+              }
             >
               {ability.ability.name} ({getAbilitySourceName(ability.source)})
               <AbilityTooltip
