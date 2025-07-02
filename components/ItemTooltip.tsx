@@ -60,7 +60,8 @@ export default function ItemTooltip({
       </h1>
       {def.tags.length ? <div>Tags: {def.tags.join(", ")}</div> : <></>}
       <div>
-        {item.amount * weight} kg total, {weight} kg each
+        {(item.amount * weight).toFixed(1)} kg total, {weight.toFixed(1)} kg
+        each
       </div>
       <div>
         Worth {item.amount * sellValue} {items["money"].getName as string}{" "}
@@ -147,11 +148,14 @@ function EquipmentDescription({
       )}
       {resistances.length > 0 ? (
         <div>
-          <div><strong>Resistances</strong> (type: reduction)</div>
+          <div>
+            <strong>Resistances</strong> (type: reduction)
+          </div>
           <ul>
             {resistances.map((resistance) => (
               <li key={resistance.type}>
-                {resistance.type === "*" ? "All" : resistance.type}: {resistance.amount}
+                {resistance.type === "*" ? "All" : resistance.type}:{" "}
+                {resistance.amount}
               </li>
             ))}
           </ul>

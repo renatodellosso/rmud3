@@ -2120,7 +2120,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         io.sendMsgToPlayer(
           player._id.toString(),
           `"Welcome to the bank! Your vault is currently at level ${
-            player.vault.level + 1
+            player.vault.level
           } and has a capacity of ${
             vaultLevelling[player.vault.level].maxWeight
           } kg."
@@ -2136,7 +2136,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         } else {
           io.sendMsgToPlayer(
             player._id.toString(),
-            `You can upgrade it to level ${nextVaultLevel + 1} for ${
+            `You can upgrade it to level ${nextVaultLevel} for ${
               nextVaultLevelStats.price
             } ${items["money"].getName},
             which will increase your vault's maximum weight to ${

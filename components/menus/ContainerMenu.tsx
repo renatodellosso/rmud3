@@ -2,7 +2,7 @@ import { Interaction } from "lib/types/entity";
 import { socket } from "lib/socket";
 import items from "lib/gamedata/items";
 import { ItemInstance } from "lib/types/item";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ItemTooltip from "../ItemTooltip";
 import { PlayerInstance } from "lib/types/entities/player";
 import { CreatureInstance } from "lib/types/entities/creature";
@@ -23,6 +23,11 @@ function ItemEntry({
   setError: (error: string) => void;
 }) {
   const [amount, setAmount] = useState(item.amount);
+
+  useEffect(() => {
+    // Reset amount when switching inventories
+    setAmount(item.amount);
+  }, [viewPlayerInventory, item.amount]);
 
   function transferItem(item: ItemInstance) {
     if (amount <= 0) {
@@ -56,7 +61,7 @@ function ItemEntry({
       <td>
         <div className="tooltip">
           {item.getName()} x{item.amount}
-          <ItemTooltip item={item} creature={self} />
+          <ItemTooltip item={item} creature={self} side="right" />
         </div>
       </td>
       <td className="flex justify-end">
@@ -83,7 +88,6 @@ export default function ContainerMenu({
   interaction: Interaction;
   self: PlayerInstance;
 }) {
-  const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
   const [viewPlayerInventory, setViewInventory] = useState(false);
 
@@ -96,7 +100,7 @@ export default function ContainerMenu({
     : interaction.inventory;
 
   return (
-    <div className="border w-1/3 flex flex-col gap-2">
+    <div className="border w-1/3 flex flex-col gap-2 overflow-y-scroll">
       <div className="flex justify-between">
         <button onClick={switchInventory}>
           {viewPlayerInventory ? "Open Container" : "Open Inventory"}
