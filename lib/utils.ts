@@ -81,29 +81,18 @@ export function areItemInstancesEqual(
 ) {
   if (item1 == item2) return true;
 
-  for (const key in item1) {
+  const keys = Array.from(
+    new Set([...Object.keys(item1), ...Object.keys(item2)])
+  );
+
+  for (const key of keys) {
+    const v1 = (item1 as Record<string, any>)[key];
+    const v2 = (item2 as Record<string, any>)[key];
+
+    if (typeof v1 === "function" || typeof v2 === "function") continue;
+
     if (!(key in item2)) return false;
     if (skipAmount && key === "amount") continue;
-
-    const v1 = (item1 as Record<string, any>)[key];
-    const v2 = (item2 as Record<string, any>)[key];
-
-    if (ObjectId.isValid(v1) && ObjectId.isValid(v2)) {
-      if (!new ObjectId(v1).equals(new ObjectId(v2))) return false;
-    } else if (
-      (v1 === undefined || v1 === null) &&
-      (v2 === undefined || v2 === null)
-    )
-      continue;
-    else if (v1 !== v2) return false;
-  }
-
-  for (const key in item2) {
-    if (!(key in item1)) return false;
-    if (skipAmount && key === "amount") continue;
-
-    const v1 = (item1 as Record<string, any>)[key];
-    const v2 = (item2 as Record<string, any>)[key];
 
     if (ObjectId.isValid(v1) && ObjectId.isValid(v2)) {
       if (!new ObjectId(v1).equals(new ObjectId(v2))) return false;

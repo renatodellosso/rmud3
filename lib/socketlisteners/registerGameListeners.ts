@@ -10,7 +10,11 @@ import { Targetable } from "lib/types/types";
 import entities from "lib/gamedata/entities";
 import getSessionManager from "lib/SessionManager";
 import { getIo } from "lib/ClientFriendlyIo";
-import { getFromOptionalFunc, savePlayer } from "lib/utils";
+import {
+  getFromOptionalFunc,
+  restoreFieldsAndMethods,
+  savePlayer,
+} from "lib/utils";
 import { EJSON, ObjectId } from "bson";
 import { ItemInstance } from "lib/types/item";
 import { EntityInstance } from "lib/types/entity";
@@ -213,7 +217,9 @@ export default function registerGameListeners(socket: TypedSocket) {
       structuredClone(new ItemInstance(item.definitionId, 1, item.reforge)) // Ensure we equip one item
     );
 
-    player.instance.inventory.remove(new ItemInstance(item.definitionId, 1, item.reforge));
+    player.instance.inventory.remove(
+      new ItemInstance(item.definitionId, 1, item.reforge)
+    );
 
     getIo().updateGameState(player.instance._id.toString());
     savePlayer(player.instance);
@@ -263,9 +269,21 @@ export default function registerGameListeners(socket: TypedSocket) {
       throw new Error(`Item ${item.definitionId} not found in inventory.`);
     }
 
+    restoreFieldsAndMethods(
+      foundItem,
+      new ItemInstance(foundItem.definitionId, foundItem.amount)
+    );
+
     foundItem.amount = Math.min(foundItem.amount, item.amount);
 
     foundItem.amount = player.instance.inventory.remove(foundItem);
+
+    if (foundItem.amount <= 0) {
+      console.warn(
+        `Cannot drop item ${foundItem.definitionId} with non-positive amount.`
+      );
+      return;
+    }
 
     const inventory = new DirectInventory([foundItem]);
     const container = new ContainerInstance(
@@ -279,7 +297,9 @@ export default function registerGameListeners(socket: TypedSocket) {
 
     getIo().sendMsgToRoom(
       location.id,
-      `${player.instance.name} dropped ${item.getName()} x${item.amount}.`
+      `${player.instance.name} dropped ${foundItem.getName()} x${
+        foundItem.amount
+      }.`
     );
     getIo().updateGameStateForRoom(location.id);
   });
