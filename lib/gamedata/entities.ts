@@ -2136,12 +2136,8 @@ const entities: Record<EntityId, EntityDefinition> = {
         } else {
           io.sendMsgToPlayer(
             player._id.toString(),
-            `You can upgrade it to level ${nextVaultLevel} for ${
-              nextVaultLevelStats.price
-            } ${items["money"].getName},
-            which will increase your vault's maximum weight to ${
-              nextVaultLevelStats.maxWeight
-            } kg.`
+            `You can upgrade it to level ${nextVaultLevel} for ${nextVaultLevelStats.price} ${items["money"].getName},
+            which will increase your vault's maximum weight to ${nextVaultLevelStats.maxWeight} kg.`
           );
         }
 
@@ -2267,12 +2263,9 @@ const entities: Record<EntityId, EntityDefinition> = {
       if (!guild) return;
 
       if (action === "getStone") {
-        player.inventory.add({
-          definitionId: "guildStone",
-          amount: 1,
-          guildId: player.guildId,
-          guildName: guild.name,
-        } as ItemInstance);
+        player.inventory.add(
+          new ItemInstance("guildStone", 1, undefined, guild._id, guild.name)
+        );
 
         getIo().sendMsgToPlayer(
           player._id.toString(),

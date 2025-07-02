@@ -1,8 +1,11 @@
 import items, { ItemId } from "../gamedata/items";
 import { ItemInstance } from "./item";
-import { areItemInstancesEqual, getFromOptionalFunc } from "../utils";
-import { PlayerInstance } from "./entities/player";
-import AbilityScore from "lib/types/AbilityScore";
+import {
+  areItemInstancesEqual,
+  getFromOptionalFunc,
+  restoreFieldsAndMethods,
+} from "../utils";
+import { EJSON } from "bson";
 
 export default interface Inventory {
   /**
@@ -73,7 +76,15 @@ export class DirectInventory implements Inventory {
       existingItem.amount += amountToAdd;
     } else {
       this.items.push(
-        new ItemInstance(item.definitionId, amountToAdd, item.reforge)
+        restoreFieldsAndMethods(
+          EJSON.parse(
+            EJSON.stringify({
+              ...item,
+              amount: amountToAdd,
+            })
+          ),
+          new ItemInstance(item.definitionId, item.amount)
+        )
       );
     }
 
