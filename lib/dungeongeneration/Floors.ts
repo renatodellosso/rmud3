@@ -225,14 +225,14 @@ const floors: Record<string, FloorDefinition> = {
               },
               {
                 item: "ironOre",
-                amount: [1, 3],
-                weight: 1,
+                amount: [1, 5],
+                weight: 1.2,
               },
             ]),
             [1, 2]
           ),
           amount: 1,
-          weight: 0.2,
+          weight: 0.3,
         },
       ]),
     },
@@ -301,7 +301,7 @@ const floors: Record<string, FloorDefinition> = {
             new WeightedTable([
               {
                 item: "salt",
-                amount: [1, 5],
+                amount: [1, 3],
                 weight: 1,
               },
               {
@@ -311,14 +311,14 @@ const floors: Record<string, FloorDefinition> = {
               },
               {
                 item: "ironOre",
-                amount: [1, 3],
-                weight: 1,
+                amount: [1, 5],
+                weight: 1.2,
               },
             ]),
             [1, 3]
           ),
           amount: 1,
-          weight: 0.4,
+          weight: 0.6,
         },
         {
           item: randomContainer(
