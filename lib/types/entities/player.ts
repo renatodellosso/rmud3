@@ -195,7 +195,10 @@ export class PlayerInstance extends CreatureInstance {
     this.xp += amount;
 
     const io = getIo();
-    io.sendMsgToPlayer(this._id.toString(), `You gained ${amount} XP!`);
+    io.sendMsgToPlayer(
+      this._id.toString(),
+      `You gained ${amount.toFixed()} XP!`
+    );
 
     if (this.xp >= getXpForNextLevel(this.level)) this.levelUp();
 

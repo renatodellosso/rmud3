@@ -33,7 +33,7 @@ const floors: Record<string, FloorDefinition> = {
         {
           item: "slime",
           amount: [1, 3],
-          weight: 2,
+          weight: 1,
         },
         {
           item: "slimeSplitter",
