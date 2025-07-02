@@ -9,6 +9,8 @@ import { getFromOptionalFunc } from "lib/utils";
 import { ItemInstance } from "lib/types/item";
 import reforges from "./Reforges";
 import { DamageType } from "lib/types/Damage";
+import entities, { CreatureId } from "./entities";
+import { Location } from "lib/types/Location";
 
 // IMPORTANT: If you're adding a new target check, add it as a function in CanTarget to avoid circular dependencies.
 // Not sure why that happens, but it does.
@@ -292,5 +294,39 @@ export function healWithStatusEffect(
     activate: (creature: CreatureInstance, targets: Targetable[], source) =>
       healFunc(creature, targets, source) &&
       applyStatusEffectFunc(creature, targets, source),
+  };
+}
+
+export function summon(
+  name: string,
+  getDescription: OptionalFunc<string, CreatureInstance>,
+  getCooldown: OptionalFunc<number, CreatureInstance>,
+  creatureDefinitionId: CreatureId,
+  options: AbilityOptions = {}
+): Ability {
+  return {
+    name,
+    getDescription,
+    getCooldown,
+    getTargetCount: 1,
+    canTarget: CanTarget.isTargetALocation,
+    activate: (creature: CreatureInstance, targets) => {
+      const target = targets[0] as Location;
+
+      // Don't forget to select the thing you want to import!
+      const CreatureInstance =
+        require("lib/types/entities/creature").CreatureInstance;
+
+      const summon = new CreatureInstance(creatureDefinitionId, target.id);
+
+      target.entities.add(summon);
+
+      getIo().sendMsgToPlayer(
+        creature._id.toString(),
+        `You summoned a ${summon.name} using ${name}!`
+      );
+
+      return true;
+    },
   };
 }

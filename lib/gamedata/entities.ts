@@ -52,7 +52,8 @@ export type CreatureId =
   | "saltGolem"
   | "spider"
   | "spiderSpitter"
-  | "ancientTroll";
+  | "ancientTroll"
+  | "friendlySlime";
 
 export type EntityId =
   | CreatureId
@@ -308,6 +309,17 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         ]),
         amount: 1,
         chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "slimeEgg",
+            amount: [1, 3],
+            weight: 0.5,
+          },
+        ]),
+        amount: 1,
+        chance: 0.8,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
@@ -1493,6 +1505,28 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       )(entity, deltaTime);
     },
   },
+  friendlySlime: {
+    name: "Friendly Slime",
+    health: 15,
+    abilityScores: {
+      [AbilityScore.Strength]: 0,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 1, type: DamageType.Poison }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Slime",
+        "Slime.",
+        1,
+        [{ amount: 3, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.not(CanTarget.isPlayer)] }
+      ),
+    ],
+    xpValue: 5,
+    lootTable: new LootTable([]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
 };
 
 const entities: Record<EntityId, EntityDefinition> = {
@@ -1755,6 +1789,21 @@ const entities: Record<EntityId, EntityDefinition> = {
             leather: 1,
           },
           new ItemInstance("sling", 1)
+        ),
+        new Recipe(
+          {
+            sling: 1,
+            slime: 10,
+          },
+          new ItemInstance("slimeSling", 1)
+        ),
+        new Recipe(
+          {
+            slime: 20,
+            slimeEgg: 3,
+            spore: 4,
+          },
+          new ItemInstance("slimeHorn", 1)
         ),
         new Recipe(
           {
