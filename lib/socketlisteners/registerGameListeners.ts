@@ -271,7 +271,7 @@ export default function registerGameListeners(socket: TypedSocket) {
 
     restoreFieldsAndMethods(
       foundItem,
-      new ItemInstance(foundItem.definitionId, foundItem.amount)
+      new ItemInstance(foundItem.definitionId, foundItem.amount, foundItem.reforge)
     );
 
     foundItem.amount = Math.min(foundItem.amount, item.amount);
@@ -285,15 +285,29 @@ export default function registerGameListeners(socket: TypedSocket) {
       return;
     }
 
-    const inventory = new DirectInventory([foundItem]);
-    const container = new ContainerInstance(
-      location.id,
-      `${foundItem.getName()} x${foundItem.amount}`,
-      inventory,
-      true
-    );
+    let itemAdded = false;
 
-    location.entities.add(container);
+    for (let entity of Array.from(location.entities)) {
+      let container: ContainerInstance = entity as ContainerInstance;
+
+      if (container.name.includes(foundItem.getName())) {
+        container.inventory.add(foundItem);
+        container.name = `${foundItem.getName()} x${container.inventory.getCountById(foundItem.definitionId)}`;
+        itemAdded = true;
+      }
+    }
+
+    if (!itemAdded) {
+      const inventory = new DirectInventory([foundItem]);
+      const container = new ContainerInstance(
+        location.id,
+        `${foundItem.getName()} x${foundItem.amount}`,
+        inventory,
+        true
+      );
+
+      location.entities.add(container);
+    }
 
     getIo().sendMsgToRoom(
       location.id,
