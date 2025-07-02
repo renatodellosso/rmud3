@@ -49,7 +49,7 @@ function ItemEntry({
     <tr className="hover:bg-gray-900 w-full">
       <td className="tooltip">
         {item.getName()}
-        <ItemTooltip item={item} creature={self} />
+        <ItemTooltip item={item} creature={self} side={"right"} />
       </td>
       <td>{item.amount}</td>
       <td>{getFromOptionalFunc(items[item.definitionId].getWeight, item)}</td>
@@ -96,7 +96,7 @@ export default function InventoryMenu({ self }: { self: PlayerInstance }) {
   }
 
   return (
-    <div className="border w-1/3 overflow-y-scroll overflow-x-hidden">
+    <div className="border w-1/3 overflow-y-scroll">
       <div className="w-full">
         <h2 className="text-xl">
           Equipment ({self.equipment.items.length}/
@@ -123,7 +123,7 @@ export default function InventoryMenu({ self }: { self: PlayerInstance }) {
                 <tr key={index} className="hover:bg-gray-900">
                   <td className="tooltip">
                     {item.getName()}
-                    <ItemTooltip item={item} creature={self} />
+                    <ItemTooltip item={item} creature={self} side={"right"} />
                   </td>
                   <td>
                     {def.slot ? (
