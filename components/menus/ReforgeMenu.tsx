@@ -5,6 +5,7 @@ import items from "lib/gamedata/items";
 import { getFromOptionalFunc } from "lib/utils";
 import ItemTooltip from "../ItemTooltip";
 import { ItemInstance } from "lib/types/item";
+import { REFORGE_COST } from "lib/gamedata/interactions/reforgeInteraction";
 
 export default function ReforgeMenu({
   interaction,
@@ -33,13 +34,18 @@ export default function ReforgeMenu({
           <tbody>
             {self.equipment.items.map((item, index) => (
               <tr key={index}>
-                <td 
-                  className={self.inventory.getCountById("money") < 10
-                    ? "text-red-500"
-                    : ""
+                <td
+                  className={
+                    self.inventory.getCountById("money") < REFORGE_COST
+                      ? "text-red-500"
+                      : ""
                   }
                 >
-                  {getFromOptionalFunc(items["money"].getName, new ItemInstance("money", 1))} x10
+                  {getFromOptionalFunc(
+                    items["money"].getName,
+                    new ItemInstance("money", 1)
+                  )}{" "}
+                  x{REFORGE_COST} ({self.inventory.getCountById("money")})
                 </td>
                 <td className="tooltip">
                   {item.getName()}

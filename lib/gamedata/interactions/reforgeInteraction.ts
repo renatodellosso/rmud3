@@ -8,6 +8,8 @@ import { getFromOptionalFunc, randInRangeInt } from "lib/utils";
 import { ReforgeType } from "lib/types/Reforge";
 import { getIo } from "lib/ClientFriendlyIo";
 
+export const REFORGE_COST = 25;
+
 export default function reforgeInteraction(
   entity: EntityInstance,
   player: PlayerInstance,
@@ -30,9 +32,12 @@ export default function reforgeInteraction(
   else {
     if (
       !player.inventory.getById("money") ||
-      player.inventory.getById("money")!.amount < 10
+      player.inventory.getById("money")!.amount < REFORGE_COST
     ) {
-      getIo().sendMsgToPlayer(player._id.toString(), `Can't afford to reforge, at least 10 ${items["money"].getName} are needed!`);
+      getIo().sendMsgToPlayer(
+        player._id.toString(),
+        `Can't afford to reforge, at least ${REFORGE_COST} ${items["money"].getName} are needed!`
+      );
       return interaction;
     }
 
@@ -75,7 +80,7 @@ export default function reforgeInteraction(
       )} to ${reforges[newReforge].name}`
     );
 
-    player.inventory.removeById("money", 10);
+    player.inventory.removeById("money", REFORGE_COST);
 
     return interaction;
   }
