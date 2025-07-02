@@ -88,24 +88,28 @@ input {
 }
 
 /* width */
-::-webkit-scrollbar {
+::-webkit-scrollbar,
+::-moz-scrollbar {
   width: 5px;
 }
 
 /* Track */
-::-webkit-scrollbar-track {
+::-webkit-scrollbar-track,
+::-moz-scrollbar-track {
   background: #000;
   border-radius: 5px;
 }
 
 /* Handle */
-::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb,
+::-moz-scrollbar-thumb {
   background: #fafafa;
   border-radius: 5px;
 }
 
 /* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover,
+::-moz-scrollbar-thumb:hover {
   background: #555;
 }
 
@@ -151,6 +155,7 @@ input {
   opacity: 1;
 }
 
-progress[value]::-webkit-progress-bar {
+progress[value]::-webkit-progress-bar,
+progress[value]::-moz-progress-bar {
   background-color: #000;
 }
