@@ -169,7 +169,7 @@ function generateFloorDefinitionArray(depth: number): FloorDefinition[] {
       )[0];
     }
 
-    definitions.add(secondDefinition);
+    if (secondDefinition) definitions.add(secondDefinition);
   }
 
   return Array.from(definitions);
@@ -624,8 +624,7 @@ function generateFloorLayout(
   depth: number,
   floorInstance: FloorInstance,
   startingRooms: DungeonLocation[],
-  retries: number = 5,
-  lowerRoomCountBy = 0
+  retries: number = 100,
 ): DungeonLocation[] {
   if (startingRooms.length === 0) {
     throw new Error(
@@ -639,8 +638,7 @@ function generateFloorLayout(
   const rooms: DungeonLocation[] = [...roomsToExpand];
 
   const roomCount =
-    randInRangeInt(options.roomCount[0], options.roomCount[1]) -
-    lowerRoomCountBy;
+    randInRangeInt(options.roomCount[0], options.roomCount[1]);
 
   while (rooms.length < roomCount && roomsToExpand.length > 0) {
     const room = roomsToExpand.shift();
@@ -750,7 +748,6 @@ function generateFloorLayout(
       floorInstance,
       rooms,
       retries - 1,
-      rooms.length
     );
   }
 
