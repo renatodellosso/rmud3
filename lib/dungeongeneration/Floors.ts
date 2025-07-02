@@ -100,8 +100,8 @@ const floors: Record<string, FloorDefinition> = {
       ]),
     },
   },
-  catacombs: {
-    name: "Catacombs",
+  crypts: {
+    name: "Crypts",
     depths: [1],
     appearanceWeight: 1.5,
     blendChance: 0.4,
