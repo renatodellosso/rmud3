@@ -530,9 +530,10 @@ const floors: Record<string, FloorDefinition> = {
                 amount: 1,
                 weight: 0.2,
               },
-            ])
+            ]),
+            [1, 2]
           ),
-          amount: 4,
+          amount: 1,
           weight: 0.1,
         },
       ]),
