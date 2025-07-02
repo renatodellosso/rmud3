@@ -134,8 +134,10 @@ export class CreatureInstance extends EntityInstance {
   getDamageToDeal(
     damage: DamageWithType[]
   ): { amount: number; type: DamageType }[] {
-    for (let d of damage) {
-      d.amount += this.getAbilityScore(AbilityScore.Strength);
+    const strengthMultiplier =
+      1 + 0.03 * this.getAbilityScore(AbilityScore.Strength);
+    for (const d of damage) {
+      d.amount *= strengthMultiplier;
     }
 
     for (const provider of this.getStatAndAbilityProviders()) {
@@ -188,7 +190,8 @@ export class CreatureInstance extends EntityInstance {
 
     let damageResistancePercent: number = 1;
 
-    let damageResistances = (entities[this.definitionId] as CreatureDefinition).damageResistances;
+    let damageResistances = (entities[this.definitionId] as CreatureDefinition)
+      .damageResistances;
 
     if (damageResistances) {
       for (const damageResistance of damageResistances) {
@@ -217,8 +220,7 @@ export class CreatureInstance extends EntityInstance {
         damageResistancePercent = reforge.damageResistancePercent
           ? reforge.damageResistancePercent
           : 1;
-      }
-      else {
+      } else {
         damageResistancePercent = 1;
       }
 
