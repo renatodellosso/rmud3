@@ -1,4 +1,4 @@
-import entities, { CreatureId, EntityId } from "lib/gamedata/entities";
+import entities, { CreatureId } from "lib/gamedata/entities";
 import { Targetable } from "lib/types/types";
 import { LootTable } from "lib/types/LootTable";
 import AbilityScore from "lib/types/AbilityScore";
@@ -6,25 +6,18 @@ import Ability, { AbilitySource, AbilityWithSource } from "lib/types/Ability";
 import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";
 import { EntityDefinition, EntityInstance } from "lib/types/entity";
-import { getFromOptionalFunc, savePlayer } from "lib/utils";
+import { getFromOptionalFunc } from "lib/utils";
 import { LocationId } from "lib/gamedata/rawLocations";
 import { ContainerInstance } from "./container";
-import Inventory, { DirectInventory } from "../Inventory";
-import {
-  ConsumableDefinition,
-  EquipmentDefinition,
-  ItemDefinition,
-  ItemInstance,
-} from "../item";
-import items, { ItemId } from "lib/gamedata/items";
+import { DirectInventory } from "../Inventory";
+import { ItemInstance } from "../item";
 import StatAndAbilityProvider from "../StatAndAbilityProvider";
 import {
   StatusEffectInstance,
   StatusEffectStacking,
   StatusEffectToApply,
 } from "../statuseffect";
-import statusEffects, { StatusEffectId } from "lib/gamedata/statusEffects";
-import { DungeonLocation, FloorInstance } from "lib/dungeongeneration/types";
+import statusEffects from "lib/gamedata/statusEffects";
 import { DamageWithType } from "../types";
 import reforges from "lib/gamedata/Reforges";
 import { DamageType } from "../Damage";

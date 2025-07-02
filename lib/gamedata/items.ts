@@ -45,6 +45,8 @@ export type ItemId =
   | "boneClub"
   | "tailFlail"
   | "sling"
+  | "slimeSling"
+  | "slimeHorn"
   | "memory"
   | "nightmare"
   | "ectoplasm"
@@ -367,6 +369,45 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.attack("Throw Stone", "A simple throw of the sling.", 2, [
         { amount: 8, type: DamageType.Bludgeoning },
       ]),
+    ],
+  } satisfies EquipmentDefinition,
+  slimeSling: {
+    getName: "Slime Sling",
+    description: "A sling that uses slime as ammunition.",
+    getWeight: 0.5,
+    getSellValue: 10,
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    getAbilities: (creature, item) => [
+      Abilities.attackWithStatusEffect(
+        "Throw Slime",
+        "A messy throw of the slime sling.",
+        1.3,
+        [{ amount: 6, type: DamageType.Piercing }],
+        [
+          {
+            id: "infested",
+            strength: 3,
+            duration: 3,
+          },
+        ]
+      ),
+    ],
+  } satisfies EquipmentDefinition,
+  slimeHorn: {
+    getName: "Slime Horn",
+    description: "A horn to call slimes to your aid.",
+    getWeight: 1,
+    getSellValue: 15,
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    getAbilities: (creature, item) => [
+      Abilities.summon(
+        "Slime Companion",
+        "Summon a friendly slime to aid you in battle.",
+        15,
+        "friendlySlime"
+      ),
     ],
   } satisfies EquipmentDefinition,
   memory: {
