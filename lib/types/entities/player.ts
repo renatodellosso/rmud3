@@ -313,7 +313,7 @@ export class PlayerInstance extends CreatureInstance {
       }
     }
 
-    this.canActAt.setSeconds(this.canActAt.getSeconds() + cooldown);
+    this.canActAt.setTime(this.canActAt.getTime() + cooldown * 1000);
 
     if (
       "definitionId" in source &&

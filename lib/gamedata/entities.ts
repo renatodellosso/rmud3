@@ -92,7 +92,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       {
         name: "Taunt",
         getDescription: () => "Taunts all enemies in the room.",
-        getCooldown: () => 1,
+        getCooldown: () => 0.5,
         getTargetCount: () => 0,
         canTarget: () => false,
         activate: (creature) => {
