@@ -11,6 +11,9 @@ import { isTargetACreature } from "lib/gamedata/CanTarget";
 import AbilityTooltip from "../AbilityTooltip";
 import { Location } from "lib/types/Location";
 import StatusEffectList from "../StatusEffectList";
+import items, { ItemId } from "lib/gamedata/items";
+import { ItemTag } from "lib/types/itemenums";
+import { ItemInstance } from "lib/types/item";
 
 function TargetEntry({
   target,
@@ -208,6 +211,11 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
               }
             >
               {ability.ability.name} ({getAbilitySourceName(ability.source)})
+              {items[ability.source.definitionId as ItemId]?.tags.includes(
+                ItemTag.Consumable
+              )
+                ? ` (x${(ability.source as ItemInstance).amount})`
+                : ""}
               <AbilityTooltip
                 abilityWithSource={ability}
                 creature={gameState.self}
