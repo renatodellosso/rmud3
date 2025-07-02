@@ -589,7 +589,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.attack(
         "Stab",
         "A basic stab attack with a simple dagger.",
-        0.8,
+        0.6,
         [{ amount: 2, type: DamageType.Piercing }]
       ),
     ],
