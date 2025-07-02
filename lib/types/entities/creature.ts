@@ -380,7 +380,7 @@ export class CreatureInstance extends EntityInstance {
       }
     }
 
-    this.canActAt.setSeconds(this.canActAt.getSeconds() + cooldown);
+    this.canActAt.setTime(this.canActAt.getTime() + cooldown * 1000);
 
     getIo().updateGameStateForRoom(location.id);
   }
