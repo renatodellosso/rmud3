@@ -32,6 +32,11 @@ function ItemEntry({
       return;
     }
 
+    if (amount < 1) {
+      setError("You must transfer at least one item.");
+      return;
+    }
+
     setError("");
     setAmount(amount);
   }
@@ -47,7 +52,7 @@ function ItemEntry({
 
   return (
     <tr className="hover:bg-gray-900 w-full">
-      <td className="tooltip">
+      <td className="tooltip align-top">
         {item.getName()}
         <ItemTooltip item={item} creature={self} side={"right"} />
       </td>

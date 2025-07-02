@@ -97,22 +97,24 @@ export function randomContainer(
       typeof itemCount === "number"
         ? itemCount
         : randInRangeInt(itemCount[0], itemCount[1]);
+
     for (let i = 0; i < itemCount; i++) {
       const entry = items.roll();
       const item =
         typeof entry.item === "string"
-          ? new ItemInstance(entry.item as ItemId, entry.amount)
+          ? new ItemInstance(entry.item as ItemId, 1)
           : restoreFieldsAndMethods(
               {
                 ...entry.item,
-                amount: entry.amount,
+                amount: entry.item.amount * entry.amount,
               },
-              new ItemInstance(entry.item.definitionId, entry.amount)
+              new ItemInstance(
+                entry.item.definitionId,
+                entry.item.amount * entry.amount
+              )
             );
 
-      for (let j = 0; j < entry.amount; j++) {
-        container.inventory.add(item);
-      }
+      container.inventory.add(item, true);
     }
 
     location.entities.add(container);
