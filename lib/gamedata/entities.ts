@@ -229,6 +229,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 0,
       [AbilityScore.Intelligence]: 0,
     },
+    damageResistances: [{ amount: 1, type: DamageType.Poison }],
     intrinsicAbilities: [
       Abilities.attack(
         "Slime",
@@ -272,6 +273,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 0,
       [AbilityScore.Intelligence]: 0,
     },
+    damageResistances: [{ amount: 1, type: DamageType.Poison }],
     intrinsicAbilities: [
       Abilities.attack(
         "Slime",
@@ -332,7 +334,11 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 5,
       [AbilityScore.Intelligence]: 1,
     },
-    damageResistances: [{ amount: 1, type: "*" }],
+    damageResistances: [
+      { amount: 1, type: DamageType.Bludgeoning },
+      { amount: 1, type: DamageType.Piercing },
+      { amount: 1, type: DamageType.Slashing },
+    ],
     intrinsicAbilities: [
       Abilities.attack(
         "Slam",
@@ -395,6 +401,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 2,
       [AbilityScore.Intelligence]: 1,
     },
+    damageResistances: [{ amount: 2, type: DamageType.Poison }],
     intrinsicAbilities: [
       Abilities.attackWithStatusEffect(
         "Slam",
@@ -512,7 +519,11 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 7,
       [AbilityScore.Intelligence]: 0,
     },
-    damageResistances: [{ amount: 1, type: "*" }],
+    damageResistances: [
+      { amount: 1, type: DamageType.Bludgeoning },
+      { amount: 1, type: DamageType.Piercing },
+      { amount: 1, type: DamageType.Slashing },
+    ],
     intrinsicAbilities: [
       Abilities.attack(
         "Slam",
@@ -575,6 +586,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 2,
       [AbilityScore.Intelligence]: 0,
     },
+    damageResistances: [{ amount: 1, type: DamageType.Poison }],
     intrinsicAbilities: [
       Abilities.attackWithStatusEffect(
         "Spore Injection",
@@ -620,6 +632,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 5,
       [AbilityScore.Intelligence]: 1,
     },
+    damageResistances: [{ amount: 2, type: DamageType.Poison }],
     intrinsicAbilities: [
       Abilities.attackWithStatusEffect(
         "Spore Injection",
@@ -690,6 +703,10 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 5,
       [AbilityScore.Intelligence]: 10,
     },
+    damageResistances: [
+      { amount: 1, type: "*" },
+      { amount: 3, type: DamageType.Poison },
+    ],
     intrinsicAbilities: [
       Abilities.attackWithStatusEffect(
         "Spore Injection",
@@ -1046,6 +1063,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 0,
       [AbilityScore.Intelligence]: 1,
     },
+    damageResistances: [{ amount: 3, type: DamageType.Psychic }],
     intrinsicAbilities: [
       Abilities.attack(
         "Haunt",
@@ -1090,6 +1108,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 0,
       [AbilityScore.Intelligence]: 4,
     },
+    damageResistances: [{ amount: 5, type: DamageType.Psychic }],
     intrinsicAbilities: [
       Abilities.attack(
         "Haunt",
@@ -1390,7 +1409,11 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 3,
       [AbilityScore.Intelligence]: 1,
     },
-    damageResistances: [{ amount: 2, type: "*" }],
+    damageResistances: [
+      { amount: 2, type: DamageType.Bludgeoning },
+      { amount: 2, type: DamageType.Piercing },
+      { amount: 2, type: DamageType.Slashing },
+    ],
     intrinsicAbilities: [
       Abilities.attack(
         "Slam",
