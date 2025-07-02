@@ -4,15 +4,73 @@ import Ability, {
   getAbilitySourceName,
 } from "lib/types/Ability";
 import { GameState, Targetable } from "lib/types/types";
-import { useEffect, useRef, useState } from "react";
+import { CSSProperties, useEffect, useRef, useState } from "react";
 import { getFromOptionalFunc, getTargetId } from "../../lib/utils";
 import { socket } from "lib/socket";
 import { isTargetACreature } from "lib/gamedata/CanTarget";
 import AbilityTooltip from "../AbilityTooltip";
 import { Location } from "lib/types/Location";
-import { EntityInstance } from "lib/types/entity";
-import statusEffects from "lib/gamedata/statusEffects";
 import StatusEffectList from "../StatusEffectList";
+
+function TargetEntry({
+  target,
+  toggleTarget,
+  selectedAbility,
+  gameState,
+  targets,
+  targetCount,
+  canAct,
+}: {
+  target: Targetable;
+  toggleTarget: (target: Targetable) => void;
+  selectedAbility: AbilityWithSource | undefined;
+  gameState: GameState;
+  targets: Targetable[];
+  targetCount: number;
+  canAct: boolean;
+}) {
+  const isCreature = isTargetACreature(undefined as any, target);
+
+  const style: CSSProperties = isCreature
+    ? {
+        borderImageSource: `linear-gradient(to right, red, red ${
+          (target.health / target.getMaxHealth()) * 100
+        }%, white 1rem, white 100%)`,
+        borderImageSlice: 1,
+      }
+    : {};
+
+  return (
+    <button
+      key={"_id" in target ? target._id.toString() : target.id}
+      onClick={() => toggleTarget(target)}
+      className={`w-full px-1 ${
+        targets.map(getTargetId).includes(getTargetId(target)) &&
+        "bg-red-500 animate-pulse"
+      } ${targets.length === targetCount - 1 && "animate-shake-on-hover"}`}
+      disabled={
+        !selectedAbility ||
+        (selectedAbility?.ability.canTarget &&
+          !getFromOptionalFunc(
+            selectedAbility?.ability.canTarget,
+            gameState.self,
+            target,
+            selectedAbility?.source
+          )) ||
+        !canAct
+      }
+      style={style}
+    >
+      {target.name}{" "}
+      {isCreature && (
+        <>
+          ({target.health.toFixed()}/
+          {(target.getMaxHealth as () => number)().toFixed()})
+        </>
+      )}
+    </button>
+  );
+}
 
 export default function CombatMenu({ gameState }: { gameState: GameState }) {
   const [targets, setTargets] = useState<Targetable[]>([]);
@@ -166,35 +224,16 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
           {(Array.from(gameState.location.entities) as Targetable[])
             .concat([gameState.location as any as Location])
             .map((target) => (
-              <button
-                key={"_id" in target ? target._id.toString() : target.id}
-                onClick={() => toggleTarget(target)}
-                className={`w-full px-1 ${
-                  targets.map(getTargetId).includes(getTargetId(target)) &&
-                  "bg-red-500 animate-pulse"
-                } ${
-                  targets.length === targetCount - 1 && "animate-shake-on-hover"
-                }`}
-                disabled={
-                  !selectedAbility ||
-                  (selectedAbility?.ability.canTarget &&
-                    !getFromOptionalFunc(
-                      selectedAbility?.ability.canTarget,
-                      gameState.self,
-                      target,
-                      selectedAbility?.source
-                    )) ||
-                  !canAct
-                }
-              >
-                {target.name}{" "}
-                {isTargetACreature(undefined as any, target) && (
-                  <>
-                    ({target.health.toFixed()}/
-                    {(target.getMaxHealth as () => number)().toFixed()})
-                  </>
-                )}
-              </button>
+              <TargetEntry
+                key={getTargetId(target)}
+                target={target}
+                toggleTarget={toggleTarget}
+                selectedAbility={selectedAbility}
+                gameState={gameState}
+                targets={targets}
+                targetCount={targetCount}
+                canAct={canAct}
+              />
             ))}
         </div>
       </div>
