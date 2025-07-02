@@ -228,6 +228,11 @@ const floors: Record<string, FloorDefinition> = {
                 amount: [1, 5],
                 weight: 1.2,
               },
+              {
+                item: "goldOre",
+                amount: [1, 3],
+                weight: 0.8,
+              },
             ]),
             [1, 2]
           ),
@@ -314,6 +319,11 @@ const floors: Record<string, FloorDefinition> = {
                 amount: [1, 5],
                 weight: 1.2,
               },
+              {
+                item: "goldOre",
+                amount: [1, 3],
+                weight: 0.8,
+              },
             ]),
             [1, 3]
           ),
@@ -338,6 +348,11 @@ const floors: Record<string, FloorDefinition> = {
                 item: "ironBar",
                 amount: [1, 3],
                 weight: 0.5,
+              },
+              {
+                item: "goldBar",
+                amount: [1, 2],
+                weight: 0.2,
               },
             ])
           ),
