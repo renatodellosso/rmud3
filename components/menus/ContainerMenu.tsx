@@ -56,7 +56,7 @@ function ItemEntry({
       <td>
         <div className="tooltip">
           {item.getName()} x{item.amount}
-          <ItemTooltip item={item} creature={self} />
+          <ItemTooltip item={item} creature={self} side="right" />
         </div>
       </td>
       <td className="flex justify-end">
@@ -83,7 +83,6 @@ export default function ContainerMenu({
   interaction: Interaction;
   self: PlayerInstance;
 }) {
-  const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
   const [viewPlayerInventory, setViewInventory] = useState(false);
 
@@ -96,7 +95,7 @@ export default function ContainerMenu({
     : interaction.inventory;
 
   return (
-    <div className="border w-1/3 flex flex-col gap-2">
+    <div className="border w-1/3 flex flex-col gap-2 overflow-y-scroll">
       <div className="flex justify-between">
         <button onClick={switchInventory}>
           {viewPlayerInventory ? "Open Container" : "Open Inventory"}
