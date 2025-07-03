@@ -117,6 +117,8 @@ export type ItemId =
   | "livingWoodBow"
   | "livingWoodLongSword"
   | "amuletOfTheCentaur"
+  | "teleportScroll5"
+  | "teleportScroll7"
   | "skeletonKey"
   | "golemCore"
   | "livingStone"
@@ -1573,6 +1575,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       return effect.duration;
     },
   } as EquipmentDefinition,
+  teleportScroll5: teleportScroll(5),
+  teleportScroll7: teleportScroll(7),
   skeletonKey: {
     getName: "Skeleton Key",
     description:
