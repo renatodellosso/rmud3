@@ -53,7 +53,11 @@ export type CreatureId =
   | "spider"
   | "spiderSpitter"
   | "ancientTroll"
-  | "friendlySlime";
+  | "friendlySlime"
+  | "overgrownGolem"
+  | "writhingVines"
+  | "centaur"
+  | "treant";
 
 export type EntityId =
   | CreatureId
@@ -465,7 +469,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           },
         ]),
         amount: 1,
-        chance: 0.2,
+        chance: 0.8,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
@@ -1526,6 +1530,242 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     lootTable: new LootTable([]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
   },
+  overgrownGolem: {
+    name: "Overgrown Golem",
+    health: 60,
+    abilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 4,
+      [AbilityScore.Intelligence]: 1,
+    },
+    damageResistances: [
+      { amount: 4, type: DamageType.Poison },
+      { amount: 2, type: "*" },
+    ],
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Poisonous Slam",
+        "Slam with a deadly side effect.",
+        4,
+        [{ amount: 12, type: DamageType.Bludgeoning }],
+        [
+          {
+            id: "poisoned",
+            strength: 4,
+            duration: 10,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attack(
+        "Vine Strike",
+        "Precision strike with vines from its back.",
+        3,
+        [{ amount: 15, type: DamageType.Piercing }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 50,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "carvingStone",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.2,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "vine",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "livingWood",
+            amount: 1,
+            weight: 0.2,
+          },
+          {
+            item: "spore",
+            amount: [1, 2],
+            weight: 0.1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  writhingVines: {
+    name: "Writhing Vines",
+    health: 50,
+    abilityScores: {
+      [AbilityScore.Strength]: 3,
+      [AbilityScore.Constitution]: 3,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 2, type: DamageType.Poison }],
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Vine Strike",
+        "Precision strike with vines.",
+        4,
+        [{ amount: 15, type: DamageType.Piercing }],
+        [
+          {
+            id: "poisoned",
+            strength: 4,
+            duration: 10,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attack(
+        "Strangle",
+        "Choke the life from your target.",
+        4,
+        [{ amount: 20, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 50,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "vine",
+            amount: [2, 5],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  centaur: {
+    name: "Centaur",
+    health: 50,
+    abilityScores: {
+      [AbilityScore.Strength]: 3,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 5,
+    },
+    damageResistances: [{ amount: 3, type: "*" }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Bow and Arrow",
+        "Fire an arrow from a bow.",
+        5,
+        [{ amount: 20, type: DamageType.Piercing }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attack(
+        "Long Sword",
+        "Slash with a long sword.",
+        3,
+        [{ amount: 8, type: DamageType.Slashing }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 60,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "vine",
+            amount: [1, 3],
+            weight: 1,
+          },
+          {
+            item: "hoof",
+            amount: [1, 4],
+            weight: 1.5,
+          },
+          {
+            item: "horseshoe",
+            amount: [1, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "livingWoodBow",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "livingWoodLongSword",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "livingWood",
+            amount: [1, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.3,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  treant: {
+    name: "Treant",
+    health: 50,
+    abilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 10,
+      [AbilityScore.Intelligence]: 1,
+    },
+    damageResistances: [
+      { amount: 5, type: "*" },
+      { amount: 5, type: DamageType.Poison },
+      { amount: 2, type: DamageType.Piercing },
+      { amount: 2, type: DamageType.Bludgeoning },
+    ],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Trunk Slam",
+        "Slam but tree.",
+        5,
+        [{ amount: 25, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 75,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "vine",
+            amount: [1, 3],
+            weight: 1,
+          },
+          {
+            item: "livingWood",
+            amount: [1, 4],
+            weight: 1.5,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
 };
 
 const entities: Record<EntityId, EntityDefinition> = {
@@ -1909,6 +2149,33 @@ const entities: Record<EntityId, EntityDefinition> = {
             spiderFang: 1,
           },
           new ItemInstance("teleportScroll3", 1)
+        ),
+        new Recipe(
+          {
+            livingWood: 10,
+            vine: 20,
+            venom: 5,
+            goldBar: 1,
+          },
+          new ItemInstance("livingWoodBow", 1)
+        ),
+        new Recipe(
+          {
+            livingWood: 10,
+            vine: 10,
+            ironBar: 5,
+            venom: 5,
+            goldBar: 1,
+          },
+          new ItemInstance("livingWoodBow", 1)
+        ),
+        new Recipe(
+          {
+            goldBar: 5,
+            livingWood: 1,
+            horseshoe: 1,
+          },
+          new ItemInstance("amuletOfTheCentaur", 1)
         ),
       ])
     ),

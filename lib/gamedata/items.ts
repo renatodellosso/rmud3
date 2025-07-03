@@ -18,6 +18,8 @@ import AbilityScore from "lib/types/AbilityScore";
 import { ItemTag, EquipmentSlot } from "lib/types/itemenums";
 import locations from "lib/locations";
 import { teleportScroll } from "./itemtemplate";
+import { StatusEffectToApply } from "lib/types/statuseffect";
+import { StatusEffectId } from './statusEffects';
 
 export type ItemId =
   | "bone"
@@ -107,7 +109,14 @@ export type ItemId =
   | "theMaw"
   | "paper"
   | "returnScroll"
-  | "teleportScroll3";
+  | "teleportScroll3"
+  | "vine"
+  | "livingWood"
+  | "hoof"
+  | "horseshoe"
+  | "livingWoodBow"
+  | "livingWoodLongSword"
+  | "amuletOfTheCentaur";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -496,7 +505,6 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       "A necklace made of all things disturbing. Turns physical damage you deal into psychic damage.",
     getWeight: 0.5,
     getSellValue: 15,
-    // I want this to do something weird but I haven't thought of something clever yet
     getDamageToDeal: (creature, source, damage) =>
       damage.map((d) => ({
         amount: d.amount,
@@ -1458,6 +1466,100 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   } satisfies ConsumableDefinition,
   teleportScroll3: teleportScroll(3),
+  vine: {
+    getName: "Vine",
+    description: "A long, twisted vine.",
+    getWeight: 0.25,
+    getSellValue: 10,
+    tags: [],
+  },
+  livingWood: {
+    getName: "Living Wood",
+    description: "A large cut of wood. Somehow it still feels alive.",
+    getWeight: 0.25,
+    getSellValue: 10,
+    tags: [],
+  },
+  hoof: {
+    getName: "Hoof",
+    description: "The hoof from a horse.",
+    getWeight: 0.2,
+    getSellValue: 20,
+    tags: [],
+  },
+  horseshoe: {
+    getName: "Horseshoe",
+    description: "The perfect shoe if you are a horse.",
+    getWeight: 0.5,
+    getSellValue: 25,
+    tags: [],
+  },
+  livingWoodBow: {
+    getName: "Living Wood Bow",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: `An ornate bow carved of still living wood. Reduces poison damage by 3.`,
+    getWeight: 10,
+    getSellValue: 500,
+    getAbilities: (creature, item) => [
+      Abilities.attackWithStatusEffect(
+        "Poison Shot",
+        "A powerful, and poisonous, shot.",
+        2.5,
+        [{ amount: 30, type: DamageType.Piercing }],
+        [
+          {
+            id: "poisoned",
+            strength: 3,
+            duration: 15, // Duration in seconds
+          },
+        ]
+      ),
+    ],
+    getDamageResistances: () => [{ amount: 3, type: DamageType.Poison }],
+  } satisfies EquipmentDefinition,
+  livingWoodLongSword: {
+    getName: "Living Wood Long Sword",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: `An ornate long sword carved of still living wood. Reduces poison damage by 3.`,
+    getWeight: 10,
+    getSellValue: 500,
+    getAbilities: (creature, item) => [
+      Abilities.attackWithStatusEffect(
+        "Poison Slash",
+        "A powerful, and poisonous, slash.",
+        1.2,
+        [{ amount: 25, type: DamageType.Slashing }],
+        [
+          {
+            id: "poisoned",
+            strength: 3,
+            duration: 15, // Duration in seconds
+          },
+        ]
+      ),
+    ],
+    getDamageResistances: () => [{ amount: 3, type: DamageType.Poison }],
+  } satisfies EquipmentDefinition,
+  amuletOfTheCentaur: {
+    getName: "Amulet of the Centaur",
+    tags: [ItemTag.Equipment],
+    description:
+      "This beautiful necklace protects its wearer from the dangers of the forest. Reduces duration of incoming poisoned effect by 20%.",
+    getWeight: 1,
+    getSellValue: 50,
+    getDamageResistances: [
+      { amount: 3, type: "*" },
+      { amount: 5, type: DamageType.Poison },
+    ],
+    getStatusEffectDuration: (creature, effect) => {
+      if (effect.id === "poisoned") {
+        return effect.duration * 0.8;
+      }
+      return effect.duration;
+    },
+  } as EquipmentDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;

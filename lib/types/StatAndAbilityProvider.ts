@@ -2,6 +2,7 @@ import Ability, { AbilitySource } from "./Ability";
 import { DamageType } from "./Damage";
 import { CreatureInstance } from "./entities/creature";
 import { PlayerInstance } from "./entities/player";
+import { StatusEffectToApply } from "./statuseffect";
 import { DamageWithType, OptionalFunc } from "./types";
 import AbilityScore from "lib/types/AbilityScore";
 
@@ -42,6 +43,10 @@ export default interface StatAndAbilityProvider<
     source: TSource,
     ability: Ability,
     cooldown: number
+  ) => number;
+  getStatusEffectDuration?: (
+    creature: CreatureInstance,
+    effect: StatusEffectToApply,
   ) => number;
   tick?: (
     creature: CreatureInstance,

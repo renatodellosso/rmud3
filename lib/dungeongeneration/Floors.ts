@@ -530,7 +530,7 @@ const floors: Record<string, FloorDefinition> = {
   goblinColonies: {
     name: "Goblin Colonies",
     depth: 6,
-    visualizerColor: "#888888",
+    visualizerColor: "#f29d1d",
     layoutGenerationOptions: {
       roomChance: 0.8,
       connectionChance: 0.8,
@@ -698,80 +698,80 @@ const floors: Record<string, FloorDefinition> = {
   overgrownCaverns: {
     name: "Overgrown Caverns",
     depth: 8,
-    visualizerColor: "#888888",
+    visualizerColor: "#06c225",
     layoutGenerationOptions: {
-      roomChance: 0.8,
-      connectionChance: 0.8,
-      width: [16, 24],
-      length: [16, 24],
-      roomCount: [50, 80],
-      exitCount: [6, 7],
+      roomChance: 0.6,
+      connectionChance: 0.3,
+      width: [15, 22],
+      length: [15, 22],
+      roomCount: [40, 70],
+      exitCount: [5, 6],
     },
     populationOptions: {
       encounterChance: 0.8,
       maxEncounters: 3,
       encounters: new WeightedTable<Encounter>([
         {
-          item: "goblin",
-          amount: [1, 3],
-          weight: 2,
+          item: "fungalTroll",
+          amount: [1, 2],
+          weight: 0.5,
         },
         {
-          item: "goblinShaman",
-          amount: [1, 2],
+          item: "overgrownGolem",
+          amount: 1,
           weight: 1,
         },
         {
-          item: "hobgoblin",
+          item: "writhingVines",
           amount: [1, 2],
+          weight: 1.5,
+        },
+        {
+          item: "centaur",
+          amount: 1,
+          weight: 0.75,
+        },
+        {
+          item: "treant",
+          amount: 1,
           weight: 1,
         },
         {
           item: randomContainer(
-            "Barrel",
+            "Living Wood Chest",
             new WeightedTable<ItemId>([
               {
-                item: "money",
-                amount: [25, 50],
-                weight: 2,
-              },
-              {
-                item: "leather",
-                amount: [2, 4],
-                weight: 0.5,
-              },
-              {
-                item: "bottle",
+                item: "livingWood",
                 amount: [2, 3],
+                weight: 1,
+              },
+              {
+                item: "vine",
+                amount: [2, 4],
+                weight: 1,
+              },
+              {
+                item: "horseshoe",
+                amount: [1, 2],
                 weight: 0.5,
               },
               {
-                item: "rope",
-                amount: [3, 5],
-                weight: 0.5,
-              },
-              {
-                item: "healthPotion",
-                amount: [1, 2],
+                item: "spore",
+                amount: [2, 4],
                 weight: 0.2,
               },
               {
-                item: "slimeJar",
-                amount: [1, 2],
-                weight: 0.2,
-              },
-              {
-                item: "hordeFlute",
+                item: "livingWoodBow",
                 amount: 1,
                 weight: 0.2,
               },
               {
-                item: "fireballRing",
+                item: "livingWoodLongSword",
                 amount: 1,
-                weight: 0.1,
+                weight: 0.2,
               },
             ]),
-            [1, 3]
+            [1, 2]
           ),
           amount: 1,
           weight: 0.1,
