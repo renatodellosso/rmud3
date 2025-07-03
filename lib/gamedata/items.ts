@@ -108,6 +108,8 @@ export type ItemId =
   | "paper"
   | "returnScroll"
   | "teleportScroll3"
+  | "teleportScroll5"
+  | "teleportScroll7"
   | "skeletonKey"
   | "golemCore"
   | "livingStone"
@@ -1471,6 +1473,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   } satisfies ConsumableDefinition,
   teleportScroll3: teleportScroll(3),
+  teleportScroll5: teleportScroll(5),
+  teleportScroll7: teleportScroll(7),
   skeletonKey: {
     getName: "Skeleton Key",
     description:

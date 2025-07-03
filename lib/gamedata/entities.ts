@@ -2382,10 +2382,26 @@ const entities: Record<EntityId, EntityDefinition> = {
         new Recipe(
           {
             paper: 1,
-            silk: 3,
-            spiderFang: 1,
+            ironOre: 3,
+            goldOre: 3,
           },
           new ItemInstance("teleportScroll3", 1)
+        ),
+        new Recipe(
+          {
+            paper: 1,
+            silk: 8,
+            nightmare: 1,
+          },
+          new ItemInstance("teleportScroll5", 1)
+        ),
+        new Recipe(
+          {
+            paper: 1,
+            livingStone: 1,
+            ashes: 1
+          },
+          new ItemInstance("teleportScroll7", 1)
         ),
       ])
     ),
