@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
 import { CreatureInstance } from "../entities/creature";
-import Inventory, { DirectInventory } from "../Inventory";
+import Inventory, { DirectInventory, MultipleInventory } from "../Inventory";
 import {
   CannotDirectlyCreateInstanceError,
   OmitType,
@@ -23,6 +23,7 @@ import { ItemTag } from "../itemenums";
 import { EquipmentHotbar } from "../Hotbar";
 import {
   getFromOptionalFunc,
+  isInTown,
   restoreFieldsAndMethods,
   savePlayer,
 } from "lib/utils";
@@ -333,6 +334,12 @@ export class PlayerInstance extends CreatureInstance {
     return (
       (this.guildId && Guild.fromId(this.guildId)) || Promise.resolve(undefined)
     );
+  }
+
+  getCraftingInventory(): Inventory {
+    return isInTown(this.location)
+      ? new MultipleInventory([this.inventory, this.vault.inventory])
+      : this.inventory;
   }
 }
 

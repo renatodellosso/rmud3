@@ -1,7 +1,7 @@
 import { LocationId } from "lib/gamedata/rawLocations";
 import locations from "lib/locations";
 import { Point } from "lib/types/types";
-import { chance } from "lib/utils";
+import { chance, isInTown } from "lib/utils";
 import { generateRoom } from "./generateDungeonLayout";
 import { populateRoom } from "./populateDungeon";
 import { Dungeon, DungeonLocation, FloorInstance } from "./types";
@@ -171,11 +171,7 @@ function randomlyDeleteExits(dungeon: Dungeon, deltaTime: number) {
 
         const exits = Array.from(room.exits);
         for (const exitId of exits) {
-          if (
-            !exitId.startsWith("dungeon-") ||
-            exitId.startsWith("dungeon-entrance")
-          )
-            continue;
+          if (isInTown(exitId)) continue;
           if (!chance(EXIT_DELETION_CHANCE * deltaTime)) continue;
 
           const exitRoom = locations[exitId] as DungeonLocation;

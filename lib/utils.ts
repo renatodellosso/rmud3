@@ -2,6 +2,7 @@ import { ItemInstance } from "./types/item";
 import { PlayerInstance } from "./types/entities/player";
 import { OptionalFunc, Targetable } from "./types/types";
 import { ObjectId } from "bson";
+import { LocationId } from "./gamedata/rawLocations";
 
 /**
  * Copies all properties from the prototype to the object if they are not already defined.
@@ -205,4 +206,8 @@ export function importOnlyOnServer<T extends object>(filePath: string, obj: T) {
 export function savePlayer(player: PlayerInstance) {
   if (typeof window === "undefined")
     require("./PlayerManager").savePlayerServerOnly(player);
+}
+
+export function isInTown(id: LocationId) {
+  return !id.startsWith("dungeon-") || id === "dungeon-entrance";
 }

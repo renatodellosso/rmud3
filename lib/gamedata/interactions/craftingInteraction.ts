@@ -50,7 +50,9 @@ export default function craftingInteraction(
       return Promise.resolve(interaction); // Player is not allowed to craft this recipe
     }
 
-    if (!recipe.hasInput(player.inventory)) {
+    const inventory = player.getCraftingInventory();
+
+    if (!recipe.hasInput(inventory)) {
       getIo().sendMsgToPlayer(
         player._id.toString(),
         `You do not have the required items to craft ${recipe.getOutputText()}.`
@@ -58,7 +60,7 @@ export default function craftingInteraction(
       return Promise.resolve(interaction); // Crafting failed due to insufficient items
     }
 
-    if (!recipe.hasRoomForOutput(player.inventory)) {
+    if (!recipe.hasRoomForOutput(inventory)) {
       getIo().sendMsgToPlayer(
         player._id.toString(),
         `You do not have enough room in your inventory to craft ${recipe.getOutputText()}.`
@@ -66,7 +68,7 @@ export default function craftingInteraction(
       return Promise.resolve(interaction); // Crafting failed due to insufficient inventory space
     }
 
-    if (!recipe.craft(player.inventory)) {
+    if (!recipe.craft(inventory)) {
       getIo().sendMsgToPlayer(
         player._id.toString(),
         `Failed to craft: ${recipe.getOutputText()}.`

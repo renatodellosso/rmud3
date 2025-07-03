@@ -86,6 +86,15 @@ export default function CraftingMenu({
                       !recipe.hasRoomForOutput(inventory)
                     }
                     className="px-1"
+                    title={`${
+                      !recipe.hasInput(inventory)
+                        ? "Not enough input items. "
+                        : ""
+                    }${
+                      !recipe.hasRoomForOutput(inventory)
+                        ? "Not enough space for output items."
+                        : ""
+                    }`}
                   >
                     Craft
                   </button>

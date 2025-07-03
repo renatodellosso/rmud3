@@ -93,7 +93,7 @@ export default function Play() {
             interaction.type === "crafting" ? (
               <CraftingMenu
                 key={index}
-                inventory={gameState.self.inventory}
+                inventory={gameState.self.getCraftingInventory()}
                 interaction={interaction}
                 self={gameState.self}
               />
