@@ -27,6 +27,7 @@ import { ItemInstance } from "lib/types/item";
 import locations from "lib/locations";
 import reforgeInteraction from "./interactions/reforgeInteraction";
 import { DamageType } from "lib/types/Damage";
+import { AbilityOptions } from './Abilities';
 
 // Prefix summons with friendly
 
@@ -45,8 +46,12 @@ export type CreatureId =
   | "farulu"
   | "lostAdventurer"
   | "goblin"
-  | "goblinShaman"
   | "hobgoblin"
+  | "goblinShaman"
+  | "masterGoblinShaman"
+  | "goblinWarrior"
+  | "hobgoblinWarrior"
+  | "goblinInventor"
   | "ghost"
   | "wraith"
   | "rat"
@@ -499,7 +504,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Bite",
         "Bite an enemy.",
         3,
-        [{ amount: 2, type: DamageType.Piercing }],
+        [{ amount: 3, type: DamageType.Piercing }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
@@ -558,7 +563,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Slam",
         "Slam.",
         5,
-        [{ amount: 5, type: DamageType.Bludgeoning }],
+        [{ amount: 8, type: DamageType.Bludgeoning }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.heal("Heal", "Recover a small amount of health.", 10, 8, {
@@ -621,7 +626,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Spore Injection",
         "Infest an enemy with spores.",
         4,
-        [{ amount: 3, type: DamageType.Piercing }],
+        [{ amount: 4, type: DamageType.Piercing }],
         [
           {
             id: "infested",
@@ -963,6 +968,60 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
+  hobgoblin: {
+    name: "Hobgoblin",
+    health: 15,
+    abilityScores: {
+      [AbilityScore.Strength]: 2,
+      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Intelligence]: 4,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Spear",
+        "Are these descriptions even displayed anywhere?",
+        2,
+        [{ amount: 6, type: DamageType.Piercing }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 25,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "money",
+            amount: [5, 10],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "leather",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "rope",
+            amount: [2, 3],
+            weight: 1,
+          },
+          {
+            item: "ironSpear",
+            amount: 1,
+            weight: 0.5,
+          },
+        ]),
+        amount: 2,
+        chance: 0.8,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
   goblinShaman: {
     name: "Goblin Shaman",
     health: 8,
@@ -1029,31 +1088,196 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
-  hobgoblin: {
-    name: "Hobgoblin",
-    health: 15,
+  masterGoblinShaman: {
+    name: "Master Goblin Shaman",
+    health: 20,
     abilityScores: {
-      [AbilityScore.Strength]: 2,
+      [AbilityScore.Strength]: 0,
       [AbilityScore.Constitution]: 1,
-      [AbilityScore.Intelligence]: 4,
+      [AbilityScore.Intelligence]: 10,
+    },
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Fireball",
+        "A fiery explosion of magic.",
+        4,
+        [{ amount: 20, type: DamageType.Fire }],
+        [
+          {
+            id: "burning",
+            strength: 5,
+            duration: 3,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attackWithStatusEffect(
+        "Poison Ray",
+        "A poisonous ray of magic.",
+        3,
+        [{ amount: 20, type: DamageType.Poison }],
+        [
+          {
+            id: "poisoned",
+            strength: 4,
+            duration: 5,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Curse",
+        "Curses an enemy.",
+        3,
+        [
+          {
+            id: "cursed",
+            strength: 3,
+            duration: 5,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Speed Up",
+        "Decrease cooldowns.",
+        1,
+        [
+          {
+            id: "haste",
+            strength: 5,
+            duration: 10,
+          },
+        ],
+        { targetRestrictions: [CanTarget.not(CanTarget.isAlly)] }
+      ),
+    ],
+    xpValue: 40,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "money",
+            amount: [10, 20],
+            weight: 1,
+          },
+          {
+            item: "bottle",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "healthPotion",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "antidote",
+            amount: 1,
+            weight: 0.8,
+          },
+          {
+            item: "fireballRing",
+            amount: 1,
+            weight: 0.4,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  goblinWarrior: {
+    name: "Goblin Warrior",
+    health: 25,
+    abilityScores: {
+      [AbilityScore.Strength]: 3,
+      [AbilityScore.Constitution]: 3,
+      [AbilityScore.Intelligence]: 2,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Spear",
+        "Are these descriptions even displayed anywhere?",
+        1.5,
+        [{ amount: 10, type: DamageType.Piercing }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 15,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "money",
+            amount: [8, 12],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "bottle",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "mushroom",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "leather",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "rope",
+            amount: [2, 3],
+            weight: 1,
+          },
+          {
+            item: "taintedSpear",
+            amount: 1,
+            weight: 0.3,
+          },
+        ]),
+        amount: 2,
+        chance: 0.8,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  hobgoblinWarrior: {
+    name: "Hobgoblin",
+    health: 25,
+    abilityScores: {
+      [AbilityScore.Strength]: 4,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 5,
     },
     intrinsicAbilities: [
       Abilities.attack(
         "Spear",
         "Are these descriptions even displayed anywhere?",
         2,
-        [{ amount: 6, type: DamageType.Piercing }],
+        [{ amount: 20, type: DamageType.Piercing }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 25,
+    xpValue: 40,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
           {
             item: "money",
-            amount: [5, 10],
+            amount: [10, 15],
             weight: 1,
           },
         ]),
@@ -1073,13 +1297,67 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             weight: 1,
           },
           {
-            item: "ironSpear",
+            item: "hobspear",
             amount: 1,
             weight: 0.5,
           },
         ]),
         amount: 2,
         chance: 0.8,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  goblinInventor: {
+    name: "Goblin Inventor",
+    health: 20,
+    abilityScores: {
+      [AbilityScore.Strength]: 0,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 10,
+    },
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Firebomb",
+        "Creates a fiery explosion.",
+        4,
+        [{ amount: 20, type: DamageType.Fire }],
+        [
+          {
+            id: "burning",
+            strength: 3,
+            duration: 5,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attackWithStatusEffect(
+        "Poison Dart",
+        "Poison enemies with a blow dart.",
+        1,
+        [{ amount: 6, type: DamageType.Poison }],
+        [
+          {
+            id: "poisoned",
+            strength: 3,
+            duration: 3,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 40,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "money",
+            amount: [20, 25],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),

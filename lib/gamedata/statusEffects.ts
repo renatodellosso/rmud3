@@ -13,7 +13,9 @@ export type StatusEffectId =
   | "dreaming"
   | "satiated"
   | "stoneskin"
-  | "overcharged";
+  | "overcharged"
+  | "haste"
+  | "blocking";
 
 const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   stunned: {
@@ -134,6 +136,25 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
       Constitution: (creature, source) => source.strength,
       Intelligence: (creature, source) => source.strength,
     },
+  },
+  haste: {
+    name: "Haste",
+    description: "You act with increased speed, reducing cooldowns.",
+    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    getCooldown: (creature, source, ability, cooldown) => {
+      return cooldown * (1 - source.strength / 100);
+    },
+  },
+  blocking: {
+    name: "Blocking",
+    description: "Block incoming damage.",
+    stacking: StatusEffectStacking.AddStrengthAndDuration,
+    getDamageResistances: (creature, source) => [
+      {
+        type: "*",
+        amount: source.strength,
+      },
+    ],
   },
 };
 

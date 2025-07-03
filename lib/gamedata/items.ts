@@ -136,7 +136,9 @@ export type ItemId =
   | "avalancheWarhammer"
   | "stoneskinPotion"
   | "burnOutScroll"
-  | "woodlandHorn";
+  | "woodlandHorn"
+  | "taintedSpear"
+  | "hobspear";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -572,7 +574,6 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 1.5,
     getSellValue: 10,
   },
-  // All these basic iron weapons do 3.33 dps
   ironSpear: {
     getName: "Iron Spear",
     tags: [ItemTag.Equipment],
@@ -1934,6 +1935,38 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         { id: "friendlyCentaur", amount: 2 },
         { id: "friendlyTreant", amount: 1 },
       ]),
+    ],
+  } satisfies EquipmentDefinition,
+  taintedSpear: {
+    getName: "Tainted Spear",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: "A spear with a wicked looking point.",
+    getWeight: 5,
+    getSellValue: 60,
+    getAbilities: (creature, item) => [
+      Abilities.attack("Stab", "A basic stab attack.", 1, [
+        { amount: 12, type: DamageType.Piercing },
+      ]),
+    ],
+  } satisfies EquipmentDefinition,
+  hobspear: {
+    getName: "Hobspear",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: "A heavy spear. The handle is covered in metal studs.",
+    getWeight: 10,
+    getSellValue: 80,
+    getAbilities: (creature, item) => [
+      Abilities.attack("Stab", "A basic stab attack.", 1.2, [
+        { amount: 18, type: DamageType.Piercing },
+      ]),
+      Abilities.applyStatusEffect(
+        "Block",
+        "Block 5 damage for 3 seconds.",
+        2.5,
+        [{ id: "blocking", strength: 5, duration: 3 }]
+      ),
     ],
   } satisfies EquipmentDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
