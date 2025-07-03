@@ -1611,136 +1611,6 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
-  skeletonWarrior: {
-    name: "Skeleton Warrior",
-    health: 50,
-    abilityScores: {
-      [AbilityScore.Strength]: 3,
-      [AbilityScore.Constitution]: 2,
-      [AbilityScore.Intelligence]: 0,
-    },
-    damageResistances: [{ amount: 3, type: DamageType.Piercing }],
-    intrinsicAbilities: [
-      Abilities.attack(
-        "Slash",
-        "A slashing attack with a bone sword.",
-        1,
-        [{ amount: 10, type: DamageType.Slashing }],
-        { targetRestrictions: [CanTarget.isAlly] }
-      ),
-      Abilities.attackWithStatusEffect(
-        "War Cry",
-        "A bone-chilling war cry.",
-        2,
-        [{ amount: 10, type: DamageType.Psychic }],
-        [
-          {
-            id: "cursed",
-            strength: 4,
-            duration: 5,
-          },
-        ],
-        { targetRestrictions: [CanTarget.isAlly] }
-      ),
-    ],
-    xpValue: 80,
-    lootTable: new LootTable([
-      {
-        item: new WeightedTable<ItemId>([
-          {
-            item: "bone",
-            amount: [1, 3],
-            weight: 1,
-          },
-          {
-            item: "skeletonKey",
-            amount: 1,
-            weight: 0.5,
-          },
-          {
-            item: "ancientSpirit",
-            amount: 1,
-            weight: 1,
-          },
-          {
-            item: "ashes",
-            amount: [1, 3],
-            weight: 1,
-          },
-        ]),
-        amount: 1,
-        chance: 1,
-      },
-    ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
-  },
-  skeletonBonecaller: {
-    name: "Skeleton Bonecaller",
-    health: 40,
-    abilityScores: {
-      [AbilityScore.Strength]: 1,
-      [AbilityScore.Constitution]: 1,
-      [AbilityScore.Intelligence]: 5,
-    },
-    damageResistances: [{ amount: 3, type: DamageType.Piercing }],
-    intrinsicAbilities: [
-      Abilities.summon(
-        "Summon Skeleton",
-        "Summons a skeleton to fight for you.",
-        2,
-        "skeleton"
-      ),
-      Abilities.attackWithStatusEffect(
-        "Bone Shard",
-        "Launches a bone shard at an enemy.",
-        1,
-        [{ amount: 8, type: DamageType.Piercing }],
-        [
-          {
-            id: "cursed",
-            strength: 2,
-            duration: 3,
-          },
-        ],
-        { targetRestrictions: [CanTarget.isAlly] }
-      ),
-    ],
-    xpValue: 100,
-    lootTable: new LootTable([
-      {
-        item: new WeightedTable<ItemId>([
-          {
-            item: "bone",
-            amount: [2, 5],
-            weight: 1,
-          },
-          {
-            item: "skeletonKey",
-            amount: 1,
-            weight: 0.5,
-          },
-          {
-            item: "memory",
-            amount: [1, 2],
-            weight: 0.5,
-          },
-          {
-            item: "ancientSpirit",
-            amount: 1,
-            weight: 1,
-          },
-          {
-            item: "ashes",
-            amount: [1, 3],
-            weight: 1,
-          },
-        ]),
-        amount: 2,
-        chance: 1,
-      },
-    ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
-  },
   writhingVines: {
     name: "Writhing Vines",
     health: 50,
@@ -1900,6 +1770,136 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           },
         ]),
         amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  skeletonWarrior: {
+    name: "Skeleton Warrior",
+    health: 50,
+    abilityScores: {
+      [AbilityScore.Strength]: 3,
+      [AbilityScore.Constitution]: 2,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 3, type: DamageType.Piercing }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Slash",
+        "A slashing attack with a bone sword.",
+        1,
+        [{ amount: 10, type: DamageType.Slashing }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attackWithStatusEffect(
+        "War Cry",
+        "A bone-chilling war cry.",
+        2,
+        [{ amount: 10, type: DamageType.Psychic }],
+        [
+          {
+            id: "cursed",
+            strength: 4,
+            duration: 5,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 80,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "bone",
+            amount: [1, 3],
+            weight: 1,
+          },
+          {
+            item: "skeletonKey",
+            amount: 1,
+            weight: 0.5,
+          },
+          {
+            item: "ancientSpirit",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "ashes",
+            amount: [1, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  skeletonBonecaller: {
+    name: "Skeleton Bonecaller",
+    health: 40,
+    abilityScores: {
+      [AbilityScore.Strength]: 1,
+      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Intelligence]: 5,
+    },
+    damageResistances: [{ amount: 3, type: DamageType.Piercing }],
+    intrinsicAbilities: [
+      Abilities.summon(
+        "Summon Skeleton",
+        "Summons a skeleton to fight for you.",
+        2,
+        "skeleton"
+      ),
+      Abilities.attackWithStatusEffect(
+        "Bone Shard",
+        "Launches a bone shard at an enemy.",
+        1,
+        [{ amount: 8, type: DamageType.Piercing }],
+        [
+          {
+            id: "cursed",
+            strength: 2,
+            duration: 3,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 100,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "bone",
+            amount: [2, 5],
+            weight: 1,
+          },
+          {
+            item: "skeletonKey",
+            amount: 1,
+            weight: 0.5,
+          },
+          {
+            item: "memory",
+            amount: [1, 2],
+            weight: 0.5,
+          },
+          {
+            item: "ancientSpirit",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "ashes",
+            amount: [1, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
         chance: 1,
       },
     ]),
