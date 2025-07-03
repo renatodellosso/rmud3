@@ -142,16 +142,6 @@ export class PlayerInstance extends CreatureInstance {
   ): { amount: number; type: DamageType }[] {
     const damageTaken = super.takeDamage(damage, source, entitySource);
 
-    for (const equipment of this.equipment.items) {
-      if (equipment.reforge) {
-        reforges[equipment.reforge].onTakeDamage?.(
-          this,
-          equipment,
-          damageTaken
-        );
-      }
-    }
-
     for (const d of damageTaken) {
       if (this.health > 0 && d.amount > 0)
         getIo().emit(this._id.toString(), "tookDamage", damageTaken);

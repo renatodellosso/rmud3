@@ -37,6 +37,7 @@ export default interface StatAndAbilityProvider<
   ) => { amount: number; type: DamageType }[];
   onAttack?: (
     creature: CreatureInstance,
+    target: CreatureInstance,
     source: TSource,
     damage: DamageWithType[]
   ) => void;

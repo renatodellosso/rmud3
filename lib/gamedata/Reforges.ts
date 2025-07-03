@@ -1,10 +1,12 @@
 import { ReforgeDefinition, ReforgeType } from "../types/Reforge";
 
-export type ReforgeId = 
-  | "sharp" 
+export type ReforgeId =
+  | "sharp"
   | "fast"
   | "elegant"
+  | "flamebrand"
   | "reinforced"
+  | "charged"
   | "robust";
 
 const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
@@ -24,10 +26,32 @@ const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
     damageBonusPercent: 1.05,
     cooldownPercent: 0.95,
   },
+  flamebrand: {
+    name: "Flamebrand",
+    type: ReforgeType.Hand,
+    onAttack: (creature, target, source, damage) => {
+      target.addStatusEffect({
+        id: "burning",
+        strength: creature.scaleAbility(1),
+        duration: creature.scaleAbility(3),
+      });
+    },
+  },
   reinforced: {
     name: "Reinforced",
     type: ReforgeType.Armor,
     damageResistancePercent: 1.1,
+  },
+  charged: {
+    name: "Charged",
+    type: ReforgeType.Armor,
+    onTakeDamage: (creature, source, damage) => {
+      creature.addStatusEffect({
+        id: "overcharged",
+        strength: creature.scaleAbility(1),
+        duration: creature.scaleAbility(3),
+      });
+    },
   },
   robust: {
     name: "Robust",

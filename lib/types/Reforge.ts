@@ -8,16 +8,6 @@ export type ReforgeDefinition = StatAndAbilityProvider<ItemInstance> & {
   damageBonusPercent?: number;
   cooldownPercent?: number;
   damageResistancePercent?: number;
-  onAttack?: (
-    creature: ItemInstance,
-    source: ItemInstance,
-    damage: DamageWithType[]
-  ) => void;
-  onTakeDamage?: (
-    creature: ItemInstance,
-    source: ItemInstance,
-    damage: DamageWithType[]
-  ) => void;
 };
 
 export enum ReforgeType {

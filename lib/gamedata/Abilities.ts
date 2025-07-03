@@ -103,12 +103,8 @@ export function attack(
       creature
         .getStatAndAbilityProviders()
         .forEach((provider) =>
-          provider.provider.onAttack?.(creature, source, newDamage)
+          provider.provider.onAttack?.(creature, target, source, newDamage)
         );
-
-      if (source instanceof ItemInstance && source.reforge) {
-        reforges[source.reforge].onAttack?.(creature, source, newDamage);
-      }
 
       return true;
     },
