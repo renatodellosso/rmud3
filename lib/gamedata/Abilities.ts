@@ -325,10 +325,12 @@ export function summon(
 
       target.entities.add(summon);
 
-      getIo().sendMsgToPlayer(
-        creature._id.toString(),
-        `You summoned a ${summon.name} using ${name}!`
-      );
+      if (creature.definitionId === "player") {
+        getIo().sendMsgToPlayer(
+          creature._id.toString(),
+          `You summoned a ${summon.name} using ${name}!`
+        );
+      }
 
       options.onActivate?.(creature, targets, source);
 

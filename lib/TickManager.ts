@@ -31,7 +31,14 @@ export function startTicking() {
     }
 
     for (const creature of toTick) {
-      creature.tick(delta);
+      try {
+        creature.tick(delta);
+      } catch (error) {
+        console.error(
+          `Error ticking creature ${creature._id} (${creature.definitionId}) in location ${creature.location}:`,
+          error
+        );
+      }
     }
   }, TICK_INTERVAL);
 
