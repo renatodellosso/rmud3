@@ -35,6 +35,16 @@ export default interface StatAndAbilityProvider<
     source: TSource,
     damage: { amount: number; type: DamageType }[]
   ) => { amount: number; type: DamageType }[];
+  onAttack?: (
+    creature: CreatureInstance,
+    source: TSource,
+    damage: DamageWithType[]
+  ) => void;
+  onTakeDamage?: (
+    creature: CreatureInstance,
+    source: TSource,
+    damage: DamageWithType[]
+  ) => void;
   /**
    * @param cooldown in seconds
    */
@@ -46,7 +56,7 @@ export default interface StatAndAbilityProvider<
   ) => number;
   getStatusEffectDuration?: (
     creature: CreatureInstance,
-    effect: StatusEffectToApply,
+    effect: StatusEffectToApply
   ) => number;
   tick?: (
     creature: CreatureInstance,

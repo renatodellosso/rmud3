@@ -100,6 +100,16 @@ export function attack(
 
       options.onActivate?.(creature, targets, source);
 
+      creature
+        .getStatAndAbilityProviders()
+        .forEach((provider) =>
+          provider.provider.onAttack?.(creature, source, newDamage)
+        );
+
+      if (source instanceof ItemInstance && source.reforge) {
+        reforges[source.reforge].onAttack?.(creature, source, newDamage);
+      }
+
       return true;
     },
   };
@@ -302,7 +312,7 @@ export function summon(
   name: string,
   getDescription: OptionalFunc<string, CreatureInstance>,
   getCooldown: OptionalFunc<number, CreatureInstance>,
-  creatures: { id: CreatureId, amount: number }[],
+  creatures: { id: CreatureId; amount: number }[],
   options: Omit<AbilityOptions, "targetCount"> = {}
 ): Ability {
   return {
@@ -328,14 +338,14 @@ export function summon(
           .fill(summonCreature)
           .map((s) => target.entities.add(s));
 
-          if (creature.definitionId === "player") {
-            getIo().sendMsgToPlayer(
-              creature._id.toString(),
-              `You summoned ${summon.amount} ${summonCreature.name} using ${name}!`
-            );
-          }
+        if (creature.definitionId === "player") {
+          getIo().sendMsgToPlayer(
+            creature._id.toString(),
+            `You summoned ${summon.amount} ${summonCreature.name} using ${name}!`
+          );
+        }
       }
-      
+
       options.onActivate?.(creature, targets, source);
 
       return true;
