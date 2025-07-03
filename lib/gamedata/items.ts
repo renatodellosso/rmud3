@@ -135,7 +135,8 @@ export type ItemId =
   | "rootBoots"
   | "avalancheWarhammer"
   | "stoneskinPotion"
-  | "burnOutScroll";
+  | "burnOutScroll"
+  | "woodlandHorn";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -433,8 +434,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.summon(
         "Call Slime",
         "Summon a friendly slime to aid you in battle.",
-        15,
-        "friendlySlime"
+        60,
+        [{ id: "friendlySlime", amount: 1 }]
       ),
     ],
   } satisfies EquipmentDefinition,
@@ -1083,7 +1084,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
   hordeFlute: {
     getName: "Horde Flute",
     tags: [ItemTag.Consumable],
-    description: "A flute that summons a horde of zombies. Use wisely.",
+    description: "A flute that summons a horde of hostile zombies. Use wisely.",
     getWeight: 0.5,
     getSellValue: 25,
     getAbilities: (creature, item) => [
@@ -1623,7 +1624,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
           {
             id: "stunned",
             strength: 5,
-            duration: 2, 
+            duration: 2,
           },
         ]
       ),
@@ -1722,7 +1723,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         "Raise Dead",
         "Summons a skeleton to fight for you. Consumes a corpse.",
         5,
-        "friendlySkeleton",
+        [{ id: "friendlySkeleton", amount: 1 }],
         {
           targetRestrictions: [
             (creature, target) =>
@@ -1921,6 +1922,20 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       ),
     ],
   } satisfies ConsumableDefinition,
+  woodlandHorn: {
+    getName: "Woodland Horn",
+    description: "Summon the forest to your aid.",
+    getWeight: 1,
+    getSellValue: 15,
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    getAbilities: (creature, item) => [
+      Abilities.summon("Call the Forest", "Summon woodland creatures.", 60, [
+        { id: "friendlyCentaur", amount: 2 },
+        { id: "friendlyTreant", amount: 1 },
+      ]),
+    ],
+  } satisfies EquipmentDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;

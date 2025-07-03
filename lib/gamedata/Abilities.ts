@@ -302,7 +302,7 @@ export function summon(
   name: string,
   getDescription: OptionalFunc<string, CreatureInstance>,
   getCooldown: OptionalFunc<number, CreatureInstance>,
-  creatureDefinitionId: CreatureId,
+  creatures: { id: CreatureId, amount: number }[],
   options: Omit<AbilityOptions, "targetCount"> = {}
 ): Ability {
   return {
@@ -321,17 +321,21 @@ export function summon(
       const CreatureInstance =
         require("lib/types/entities/creature").CreatureInstance;
 
-      const summon = new CreatureInstance(creatureDefinitionId, target.id);
+      for (let summon of creatures) {
+        let summonCreature = new CreatureInstance(summon.id, target.id);
 
-      target.entities.add(summon);
+        Array(summon.amount)
+          .fill(summonCreature)
+          .map((s) => target.entities.add(s));
 
-      if (creature.definitionId === "player") {
-        getIo().sendMsgToPlayer(
-          creature._id.toString(),
-          `You summoned a ${summon.name} using ${name}!`
-        );
+          if (creature.definitionId === "player") {
+            getIo().sendMsgToPlayer(
+              creature._id.toString(),
+              `You summoned ${summon.amount} ${summonCreature.name} using ${name}!`
+            );
+          }
       }
-
+      
       options.onActivate?.(creature, targets, source);
 
       return true;

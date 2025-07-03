@@ -59,8 +59,10 @@ export type CreatureId =
   | "overgrownGolem"
   | "writhingVines"
   | "centaur"
+  | "friendlyCentaur"
   | "treant"
   | "elderTreant"
+  | "friendlyTreant"
   | "skeletonWarrior"
   | "skeletonBonecaller"
   | "cryptGuardGolem"
@@ -1538,7 +1540,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ],
     xpValue: 5,
     lootTable: new LootTable([]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   overgrownGolem: {
     name: "Overgrown Golem",
@@ -1588,7 +1590,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             item: "golemCore",
             amount: 1,
             weight: 1.5,
-          }
+          },
         ]),
         amount: 1,
         chance: 0.5,
@@ -1737,13 +1739,42 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
+  friendlyCentaur: {
+    name: "Friendly Centaur",
+    health: 25,
+    abilityScores: {
+      [AbilityScore.Strength]: 3,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 5,
+    },
+    damageResistances: [{ amount: 2, type: "*" }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Bow and Arrow",
+        "Fire an arrow from a bow.",
+        5,
+        [{ amount: 10, type: DamageType.Piercing }],
+        { targetRestrictions: [CanTarget.not(CanTarget.isAlly)] }
+      ),
+      Abilities.attack(
+        "Long Sword",
+        "Slash with a long sword.",
+        3,
+        [{ amount: 4, type: DamageType.Slashing }],
+        { targetRestrictions: [CanTarget.not(CanTarget.isAlly)] }
+      ),
+    ],
+    xpValue: 0,
+    lootTable: new LootTable([]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
   treant: {
     name: "Treant",
     health: 50,
     abilityScores: {
       [AbilityScore.Strength]: 5,
       [AbilityScore.Constitution]: 10,
-      [AbilityScore.Intelligence]: 1,
+      [AbilityScore.Intelligence]: 5,
     },
     damageResistances: [
       { amount: 5, type: "*" },
@@ -1793,7 +1824,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     abilityScores: {
       [AbilityScore.Strength]: 8,
       [AbilityScore.Constitution]: 10,
-      [AbilityScore.Intelligence]: 1,
+      [AbilityScore.Intelligence]: 8,
     },
     damageResistances: [
       { amount: 7, type: "*" },
@@ -1851,6 +1882,34 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  friendlyTreant: {
+    name: "Friendly Treant",
+    health: 25,
+    abilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 5,
+    },
+    damageResistances: [
+      { amount: 2, type: "*" },
+      { amount: 3, type: DamageType.Poison },
+      { amount: 1, type: DamageType.Piercing },
+      { amount: 1, type: DamageType.Bludgeoning },
+      { amount: 1, type: DamageType.Slashing },
+    ],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Trunk Slam",
+        "Slam but tree.",
+        5,
+        [{ amount: 15, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.not(CanTarget.isAlly)] }
+      ),
+    ],
+    xpValue: 0,
+    lootTable: new LootTable([]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   skeletonWarrior: {
@@ -1930,7 +1989,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Summon Skeleton",
         "Summons a skeleton to fight for you.",
         2,
-        "skeleton"
+        [{ id: "skeleton", amount: 1 }]
       ),
       Abilities.attackWithStatusEffect(
         "Bone Shard",
@@ -2731,6 +2790,15 @@ const entities: Record<EntityId, EntityDefinition> = {
             horseshoe: 1,
           },
           new ItemInstance("amuletOfTheCentaur", 1)
+        ),
+        new Recipe(
+          {
+            treantSap: 8,
+            goldBar: 5,
+            livingWood: 5,
+            livingStone: 1,
+          },
+          new ItemInstance("woodlandHorn", 1)
         ),
         new Recipe(
           {
