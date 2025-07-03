@@ -8,21 +8,21 @@ import {
   ItemInstance,
 } from "lib/types/item";
 import { socket } from "lib/socket";
-import { getFromOptionalFunc } from "../../lib/utils";
+import { getFromOptionalFunc, isInTown } from "../../lib/utils";
 import { useState } from "react";
 import { EJSON } from "bson";
-import useGameState from "lib/hooks/useGameState";
+import Inventory from "lib/types/Inventory";
 
 function ItemEntry({
   item,
   self,
-  equip,
   setError,
+  canInteract,
 }: {
   item: ItemInstance;
   self: PlayerInstance;
-  equip: (item: ItemInstance) => void;
   setError: (error: string) => void;
+  canInteract: boolean;
 }) {
   const [amount, setAmount] = useState(item.amount);
 
@@ -50,6 +50,10 @@ function ItemEntry({
     socket.emit("dropItem", EJSON.stringify({ ...item, amount }));
   }
 
+  function equip(item: ItemInstance) {
+    socket.emit("equip", item);
+  }
+
   return (
     <tr className="hover:bg-gray-900 w-full">
       <td className="tooltip align-top">
@@ -58,50 +62,90 @@ function ItemEntry({
       </td>
       <td>{item.amount}</td>
       <td>{getFromOptionalFunc(items[item.definitionId].getWeight, item)}</td>
-      {items[item.definitionId].tags.includes(ItemTag.Equipment) ? (
-        <td>
-          <button
-            onClick={() => equip(item)}
-            disabled={!self.equipment.canEquip(self, item)}
-          >
-            Equip
-          </button>
-        </td>
-      ) : (
-        <td></td>
+      {canInteract && (
+        <>
+          {items[item.definitionId].tags.includes(ItemTag.Equipment) ? (
+            <td>
+              <button
+                onClick={() => equip(item)}
+                disabled={!self.equipment.canEquip(self, item)}
+              >
+                Equip
+              </button>
+            </td>
+          ) : (
+            <td></td>
+          )}
+          <td className="flex justify-end">
+            <input
+              type="number"
+              name="amount"
+              placeholder="amount"
+              value={amount.toString()}
+              onChange={(e) => setValidAmount(e.target.valueAsNumber)}
+              className="px-1 text-right max-w-1/3"
+            />
+            <button onClick={drop} className="px-1">
+              Drop
+            </button>
+          </td>
+        </>
       )}
-      <td className="flex justify-end">
-        <input
-          type="number"
-          name="amount"
-          placeholder="amount"
-          value={amount.toString()}
-          onChange={(e) => setValidAmount(e.target.valueAsNumber)}
-          className="px-1 text-right max-w-1/3"
-        />
-        <button onClick={drop} className="px-1">
-          Drop
-        </button>
-      </td>
     </tr>
   );
 }
 
-export default function InventoryMenu({ self }: { self: PlayerInstance }) {
+function InventoryTable({
+  inventory,
+  canInteract,
+  title,
+  self,
+}: {
+  inventory: Inventory;
+  canInteract: boolean;
+  title: string;
+  self: PlayerInstance;
+}) {
   const [error, setError] = useState("");
 
-  const inventory = self.inventory;
+  return (
+    <div className="w-full">
+      <h2 className="text-xl">
+        {title} ({inventory.getUsedWeight().toFixed(1)}/
+        {inventory.getMaxWeight()?.toFixed(1) ?? "∞"} kg)
+      </h2>
+      <table className="w-full">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Amount</th>
+            <th>Weight (kg)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {inventory.getItems().map((item, index) => (
+            <ItemEntry
+              key={index}
+              item={item}
+              self={self}
+              setError={setError}
+              canInteract={canInteract}
+            />
+          ))}
+        </tbody>
+      </table>
+      {canInteract && <div className="text-red-500">{error}</div>}
+    </div>
+  );
+}
 
-  function equip(item: ItemInstance) {
-    socket.emit("equip", item);
-  }
-
+export default function InventoryMenu({ self }: { self: PlayerInstance }) {
   function unequip(item: ItemInstance) {
     socket.emit("unequip", item);
   }
 
   return (
-    <div className="border w-1/3 overflow-y-scroll">
+    <div className="border w-1/3 overflow-y-scroll flex flex-col gap-4">
       <div className="w-full">
         <h2 className="text-xl">
           Equipment ({self.equipment.items.length}/
@@ -150,33 +194,18 @@ export default function InventoryMenu({ self }: { self: PlayerInstance }) {
           </tbody>
         </table>
       </div>
-      <div className="w-full">
-        <h2 className="text-xl">
-          Inventory ({inventory.getUsedWeight().toFixed(1)}/
-          {inventory.getMaxWeight()?.toFixed(1) ?? "∞"} kg)
-        </h2>
-        <table className="w-full">
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Amount</th>
-              <th>Weight (kg)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {inventory.getItems().map((item, index) => (
-              <ItemEntry
-                key={index}
-                item={item}
-                self={self}
-                equip={equip}
-                setError={setError}
-              />
-            ))}
-          </tbody>
-        </table>
-        <div className="text-red-500">{error}</div>
-      </div>
+      <InventoryTable
+        inventory={self.inventory}
+        canInteract={true}
+        title="Inventory"
+        self={self}
+      />
+      <InventoryTable
+        inventory={self.vault.inventory}
+        canInteract={false}
+        title={`Vault${isInTown(self.location) ? " (Can Craft From)" : ""}`}
+        self={self}
+      />
     </div>
   );
 }

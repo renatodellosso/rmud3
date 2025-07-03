@@ -1,6 +1,6 @@
 import { PlayerInstance, PlayerProgress } from "./types/entities/player";
 import { ObjectId } from "bson";
-import { getSingleton, restoreFieldsAndMethods } from "./utils";
+import { getSingleton, isInTown, restoreFieldsAndMethods } from "./utils";
 import locations from "./locations";
 import getCollectionManager from "./getCollectionManager";
 import CollectionId from "./types/CollectionId";
@@ -130,10 +130,7 @@ export function spawnPlayer(
   playerManager.addPlayer(instance, progress);
 
   // Move player outside the dungeon
-  if (
-    instance.location.startsWith("dungeon-") &&
-    instance.location !== "dungeon-entrance"
-  ) {
+  if (!isInTown(instance.location)) {
     instance.location = "dungeon-entrance";
   }
 

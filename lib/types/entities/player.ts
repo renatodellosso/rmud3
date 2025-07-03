@@ -23,6 +23,7 @@ import { ItemTag } from "../itemenums";
 import { EquipmentHotbar } from "../Hotbar";
 import {
   getFromOptionalFunc,
+  isInTown,
   restoreFieldsAndMethods,
   savePlayer,
 } from "lib/utils";
@@ -336,10 +337,9 @@ export class PlayerInstance extends CreatureInstance {
   }
 
   getCraftingInventory(): Inventory {
-    return this.location.startsWith("dungeon-") &&
-      this.location !== "dungeon-entrance"
-      ? this.inventory
-      : new MultipleInventory([this.inventory, this.vault.inventory]);
+    return isInTown(this.location)
+      ? new MultipleInventory([this.inventory, this.vault.inventory])
+      : this.inventory;
   }
 }
 

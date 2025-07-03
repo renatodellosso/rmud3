@@ -100,6 +100,13 @@ function restoreMethods(gameState: GameState) {
     );
   }
 
+  for (const item of gameState.self.vault.inventory.items) {
+    restoreFieldsAndMethods(
+      item,
+      new ItemInstance(item.definitionId, item.amount, item.reforge)
+    );
+  }
+
   for (const item of gameState.self.equipment.items) {
     restoreFieldsAndMethods(
       item,
@@ -110,7 +117,10 @@ function restoreMethods(gameState: GameState) {
   for (const interaction of gameState.interactions) {
     if (interaction.recipes) {
       for (const recipe of interaction.recipes) {
-        const newRecipe: Recipe = restoreFieldsAndMethods(recipe, new Recipe({}, []));
+        const newRecipe: Recipe = restoreFieldsAndMethods(
+          recipe,
+          new Recipe({}, [])
+        );
         for (const output of newRecipe.output) {
           restoreFieldsAndMethods(
             output,
@@ -121,7 +131,10 @@ function restoreMethods(gameState: GameState) {
     }
 
     if (interaction.inventory) {
-      const newInventory: DirectInventory = restoreFieldsAndMethods(interaction.inventory, new DirectInventory());
+      const newInventory: DirectInventory = restoreFieldsAndMethods(
+        interaction.inventory,
+        new DirectInventory()
+      );
       for (const item of newInventory.items) {
         restoreFieldsAndMethods(
           item,

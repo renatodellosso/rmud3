@@ -2,7 +2,7 @@ import locations from "lib/locations";
 import { Dungeon, DungeonLocation, FloorInstance } from "./types";
 import generateDungeon from "./generateDungeon";
 import { LocationId } from "lib/gamedata/rawLocations";
-import { setSingleton } from "lib/utils";
+import { isInTown, setSingleton } from "lib/utils";
 import { setupDungeonLocations } from "lib/startup";
 import getPlayerManager from "lib/PlayerManager";
 import { getRawIoSingleton } from "lib/types/socketioserverutils";
@@ -39,10 +39,7 @@ function resetPlayerMaps() {
 
 function removeOldDungeon() {
   for (const location of Object.values(locations)) {
-    if (
-      !location.id.startsWith("dungeon-") ||
-      location.id === "dungeon-entrance"
-    ) {
+    if (isInTown(location.id)) {
       continue;
     }
 
@@ -57,7 +54,7 @@ function removeOldDungeon() {
 
   locations["dungeon-entrance"].exits = new Set<LocationId>(
     Array.from(locations["dungeon-entrance"].exits).filter(
-      (exit) => !exit.startsWith("dungeon-")
+      (exit) => isInTown(exit)
     )
   );
 }
