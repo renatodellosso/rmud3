@@ -1,6 +1,6 @@
 import { PlayerInstance } from "lib/types/entities/player";
 import { EntityInstance, Interaction } from "lib/types/entity";
-import reforges, { ReforgeId } from "../Reforges";
+import reforges, { ReforgeId, reforgeTablesByType } from "../Reforges";
 import items from "lib/gamedata/items";
 import { EquipmentSlot } from "lib/types/itemenums";
 import { EquipmentDefinition } from "lib/types/item";
@@ -28,11 +28,13 @@ export default function reforgeInteraction(
 
   if (action === "exit") return undefined;
 
+  const inventory = player.getCraftingInventory();
+
   if (typeof action !== "number") return interaction;
   else {
     if (
-      !player.inventory.getById("money") ||
-      player.inventory.getById("money")!.amount < REFORGE_COST
+      !inventory.getById("money") ||
+      inventory.getById("money")!.amount < REFORGE_COST
     ) {
       getIo().sendMsgToPlayer(
         player._id.toString(),
@@ -47,28 +49,20 @@ export default function reforgeInteraction(
       ] as EquipmentDefinition
     ).slot as EquipmentSlot;
 
-    let reforgeList = Array.from(Object.keys(reforges));
-
-    let newReforge: ReforgeId = reforgeList.at(
-      randInRangeInt(0, reforgeList.length - 1)
-    ) as ReforgeId;
-
-    while (
-      !(
-        (reforges[newReforge].type === ReforgeType.Hand &&
-          equipmentType === EquipmentSlot.Hands) ||
-        (reforges[newReforge].type === ReforgeType.Armor &&
-          (equipmentType === EquipmentSlot.Head ||
-            equipmentType === EquipmentSlot.Chest ||
-            equipmentType === EquipmentSlot.Legs)) ||
-        (reforges[newReforge].type === ReforgeType.Other &&
-          equipmentType === undefined)
-      )
-    ) {
-      newReforge = reforgeList.at(
-        randInRangeInt(0, reforgeList.length - 1)
-      ) as ReforgeId;
+    let reforgeType: ReforgeType = ReforgeType.Other;
+    switch (equipmentType) {
+      case EquipmentSlot.Hands:
+        reforgeType = ReforgeType.Hand;
+        break;
+      case EquipmentSlot.Back:
+      case EquipmentSlot.Chest:
+      case EquipmentSlot.Legs:
+      case EquipmentSlot.Head:
+        reforgeType = ReforgeType.Armor;
+        break;
     }
+
+    const newReforge = getRandomReforge(reforgeType);
 
     player.equipment.items.at(action)!.reforge = newReforge;
 
@@ -80,8 +74,12 @@ export default function reforgeInteraction(
       )} to ${reforges[newReforge].name}`
     );
 
-    player.inventory.removeById("money", REFORGE_COST);
+    inventory.removeById("money", REFORGE_COST);
 
     return interaction;
   }
+}
+
+function getRandomReforge(type: ReforgeType): ReforgeId {
+  return reforgeTablesByType[type].roll().item;
 }
