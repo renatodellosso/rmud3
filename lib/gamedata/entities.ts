@@ -60,6 +60,7 @@ export type CreatureId =
   | "writhingVines"
   | "centaur"
   | "treant"
+  | "elderTreant"
   | "skeletonWarrior"
   | "skeletonBonecaller"
   | "cryptGuardGolem"
@@ -1744,6 +1745,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       { amount: 5, type: DamageType.Poison },
       { amount: 2, type: DamageType.Piercing },
       { amount: 2, type: DamageType.Bludgeoning },
+      { amount: 2, type: DamageType.Slashing },
     ],
     intrinsicAbilities: [
       Abilities.attack(
@@ -1760,13 +1762,84 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "vine",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "livingWood",
+            amount: [1, 3],
+            weight: 1.5,
+          },
+          {
+            item: "treantSap",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  elderTreant: {
+    name: "Elder Treant",
+    health: 100,
+    abilityScores: {
+      [AbilityScore.Strength]: 8,
+      [AbilityScore.Constitution]: 10,
+      [AbilityScore.Intelligence]: 1,
+    },
+    damageResistances: [
+      { amount: 7, type: "*" },
+      { amount: 7, type: DamageType.Poison },
+      { amount: 3, type: DamageType.Piercing },
+      { amount: 3, type: DamageType.Bludgeoning },
+      { amount: 3, type: DamageType.Slashing },
+    ],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Trunk Slam",
+        "Slam but tree.",
+        5,
+        [{ amount: 35, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 100,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "vine",
             amount: [1, 3],
             weight: 1,
           },
           {
             item: "livingWood",
-            amount: [1, 4],
+            amount: [1, 3],
             weight: 1.5,
+          },
+          {
+            item: "treantSap",
+            amount: 1,
+            weight: 0.8,
+          },
+          {
+            item: "treantSap",
+            amount: 2,
+            weight: 0.2,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "livingWood",
+            amount: 2,
+            weight: 1,
           },
         ]),
         amount: 1,
@@ -2653,6 +2726,14 @@ const entities: Record<EntityId, EntityDefinition> = {
             horseshoe: 1,
           },
           new ItemInstance("amuletOfTheCentaur", 1)
+        ),
+        new Recipe(
+          {
+            treantSap: 25,
+            vine: 20,
+            livingWood: 10,
+          },
+          new ItemInstance("treantMask", 1)
         ),
         new Recipe(
           {

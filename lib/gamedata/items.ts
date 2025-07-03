@@ -116,6 +116,8 @@ export type ItemId =
   | "horseshoe"
   | "livingWoodBow"
   | "livingWoodLongSword"
+  | "treantSap"
+  | "treantMask"
   | "amuletOfTheCentaur"
   | "teleportScroll5"
   | "teleportScroll7"
@@ -1557,6 +1559,30 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
     getDamageResistances: () => [{ amount: 3, type: DamageType.Poison }],
   } satisfies EquipmentDefinition,
+  treantSap: {
+    getName: "Treant",
+    description: "An amber drop of sap from a fallen treant.",
+    getWeight: 0.1,
+    getSellValue: 25,
+    tags: [],
+  },
+  treantMask: {
+    getName: "Treant Mask",
+    description:
+      "A mask fashioned like a treant face. It's imbued with mystical treant energy.",
+    getWeight: 3,
+    getSellValue: 100,
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Head,
+    getDamageResistances: () => [
+      { amount: 5, type: "*" },
+      { amount: 5, type: DamageType.Poison },
+      { amount: 2, type: DamageType.Piercing },
+      { amount: 2, type: DamageType.Bludgeoning },
+      { amount: 2, type: DamageType.Slashing },
+    ],
+    getDamageBonuses: () => [{ amount: 15, type: DamageType.Bludgeoning }],
+  } satisfies EquipmentDefinition,
   amuletOfTheCentaur: {
     getName: "Amulet of the Centaur",
     tags: [ItemTag.Equipment],
@@ -1574,7 +1600,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       }
       return effect.duration;
     },
-  } as EquipmentDefinition,
+  } satisfies EquipmentDefinition,
   teleportScroll5: teleportScroll(5),
   teleportScroll7: teleportScroll(7),
   skeletonKey: {
