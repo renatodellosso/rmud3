@@ -846,7 +846,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       {
         name: "Challenge Farulu, Fungal Abomination",
         getDescription: "Challenge Farulu, the Fungal Abomination.",
-        getCooldown: 60,
+        getCooldown: 3,
         getTargetCount: 1,
         canTarget: CanTarget.isTargetALocation,
         activate: (creature, targets) => {
