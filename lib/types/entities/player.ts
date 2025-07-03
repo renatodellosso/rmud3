@@ -268,8 +268,8 @@ export class PlayerInstance extends CreatureInstance {
 
     for (let item of this.equipment.items) {
       if (item.reforge) {
-        statAndAbilityProviders.concat({
-          provider: item.reforge as StatAndAbilityProvider,
+        statAndAbilityProviders.push({
+          provider: reforges[item.reforge] as StatAndAbilityProvider,
           source: item,
         });
       }

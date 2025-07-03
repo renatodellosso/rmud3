@@ -73,7 +73,7 @@ export default function CraftingMenu({
                   {recipe.output.map((item, index) => (
                     <span key={index} className="tooltip">
                       {item.getName()} x{item.amount} (
-                      {inventory.get(item)?.amount ?? 0})
+                      {inventory.getCount(item) ?? 0})
                       <ItemTooltip item={item} creature={self} />
                     </span>
                   ))}

@@ -36,6 +36,7 @@ export default interface Inventory {
   get(item: ItemInstance): ItemInstance | undefined;
   getById(itemId: ItemId): ItemInstance | undefined;
   getCountById(itemId: ItemId): number;
+  getCount(item: ItemInstance): number;
   getItems(): ItemInstance[];
 }
 
@@ -153,6 +154,12 @@ export class DirectInventory implements Inventory {
       .reduce((acc, item) => acc + item.amount, 0);
   }
 
+  getCount(item: ItemInstance): number {
+    return this.items
+      .filter((i) => areItemInstancesEqual(i, item, true))
+      .reduce((acc, i) => acc + i.amount, 0);
+  }
+
   getItems(): ItemInstance[] {
     return this.items;
   }
@@ -252,6 +259,13 @@ export class MultipleInventory implements Inventory {
   getCountById(itemId: ItemId): number {
     return this.inventories.reduce(
       (count, inventory) => count + inventory.getCountById(itemId),
+      0
+    );
+  }
+
+  getCount(item: ItemInstance): number {
+    return this.inventories.reduce(
+      (count, inventory) => count + inventory.getCount(item),
       0
     );
   }
