@@ -138,7 +138,13 @@ export type ItemId =
   | "burnOutScroll"
   | "woodlandHorn"
   | "taintedSpear"
-  | "hobspear";
+  | "hobspear"
+  | "goblinScrap"
+  | "goblinIdol"
+  | "firebomb"
+  | "dart"
+  | "poisonDart"
+  | "ember";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -1616,18 +1622,11 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.attack("Treefall", "This strike is sturdy like a tree.", 1.5, [
         { amount: 40, type: DamageType.Bludgeoning },
       ]),
-      Abilities.attackWithStatusEffect(
-        "Stunning Collapse",
-        "Stun enemies for 2 seconds.",
+      Abilities.applyStatusEffect(
+        "Block",
+        "Reduce damage by 10 for 5 seconds.",
         3,
-        [{ amount: 25, type: DamageType.Bludgeoning }],
-        [
-          {
-            id: "stunned",
-            strength: 5,
-            duration: 2,
-          },
-        ]
+        [{ id: "blocking", strength: 10, duration: 5 }]
       ),
       Abilities.heal("Regrow", "Recover 10 health.", 2, 10),
     ],
@@ -1969,6 +1968,83 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       ),
     ],
   } satisfies EquipmentDefinition,
+  goblinScrap: {
+    getName: "Goblin Scrap",
+    description: "Scrap metal, food, etc.",
+    getWeight: 1,
+    getSellValue: 25,
+    tags: [],
+  },
+  goblinIdol: {
+    getName: "Goblin Idol",
+    description: "A miniature statue of a goblin.",
+    getWeight: 1,
+    getSellValue: 200,
+    tags: [],
+  },
+  firebomb: {
+    getName: "Firebomb",
+    tags: [ItemTag.Consumable],
+    description: `A makeshift firebomb.`,
+    getWeight: 1,
+    getSellValue: 50,
+    getAbilities: (creature, item) => [
+      Abilities.attackWithStatusEffect(
+        "Firebomb",
+        "Creates a fiery explosion.",
+        4,
+        [{ amount: 20, type: DamageType.Fire }],
+        [
+          {
+            id: "burning",
+            strength: 3,
+            duration: 5,
+          },
+        ]
+      ),
+    ],
+  } satisfies ConsumableDefinition,
+  dart: {
+    getName: "Dart",
+    tags: [ItemTag.Consumable],
+    description: `A dart.`,
+    getWeight: 1,
+    getSellValue: 10,
+    getAbilities: (creature, item) => [
+      Abilities.attack("Dart", "Strike enemies with a blow dart.", 1, [
+        { amount: 3, type: DamageType.Piercing },
+      ]),
+    ],
+  } satisfies ConsumableDefinition,
+  poisonDart: {
+    getName: "Poison Dart",
+    tags: [ItemTag.Consumable],
+    description: `A dart dipped in spider venom.`,
+    getWeight: 1,
+    getSellValue: 20,
+    getAbilities: (creature, item) => [
+      Abilities.attackWithStatusEffect(
+        "Poison Dart",
+        "Poison enemies with a blow dart.",
+        1,
+        [{ amount: 5, type: DamageType.Poison }],
+        [
+          {
+            id: "poisoned",
+            strength: 3,
+            duration: 3,
+          },
+        ]
+      ),
+    ],
+  } satisfies ConsumableDefinition,
+  ember: {
+    getName: "Ember",
+    tags: [],
+    description: `A sole, burning ember.`,
+    getWeight: 0.1,
+    getSellValue: 50,
+  },
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;

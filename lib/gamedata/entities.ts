@@ -932,7 +932,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "money",
-            amount: [3, 5],
+            amount: [5, 9],
             weight: 1,
           },
         ]),
@@ -960,6 +960,16 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             item: "rope",
             amount: [2, 3],
             weight: 1,
+          },
+          {
+            item: "goblinScrap",
+            amount: 1,
+            weight: 0.5,
+          },
+          {
+            item: "goblinIdol",
+            amount: 1,
+            weight: 0.1,
           },
         ]),
         amount: 2,
@@ -1014,6 +1024,16 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             item: "ironSpear",
             amount: 1,
             weight: 0.5,
+          },
+          {
+            item: "goblinScrap",
+            amount: 1,
+            weight: 0.5,
+          },
+          {
+            item: "goblinIdol",
+            amount: 1,
+            weight: 0.1,
           },
         ]),
         amount: 2,
@@ -1082,6 +1102,16 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             item: "fireballRing",
             amount: 1,
             weight: 0.5,
+          },
+          {
+            item: "goblinScrap",
+            amount: 1,
+            weight: 0.5,
+          },
+          {
+            item: "goblinIdol",
+            amount: 1,
+            weight: 0.1,
           },
         ]),
         amount: 1,
@@ -1183,6 +1213,16 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             amount: 1,
             weight: 0.4,
           },
+          {
+            item: "goblinScrap",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "goblinIdol",
+            amount: 1,
+            weight: 0.3,
+          },
         ]),
         amount: 2,
         chance: 1,
@@ -1245,6 +1285,16 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           {
             item: "taintedSpear",
             amount: 1,
+            weight: 0.1,
+          },
+          {
+            item: "goblinScrap",
+            amount: [1, 3],
+            weight: 1,
+          },
+          {
+            item: "goblinIdol",
+            amount: 1,
             weight: 0.3,
           },
         ]),
@@ -1299,7 +1349,17 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           {
             item: "hobspear",
             amount: 1,
-            weight: 0.5,
+            weight: 0.1,
+          },
+          {
+            item: "goblinScrap",
+            amount: [1, 3],
+            weight: 1.2,
+          },
+          {
+            item: "goblinIdol",
+            amount: 1,
+            weight: 0.3,
           },
         ]),
         amount: 2,
@@ -1354,6 +1414,31 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             item: "money",
             amount: [20, 25],
             weight: 1,
+          },
+          {
+            item: "goblinScrap",
+            amount: [1, 4],
+            weight: 1.5,
+          },
+          {
+            item: "goblinIdol",
+            amount: 1,
+            weight: 0.3,
+          },
+          {
+            item: "firebomb",
+            amount: [1, 2],
+            weight: 0.8,
+          },
+          {
+            item: "poisonDart",
+            amount: [1, 3],
+            weight: 0.8,
+          },
+          {
+            item: "venom",
+            amount: [1, 2],
+            weight: 0.5
           },
         ]),
         amount: 2,
@@ -2694,6 +2779,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         new Recipe({ ironBar: 5 }, new ItemInstance("ironHelmet", 1)),
         new Recipe({ ironBar: 5 }, new ItemInstance("ironChestplate", 1)),
         new Recipe({ ironBar: 5 }, new ItemInstance("ironBoots", 1)),
+        new Recipe({ ironBar: 1 }, new ItemInstance("dart", 1)),
         new Recipe(
           { ironBar: 10, spore: 5 },
           new ItemInstance("fungalSpear", 1)
@@ -2806,6 +2892,23 @@ const entities: Record<EntityId, EntityDefinition> = {
           },
           new ItemInstance("wailingNecklace", 1)
         ),
+        new Recipe(
+          {
+            ironSpear: 1,
+            ironBar: 5,
+            goblinScrap: 5,
+            taintedFlesh: 1,
+          },
+          new ItemInstance("taintedSpear", 1)
+        ),
+        new Recipe(
+          {
+            taintedSpear: 1,
+            ironBar: 15,
+            goblinScrap: 15,
+          },
+          new ItemInstance("hobspear", 1)
+        ),
       ])
     ),
   },
@@ -2825,6 +2928,13 @@ const entities: Record<EntityId, EntityDefinition> = {
         new Recipe(
           { salt: 5, meat: 2, mushroom: 3, coal: 3 },
           new ItemInstance("delversMeal", 1)
+        ),
+        new Recipe(
+          {
+            dart: 1,
+            venom: 1,
+          },
+          new ItemInstance("poisonDart", 1)
         ),
         new Recipe(
           {
@@ -2870,6 +2980,12 @@ const entities: Record<EntityId, EntityDefinition> = {
             inertDust: 15,
           },
           new ItemInstance("wakingDust", 1)
+        ),
+        new Recipe(
+          {
+            goblinIdol: 1,
+          },
+          new ItemInstance("goblinScrap", 3)
         ),
       ])
     ),
@@ -2967,6 +3083,13 @@ const entities: Record<EntityId, EntityDefinition> = {
             rottenFlesh: 5,
           },
           new ItemInstance("hordeFlute", 1)
+        ),
+        new Recipe(
+          {
+            ashes: 5,
+            ember: 5,
+          },
+          new ItemInstance("firebomb", 1)
         ),
         new Recipe(
           {

@@ -545,8 +545,13 @@ const floors: Record<string, FloorDefinition> = {
       encounters: new WeightedTable<Encounter>([
         {
           item: "goblin",
-          amount: [1, 3],
+          amount: [2, 4],
           weight: 2,
+        },
+        {
+          item: "hobgoblin",
+          amount: [1, 2],
+          weight: 1,
         },
         {
           item: "goblinShaman",
@@ -554,9 +559,24 @@ const floors: Record<string, FloorDefinition> = {
           weight: 1,
         },
         {
-          item: "hobgoblin",
+          item: "masterGoblinShaman",
+          amount: 1,
+          weight: 1,
+        },
+        {
+          item: "goblinWarrior",
           amount: [1, 2],
           weight: 1,
+        },
+        {
+          item: "hobgoblinWarrior",
+          amount: 1,
+          weight: 1,
+        },
+        {
+          item: "goblinInventor",
+          amount: 1,
+          weight: 0.8,
         },
         {
           item: randomContainer(
