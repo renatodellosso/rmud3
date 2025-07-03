@@ -116,7 +116,20 @@ export type ItemId =
   | "horseshoe"
   | "livingWoodBow"
   | "livingWoodLongSword"
-  | "amuletOfTheCentaur";
+  | "amuletOfTheCentaur"
+  | "skeletonKey"
+  | "golemCore"
+  | "livingStone"
+  | "wailingNecklace"
+  | "ancientSpirit"
+  | "ancientGreatsword"
+  | "ancientBoneNecklace"
+  | "ashes"
+  | "livingStoneChestplate"
+  | "rootBoots"
+  | "avalancheWarhammer"
+  | "stoneskinPotion"
+  | "burnOutScroll";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -791,11 +804,11 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         "Fireball",
         "Throw a fireball.",
         5,
-        [{ amount: 10, type: DamageType.Fire }],
+        [{ amount: 8, type: DamageType.Fire }],
         [
           {
             id: "burning",
-            strength: 5,
+            strength: 3,
             duration: 3, // Duration in seconds
           },
         ]
@@ -841,7 +854,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       {
         name: "Challenge Farulu, Fungal Abomination",
         getDescription: "Challenge Farulu, the Fungal Abomination.",
-        getCooldown: 60,
+        getCooldown: 3,
         getTargetCount: 1,
         canTarget: CanTarget.isTargetALocation,
         activate: (creature, targets) => {
@@ -1560,6 +1573,294 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       return effect.duration;
     },
   } as EquipmentDefinition,
+  skeletonKey: {
+    getName: "Skeleton Key",
+    description:
+      "A key made from the bones of a skeleton. Must be a lock around here somewhere...",
+    getWeight: 0.1,
+    getSellValue: 100,
+    tags: [ItemTag.Consumable],
+  },
+  golemCore: {
+    getName: "Golem Core",
+    description: "A core of a golem, pulsing with energy.",
+    getWeight: 5,
+    getSellValue: 200,
+    tags: [],
+  },
+  livingStone: {
+    getName: "Living Stone",
+    description: "A stone that seems to have a heartbeat.",
+    getWeight: 4,
+    getSellValue: 150,
+    tags: [],
+  },
+  wailingNecklace: {
+    getName: "Wailing Necklace",
+    description:
+      "A necklace that emits a soft wailing sound. Add 2 psychic damage to all attacks.",
+    tags: [ItemTag.Equipment],
+    getWeight: 0.2,
+    getSellValue: 100,
+    getDamageToDeal: (creature, source, damage) =>
+      damage.concat([
+        {
+          amount: 2,
+          type: DamageType.Psychic,
+        },
+      ]),
+  } satisfies EquipmentDefinition,
+  ancientSpirit: {
+    getName: "Ancient Spirit",
+    description: "A spirit of an ancient being.",
+    getWeight: 0.1,
+    getSellValue: 200,
+    tags: [],
+  },
+  ancientGreatsword: {
+    getName: "Ancient Greatsword",
+    description:
+      "A greatsword from an ancient civilization. Adds 2 slashing damage to all attacks.",
+    getWeight: 3,
+    getSellValue: 500,
+    tags: [ItemTag.Equipment],
+    getDamageToDeal: (creature, source, damage) =>
+      damage.concat([
+        {
+          amount: 2,
+          type: DamageType.Slashing,
+        },
+      ]),
+    getAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Great Slash",
+        "A powerful slash with the ancient greatsword.",
+        3,
+        [{ amount: 20, type: DamageType.Slashing }],
+        [
+          {
+            id: "cursed",
+            strength: 2,
+            duration: 5,
+          },
+        ]
+      ),
+      Abilities.attackWithStatusEffect(
+        "Ancient Strike",
+        "A strike that channels the power of ancient spirits.",
+        4,
+        [{ amount: 25, type: DamageType.Slashing }],
+        [
+          {
+            id: "cursed",
+            strength: 3,
+            duration: 7,
+          },
+        ]
+      ),
+      Abilities.summon(
+        "Raise Dead",
+        "Summons a skeleton to fight for you. Consumes a corpse.",
+        5,
+        "friendlySkeleton",
+        {
+          targetRestrictions: [
+            (creature, target) =>
+              target instanceof Location &&
+              Array.from(target.entities).some(
+                (entity) =>
+                  entity.name.includes("Corpse") &&
+                  entity.definitionId === "container"
+              ),
+          ],
+          onActivate: (creature, targets) => {
+            const target = targets[0] as Location;
+            const corpses = Array.from(target.entities).filter(
+              (entity) =>
+                entity.name.includes("Corpse") &&
+                entity.definitionId === "container"
+            );
+
+            if (corpses.length === 0) {
+              getIo().sendMsgToPlayer(
+                creature._id.toString(),
+                "There are no corpses to raise."
+              );
+              return false;
+            }
+
+            const corpse = corpses[Math.floor(Math.random() * corpses.length)];
+            target.entities.delete(corpse);
+
+            const skeleton = new CreatureInstance("skeleton", target.id);
+            skeleton.name = "Skeleton";
+            target.entities.add(skeleton);
+
+            getIo().sendMsgToPlayer(
+              creature._id.toString(),
+              `You raise a skeleton from the corpse of ${corpse.name}.`
+            );
+
+            return true;
+          },
+        }
+      ),
+    ],
+  } satisfies EquipmentDefinition,
+  ancientBoneNecklace: {
+    getName: "Ancient Bone Necklace",
+    description:
+      "A necklace made from the bones of ancient creatures. Adds 3 slashing damage to all attacks.",
+    getWeight: 0.2,
+    getSellValue: 300,
+    tags: [ItemTag.Equipment],
+    getDamageToDeal: (creature, source, damage) =>
+      damage.concat([
+        {
+          amount: 3,
+          type: DamageType.Slashing,
+        },
+      ]),
+  } satisfies EquipmentDefinition,
+  ashes: {
+    getName: "Ashes",
+    description: "A handful of ashes from an ancient fire.",
+    getWeight: 0.1,
+    getSellValue: 50,
+    tags: [],
+  },
+  livingStoneChestplate: {
+    getName: "Living Stone Chestplate",
+    description: `Armor made from living stone. Provides excellent protection. 
+    Reduces all damage taken by 20% and converts piercing and slashing damage to bludgeoning.`,
+    getWeight: 5,
+    getSellValue: 600,
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Chest,
+    getDamageToTake: (creature, source, damage) =>
+      damage.map((d) => ({
+        amount: d.amount * 0.8, // Reduces damage taken by 20%
+        type:
+          d.type === DamageType.Piercing || d.type === DamageType.Slashing
+            ? DamageType.Bludgeoning
+            : d.type,
+      })),
+  } satisfies EquipmentDefinition,
+  rootBoots: {
+    getName: "Root Boots",
+    tags: [ItemTag.Equipment],
+    description: `Boots made from ancient plants creeping into living stone. 
+    Increases carrying capacity by 50 kg. Reduces all damage taken by 5 when above 75% health.`,
+    getWeight: 2,
+    getSellValue: 500,
+    slot: EquipmentSlot.Legs,
+    getCarryingCapacity: 50,
+    getDamageToTake: (creature, source, damage) => {
+      if (creature.health > creature.getMaxHealth() * 0.75) {
+        return damage.map((d) => ({
+          amount: d.amount - 5,
+          type: d.type,
+        }));
+      }
+      return damage;
+    },
+  } satisfies EquipmentDefinition,
+  avalancheWarhammer: {
+    getName: "Avalanche",
+    description: "A heavy warhammer infused with the power of avalanches.",
+    getWeight: 3,
+    getSellValue: 600,
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    getAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Avalanche Strike",
+        "A powerful strike that causes an avalanche of rocks to fall on the target.",
+        5,
+        [{ amount: 30, type: DamageType.Bludgeoning }],
+        [
+          {
+            id: "stunned",
+            strength: 2,
+            duration: 15, // Duration in seconds
+          },
+        ],
+        {
+          targetCount: 2,
+        }
+      ),
+      Abilities.attackWithStatusEffect(
+        "Rockslide",
+        "A strike that causes a rockslide, dealing damage to many enemies in the area.",
+        4,
+        [{ amount: 20, type: DamageType.Bludgeoning }],
+        [
+          {
+            id: "stunned",
+            strength: 1.5,
+            duration: 30, // Duration in seconds
+          },
+        ],
+        {
+          targetCount: 3,
+        }
+      ),
+    ],
+  } satisfies EquipmentDefinition,
+  stoneskinPotion: {
+    getName: "Stoneskin Potion",
+    description:
+      "A potion that grants temporary resistance to physical damage.",
+    getWeight: 0.5,
+    getSellValue: 150,
+    tags: [ItemTag.Consumable],
+    getAbilities: [
+      Abilities.applyStatusEffect(
+        "Drink",
+        "Drink the potion to gain stoneskin.",
+        0.5,
+        [
+          {
+            id: "stoneskin",
+            strength: 7,
+            duration: 60, // Duration in seconds
+          },
+        ],
+        {
+          targetRestrictions: [CanTarget.isSelf],
+        }
+      ),
+    ],
+  } satisfies ConsumableDefinition,
+  burnOutScroll: {
+    getName: "Burn Out Scroll",
+    description: "A scroll that burns out the target's magical energy.",
+    getWeight: 0.1,
+    getSellValue: 100,
+    tags: [ItemTag.Consumable],
+    getAbilities: [
+      Abilities.applyStatusEffect(
+        "Burn Out",
+        "Burn out the target's magical energy.",
+        0.5,
+        [
+          {
+            id: "burning",
+            strength: 1,
+            duration: 30, // Duration in seconds
+          },
+          {
+            id: "overcharged",
+            strength: 10,
+            duration: 30,
+          },
+        ],
+        {
+          targetRestrictions: [CanTarget.isSelf],
+        }
+      ),
+    ],
+  } satisfies ConsumableDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;
