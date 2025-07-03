@@ -796,11 +796,11 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         "Fireball",
         "Throw a fireball.",
         5,
-        [{ amount: 10, type: DamageType.Fire }],
+        [{ amount: 8, type: DamageType.Fire }],
         [
           {
             id: "burning",
-            strength: 5,
+            strength: 3,
             duration: 3, // Duration in seconds
           },
         ]
