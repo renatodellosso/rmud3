@@ -24,7 +24,7 @@ export default function generateDungeonLayout(): Dungeon {
 
   const maxDepth = Math.max(
     ...Object.values(floors).map((floor) =>
-      Math.max(...Object.values(floor.depths).map((depth) => depth))
+      Math.max(floor.depth)
     )
   );
   if (maxDepth < 0) {
@@ -150,8 +150,7 @@ function generateFloorDefinitionArray(depth: number): FloorDefinition[] {
   const definitions: Set<FloorDefinition> = new Set(); // Use a Set to avoid duplicates
   
   const definition = Object.values(floors).filter((floor) =>
-    floor.depths.includes(depth)
-  )[0];
+    floor.depth === depth)[0];
 
   definitions.add(definition);
 
@@ -160,12 +159,12 @@ function generateFloorDefinitionArray(depth: number): FloorDefinition[] {
 
     if (randInRangeInt(0, 1) === 0 && depth > 0) {
       secondDefinition = Object.values(floors).filter((floor) =>
-        floor.depths.includes(depth - 1)
+        floor.depth === depth - 1
       )[0];
     }
     else {
       secondDefinition = Object.values(floors).filter((floor) =>
-        floor.depths.includes(depth + 1)
+        floor.depth === depth + 1
       )[0];
     }
 

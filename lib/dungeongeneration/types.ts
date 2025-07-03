@@ -24,7 +24,7 @@ export type FloorDefinition = {
   /**
    * Depth values the floor can appear on
    */
-  depths: number[];
+  depth: number;
   visualizerColor: string;
   layoutGenerationOptions: FloorLayoutGenerationOptions;
   populationOptions: FloorPopulationOptions;

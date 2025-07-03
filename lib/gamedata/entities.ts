@@ -1343,7 +1343,6 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
-
   spiderSpitter: {
     name: "Spitter Spider",
     health: 15,

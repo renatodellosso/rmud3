@@ -6,7 +6,7 @@ import { ItemId } from "lib/gamedata/items";
 const floors: Record<string, FloorDefinition> = {
   sewers: {
     name: "Sewers",
-    depths: [0],
+    depth: 0,
     visualizerColor: "#2F4F4F",
     layoutGenerationOptions: {
       roomChance: 0.5,
@@ -100,7 +100,7 @@ const floors: Record<string, FloorDefinition> = {
   },
   caves: {
     name: "Caves",
-    depths: [1],
+    depth: 1,
     visualizerColor: "#4682B4",
     layoutGenerationOptions: {
       roomChance: 0.7,
@@ -179,7 +179,7 @@ const floors: Record<string, FloorDefinition> = {
   },
   crypts: {
     name: "Crypts",
-    depths: [2],
+    depth: 2,
     visualizerColor: "#8B4513",
     layoutGenerationOptions: {
       roomChance: 0.6,
@@ -238,7 +238,7 @@ const floors: Record<string, FloorDefinition> = {
   },
   mines: {
     name: "Mines",
-    depths: [3],
+    depth: 3,
     visualizerColor: "#A9A9A9",
     layoutGenerationOptions: {
       roomChance: 0.6,
@@ -356,7 +356,7 @@ const floors: Record<string, FloorDefinition> = {
   },
   fungalCaverns: {
     name: "Fungal Caverns",
-    depths: [4],
+    depth: 4,
     visualizerColor: "#228B22",
     layoutGenerationOptions: {
       roomChance: 0.8,
@@ -364,7 +364,7 @@ const floors: Record<string, FloorDefinition> = {
       width: [12, 18],
       length: [12, 18],
       roomCount: [30, 60],
-      exitCount: [5, 6],
+      exitCount: [4, 5],
     },
     populationOptions: {
       encounterChance: 0.7,
@@ -425,7 +425,7 @@ const floors: Record<string, FloorDefinition> = {
   },
   ruins: {
     name: "Ruins",
-    depths: [5],
+    depth: 5,
     visualizerColor: "#B8860B",
     layoutGenerationOptions: {
       roomChance: 0.5,
@@ -520,6 +520,762 @@ const floors: Record<string, FloorDefinition> = {
               },
             ]),
             [1, 2]
+          ),
+          amount: 1,
+          weight: 0.1,
+        },
+      ]),
+    },
+  },
+  goblinColonies: {
+    name: "Goblin Colonies",
+    depth: 6,
+    visualizerColor: "#888888",
+    layoutGenerationOptions: {
+      roomChance: 0.8,
+      connectionChance: 0.8,
+      width: [16, 24],
+      length: [16, 24],
+      roomCount: [50, 80],
+      exitCount: [6, 7],
+    },
+    populationOptions: {
+      encounterChance: 0.8,
+      maxEncounters: 3,
+      encounters: new WeightedTable<Encounter>([
+        {
+          item: "goblin",
+          amount: [1, 3],
+          weight: 2,
+        },
+        {
+          item: "goblinShaman",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: "hobgoblin",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: randomContainer(
+            "Barrel",
+            new WeightedTable<ItemId>([
+              {
+                item: "money",
+                amount: [25, 50],
+                weight: 2,
+              },
+              {
+                item: "leather",
+                amount: [2, 4],
+                weight: 0.5,
+              },
+              {
+                item: "bottle",
+                amount: [2, 3],
+                weight: 0.5,
+              },
+              {
+                item: "rope",
+                amount: [3, 5],
+                weight: 0.5,
+              },
+              {
+                item: "healthPotion",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "slimeJar",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "hordeFlute",
+                amount: 1,
+                weight: 0.2,
+              },
+              {
+                item: "fireballRing",
+                amount: 1,
+                weight: 0.1,
+              },
+            ]),
+            [1, 3]
+          ),
+          amount: 1,
+          weight: 0.1,
+        },
+      ]),
+    },
+  },
+  catacombs: {
+    name: "Catacombs",
+    depth: 7,
+    visualizerColor: "#888888",
+    layoutGenerationOptions: {
+      roomChance: 0.8,
+      connectionChance: 0.8,
+      width: [16, 24],
+      length: [16, 24],
+      roomCount: [50, 80],
+      exitCount: [6, 7],
+    },
+    populationOptions: {
+      encounterChance: 0.8,
+      maxEncounters: 3,
+      encounters: new WeightedTable<Encounter>([
+        {
+          item: "goblin",
+          amount: [1, 3],
+          weight: 2,
+        },
+        {
+          item: "goblinShaman",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: "hobgoblin",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: randomContainer(
+            "Barrel",
+            new WeightedTable<ItemId>([
+              {
+                item: "money",
+                amount: [25, 50],
+                weight: 2,
+              },
+              {
+                item: "leather",
+                amount: [2, 4],
+                weight: 0.5,
+              },
+              {
+                item: "bottle",
+                amount: [2, 3],
+                weight: 0.5,
+              },
+              {
+                item: "rope",
+                amount: [3, 5],
+                weight: 0.5,
+              },
+              {
+                item: "healthPotion",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "slimeJar",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "hordeFlute",
+                amount: 1,
+                weight: 0.2,
+              },
+              {
+                item: "fireballRing",
+                amount: 1,
+                weight: 0.1,
+              },
+            ]),
+            [1, 3]
+          ),
+          amount: 1,
+          weight: 0.1,
+        },
+      ]),
+    },
+  },
+  overgrownCaverns: {
+    name: "Overgrown Caverns",
+    depth: 8,
+    visualizerColor: "#888888",
+    layoutGenerationOptions: {
+      roomChance: 0.8,
+      connectionChance: 0.8,
+      width: [16, 24],
+      length: [16, 24],
+      roomCount: [50, 80],
+      exitCount: [6, 7],
+    },
+    populationOptions: {
+      encounterChance: 0.8,
+      maxEncounters: 3,
+      encounters: new WeightedTable<Encounter>([
+        {
+          item: "goblin",
+          amount: [1, 3],
+          weight: 2,
+        },
+        {
+          item: "goblinShaman",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: "hobgoblin",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: randomContainer(
+            "Barrel",
+            new WeightedTable<ItemId>([
+              {
+                item: "money",
+                amount: [25, 50],
+                weight: 2,
+              },
+              {
+                item: "leather",
+                amount: [2, 4],
+                weight: 0.5,
+              },
+              {
+                item: "bottle",
+                amount: [2, 3],
+                weight: 0.5,
+              },
+              {
+                item: "rope",
+                amount: [3, 5],
+                weight: 0.5,
+              },
+              {
+                item: "healthPotion",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "slimeJar",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "hordeFlute",
+                amount: 1,
+                weight: 0.2,
+              },
+              {
+                item: "fireballRing",
+                amount: 1,
+                weight: 0.1,
+              },
+            ]),
+            [1, 3]
+          ),
+          amount: 1,
+          weight: 0.1,
+        },
+      ]),
+    },
+  },
+  floodedCaves: {
+    name: "Flooded Caves",
+    depth: 9,
+    visualizerColor: "#888888",
+    layoutGenerationOptions: {
+      roomChance: 0.8,
+      connectionChance: 0.8,
+      width: [16, 24],
+      length: [16, 24],
+      roomCount: [50, 80],
+      exitCount: [6, 7],
+    },
+    populationOptions: {
+      encounterChance: 0.8,
+      maxEncounters: 3,
+      encounters: new WeightedTable<Encounter>([
+        {
+          item: "goblin",
+          amount: [1, 3],
+          weight: 2,
+        },
+        {
+          item: "goblinShaman",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: "hobgoblin",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: randomContainer(
+            "Barrel",
+            new WeightedTable<ItemId>([
+              {
+                item: "money",
+                amount: [25, 50],
+                weight: 2,
+              },
+              {
+                item: "leather",
+                amount: [2, 4],
+                weight: 0.5,
+              },
+              {
+                item: "bottle",
+                amount: [2, 3],
+                weight: 0.5,
+              },
+              {
+                item: "rope",
+                amount: [3, 5],
+                weight: 0.5,
+              },
+              {
+                item: "healthPotion",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "slimeJar",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "hordeFlute",
+                amount: 1,
+                weight: 0.2,
+              },
+              {
+                item: "fireballRing",
+                amount: 1,
+                weight: 0.1,
+              },
+            ]),
+            [1, 3]
+          ),
+          amount: 1,
+          weight: 0.1,
+        },
+      ]),
+    },
+  },
+  frozenCaves: {
+    name: "Frozen Caves",
+    depth: 10,
+    visualizerColor: "#888888",
+    layoutGenerationOptions: {
+      roomChance: 0.8,
+      connectionChance: 0.8,
+      width: [16, 24],
+      length: [16, 24],
+      roomCount: [50, 80],
+      exitCount: [6, 7],
+    },
+    populationOptions: {
+      encounterChance: 0.8,
+      maxEncounters: 3,
+      encounters: new WeightedTable<Encounter>([
+        {
+          item: "goblin",
+          amount: [1, 3],
+          weight: 2,
+        },
+        {
+          item: "goblinShaman",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: "hobgoblin",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: randomContainer(
+            "Barrel",
+            new WeightedTable<ItemId>([
+              {
+                item: "money",
+                amount: [25, 50],
+                weight: 2,
+              },
+              {
+                item: "leather",
+                amount: [2, 4],
+                weight: 0.5,
+              },
+              {
+                item: "bottle",
+                amount: [2, 3],
+                weight: 0.5,
+              },
+              {
+                item: "rope",
+                amount: [3, 5],
+                weight: 0.5,
+              },
+              {
+                item: "healthPotion",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "slimeJar",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "hordeFlute",
+                amount: 1,
+                weight: 0.2,
+              },
+              {
+                item: "fireballRing",
+                amount: 1,
+                weight: 0.1,
+              },
+            ]),
+            [1, 3]
+          ),
+          amount: 1,
+          weight: 0.1,
+        },
+      ]),
+    },
+  },
+  volcanicTunnels: {
+    name: "Volcanic Tunnels",
+    depth: 11,
+    visualizerColor: "#888888",
+    layoutGenerationOptions: {
+      roomChance: 0.8,
+      connectionChance: 0.8,
+      width: [16, 24],
+      length: [16, 24],
+      roomCount: [50, 80],
+      exitCount: [6, 7],
+    },
+    populationOptions: {
+      encounterChance: 0.8,
+      maxEncounters: 3,
+      encounters: new WeightedTable<Encounter>([
+        {
+          item: "goblin",
+          amount: [1, 3],
+          weight: 2,
+        },
+        {
+          item: "goblinShaman",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: "hobgoblin",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: randomContainer(
+            "Barrel",
+            new WeightedTable<ItemId>([
+              {
+                item: "money",
+                amount: [25, 50],
+                weight: 2,
+              },
+              {
+                item: "leather",
+                amount: [2, 4],
+                weight: 0.5,
+              },
+              {
+                item: "bottle",
+                amount: [2, 3],
+                weight: 0.5,
+              },
+              {
+                item: "rope",
+                amount: [3, 5],
+                weight: 0.5,
+              },
+              {
+                item: "healthPotion",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "slimeJar",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "hordeFlute",
+                amount: 1,
+                weight: 0.2,
+              },
+              {
+                item: "fireballRing",
+                amount: 1,
+                weight: 0.1,
+              },
+            ]),
+            [1, 3]
+          ),
+          amount: 1,
+          weight: 0.1,
+        },
+      ]),
+    },
+  },
+  spectralPassage: {
+    name: "Spectral Passage",
+    depth: 12,
+    visualizerColor: "#888888",
+    layoutGenerationOptions: {
+      roomChance: 0.8,
+      connectionChance: 0.8,
+      width: [16, 24],
+      length: [16, 24],
+      roomCount: [50, 80],
+      exitCount: [6, 7],
+    },
+    populationOptions: {
+      encounterChance: 0.8,
+      maxEncounters: 3,
+      encounters: new WeightedTable<Encounter>([
+        {
+          item: "goblin",
+          amount: [1, 3],
+          weight: 2,
+        },
+        {
+          item: "goblinShaman",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: "hobgoblin",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: randomContainer(
+            "Barrel",
+            new WeightedTable<ItemId>([
+              {
+                item: "money",
+                amount: [25, 50],
+                weight: 2,
+              },
+              {
+                item: "leather",
+                amount: [2, 4],
+                weight: 0.5,
+              },
+              {
+                item: "bottle",
+                amount: [2, 3],
+                weight: 0.5,
+              },
+              {
+                item: "rope",
+                amount: [3, 5],
+                weight: 0.5,
+              },
+              {
+                item: "healthPotion",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "slimeJar",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "hordeFlute",
+                amount: 1,
+                weight: 0.2,
+              },
+              {
+                item: "fireballRing",
+                amount: 1,
+                weight: 0.1,
+              },
+            ]),
+            [1, 3]
+          ),
+          amount: 1,
+          weight: 0.1,
+        },
+      ]),
+    },
+  },
+  arcaneGrottos: {
+    name: "Arcane Grottos",
+    depth: 13,
+    visualizerColor: "#888888",
+    layoutGenerationOptions: {
+      roomChance: 0.8,
+      connectionChance: 0.8,
+      width: [16, 24],
+      length: [16, 24],
+      roomCount: [50, 80],
+      exitCount: [6, 7],
+    },
+    populationOptions: {
+      encounterChance: 0.8,
+      maxEncounters: 3,
+      encounters: new WeightedTable<Encounter>([
+        {
+          item: "goblin",
+          amount: [1, 3],
+          weight: 2,
+        },
+        {
+          item: "goblinShaman",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: "hobgoblin",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: randomContainer(
+            "Barrel",
+            new WeightedTable<ItemId>([
+              {
+                item: "money",
+                amount: [25, 50],
+                weight: 2,
+              },
+              {
+                item: "leather",
+                amount: [2, 4],
+                weight: 0.5,
+              },
+              {
+                item: "bottle",
+                amount: [2, 3],
+                weight: 0.5,
+              },
+              {
+                item: "rope",
+                amount: [3, 5],
+                weight: 0.5,
+              },
+              {
+                item: "healthPotion",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "slimeJar",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "hordeFlute",
+                amount: 1,
+                weight: 0.2,
+              },
+              {
+                item: "fireballRing",
+                amount: 1,
+                weight: 0.1,
+              },
+            ]),
+            [1, 3]
+          ),
+          amount: 1,
+          weight: 0.1,
+        },
+      ]),
+    },
+  },
+  theRift: {
+    name: "The Rift",
+    depth: 14,
+    visualizerColor: "#888888",
+    layoutGenerationOptions: {
+      roomChance: 0.8,
+      connectionChance: 0.8,
+      width: [16, 24],
+      length: [16, 24],
+      roomCount: [50, 80],
+      exitCount: [6, 7],
+    },
+    populationOptions: {
+      encounterChance: 0.8,
+      maxEncounters: 3,
+      encounters: new WeightedTable<Encounter>([
+        {
+          item: "goblin",
+          amount: [1, 3],
+          weight: 2,
+        },
+        {
+          item: "goblinShaman",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: "hobgoblin",
+          amount: [1, 2],
+          weight: 1,
+        },
+        {
+          item: randomContainer(
+            "Barrel",
+            new WeightedTable<ItemId>([
+              {
+                item: "money",
+                amount: [25, 50],
+                weight: 2,
+              },
+              {
+                item: "leather",
+                amount: [2, 4],
+                weight: 0.5,
+              },
+              {
+                item: "bottle",
+                amount: [2, 3],
+                weight: 0.5,
+              },
+              {
+                item: "rope",
+                amount: [3, 5],
+                weight: 0.5,
+              },
+              {
+                item: "healthPotion",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "slimeJar",
+                amount: [1, 2],
+                weight: 0.2,
+              },
+              {
+                item: "hordeFlute",
+                amount: 1,
+                weight: 0.2,
+              },
+              {
+                item: "fireballRing",
+                amount: 1,
+                weight: 0.1,
+              },
+            ]),
+            [1, 3]
           ),
           amount: 1,
           weight: 0.1,
