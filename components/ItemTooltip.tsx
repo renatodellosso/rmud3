@@ -11,6 +11,7 @@ import AbilityDescription from "./AbilityDescription";
 import AbilityScore from "lib/types/AbilityScore";
 import Ability from "lib/types/Ability";
 import { DamageType } from "lib/types/Damage";
+import reforges from "lib/gamedata/Reforges";
 
 /**
  * Put the class "tooltip" on the element that should show the tooltip.
@@ -162,6 +163,19 @@ function EquipmentDescription({
         </div>
       ) : (
         <div>No resistances</div>
+      )}
+      {equipment.reforge ? (
+        <div>
+          <strong>Reforge</strong>: {reforges[equipment.reforge].name}{" "}
+          <div>
+            {getFromOptionalFunc(
+              reforges[equipment.reforge].getDescription,
+              equipment
+            )}
+          </div>
+        </div>
+      ) : (
+        <></>
       )}
     </div>
   );
