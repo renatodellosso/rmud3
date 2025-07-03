@@ -1496,7 +1496,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
   wailingNecklace: {
     getName: "Wailing Necklace",
     description:
-      "A necklace that emits a soft wailing sound. Add 2 physics damage to all attacks.",
+      "A necklace that emits a soft wailing sound. Add 2 psychic damage to all attacks.",
     tags: [ItemTag.Equipment],
     getWeight: 0.2,
     getSellValue: 100,
