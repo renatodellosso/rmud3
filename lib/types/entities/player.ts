@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
 import { CreatureInstance } from "../entities/creature";
-import Inventory, { DirectInventory } from "../Inventory";
+import Inventory, { DirectInventory, MultipleInventory } from "../Inventory";
 import {
   CannotDirectlyCreateInstanceError,
   OmitType,
@@ -333,6 +333,13 @@ export class PlayerInstance extends CreatureInstance {
     return (
       (this.guildId && Guild.fromId(this.guildId)) || Promise.resolve(undefined)
     );
+  }
+
+  getCraftingInventory(): Inventory {
+    return this.location.startsWith("dungeon-") &&
+      this.location !== "dungeon-entrance"
+      ? this.inventory
+      : new MultipleInventory([this.inventory, this.vault.inventory]);
   }
 }
 

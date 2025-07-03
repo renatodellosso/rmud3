@@ -157,3 +157,109 @@ export class DirectInventory implements Inventory {
     return this.items;
   }
 }
+
+export class MultipleInventory implements Inventory {
+  constructor(private inventories: Inventory[]) {}
+
+  add(item: ItemInstance, ignoreWeight?: boolean): number {
+    let totalAdded = 0;
+    let remainingAmount = item.amount;
+
+    for (const inventory of this.inventories) {
+      const toAdd = restoreFieldsAndMethods(
+        EJSON.parse(EJSON.stringify(item)),
+        new ItemInstance(item.definitionId, item.amount)
+      );
+      toAdd.amount = remainingAmount;
+
+      const added = inventory.add(toAdd, ignoreWeight);
+
+      totalAdded += added;
+      if (added < item.amount) {
+        remainingAmount -= added;
+        if (remainingAmount <= 0) {
+          break; // Item fully added
+        }
+      } else {
+        break; // Item fully added
+      }
+    }
+
+    return totalAdded;
+  }
+
+  remove(item: ItemInstance): number {
+    let totalRemoved = 0;
+    for (const inventory of this.inventories) {
+      const removed = inventory.remove(item);
+      totalRemoved += removed;
+      if (removed < item.amount) {
+        item.amount -= removed;
+      } else {
+        break; // Item fully removed
+      }
+    }
+
+    return totalRemoved;
+  }
+
+  removeById(itemId: ItemId, amount: number): number {
+    let totalRemoved = 0;
+    for (const inventory of this.inventories) {
+      const removed = inventory.removeById(itemId, amount);
+      totalRemoved += removed;
+      if (removed < amount) {
+        amount -= removed;
+      } else {
+        break; // Item fully removed
+      }
+    }
+    return totalRemoved;
+  }
+
+  getMaxWeight(): number | undefined {
+    return this.inventories.reduce((maxWeight, inventory) => {
+      const inventoryMaxWeight = inventory.getMaxWeight();
+      if (maxWeight === undefined || inventoryMaxWeight === undefined) {
+        return undefined; // If any inventory is unlimited, the whole is unlimited
+      }
+
+      return maxWeight + inventoryMaxWeight;
+    }, 0 as number | undefined);
+  }
+
+  getUsedWeight(): number {
+    return this.inventories.reduce(
+      (usedWeight, inventory) => usedWeight + inventory.getUsedWeight(),
+      0
+    );
+  }
+
+  get(item: ItemInstance): ItemInstance | undefined {
+    return this.inventories.reduce(
+      (foundItem, inventory) => foundItem ?? inventory.get(item),
+      undefined as ItemInstance | undefined
+    );
+  }
+
+  getById(itemId: ItemId): ItemInstance | undefined {
+    return this.inventories.reduce(
+      (foundItem, inventory) => foundItem ?? inventory.getById(itemId),
+      undefined as ItemInstance | undefined
+    );
+  }
+
+  getCountById(itemId: ItemId): number {
+    return this.inventories.reduce(
+      (count, inventory) => count + inventory.getCountById(itemId),
+      0
+    );
+  }
+
+  getItems(): ItemInstance[] {
+    return this.inventories.reduce(
+      (items, inventory) => items.concat(inventory.getItems()),
+      [] as ItemInstance[]
+    );
+  }
+}
