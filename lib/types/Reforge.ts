@@ -13,6 +13,11 @@ export type ReforgeDefinition = StatAndAbilityProvider<ItemInstance> & {
     source: ItemInstance,
     damage: DamageWithType[]
   ) => void;
+  onTakeDamage?: (
+    creature: ItemInstance,
+    source: ItemInstance,
+    damage: DamageWithType[]
+  ) => void;
 };
 
 export enum ReforgeType {
