@@ -616,10 +616,10 @@ const floors: Record<string, FloorDefinition> = {
     depth: 7,
     visualizerColor: "#888888",
     layoutGenerationOptions: {
-      roomChance: 0.8,
-      connectionChance: 0.8,
-      width: [16, 24],
-      length: [16, 24],
+      roomChance: 0.9,
+      connectionChance: 0.6,
+      width: [8, 16],
+      length: [20, 28],
       roomCount: [50, 80],
       exitCount: [6, 7],
     },
@@ -628,68 +628,67 @@ const floors: Record<string, FloorDefinition> = {
       maxEncounters: 3,
       encounters: new WeightedTable<Encounter>([
         {
-          item: "goblin",
-          amount: [1, 3],
-          weight: 2,
-        },
-        {
-          item: "goblinShaman",
+          item: "skeletonWarrior",
           amount: [1, 2],
           weight: 1,
         },
         {
-          item: "hobgoblin",
-          amount: [1, 2],
+          item: "skeletonBonecaller",
+          amount: 1,
+          weight: 0.5,
+        },
+        {
+          item: "cryptGuardGolem",
+          amount: 1,
+          weight: 0.3,
+        },
+        {
+          item: "wraith",
+          amount: [2, 3],
           weight: 1,
+        },
+        {
+          item: "banshee",
+          amount: 1,
+          weight: 1,
+        },
+        {
+          item: "lockedCoffin",
+          amount: 1,
+          weight: 0.2,
         },
         {
           item: randomContainer(
-            "Barrel",
+            "Ancient Chest",
             new WeightedTable<ItemId>([
               {
                 item: "money",
-                amount: [25, 50],
-                weight: 2,
+                amount: [50, 100],
+                weight: 1,
               },
               {
-                item: "leather",
-                amount: [2, 4],
-                weight: 0.5,
+                item: "livingStone",
+                amount: [1, 3],
+                weight: 1,
               },
               {
-                item: "bottle",
-                amount: [2, 3],
-                weight: 0.5,
+                item: "ashes",
+                amount: [1, 3],
+                weight: 1,
               },
               {
-                item: "rope",
-                amount: [3, 5],
-                weight: 0.5,
-              },
-              {
-                item: "healthPotion",
+                item: "wakingDust",
                 amount: [1, 2],
-                weight: 0.2,
+                weight: 0.5,
               },
               {
-                item: "slimeJar",
+                item: "dreamingDust",
                 amount: [1, 2],
-                weight: 0.2,
+                weight: 0.5,
               },
-              {
-                item: "hordeFlute",
-                amount: 1,
-                weight: 0.2,
-              },
-              {
-                item: "fireballRing",
-                amount: 1,
-                weight: 0.1,
-              },
-            ]),
-            [1, 3]
+            ])
           ),
-          amount: 1,
+          amount: 2,
           weight: 0.1,
         },
       ]),

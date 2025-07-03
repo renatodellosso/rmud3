@@ -25,6 +25,7 @@ export type AbilityOptions = {
     creature: CreatureInstance,
     target: Targetable
   ) => boolean)[];
+  targetCount?: number;
 };
 
 function addToDescription(
@@ -51,7 +52,7 @@ export function attack(
       `Inflicts ${damage.map((d) => `${d.amount} ${d.type}`)}.`
     ),
     getCooldown,
-    getTargetCount: 1,
+    getTargetCount: options.targetCount ?? 1,
     canTarget: CanTarget.and(
       CanTarget.notSelf,
       CanTarget.isTargetACreature,
@@ -129,7 +130,7 @@ export function applyStatusEffect(
     ),
     getCooldown: (creature, source) =>
       creature.scaleAbility(getFromOptionalFunc(getCooldown, creature, source)),
-    getTargetCount: 1,
+    getTargetCount: options.targetCount ?? 1,
     canTarget: CanTarget.and(
       CanTarget.isTargetACreature,
       ...(options.targetRestrictions ?? [])
@@ -198,7 +199,7 @@ export function attackWithStatusEffect(
     name,
     getDescription: applyStatusEffectDescription,
     getCooldown,
-    getTargetCount: 1,
+    getTargetCount: options.targetCount ?? 1,
     canTarget: CanTarget.and(
       CanTarget.notSelf,
       CanTarget.isTargetACreature,
@@ -221,7 +222,7 @@ export function heal(
     name,
     getDescription,
     getCooldown,
-    getTargetCount: 1,
+    getTargetCount: options.targetCount ?? 1,
     canTarget: CanTarget.and(
       CanTarget.isTargetACreature,
       CanTarget.notAtMaxHealth,
@@ -285,7 +286,7 @@ export function healWithStatusEffect(
     name,
     getDescription: applyStatusEffectDescription,
     getCooldown,
-    getTargetCount: 1,
+    getTargetCount: options.targetCount ?? 1,
     canTarget: CanTarget.and(
       CanTarget.isTargetACreature,
       CanTarget.notAtMaxHealth,
@@ -302,15 +303,18 @@ export function summon(
   getDescription: OptionalFunc<string, CreatureInstance>,
   getCooldown: OptionalFunc<number, CreatureInstance>,
   creatureDefinitionId: CreatureId,
-  options: AbilityOptions = {}
+  options: Omit<AbilityOptions, "targetCount"> = {}
 ): Ability {
   return {
     name,
     getDescription,
     getCooldown,
     getTargetCount: 1,
-    canTarget: CanTarget.isTargetALocation,
-    activate: (creature: CreatureInstance, targets) => {
+    canTarget: CanTarget.and(
+      CanTarget.isTargetALocation,
+      ...(options.targetRestrictions ?? [])
+    ),
+    activate: (creature: CreatureInstance, targets, source) => {
       const target = targets[0] as Location;
 
       // Don't forget to select the thing you want to import!
@@ -325,6 +329,8 @@ export function summon(
         creature._id.toString(),
         `You summoned a ${summon.name} using ${name}!`
       );
+
+      options.onActivate?.(creature, targets, source);
 
       return true;
     },

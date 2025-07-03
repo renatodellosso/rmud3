@@ -11,7 +11,9 @@ export type StatusEffectId =
   | "burning"
   | "poisoned"
   | "dreaming"
-  | "satiated";
+  | "satiated"
+  | "stoneskin"
+  | "overcharged";
 
 const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   stunned: {
@@ -85,7 +87,8 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   },
   dreaming: {
     name: "Dreaming",
-    description: "You are in a dream state, recovering health over time.",
+    description:
+      "You are in a dream state, boosting your intelligence, but increasing cooldowns.",
     stacking: StatusEffectStacking.AddDurationMaxStrength,
     getAbilityScores: {
       Intelligence: (creature, source) => source.strength,
@@ -100,6 +103,36 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     stacking: StatusEffectStacking.AddDurationMaxStrength,
     getXpToAdd(creature, source, amount) {
       return amount * (1 + source.strength / 100);
+    },
+  },
+  stoneskin: {
+    name: "Stoneskin",
+    description:
+      "Your skin is hardened, reducing damage taken by physical attacks.",
+    stacking: StatusEffectStacking.AddStrengthMaxDuration,
+    getDamageResistances: (creature, source) => [
+      {
+        type: DamageType.Bludgeoning,
+        amount: source.strength,
+      },
+      {
+        type: DamageType.Piercing,
+        amount: source.strength,
+      },
+      {
+        type: DamageType.Slashing,
+        amount: source.strength,
+      },
+    ],
+  },
+  overcharged: {
+    name: "Overcharged",
+    description: "You are overcharged, boosting your ability scores.",
+    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    getAbilityScores: {
+      Strength: (creature, source) => source.strength,
+      Constitution: (creature, source) => source.strength,
+      Intelligence: (creature, source) => source.strength,
     },
   },
 };

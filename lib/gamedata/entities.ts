@@ -28,6 +28,8 @@ import locations from "lib/locations";
 import reforgeInteraction from "./interactions/reforgeInteraction";
 import { DamageType } from "lib/types/Damage";
 
+// Prefix summons with friendly
+
 export type CreatureId =
   | "player"
   | "trainingDummy"
@@ -53,7 +55,13 @@ export type CreatureId =
   | "spider"
   | "spiderSpitter"
   | "ancientTroll"
-  | "friendlySlime";
+  | "friendlySlime"
+  | "skeletonWarrior"
+  | "skeletonBonecaller"
+  | "cryptGuardGolem"
+  | "banshee"
+  | "skeletonHero"
+  | "friendlySkeleton";
 
 export type EntityId =
   | CreatureId
@@ -68,7 +76,8 @@ export type EntityId =
   | "banker"
   | "vault"
   | "menhir"
-  | "reforgeAnvil";
+  | "reforgeAnvil"
+  | "lockedCoffin";
 
 const creatures: Record<CreatureId, CreatureDefinition> = {
   player: {
@@ -1526,6 +1535,413 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     lootTable: new LootTable([]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
   },
+  skeletonWarrior: {
+    name: "Skeleton Warrior",
+    health: 50,
+    abilityScores: {
+      [AbilityScore.Strength]: 3,
+      [AbilityScore.Constitution]: 2,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 3, type: DamageType.Piercing }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Slash",
+        "A slashing attack with a bone sword.",
+        1,
+        [{ amount: 10, type: DamageType.Slashing }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attackWithStatusEffect(
+        "War Cry",
+        "A bone-chilling war cry.",
+        2,
+        [{ amount: 10, type: DamageType.Psychic }],
+        [
+          {
+            id: "cursed",
+            strength: 4,
+            duration: 5,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 80,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "bone",
+            amount: [1, 3],
+            weight: 1,
+          },
+          {
+            item: "skeletonKey",
+            amount: 1,
+            weight: 0.5,
+          },
+          {
+            item: "ancientSpirit",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "ashes",
+            amount: [1, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  skeletonBonecaller: {
+    name: "Skeleton Bonecaller",
+    health: 40,
+    abilityScores: {
+      [AbilityScore.Strength]: 1,
+      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Intelligence]: 5,
+    },
+    damageResistances: [{ amount: 3, type: DamageType.Piercing }],
+    intrinsicAbilities: [
+      Abilities.summon(
+        "Summon Skeleton",
+        "Summons a skeleton to fight for you.",
+        2,
+        "skeleton"
+      ),
+      Abilities.attackWithStatusEffect(
+        "Bone Shard",
+        "Launches a bone shard at an enemy.",
+        1,
+        [{ amount: 8, type: DamageType.Piercing }],
+        [
+          {
+            id: "cursed",
+            strength: 2,
+            duration: 3,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 100,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "bone",
+            amount: [2, 5],
+            weight: 1,
+          },
+          {
+            item: "skeletonKey",
+            amount: 1,
+            weight: 0.5,
+          },
+          {
+            item: "memory",
+            amount: [1, 2],
+            weight: 0.5,
+          },
+          {
+            item: "ancientSpirit",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "ashes",
+            amount: [1, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  cryptGuardGolem: {
+    name: "Crypt Guard Golem",
+    health: 80,
+    abilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [
+      { amount: 3, type: DamageType.Bludgeoning },
+      { amount: 3, type: DamageType.Piercing },
+      { amount: 3, type: DamageType.Slashing },
+    ],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Slam",
+        "A basic slam attack.",
+        1,
+        [{ amount: 15, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Harden",
+        "Harden your defenses.",
+        2,
+        [
+          {
+            id: "stoneskin",
+            strength: 5,
+            duration: 30,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isSelf] }
+      ),
+    ],
+    xpValue: 150,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "golemCore",
+            amount: 1,
+            weight: 0.5,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "livingStone",
+            amount: [2, 3],
+            weight: 0.5,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+  },
+  banshee: {
+    name: "Banshee",
+    health: 60,
+    abilityScores: {
+      [AbilityScore.Strength]: 2,
+      [AbilityScore.Constitution]: 2,
+      [AbilityScore.Intelligence]: 6,
+    },
+    damageResistances: [{ amount: 2, type: DamageType.Piercing }],
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Wail",
+        "A haunting wail that chills the soul.",
+        2,
+        [{ amount: 15, type: DamageType.Psychic }],
+        [
+          {
+            id: "cursed",
+            strength: 3,
+            duration: 4,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Ethereal Step",
+        "Become ethereal for a short time.",
+        3,
+        [
+          {
+            id: "dreaming",
+            strength: 100,
+            duration: 10,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isSelf] }
+      ),
+      Abilities.applyStatusEffect(
+        "Curse",
+        "Curses an enemy with a haunting presence.",
+        3,
+        [
+          {
+            id: "cursed",
+            strength: 5,
+            duration: 5,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 120,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "memory",
+            amount: [4, 5],
+            weight: 1,
+          },
+          {
+            item: "nightmare",
+            amount: [1, 2],
+            weight: 0.5,
+          },
+          {
+            item: "ectoplasm",
+            amount: [2, 4],
+            weight: 1,
+          },
+          {
+            item: "ashes",
+            amount: [1, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ancientSpirit",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "wailingNecklace",
+            amount: 1,
+            weight: 0.1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  skeletonHero: {
+    name: "Skeleton Hero",
+    health: 150,
+    abilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 4,
+      [AbilityScore.Intelligence]: 15,
+    },
+    damageResistances: [
+      { amount: 8, type: DamageType.Piercing },
+      { amount: 5, type: "*" },
+    ],
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Bone Shatter",
+        "A powerful strike that shatters bones.",
+        2,
+        [{ amount: 20, type: DamageType.Bludgeoning }],
+        [
+          {
+            id: "stunned",
+            strength: 2,
+            duration: 2,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.heal("Undying Will", "Heal", 1, 25, {
+        targetRestrictions: [CanTarget.isSelf],
+      }),
+      Abilities.attackWithStatusEffect(
+        "Greatsword",
+        "A powerful strike with a greatsword.",
+        2,
+        [{ amount: 25, type: DamageType.Slashing }],
+        [{ id: "cursed", strength: 5, duration: 3 }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 300,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "bone",
+            amount: [10, 20],
+            weight: 1,
+          },
+          {
+            item: "memory",
+            amount: [5, 10],
+            weight: 1,
+          },
+          {
+            item: "ashes",
+            amount: [2, 5],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ancientSpirit",
+            amount: [2, 3],
+            weight: 1,
+          },
+          {
+            item: "wakingDust",
+            amount: [1, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ancientGreatsword",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "ancientBoneNecklace",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+  },
+  friendlySkeleton: {
+    name: "Friendly Skeleton",
+    health: 20,
+    abilityScores: {
+      [AbilityScore.Strength]: 1,
+      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 1, type: DamageType.Piercing }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Bone",
+        "A forceful hit with a bone.",
+        1,
+        [{ amount: 4, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.not(CanTarget.isAlly)] }
+      ),
+    ],
+    xpValue: 0,
+    lootTable: new LootTable([]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
 };
 
 const entities: Record<EntityId, EntityDefinition> = {
@@ -1692,6 +2108,48 @@ const entities: Record<EntityId, EntityDefinition> = {
             silk: 5,
           },
           new ItemInstance("theMaw", 1)
+        ),
+        new Recipe(
+          {
+            livingStone: 8,
+            ashes: 5,
+            ironBar: 3,
+            wakingDust: 3,
+          },
+          new ItemInstance("livingStoneChestplate", 1)
+        ),
+        new Recipe(
+          {
+            livingStone: 5,
+            ashes: 3,
+            spore: 5,
+            fungalCore: 1,
+          },
+          new ItemInstance("rootBoots", 1)
+        ),
+        new Recipe(
+          {
+            livingStone: 5,
+            ancientSpirit: 1,
+            wakingDust: 5,
+          },
+          new ItemInstance("avalancheWarhammer", 1)
+        ),
+        new Recipe(
+          {
+            boneNecklace: 1,
+            ancientSpirit: 1,
+            wakingDust: 5,
+          },
+          new ItemInstance("ancientBoneNecklace", 1)
+        ),
+        new Recipe(
+          {
+            rope: 5,
+            ancientSpirit: 2,
+            nightmare: 1,
+          },
+          new ItemInstance("wailingNecklace", 1)
         ),
       ])
     ),
@@ -1893,6 +2351,24 @@ const entities: Record<EntityId, EntityDefinition> = {
             inertDust: 1,
           },
           new ItemInstance("paper", 1)
+        ),
+        new Recipe(
+          {
+            bottle: 2,
+            spore: 3,
+            livingStone: 1,
+            ashes: 1,
+          },
+          new ItemInstance("stoneskinPotion", 2)
+        ),
+        new Recipe(
+          {
+            paper: 1,
+            ashes: 5,
+            wakingDust: 1,
+            coal: 5,
+          },
+          new ItemInstance("burnOutScroll", 1)
         ),
         new Recipe(
           {
@@ -2355,6 +2831,56 @@ const entities: Record<EntityId, EntityDefinition> = {
     name: "Reforge Anvil",
     interact: async (entity, player, interaction, action) =>
       reforgeInteraction(entity, player, interaction, action, "Reforge Anvil"),
+  },
+  lockedCoffin: {
+    name: "Locked Coffin",
+    interact: async (entity, player, interaction, action) => {
+      if (player.inventory.getById("skeletonKey")?.amount === 0) {
+        getIo().sendMsgToPlayer(
+          player._id.toString(),
+          "This coffin is locked, but you have no key."
+        );
+        return undefined;
+      }
+
+      if (!interaction) {
+        return {
+          entityId: entity._id,
+          type: "logOnly",
+          state: undefined,
+          actions: [
+            {
+              id: "openCoffin",
+              text: "Unlock Coffin",
+            },
+            {
+              id: "leave",
+              text: "Leave Coffin",
+            },
+          ],
+        };
+      }
+
+      if (action === "leave") {
+        getIo().sendMsgToPlayer(player._id.toString(), "You walk away.");
+        return undefined;
+      }
+
+      player.inventory.removeById("skeletonKey", 1);
+
+      getIo().sendMsgToPlayer(
+        player._id.toString(),
+        "You unlock the coffin and come face to face with an ancient hero!"
+      );
+
+      const summon = new CreatureInstance("skeletonHero", entity.location);
+
+      const location = locations[entity.location];
+      location.entities.add(summon);
+      location.entities.delete(entity);
+
+      return undefined;
+    },
   },
 };
 
