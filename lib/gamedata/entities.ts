@@ -2366,7 +2366,8 @@ const entities: Record<EntityId, EntityDefinition> = {
             paper: 1,
             ashes: 5,
             wakingDust: 1,
-            coal: 5,
+            coal: 3,
+            memory: 3,
           },
           new ItemInstance("burnOutScroll", 1)
         ),
