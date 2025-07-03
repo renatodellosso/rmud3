@@ -2608,7 +2608,9 @@ const entities: Record<EntityId, EntityDefinition> = {
     name: "Junk Collector",
     interact: async (entity, player, interaction, action) => {
       const recipes = new RecipeGroup(
-        player.inventory.items
+        player
+          .getCraftingInventory()
+          .getItems()
           .filter((i) => i.definitionId !== "money")
           .map(
             (item) =>
@@ -2637,7 +2639,9 @@ const entities: Record<EntityId, EntityDefinition> = {
     interact: async (entity, player, interaction, action) => {
       const nextVaultLevel = player.vault.level + 1;
       const nextVaultLevelStats = vaultLevelling[nextVaultLevel];
-      const playerMoney = player.inventory.getCountById("money");
+
+      const inventory = player.getCraftingInventory();
+      const playerMoney = inventory.getCountById("money");
 
       const io = getIo();
 
@@ -2719,7 +2723,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           return interaction;
         }
 
-        player.inventory.removeById("money", nextVaultLevelStats.price);
+        inventory.removeById("money", nextVaultLevelStats.price);
         player.vault.level = nextVaultLevel;
         player.vault.recalculateVaultSize();
 
