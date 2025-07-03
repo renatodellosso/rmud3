@@ -20,7 +20,8 @@ export type StatusEffectId =
 const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   stunned: {
     name: "Stunned",
-    description: "You are unable to act.",
+    getDescription: (effect) =>
+      `Your cooldowns are multipled by ${(effect.strength * 100).toFixed()}%.`,
     stacking: StatusEffectStacking.AddDurationMaxStrength,
     getCooldown(creature, source, ability, cooldown) {
       return cooldown * source.strength;
@@ -28,8 +29,8 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   },
   infested: {
     name: "Infested",
-    description:
-      "Something burrows beneath your skin, dealing damage when infested expires.",
+    getDescription: (effect) =>
+      `Something burrows beneath your skin, dealing ${effect.strength.toFixed()} damage when infested expires.`,
     stacking: StatusEffectStacking.AddStrengthMaxDuration,
     onExpire(creature, source) {
       creature.takeDamage(
@@ -46,7 +47,8 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   },
   cursed: {
     name: "Cursed",
-    description: "You are cursed, reducing your ability scores.",
+    getDescription: (effect) =>
+      `You are cursed, reducing your ability scores by ${effect.strength}.`,
     stacking: StatusEffectStacking.AddStrengthMaxDuration,
     getAbilityScores: {
       Strength: (creature, source) => -source.strength,
@@ -56,7 +58,8 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   },
   burning: {
     name: "Burning",
-    description: "You are on fire, taking a flat amount of damage each turn.",
+    getDescription: (effect) =>
+      `You are on fire, taking ${effect.strength.toFixed()} damage each second.`,
     stacking: StatusEffectStacking.AddDurationMaxStrength,
     tick: (creature, deltaTime, source) =>
       creature.takeDamage(
@@ -72,8 +75,10 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   },
   poisoned: {
     name: "Poisoned",
-    description:
-      "You are poisoned, taking damage each turn based on your current health.",
+    getDescription: (source) =>
+      `You are poisoned, taking damage each second equal to ${
+        (source.strength * 100).toFixed
+      }% of your current health.`,
     stacking: StatusEffectStacking.AddDurationMaxStrength,
     tick: (creature, deltaTime, source) =>
       creature.takeDamage(
@@ -89,8 +94,11 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   },
   dreaming: {
     name: "Dreaming",
-    description:
-      "You are in a dream state, boosting your intelligence, but increasing cooldowns.",
+    getDescription: (source) =>
+      `You are in a dream state, boosting your intelligence by ${source.strength.toFixed()}, but increasing cooldowns by ${(
+        (source.strength / 50) *
+        100
+      ).toFixed()}%.`,
     stacking: StatusEffectStacking.AddDurationMaxStrength,
     getAbilityScores: {
       Intelligence: (creature, source) => source.strength,
@@ -101,7 +109,10 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   },
   satiated: {
     name: "Satiated",
-    description: "You are well-fed, improving your XP gain.",
+    getDescription: (source) =>
+      `You are well-fed, improving your XP gain by ${(
+        source.strength * 100
+      ).toFixed()}%.`,
     stacking: StatusEffectStacking.AddDurationMaxStrength,
     getXpToAdd(creature, source, amount) {
       return amount * (1 + source.strength / 100);
@@ -109,8 +120,8 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   },
   stoneskin: {
     name: "Stoneskin",
-    description:
-      "Your skin is hardened, reducing damage taken by physical attacks.",
+    getDescription: (source) =>
+      `Your skin is hardened, reducing damage taken by physical attacks by ${source.strength.toFixed()}%.`,
     stacking: StatusEffectStacking.AddStrengthMaxDuration,
     getDamageResistances: (creature, source) => [
       {
@@ -129,7 +140,8 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   },
   overcharged: {
     name: "Overcharged",
-    description: "You are overcharged, boosting your ability scores.",
+    getDescription: (source) =>
+      `You are overcharged, boosting your ability scores by ${source.strength.toFixed()}.`,
     stacking: StatusEffectStacking.AddDurationMaxStrength,
     getAbilityScores: {
       Strength: (creature, source) => source.strength,
@@ -139,7 +151,8 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   },
   haste: {
     name: "Haste",
-    description: "You act with increased speed, reducing cooldowns.",
+    getDescription: (source) =>
+      `You act with increased speed, reducing cooldowns by ${source.strength.toFixed()}%.`,
     stacking: StatusEffectStacking.AddDurationMaxStrength,
     getCooldown: (creature, source, ability, cooldown) => {
       return cooldown * (1 - source.strength / 100);
@@ -147,7 +160,8 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   },
   blocking: {
     name: "Blocking",
-    description: "Block incoming damage.",
+    getDescription: (source) =>
+      `You are blocking, reducing all incoming damage by ${source.strength.toFixed()}%.`,
     stacking: StatusEffectStacking.AddStrengthAndDuration,
     getDamageResistances: (creature, source) => [
       {

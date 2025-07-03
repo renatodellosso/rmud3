@@ -1,6 +1,7 @@
 import statusEffects from "lib/gamedata/statusEffects";
 import { StatusEffectInstance } from "lib/types/statuseffect";
 import { useEffect, useState } from "react";
+import { getFromOptionalFunc } from "../lib/utils";
 
 export default function StatusEffectList({
   effects,
@@ -25,8 +26,11 @@ export default function StatusEffectList({
             {statusEffects[effect.definitionId].name}{" "}
             {effect.strength.toFixed()} (expires in{" "}
             {((effect.expiresAt.getTime() - Date.now()) / 1000).toFixed(1)}s)
-            <div className="tooltip-text w-32">
-              {statusEffects[effect.definitionId].description}
+            <div className="tooltip-text w-48">
+              {getFromOptionalFunc(
+                statusEffects[effect.definitionId].getDescription,
+                effect
+              )}
             </div>
           </li>
         ))}

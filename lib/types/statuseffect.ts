@@ -1,11 +1,12 @@
 import { StatusEffectId } from "lib/gamedata/statusEffects";
 import StatAndAbilityProvider from "./StatAndAbilityProvider";
 import { CreatureInstance } from "./entities/creature";
+import { OptionalFunc } from "./types";
 
 export type StatusEffectDefinition =
   StatAndAbilityProvider<StatusEffectInstance> & {
     name: string;
-    description: string;
+    getDescription: OptionalFunc<string, [StatusEffectInstance]>;
     stacking: StatusEffectStacking;
     onExpire?: (
       creature: CreatureInstance,
