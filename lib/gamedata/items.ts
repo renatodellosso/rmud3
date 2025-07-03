@@ -20,6 +20,7 @@ import locations from "lib/locations";
 import { teleportScroll } from "./itemtemplate";
 import { StatusEffectToApply } from "lib/types/statuseffect";
 import { StatusEffectId } from './statusEffects';
+import { AbilityOptions } from './Abilities';
 
 export type ItemId =
   | "bone"
@@ -119,6 +120,7 @@ export type ItemId =
   | "treantSap"
   | "treantMask"
   | "amuletOfTheCentaur"
+  | "sequoia"
   | "teleportScroll5"
   | "teleportScroll7"
   | "skeletonKey"
@@ -1600,6 +1602,34 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       }
       return effect.duration;
     },
+  } satisfies EquipmentDefinition,
+  sequoia: {
+    getName: "Sequoia",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: `A hefty greatsword made of wood. Capable of healing its user.`,
+    getWeight: 10,
+    getSellValue: 500,
+    getAbilities: (creature, item) => [
+      Abilities.attack("Treefall", "This strike is sturdy like a tree.", 1.5, [
+        { amount: 40, type: DamageType.Bludgeoning },
+      ]),
+      Abilities.attackWithStatusEffect(
+        "Stunning Collapse",
+        "Stun enemies for 2 seconds.",
+        3,
+        [{ amount: 25, type: DamageType.Bludgeoning }],
+        [
+          {
+            id: "stunned",
+            strength: 5,
+            duration: 2, 
+          },
+        ]
+      ),
+      Abilities.heal("Regrow", "Recover 10 health.", 2, 10),
+    ],
+    getDamageResistances: () => [{ amount: 3, type: DamageType.Poison }],
   } satisfies EquipmentDefinition,
   teleportScroll5: teleportScroll(5),
   teleportScroll7: teleportScroll(7),

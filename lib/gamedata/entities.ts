@@ -1584,9 +1584,14 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             amount: 1,
             weight: 1,
           },
+          {
+            item: "golemCore",
+            amount: 1,
+            weight: 1.5,
+          }
         ]),
         amount: 1,
-        chance: 0.2,
+        chance: 0.5,
       },
       {
         item: new WeightedTable<ItemId>([
@@ -2717,7 +2722,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             venom: 5,
             goldBar: 1,
           },
-          new ItemInstance("livingWoodBow", 1)
+          new ItemInstance("livingWoodLongSword", 1)
         ),
         new Recipe(
           {
@@ -2737,6 +2742,15 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
+            livingWood: 25,
+            vine: 10,
+            livingStone: 5,
+            treantSap: 2,
+          },
+          new ItemInstance("sequoia", 1)
+        ),
+        new Recipe(
+          {
             paper: 1,
             silk: 8,
             nightmare: 1,
@@ -2747,7 +2761,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           {
             paper: 1,
             livingStone: 1,
-            ashes: 1
+            ashes: 1,
           },
           new ItemInstance("teleportScroll7", 1)
         ),
