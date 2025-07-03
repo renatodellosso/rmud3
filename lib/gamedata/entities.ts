@@ -2636,7 +2636,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           {
             item: "wakingDust",
             amount: [1, 2],
-            weight: 1,
+            weight: 1
           },
         ]),
         amount: 2,

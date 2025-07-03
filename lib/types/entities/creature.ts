@@ -300,6 +300,10 @@ export class CreatureInstance extends EntityInstance {
       this.health -= d.amount;
     }
 
+    for (const provider of this.getStatAndAbilityProviders()) {
+      provider.provider.onTakeDamage?.(this, provider.source, newDamage);
+    }
+
     if (this.health <= 0) {
       this.die();
     }
