@@ -18,7 +18,7 @@ jobs:
       - name: Zip build artifacts
         run: |
           rm -rf rmud3-build.zip
-          zip -r rmud3-build.zip rmud3 -x "**/node_modules/**" -x "**/.git/**" -x "**/coverage/**" -x "**/vscode/**"
+          zip -r rmud3-build.zip . -x "**/node_modules/**" -x "**/.git/**" -x "**/coverage/**" -x "**/vscode/**"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
