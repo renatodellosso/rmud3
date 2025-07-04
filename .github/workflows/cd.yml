@@ -34,7 +34,7 @@ jobs:
         with:
           name: rmud3-build
       - name: Generate version label
-        run: echo "version_label=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
+        run: echo "VERSION=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v22
         with:
@@ -42,7 +42,7 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: RMUD3
           environment_name: RMUD3-env
-          version_label: ${{ env.version_label }}
+          version_label: ${{ env.VERSION }}
           region: us-east-1
           deployment_package: rmud3-build.zip
           existing_bucket_name: elasticbeanstalk-us-east-1-488012900636
