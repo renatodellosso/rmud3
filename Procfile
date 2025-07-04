@@ -1,0 +1,1 @@
+web: sudo npm i -g cross-env; npm run start
