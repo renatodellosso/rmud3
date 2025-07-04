@@ -18,7 +18,7 @@ jobs:
       - name: Zip build artifacts
         run: |
           rm -rf rmud3-build.zip
-          zip -r rmud3-build.zip . -x "**/node_modules/**" -x "**/.git/**" -x "**/coverage/**" -x "**/vscode/**"
+          zip -r rmud3-build.zip . -x "**/.git/**" -x "**/coverage/**" -x "**/vscode/**"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -33,7 +33,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: rmud3-build
-          path: .next
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v22
         with:
@@ -44,3 +43,4 @@ jobs:
           version_label: 12345
           region: us-east-1
           deployment_package: rmud3-build.zip
+          existing_bucket_name: rmud3-builds
