@@ -1,5 +1,5 @@
-import { Menu } from "app/play/page";
 import { getXpForNextLevel } from "lib/gamedata/levelling";
+import Menu from "lib/types/Menu";
 import { GameState } from "lib/types/types";
 
 export default function HeaderBar({

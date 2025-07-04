@@ -18,7 +18,7 @@ function ItemEntry({
 }: {
   item: ItemInstance;
   viewPlayerInventory: boolean;
-  self: CreatureInstance;
+  self: PlayerInstance;
   entityId: string;
   setError: (error: string) => void;
 }) {

@@ -6,6 +6,7 @@ import ItemTooltip from "../ItemTooltip";
 import { CreatureInstance } from "lib/types/entities/creature";
 import { getFromOptionalFunc } from "../../lib/utils";
 import { ItemInstance } from "../../lib/types/item";
+import { PlayerInstance } from "lib/types/entities/player";
 
 export default function CraftingMenu({
   inventory,
@@ -14,7 +15,7 @@ export default function CraftingMenu({
 }: {
   inventory: Inventory;
   interaction: Interaction;
-  self: CreatureInstance;
+  self: PlayerInstance;
 }) {
   function craft(index: number) {
     socket.emit("interact", interaction.entityId.toString(), index);

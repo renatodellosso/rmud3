@@ -15,18 +15,9 @@ import useRedirectIfSessionIdIsNotPresent from "lib/hooks/useRedirectIfSessionId
 import React from "react";
 import { SnowOverlay } from "react-snow-overlay";
 import ReforgeMenu from "@/components/menus/ReforgeMenu";
-import { getXpForNextLevel } from "lib/gamedata/levelling";
 import PrimaryActionBar from "@/components/menus/PrimaryActionBar";
 import HeaderBar from "@/components/HeaderBar";
-
-export enum Menu {
-  PlayerInfo = "Player Info",
-  Combat = "Combat",
-  Location = "Location",
-  Inventory = "Inventory & Equipment",
-  Map = "Map",
-  Guild = "Guild",
-}
+import Menu from "lib/types/Menu";
 
 function LoadingGameState() {
   return (
