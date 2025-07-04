@@ -17,14 +17,13 @@ jobs:
         run: npm run build
       - name: Zip build artifacts
         run: |
-          cd ../
           rm -rf rmud3-build.zip
-          zip -r rmud3-build.zip rmud3/.next
+          zip -r rmud3-build.zip rmud3 -x "**/node_modules/**" -x "**/.git/**" -x "**/coverage/**" -x "**/vscode/**"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: rmud3-build
-          path: ../rmud3-build.zip
+          path: rmud3-build.zip
 
   deploy:
     runs-on: ubuntu-latest
