@@ -63,6 +63,7 @@ export type CreatureId =
   | "friendlySlime"
   | "overgrownGolem"
   | "writhingVines"
+  | "viper"
   | "centaur"
   | "friendlyCentaur"
   | "treant"
@@ -71,6 +72,7 @@ export type CreatureId =
   | "skeletonWarrior"
   | "skeletonBonecaller"
   | "cryptGuardGolem"
+  | "livingStatue"
   | "banshee"
   | "skeletonHero"
   | "friendlySkeleton";
@@ -1438,7 +1440,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           {
             item: "venom",
             amount: [1, 2],
-            weight: 0.5
+            weight: 0.5,
           },
         ]),
         amount: 2,
@@ -2030,6 +2032,59 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
+  viper: {
+    name: "Viper",
+    health: 25,
+    abilityScores: {
+      [AbilityScore.Strength]: 3,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 1, type: DamageType.Poison }],
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Bite",
+        "Venomous bite.",
+        4,
+        [{ amount: 12, type: DamageType.Poison }],
+        [
+          {
+            id: "poisoned",
+            strength: 3,
+            duration: 10,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attack(
+        "Strangle",
+        "Choke the life from your target.",
+        4,
+        [{ amount: 15, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 30,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "vine",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "venom",
+            amount: [1, 2],
+            weight: 1,
+          }
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
   centaur: {
     name: "Centaur",
     health: 50,
@@ -2465,6 +2520,58 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  livingStatue: {
+    name: "Living Statue",
+    health: 60,
+    abilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [
+      { amount: 3, type: DamageType.Bludgeoning },
+      { amount: 3, type: DamageType.Piercing },
+      { amount: 3, type: DamageType.Slashing },
+    ],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Slam",
+        "A basic slam attack.",
+        1,
+        [{ amount: 15, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Harden",
+        "Harden your defenses.",
+        2,
+        [
+          {
+            id: "stoneskin",
+            strength: 5,
+            duration: 25,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isSelf] }
+      ),
+    ],
+    xpValue: 120,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "livingStone",
+            amount: [2, 3],
+            weight: 0.5,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
   banshee: {
     name: "Banshee",
@@ -2636,7 +2743,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           {
             item: "wakingDust",
             amount: [1, 2],
-            weight: 1
+            weight: 1,
           },
         ]),
         amount: 2,
