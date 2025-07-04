@@ -12,6 +12,7 @@ import AbilityScore from "lib/types/AbilityScore";
 import Ability from "lib/types/Ability";
 import { DamageType } from "lib/types/Damage";
 import reforges from "lib/gamedata/Reforges";
+import { PlayerInstance } from "lib/types/entities/player";
 
 /**
  * Put the class "tooltip" on the element that should show the tooltip.
@@ -23,7 +24,7 @@ export default function ItemTooltip({
   side,
 }: {
   item: ItemInstance;
-  creature: CreatureInstance;
+  creature: PlayerInstance;
   side?: "left" | "right";
 }) {
   side ??= "left"; // Default to left if side is not provided
@@ -99,7 +100,7 @@ function EquipmentDescription({
   creature,
 }: {
   equipment: ItemInstance;
-  creature: CreatureInstance;
+  creature: PlayerInstance;
 }) {
   const def = items[equipment.definitionId] as EquipmentDefinition;
 
@@ -170,6 +171,7 @@ function EquipmentDescription({
           <div>
             {getFromOptionalFunc(
               reforges[equipment.reforge].getDescription,
+              creature,
               equipment
             )}
           </div>
