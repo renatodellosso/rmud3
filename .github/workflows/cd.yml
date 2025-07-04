@@ -43,4 +43,4 @@ jobs:
           version_label: 12345
           region: us-east-1
           deployment_package: rmud3-build.zip
-          existing_bucket_name: rmud3-builds
+          existing_bucket_name: elasticbeanstalk-us-east-1-488012900636
