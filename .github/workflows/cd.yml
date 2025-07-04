@@ -1,0 +1,50 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "30"
+          cache: "npm"
+      - name: Install dependencies
+        run: npm install
+      - name: Build the application
+        run: npm run build
+      - name: Zip build artifacts
+        run: |
+          mkdir -p .next
+          cp -r .next/* .next/
+          zip -r rmud3-build.zip .next
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rmud3-build
+          path: rmud3-build.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: rmud3-build
+          path: .next
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: RMUD3
+          environment_name: RMUD3-Environment
+          version_label: 12345
+          region: us-east-1
+          deployment_package: rmud3-build.zip
