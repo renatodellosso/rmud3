@@ -1,1 +1,1 @@
-web: npm i -g cross-env; npm run start
+web: NODE_ENV=production; npm run start:prod
