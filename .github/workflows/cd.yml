@@ -8,11 +8,12 @@ permissions:
   packages: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     environment: Production
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -22,14 +23,6 @@ jobs:
 
       - name: Build project
         run: npm run build
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment: Production
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
 
       - name: Deploy via SSH
         uses: easingthemes/ssh-deploy@v5.1.0
@@ -41,7 +34,5 @@ jobs:
           SCRIPT_AFTER_REQUIRED: true
           SCRIPT_AFTER: |
             cd /home/${{ secrets.REMOTE_USER }}/rmud3
-            npm install
-            npm run build
             killall node
             &npm run start:prod 2>&1 server.log
