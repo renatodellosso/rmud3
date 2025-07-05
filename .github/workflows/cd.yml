@@ -41,6 +41,7 @@ jobs:
           SCRIPT_AFTER_REQUIRED: true
           SCRIPT_AFTER: |
             cd /home/${{ secrets.REMOTE_USER }}/rmud3
+            npm install
             npm run build
             killall node
             npm run start:prod
