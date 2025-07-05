@@ -39,4 +39,4 @@ jobs:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           SOURCE: "."
           TARGET: "/rmud3"
-          EXCLUDE: "/.git/, /node_modules/, /dist/, /coverage/, /.github/, /Dockerfile, /docker-compose.yml, /README.md, /.vscode/"
+          EXCLUDE: "/.next/ /.git/, /node_modules/, /dist/, /coverage/, /.github/, /Dockerfile, /docker-compose.yml, /README.md, /.vscode/"
