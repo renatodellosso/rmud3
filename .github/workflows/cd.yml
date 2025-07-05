@@ -23,7 +23,7 @@ jobs:
       - name: Build project
         run: npm run build
 
-  publish_package:
+  deploy:
     runs-on: ubuntu-latest
     needs: build
     environment: Production
