@@ -25,6 +25,9 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Insert .env
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
       - name: Deploy via SSH
         uses: easingthemes/ssh-deploy@v5.1.0
         with:
