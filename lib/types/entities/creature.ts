@@ -418,7 +418,20 @@ export class CreatureInstance extends EntityInstance {
    * @param duration in seconds
    */
   addStatusEffect(effect: StatusEffectToApply) {
-    effect;
+    let appliedEffect: StatusEffectToApply | undefined = effect;
+
+    for (const provider of this.getStatAndAbilityProviders()) {
+      if (provider.provider.getStatusEffectToApply) {
+        appliedEffect = provider.provider.getStatusEffectToApply(
+          this,
+          appliedEffect
+        );
+
+        if (!appliedEffect) {
+          return; // Effect was not applied
+        }
+      }
+    }
 
     const existing = this.statusEffects.find(
       (e) => e.definitionId === effect.id
@@ -456,26 +469,26 @@ export class CreatureInstance extends EntityInstance {
         );
         existing.strength = newStrength;
         existing.expiresAt.setTime(Date.now() + newDuration);
-        return;
+        break;
       case StatusEffectStacking.AddDurationMaxStrength:
         newStrength = Math.max(existing.strength, effect.strength);
         newDuration =
           existing.expiresAt.getTime() - Date.now() + effect.duration * 1000;
         existing.strength = newStrength;
         existing.expiresAt.setTime(Date.now() + newDuration);
-        return;
+        break;
       case StatusEffectStacking.AddStrengthAndDuration:
         newStrength = existing.strength + effect.strength;
         newDuration =
           existing.expiresAt.getTime() - Date.now() + effect.duration * 1000;
         existing.strength = newStrength;
         existing.expiresAt.setTime(Date.now() + newDuration);
-        return;
+        break;
       case StatusEffectStacking.MaxStrength:
         newStrength = Math.max(existing.strength, effect.strength);
         existing.strength = newStrength;
         // Keep the existing expiration time
-        return;
+        break;
       case StatusEffectStacking.MaxDuration:
         newDuration = Math.max(
           existing.expiresAt.getTime() - Date.now(),
@@ -483,8 +496,10 @@ export class CreatureInstance extends EntityInstance {
         );
         existing.expiresAt.setTime(Date.now() + newDuration);
         // Keep the existing strength
-        return;
+        break;
     }
+
+    def.onApply?.(this, existing);
   }
 
   /**

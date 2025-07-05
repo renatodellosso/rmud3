@@ -15,7 +15,9 @@ export type StatusEffectId =
   | "stoneskin"
   | "overcharged"
   | "haste"
-  | "blocking";
+  | "blocking"
+  | "suffocating"
+  | "amphibious";
 
 const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   stunned: {
@@ -169,6 +171,39 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
         amount: source.strength,
       },
     ],
+  },
+  suffocating: {
+    name: "Suffocating",
+    getDescription: (source) =>
+      `You are suffocating, taking ${(
+        source.strength * 100
+      ).toFixed()}% of your max health as damage each second.`,
+    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    tick: (creature, deltaTime, source) =>
+      creature.takeDamage(
+        [
+          {
+            amount: (source.strength / 100) * creature.getMaxHealth(),
+            type: DamageType.Suffocation,
+          },
+        ],
+        source,
+        creature
+      ),
+  },
+  amphibious: {
+    name: "Amphibious",
+    getDescription: (source) =>
+      `You can breathe underwater, ignoring suffocation effects.`,
+    stacking: StatusEffectStacking.AddStrengthMaxDuration,
+    getStatusEffectToApply: (creature, effect) =>
+      effect.id === "suffocating" ? undefined : effect,
+    onApply: (creature, source) => {
+      // If the creature is already suffocating, remove that effect
+      creature.statusEffects = creature.statusEffects.filter(
+        (se) => se.definitionId !== "suffocating"
+      );
+    },
   },
 };
 

@@ -2,6 +2,7 @@ import { WeightedTable } from "lib/types/WeightedTable";
 import { Encounter, FloorDefinition } from "./types";
 import { randomContainer } from "./populateDungeon";
 import { ItemId } from "lib/gamedata/items";
+import { CreatureInstance } from "lib/types/entities/creature";
 
 const floors: Record<string, FloorDefinition> = {
   sewers: {
@@ -809,6 +810,19 @@ const floors: Record<string, FloorDefinition> = {
       length: [16, 24],
       roomCount: [50, 80],
       exitCount: [6, 7],
+    },
+    tick: (entity, floor, deltaTime) => {
+      if (
+        entity instanceof CreatureInstance &&
+        !entity.statusEffects.some((se) => se.definitionId === "suffocating")
+      ) {
+        // Apply suffocation damage
+        entity.addStatusEffect({
+          id: "suffocating",
+          strength: 1,
+          duration: deltaTime,
+        });
+      }
     },
     populationOptions: {
       encounterChance: 0.8,

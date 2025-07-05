@@ -12,6 +12,10 @@ export type StatusEffectDefinition =
       creature: CreatureInstance,
       source: StatusEffectInstance
     ) => void;
+    onApply?: (
+      creature: CreatureInstance,
+      source: StatusEffectInstance
+    ) => void;
   };
 
 export type StatusEffectInstance = {

@@ -69,4 +69,8 @@ export default interface StatAndAbilityProvider<
     source: TSource,
     amount: number
   ) => number;
+  getStatusEffectToApply?: (
+    creature: CreatureInstance,
+    effect: StatusEffectToApply
+  ) => StatusEffectToApply | undefined;
 }

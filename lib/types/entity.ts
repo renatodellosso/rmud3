@@ -58,6 +58,11 @@ export class EntityInstance {
 
   tick(deltaTime: number) {
     entities[this.definitionId].tick?.(this, deltaTime);
+
+    if ("floor" in locations[this.location]) {
+      const floor = (locations[this.location] as DungeonLocation).floor;
+      floor.definition.tick?.(this, floor, deltaTime);
+    }
   }
 
   move(newLocationId: LocationId) {

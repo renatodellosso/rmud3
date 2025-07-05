@@ -28,6 +28,11 @@ export type FloorDefinition = {
   visualizerColor: string;
   layoutGenerationOptions: FloorLayoutGenerationOptions;
   populationOptions: FloorPopulationOptions;
+  tick?: (
+    entity: EntityInstance,
+    floor: FloorInstance,
+    deltaTime: number
+  ) => void;
 };
 
 export type FloorLayoutGenerationOptions = {
