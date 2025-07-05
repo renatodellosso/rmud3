@@ -38,4 +38,9 @@ jobs:
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: "/home/${{ secrets.REMOTE_USER }}/rmud3"
-          # EXCLUDE: "/.next/ /.git/, /node_modules/, /dist/, /coverage/, /.github/, /Dockerfile, /docker-compose.yml, /README.md, /.vscode/"
+          SCRIPT_AFTER_REQUIRED: true
+          SCRIPT_AFTER: |
+            cd /home/${{ secrets.REMOTE_USER }}/rmud3
+            npm run build
+            killall node
+            npm run start:prod
