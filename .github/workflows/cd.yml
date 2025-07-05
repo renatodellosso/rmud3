@@ -44,4 +44,4 @@ jobs:
             npm install
             npm run build
             killall node
-            npm run start:prod
+            &npm run start:prod 2>&1 server.log
