@@ -2,7 +2,7 @@ import { WeightedTable } from "lib/types/WeightedTable";
 import { Encounter, FloorDefinition } from "./types";
 import { randomContainer } from "./populateDungeon";
 import { ItemId } from "lib/gamedata/items";
-import { CreatureInstance } from "lib/types/entities/creature";
+import { PlayerInstance } from "lib/types/entities/player";
 
 const floors: Record<string, FloorDefinition> = {
   sewers: {
@@ -804,22 +804,22 @@ const floors: Record<string, FloorDefinition> = {
     depth: 9,
     visualizerColor: "#888888",
     layoutGenerationOptions: {
-      roomChance: 0.8,
-      connectionChance: 0.8,
-      width: [16, 24],
-      length: [16, 24],
+      roomChance: 0.65,
+      connectionChance: 0.9,
+      width: [20, 28],
+      length: [20, 28],
       roomCount: [50, 80],
       exitCount: [6, 7],
     },
     tick: (entity, floor, deltaTime) => {
       if (
-        entity instanceof CreatureInstance &&
+        entity instanceof PlayerInstance &&
         !entity.statusEffects.some((se) => se.definitionId === "suffocating")
       ) {
         // Apply suffocation damage
         entity.addStatusEffect({
           id: "suffocating",
-          strength: 1,
+          strength: 5,
           duration: deltaTime,
         });
       }
@@ -829,69 +829,74 @@ const floors: Record<string, FloorDefinition> = {
       maxEncounters: 3,
       encounters: new WeightedTable<Encounter>([
         {
-          item: "goblin",
-          amount: [1, 3],
-          weight: 2,
-        },
-        {
-          item: "goblinShaman",
-          amount: [1, 2],
+          item: "piranha",
+          amount: [3, 5],
           weight: 1,
         },
         {
-          item: "hobgoblin",
-          amount: [1, 2],
-          weight: 1,
+          item: "siren",
+          amount: 1,
+          weight: 0.5,
+        },
+        {
+          item: "giantSquid",
+          amount: 2,
+          weight: 0.5,
+        },
+        {
+          item: "bonecrusherCrab",
+          amount: 1,
+          weight: 0.5,
+        },
+        {
+          item: "octoCrab",
+          amount: 1,
+          weight: 0.5,
+        },
+        {
+          item: "hordecallerCrab",
+          amount: 1,
+          weight: 0.5,
         },
         {
           item: randomContainer(
-            "Barrel",
+            "Sunken Chest",
             new WeightedTable<ItemId>([
               {
                 item: "money",
-                amount: [25, 50],
-                weight: 2,
+                amount: [50, 100],
+                weight: 1,
               },
               {
-                item: "leather",
-                amount: [2, 4],
+                item: "salt",
+                amount: [1, 3],
                 weight: 0.5,
               },
               {
-                item: "bottle",
-                amount: [2, 3],
+                item: "coal",
+                amount: [1, 3],
                 weight: 0.5,
               },
               {
-                item: "rope",
-                amount: [3, 5],
+                item: "ironOre",
+                amount: [1, 5],
+                weight: 0.8,
+              },
+              {
+                item: "goldOre",
+                amount: [1, 3],
                 weight: 0.5,
               },
               {
-                item: "healthPotion",
+                item: "livingStone",
                 amount: [1, 2],
-                weight: 0.2,
-              },
-              {
-                item: "slimeJar",
-                amount: [1, 2],
-                weight: 0.2,
-              },
-              {
-                item: "hordeFlute",
-                amount: 1,
-                weight: 0.2,
-              },
-              {
-                item: "fireballRing",
-                amount: 1,
-                weight: 0.1,
+                weight: 0.3,
               },
             ]),
-            [1, 3]
+            [1, 2]
           ),
           amount: 1,
-          weight: 0.1,
+          weight: 0.2,
         },
       ]),
     },

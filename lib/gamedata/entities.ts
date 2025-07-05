@@ -27,7 +27,7 @@ import { ItemInstance } from "lib/types/item";
 import locations from "lib/locations";
 import reforgeInteraction from "./interactions/reforgeInteraction";
 import { DamageType } from "lib/types/Damage";
-import { AbilityOptions } from './Abilities';
+import { AbilityOptions } from "./Abilities";
 
 // Prefix summons with friendly
 
@@ -75,7 +75,15 @@ export type CreatureId =
   | "livingStatue"
   | "banshee"
   | "skeletonHero"
-  | "friendlySkeleton";
+  | "friendlySkeleton"
+  | "piranha"
+  | "siren"
+  | "giantSquid"
+  | "bonecrusherCrab"
+  | "octoCrab"
+  | "hordecallerCrab"
+  | "kraken"
+  | "friendlyGolem";
 
 export type EntityId =
   | CreatureId
@@ -2077,7 +2085,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             item: "venom",
             amount: [1, 2],
             weight: 1,
-          }
+          },
         ]),
         amount: 2,
         chance: 1,
@@ -2789,6 +2797,555 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     lootTable: new LootTable([]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
   },
+  piranha: {
+    name: "Piranha",
+    health: 30,
+    abilityScores: {
+      [AbilityScore.Strength]: 3,
+      [AbilityScore.Constitution]: 2,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 1, type: DamageType.Piercing }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Bite",
+        "A quick bite from the piranha.",
+        0.5,
+        [{ amount: 5, type: DamageType.Piercing }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 30,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "meat",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "bone",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "trollTooth",
+            amount: [1, 2],
+            weight: 0.5,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "demonScale",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.6,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  siren: {
+    name: "Siren",
+    health: 50,
+    abilityScores: {
+      [AbilityScore.Strength]: 2,
+      [AbilityScore.Constitution]: 3,
+      [AbilityScore.Intelligence]: 15,
+    },
+    damageResistances: [{ amount: 15, type: DamageType.Psychic }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Sonic Wail",
+        "A deafening wail that disorients foes.",
+        1,
+        [{ amount: 10, type: DamageType.Psychic }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Charm",
+        "Charm your target with a haunting melody.",
+        2,
+        [
+          {
+            id: "stunned",
+            strength: 20,
+            duration: 5,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 75,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "demonScale",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "enchantingSpirit",
+            amount: 1,
+            weight: 0.5,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  giantSquid: {
+    name: "Giant Squid",
+    health: 120,
+    abilityScores: {
+      [AbilityScore.Strength]: 8,
+      [AbilityScore.Constitution]: 7,
+      [AbilityScore.Intelligence]: 3,
+    },
+    damageResistances: [{ amount: 5, type: DamageType.Bludgeoning }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Tentacle Slam",
+        "A powerful slam with a tentacle.",
+        1,
+        [{ amount: 25, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.not(CanTarget.isAlly)] }
+      ),
+      Abilities.attackWithStatusEffect(
+        "Ink Spray",
+        "Sprays ink to blind and confuse enemies.",
+        2,
+        [{ amount: 20, type: DamageType.Poison }],
+        [
+          {
+            id: "stunned",
+            strength: 3,
+            duration: 5,
+          },
+          {
+            id: "cursed",
+            strength: 3,
+            duration: 5,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Fortify",
+        "Fortify your defenses with a shell.",
+        2,
+        [
+          {
+            id: "blocking",
+            strength: 20,
+            duration: 10,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isSelf] }
+      ),
+    ],
+    xpValue: 200,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "meat",
+            amount: [4, 6],
+            weight: 1,
+          },
+          {
+            item: "demonScale",
+            amount: [2, 3],
+            weight: 0.5,
+          },
+          {
+            item: "ink",
+            amount: [2, 4],
+            weight: 0.8,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+  },
+  bonecrusherCrab: {
+    name: "Bonecrusher Crab",
+    health: 40,
+    abilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 4,
+      [AbilityScore.Intelligence]: 1,
+    },
+    damageResistances: [{ amount: 2, type: DamageType.Bludgeoning }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Claw",
+        "A powerful claw strike from the bonecrusher crab.",
+        1,
+        [{ amount: 15, type: DamageType.Slashing }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attackWithStatusEffect(
+        "Crush",
+        "Crush your target with a powerful strike.",
+        2,
+        [{ amount: 20, type: DamageType.Bludgeoning }],
+        [
+          {
+            id: "poisoned",
+            strength: 2,
+            duration: 5,
+          },
+          {
+            id: "stunned",
+            strength: 2,
+            duration: 5,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 60,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "meat",
+            amount: [2, 4],
+            weight: 1,
+          },
+          {
+            item: "demonScale",
+            amount: [1, 2],
+            weight: 0.5,
+          },
+          {
+            item: "livingStone",
+            amount: [2, 3],
+            weight: 0.5,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "fortressShell",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.3,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  octoCrab: {
+    name: "Octo-Crab",
+    health: 80,
+    abilityScores: {
+      [AbilityScore.Strength]: 6,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 2,
+    },
+    damageResistances: [{ amount: 3, type: DamageType.Bludgeoning }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Tentacle Slam",
+        "A powerful slam with a tentacle.",
+        1,
+        [{ amount: 20, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attackWithStatusEffect(
+        "Ink Spray",
+        "Sprays ink to blind and confuse enemies.",
+        2,
+        [{ amount: 15, type: DamageType.Poison }],
+        [
+          {
+            id: "stunned",
+            strength: 3,
+            duration: 5,
+          },
+          {
+            id: "cursed",
+            strength: 3,
+            duration: 5,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Fortify",
+        "Fortify your defenses with a shell.",
+        2,
+        [
+          {
+            id: "blocking",
+            strength: 15,
+            duration: 10,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isSelf] }
+      ),
+    ],
+    xpValue: 100,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "meat",
+            amount: [3, 5],
+            weight: 1,
+          },
+          {
+            item: "demonScale",
+            amount: [1, 2],
+            weight: 0.5,
+          },
+          {
+            item: "ink",
+            amount: [1, 3],
+            weight: 0.8,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "midnightShell",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.3,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  hordecallerCrab: {
+    name: "Hordecaller Crab",
+    health: 100,
+    abilityScores: {
+      [AbilityScore.Strength]: 7,
+      [AbilityScore.Constitution]: 6,
+      [AbilityScore.Intelligence]: 3,
+    },
+    damageResistances: [{ amount: 4, type: DamageType.Bludgeoning }],
+    intrinsicAbilities: [
+      Abilities.summon(
+        "Summon Piranha Swarm",
+        "Calls forth a swarm of piranhas to assist in battle.",
+        3,
+        [{ id: "piranha", amount: 3 }]
+      ),
+      Abilities.summon(
+        "Summon Siren",
+        "Calls forth a siren to assist in battle.",
+        3,
+        [{ id: "siren", amount: 1 }]
+      ),
+      Abilities.summon("Summon Giant Squid", "Summons a giant squid.", 3, [
+        { id: "giantSquid", amount: 2 },
+      ]),
+    ],
+    xpValue: 200,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "meat",
+            amount: [5, 8],
+            weight: 1,
+          },
+          {
+            item: "demonScale",
+            amount: [2, 3],
+            weight: 0.5,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "hordeShell",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.3,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  kraken: {
+    name: "Kraken",
+    health: 300,
+    abilityScores: {
+      [AbilityScore.Strength]: 10,
+      [AbilityScore.Constitution]: 10,
+      [AbilityScore.Intelligence]: 25,
+    },
+    damageResistances: [{ amount: 10, type: DamageType.Bludgeoning }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Tentacle Slam",
+        "Slams a tentacle down on the target.",
+        1,
+        [{ amount: 20, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.summon(
+        "Call Minions",
+        "Calls forth smaller sea creatures to assist.",
+        3,
+        [
+          { id: "siren", amount: 2 },
+          { id: "piranha", amount: 4 },
+        ]
+      ),
+      Abilities.applyStatusEffect(
+        "Ink Spray",
+        "Sprays ink to blind enemies.",
+        2,
+        [
+          {
+            id: "stunned",
+            strength: 5,
+            duration: 5,
+          },
+          {
+            id: "cursed",
+            strength: 5,
+            duration: 5,
+          },
+          {
+            id: "poisoned",
+            strength: 5,
+            duration: 5,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 500,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ink",
+            amount: [1, 3],
+            weight: 1,
+          },
+          {
+            item: "demonScale",
+            amount: [2, 4],
+            weight: 0.5,
+          },
+        ]),
+        amount: 3,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "krakenShellFragment",
+            amount: [5, 10],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "krakenClawAxe",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "krakenToothDagger",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "krakenEyeNecklace",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  friendlyGolem: {
+    name: "Friendly Golem",
+    health: 100,
+    abilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [
+      { amount: 5, type: DamageType.Bludgeoning },
+      {
+        amount: 5,
+        type: DamageType.Piercing,
+      },
+      {
+        amount: 5,
+        type: DamageType.Slashing,
+      },
+    ],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Slam",
+        "A forceful slam from the friendly golem.",
+        1,
+        [{ amount: 25, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.not(CanTarget.isAlly)] }
+      ),
+      Abilities.applyStatusEffect(
+        "Harden",
+        "Harden your defenses.",
+        2,
+        [
+          {
+            id: "stoneskin",
+            strength: 10,
+            duration: 30,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isSelf] }
+      ),
+    ],
+    xpValue: 0,
+    lootTable: new LootTable([]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
 };
 
 const entities: Record<EntityId, EntityDefinition> = {
@@ -3015,6 +3572,33 @@ const entities: Record<EntityId, EntityDefinition> = {
             goblinScrap: 15,
           },
           new ItemInstance("hobspear", 1)
+        ),
+        new Recipe(
+          {
+            goldBar: 5,
+            enchantingSpirit: 3,
+            ink: 5,
+          },
+          new ItemInstance("enrapturingRing", 1)
+        ),
+        new Recipe(
+          {
+            goldBar: 5,
+            demonScale: 10,
+            ink: 4,
+            livingStone: 2,
+            livingWood: 2,
+          },
+          new ItemInstance("scaleChestplate", 1)
+        ),
+        new Recipe(
+          {
+            goldBar: 5,
+            demonScale: 10,
+            ink: 10,
+            ember: 3,
+          },
+          new ItemInstance("squidHelmet", 1)
         ),
       ])
     ),
@@ -3258,22 +3842,6 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
-            paper: 1,
-            money: 40,
-            ectoplasm: 1,
-          },
-          new ItemInstance("returnScroll", 1)
-        ),
-        new Recipe(
-          {
-            paper: 1,
-            ironOre: 3,
-            goldOre: 3,
-          },
-          new ItemInstance("teleportScroll3", 1)
-        ),
-        new Recipe(
-          {
             livingWood: 10,
             vine: 20,
             venom: 5,
@@ -3324,6 +3892,48 @@ const entities: Record<EntityId, EntityDefinition> = {
             treantSap: 2,
           },
           new ItemInstance("sequoia", 1)
+        ),
+        new Recipe(
+          {
+            mushroom: 1,
+            ember: 1,
+            coal: 3,
+          },
+          new ItemInstance("bubbleShroom", 1)
+        ),
+        new Recipe(
+          {
+            bubbleShroom: 5,
+            krakenShellFragment: 3,
+            demonScale: 5,
+          },
+          new ItemInstance("implantableGills", 1)
+        ),
+        new Recipe(
+          {
+            livingStone: 10,
+            livingWood: 10,
+            golemCore: 1,
+            enchantingSpirit: 1,
+          },
+          new ItemInstance("pocketGolem", 1)
+        ),
+        // Keep the teleport scrolls at the end
+        new Recipe(
+          {
+            paper: 1,
+            money: 40,
+            ectoplasm: 1,
+          },
+          new ItemInstance("returnScroll", 1)
+        ),
+        new Recipe(
+          {
+            paper: 1,
+            ironOre: 3,
+            goldOre: 3,
+          },
+          new ItemInstance("teleportScroll3", 1)
         ),
         new Recipe(
           {
@@ -3792,12 +4402,12 @@ const entities: Record<EntityId, EntityDefinition> = {
       reforgeInteraction(entity, player, interaction, action, "Reforge Anvil"),
   },
   lockedCoffin: {
-    name: "Locked Coffin",
+    name: "Locked Sarcophagus",
     interact: async (entity, player, interaction, action) => {
       if (player.inventory.getById("skeletonKey")?.amount === 0) {
         getIo().sendMsgToPlayer(
           player._id.toString(),
-          "This coffin is locked, but you have no key."
+          "This sarcophagus is locked, but you have no key."
         );
         return undefined;
       }

@@ -19,8 +19,8 @@ import { ItemTag, EquipmentSlot } from "lib/types/itemenums";
 import locations from "lib/locations";
 import { teleportScroll } from "./itemtemplate";
 import { StatusEffectToApply } from "lib/types/statuseffect";
-import { StatusEffectId } from './statusEffects';
-import { AbilityOptions } from './Abilities';
+import { StatusEffectId } from "./statusEffects";
+import { AbilityOptions } from "./Abilities";
 
 export type ItemId =
   | "bone"
@@ -144,7 +144,24 @@ export type ItemId =
   | "firebomb"
   | "dart"
   | "poisonDart"
-  | "ember";
+  | "ember"
+  | "bubbleShroom"
+  | "demonScale"
+  | "fortressShell"
+  | "midnightShell"
+  | "hordeShell"
+  | "shellHorn"
+  | "enchantingSpirit"
+  | "ink"
+  | "krakenShellFragment"
+  | "krakenClawAxe"
+  | "krakenToothDagger"
+  | "krakenEyeNecklace"
+  | "enrapturingRing"
+  | "scaleChestplate"
+  | "squidHelmet"
+  | "implantableGills"
+  | "pocketGolem";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -2045,6 +2062,297 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0.1,
     getSellValue: 50,
   },
+  bubbleShroom: {
+    getName: "Bubble Shroom",
+    tags: [ItemTag.Consumable],
+    description: `A shroom that releases a cloud of bubbles.`,
+    getWeight: 0.5,
+    getSellValue: 30,
+    getAbilities: (creature, item) => [
+      Abilities.applyStatusEffect("Eat", "Eat the bubble shroom.", 0, [
+        { id: "amphibious", strength: 1, duration: 180 },
+      ]),
+    ],
+  } satisfies ConsumableDefinition,
+  demonScale: {
+    getName: "Demon Scale",
+    tags: [],
+    description: `A scale from a demon.`,
+    getWeight: 0.5,
+    getSellValue: 50,
+  },
+  fortressShell: {
+    getName: "Fortress Shell",
+    tags: [],
+    description: `A sturdy shell that forms the fortress of a bonecrusher crab.`,
+    getWeight: 5,
+    getSellValue: 100,
+  },
+  midnightShell: {
+    getName: "Midnight Shell",
+    tags: [],
+    description: `A shell that seems to absorb light, but shimmers like the night sky.`,
+    getWeight: 5,
+    getSellValue: 100,
+  },
+  hordeShell: {
+    getName: "Horde Shell",
+    tags: [],
+    description: `A shell that seems to be made of many smaller shells, fused together.`,
+    getWeight: 5,
+    getSellValue: 100,
+  },
+  shellHorn: {
+    getName: "Shell Horn of the Deep",
+    tags: [ItemTag.Consumable],
+    description: `A horn made from a shell.`,
+    getWeight: 15,
+    getSellValue: 500,
+    getAbilities: (creature) =>
+      "floor" in locations[creature.location] &&
+      (locations[creature.location] as DungeonLocation).floor.definition
+        .name === "Flooded Caves"
+        ? [
+            Abilities.summon(
+              "Call Kraken",
+              "Blow into the shell, beckoning a kraken from the depths.",
+              0,
+              [
+                {
+                  id: "kraken",
+                  amount: 1,
+                },
+              ]
+            ),
+          ]
+        : [],
+  } satisfies ConsumableDefinition,
+  enchantingSpirit: {
+    getName: "Enchanting Spirit",
+    tags: [],
+    description: `A spirit that enchants those around it.`,
+    getWeight: 0.1,
+    getSellValue: 75,
+  },
+  ink: {
+    getName: "Ink",
+    tags: [],
+    description: `A vial of black ink.`,
+    getWeight: 0.1,
+    getSellValue: 5,
+  },
+  krakenShellFragment: {
+    getName: "Kraken Shell Fragment",
+    tags: [],
+    description: `A fragment of a kraken's shell, imbued with magical properties.`,
+    getWeight: 3,
+    getSellValue: 50,
+  },
+  krakenClawAxe: {
+    getName: "Kraken Claw",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: `An axe made from the claw of a kraken. It crackles with energy.`,
+    getWeight: 10,
+    getSellValue: 600,
+    getAbilities: (creature, item) => [
+      Abilities.attackWithStatusEffect(
+        "Kraken Slash",
+        "A powerful slash that channels the energy of the kraken.",
+        3,
+        [{ amount: 40, type: DamageType.Slashing }],
+        [
+          {
+            id: "stunned",
+            strength: 2,
+            duration: 5,
+          },
+        ]
+      ),
+      Abilities.attackWithStatusEffect(
+        "Kraken's Grasp",
+        "A strike that ensnares the target, dealing damage and applying a stun.",
+        4,
+        [{ amount: 30, type: DamageType.Slashing }],
+        [
+          {
+            id: "stunned",
+            strength: 2,
+            duration: 5,
+          },
+          {
+            id: "cursed",
+            strength: 3,
+            duration: 5,
+          },
+          {
+            id: "poisoned",
+            strength: 2,
+            duration: 5,
+          },
+        ]
+      ),
+    ],
+  } satisfies EquipmentDefinition,
+  krakenToothDagger: {
+    getName: "Kraken Tooth",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: `A dagger made from the tooth of a kraken. It glows with a faint light.`,
+    getWeight: 2,
+    getSellValue: 600,
+    getAbilities: (creature, item) => [
+      Abilities.attackWithStatusEffect(
+        "Kraken's Bite",
+        "A quick slash that channels the energy of the kraken.",
+        1.5,
+        [{ amount: 25, type: DamageType.Piercing }],
+        [
+          {
+            id: "poisoned",
+            strength: 3,
+            duration: 5,
+          },
+        ]
+      ),
+      Abilities.attackWithStatusEffect(
+        "Kraken's Sting",
+        "A strike that channels the energy of the kraken, dealing damage and applying a curse.",
+        2.5,
+        [{ amount: 20, type: DamageType.Piercing }],
+        [
+          {
+            id: "cursed",
+            strength: 2,
+            duration: 5,
+          },
+          {
+            id: "poisoned",
+            strength: 2,
+            duration: 5,
+          },
+        ]
+      ),
+    ],
+  } satisfies EquipmentDefinition,
+  krakenEyeNecklace: {
+    getName: "Kraken Eye Necklace",
+    tags: [ItemTag.Equipment],
+    description: `A necklace made from the eye of a kraken. Grants immunity to the cursed, poisoned, and suffocating effects.`,
+    getWeight: 0.5,
+    getSellValue: 600,
+    getStatusEffectToApply: (creature, effect) =>
+      effect.id === "cursed" ||
+      effect.id === "poisoned" ||
+      effect.id === "suffocating"
+        ? undefined
+        : effect,
+  } satisfies EquipmentDefinition,
+  enrapturingRing: {
+    getName: "Enrapturing Ring",
+    tags: [ItemTag.Equipment],
+    description: `A ring that enchants those around it, inflicting the stunned effect when you hit them.`,
+    getWeight: 0.1,
+    getSellValue: 300,
+    onAttack: (creature, target, source, damage) => {
+      target.addStatusEffect({
+        id: "stunned",
+        strength: creature.scaleAbility(2),
+        duration: creature.scaleAbility(3),
+      });
+    },
+  } satisfies EquipmentDefinition,
+  scaleChestplate: {
+    getName: "Demonic Scaleplate",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Chest,
+    description: `A chestplate made from demon scales. 
+      Provides excellent protection against physical damage and reduces the duration of curse effects on you by half.`,
+    getWeight: 5,
+    getSellValue: 400,
+    getDamageResistances: () => [
+      { amount: 10, type: DamageType.Piercing },
+      { amount: 8, type: DamageType.Slashing },
+      { amount: 8, type: DamageType.Bludgeoning },
+      { amount: 3, type: "*" },
+    ],
+    getStatusEffectToApply: (creature, effect) =>
+      effect.id === "cursed"
+        ? {
+            ...effect,
+            duration: effect.duration / 2, // Halve the duration of curse effects
+          }
+        : effect,
+  } satisfies EquipmentDefinition,
+  squidHelmet: {
+    getName: "Squid Helmet",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Head,
+    description: `A helmet made from the shell of a squid. 
+      Provides excellent protection against physical damage.`,
+    getWeight: 3,
+    getSellValue: 300,
+    getDamageResistances: () => [
+      { amount: 8, type: DamageType.Piercing },
+      { amount: 8, type: DamageType.Slashing },
+      { amount: 8, type: DamageType.Bludgeoning },
+      { amount: 3, type: "*" },
+    ],
+    getAbilities: (creature, item) => [
+      Abilities.applyStatusEffect(
+        "Ink Cloud",
+        "Release a cloud of ink, obscuring vision and slowing enemies.",
+        2,
+        [
+          {
+            id: "stunned",
+            strength: 3,
+            duration: 5,
+          },
+        ],
+        {
+          targetCount: 2,
+        }
+      ),
+      Abilities.applyStatusEffect("Ink Spray", "Spray ink at enemies.", 1, [
+        {
+          id: "stunned",
+          strength: 2,
+          duration: 3,
+        },
+      ]),
+    ],
+  } satisfies EquipmentDefinition,
+  implantableGills: {
+    getName: "Implantable Gills",
+    tags: [ItemTag.Equipment],
+    description: `A set of gills that can be implanted into a creature. Applies the amphibious status effect.`,
+    getWeight: 0.5,
+    getSellValue: 500,
+    tick: (creature, deltatime, source) => {
+      if (
+        !creature.statusEffects.some((s) => s.definitionId === "amphibious")
+      ) {
+        creature.addStatusEffect({
+          id: "amphibious",
+          strength: 1,
+          duration: deltatime,
+        });
+      }
+    },
+  } satisfies EquipmentDefinition,
+  pocketGolem: {
+    getName: "Pocket Golem",
+    tags: [ItemTag.Consumable],
+    description: `Disclaimer: Does not actually fit in your pocket.`,
+    getWeight: 25,
+    getSellValue: 300,
+    getAbilities: (creature, item) => [
+      Abilities.summon("Summon Golem", "Summon a golem to fight for you.", 10, [
+        { id: "friendlyGolem", amount: 1 },
+      ]),
+    ],
+  } satisfies ConsumableDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;
