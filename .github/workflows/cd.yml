@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -59,6 +62,3 @@ jobs:
 
       - name: Configure AWS
         run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} && aws configure set region us-east-1
-
-      - name: Deploy to ECS
-        run: aws ecs update-service --cluster gearbox --service gearbox --force-new-deployment
