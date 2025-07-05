@@ -37,4 +37,4 @@ jobs:
             PORT=80
             cd /home/${{ secrets.REMOTE_USER }}/rmud3
             killall node
-            npm run start:prod 2>&1 server.log &
+          # npm run start:prod 2>&1 server.log &
