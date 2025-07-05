@@ -10,6 +10,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: Production
     steps:
       - uses: actions/checkout@v4
       - name: Set up Node.js
@@ -62,3 +63,6 @@ jobs:
 
       - name: Configure AWS
         run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} && aws configure set region us-east-1
+
+      - name: Deploy to ECS
+        run: aws ecs update-service --cluster rmud3 --service rmud3 --force-new-deployment
