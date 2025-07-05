@@ -37,4 +37,4 @@ jobs:
             PORT=80
             cd /home/${{ secrets.REMOTE_USER }}/rmud3
             killall node
-            setsid npm run start:prod >/server.logl 2>&1 < /dev/null &
+            setsid npm run start:prod >home/ec2-user/server.log 2>&1 < /dev/null &
