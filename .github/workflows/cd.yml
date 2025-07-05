@@ -34,6 +34,7 @@ jobs:
           TARGET: "/home/${{ secrets.REMOTE_USER }}/rmud3"
           SCRIPT_AFTER_REQUIRED: true
           SCRIPT_AFTER: |
+            PORT=80
             cd /home/${{ secrets.REMOTE_USER }}/rmud3
             killall node
             npm run start:prod 2>&1 server.log &
