@@ -83,7 +83,11 @@ export type CreatureId =
   | "octoCrab"
   | "hordecallerCrab"
   | "kraken"
-  | "friendlyGolem";
+  | "friendlyGolem"
+  | "yeti"
+  | "iceGolem"
+  | "frostElemental"
+  | "frostGiant";
 
 export type EntityId =
   | CreatureId
@@ -1955,14 +1959,9 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       {
         item: new WeightedTable<ItemId>([
           {
-            item: "carvingStone",
-            amount: 1,
-            weight: 1,
-          },
-          {
             item: "golemCore",
             amount: 1,
-            weight: 1.5,
+            weight: 1,
           },
         ]),
         amount: 1,
@@ -2514,7 +2513,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           },
         ]),
         amount: 1,
-        chance: 1,
+        chance: 0.5,
       },
       {
         item: new WeightedTable<ItemId>([
@@ -3344,6 +3343,206 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ],
     xpValue: 0,
     lootTable: new LootTable([]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  yeti: {
+    name: "Yeti",
+    health: 100,
+    abilityScores: {
+      [AbilityScore.Strength]: 10,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 10, type: DamageType.Cold }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Slam",
+        "Slams down on the target.",
+        1.5,
+        [{ amount: 30, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attackWithStatusEffect(
+        "Frozen Breath",
+        "Blows freezing particles at the target.",
+        3,
+        [{ amount: 40, type: DamageType.Cold }],
+        [{ id: "frozen", strength: 20, duration: 5 }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 500,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ice",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "yetiFur",
+            amount: [1, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  iceGolem: {
+    name: "Ice Golem",
+    health: 150,
+    abilityScores: {
+      [AbilityScore.Strength]: 10,
+      [AbilityScore.Constitution]: 10,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 10, type: DamageType.Cold }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Slam",
+        "Slams down on the target.",
+        1,
+        [{ amount: 30, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 600,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "golemCore",
+            amount: 1,
+            weight: 0.5,
+          },
+        ]),
+        amount: 1,
+        chance: 0.5,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ice",
+            amount: [1, 4],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  frostElemental: {
+    name: "Frost Elemental",
+    health: 200,
+    abilityScores: {
+      [AbilityScore.Strength]: 10,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 5,
+    },
+    damageResistances: [{ amount: 15, type: DamageType.Cold }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Ice Spike",
+        "Imaple target with ice.",
+        2,
+        [{ amount: 50, type: DamageType.Piercing }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attackWithStatusEffectLocation(
+        "Snow Storm",
+        "Freezing winds and snow whirls around the room.",
+        1.5,
+        [{ amount: 25, type: DamageType.Cold }],
+        [{ id: "frozen", strength: 10, duration: 3 }],
+        true,
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 750,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ice",
+            amount: [1, 5],
+            weight: 1,
+          },
+          {
+            item: "frozenCrystal",
+            amount: [1, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  frostGiant: {
+    name: "Frost Giant",
+    health: 350,
+    abilityScores: {
+      [AbilityScore.Strength]: 10,
+      [AbilityScore.Constitution]: 10,
+      [AbilityScore.Intelligence]: 5,
+    },
+    damageResistances: [{ amount: 15, type: DamageType.Cold }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Ice Club",
+        "Bludgeoning club attack.",
+        2,
+        [{ amount: 60, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Protect",
+        "Significantly reduce damage taken.",
+        2,
+        [
+          { id: "stoneskin", strength: 10, duration: 2 },
+          { id: "blocking", strength: 10, duration: 2 },
+        ],
+        { targetRestrictions: [CanTarget.isSelf] }
+      ),
+    ],
+    xpValue: 1000,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ice",
+            amount: [1, 3],
+            weight: 1,
+          },
+          {
+            item: "giantTooth",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "blizzard",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.05,
+      },
+    ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
   },
 };

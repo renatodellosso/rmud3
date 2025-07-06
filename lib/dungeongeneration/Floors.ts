@@ -918,66 +918,36 @@ const floors: Record<string, FloorDefinition> = {
       maxEncounters: 3,
       encounters: new WeightedTable<Encounter>([
         {
-          item: "goblin",
-          amount: [1, 3],
-          weight: 2,
+          item: "yeti",
+          amount: 1,
+          weight: 1,
         },
         {
-          item: "goblinShaman",
+          item: "frostElemental",
           amount: [1, 2],
           weight: 1,
         },
         {
-          item: "hobgoblin",
+          item: "iceGolem",
           amount: [1, 2],
           weight: 1,
+        },
+        {
+          item: "frostGiant",
+          amount: 1,
+          weight: 0.5,
         },
         {
           item: randomContainer(
-            "Barrel",
+            "Ice Chunk",
             new WeightedTable<ItemId>([
               {
-                item: "money",
-                amount: [25, 50],
-                weight: 2,
-              },
-              {
-                item: "leather",
+                item: "ice",
                 amount: [2, 4],
-                weight: 0.5,
-              },
-              {
-                item: "bottle",
-                amount: [2, 3],
-                weight: 0.5,
-              },
-              {
-                item: "rope",
-                amount: [3, 5],
-                weight: 0.5,
-              },
-              {
-                item: "healthPotion",
-                amount: [1, 2],
-                weight: 0.2,
-              },
-              {
-                item: "slimeJar",
-                amount: [1, 2],
-                weight: 0.2,
-              },
-              {
-                item: "hordeFlute",
-                amount: 1,
-                weight: 0.2,
-              },
-              {
-                item: "fireballRing",
-                amount: 1,
-                weight: 0.1,
+                weight: 1,
               },
             ]),
-            [1, 3]
+            1
           ),
           amount: 1,
           weight: 0.1,

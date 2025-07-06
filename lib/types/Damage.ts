@@ -6,4 +6,5 @@ export enum DamageType {
   Fire = "Fire",
   Poison = "Poison",
   Suffocation = "Suffocation",
+  Cold = "Cold",
 }
