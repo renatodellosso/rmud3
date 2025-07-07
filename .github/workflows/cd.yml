@@ -38,5 +38,6 @@ jobs:
           SCRIPT_AFTER_REQUIRED: true
           SCRIPT_AFTER: |
             cd /home/${{ secrets.REMOTE_USER }}/rmud3
+            npm ci
             killall node
             setsid npm run start:prod > /home/${{ secrets.REMOTE_USER }}/server.log 2>&1 < /dev/null &
