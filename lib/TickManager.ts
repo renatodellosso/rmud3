@@ -14,8 +14,13 @@ export function startTicking() {
   }
 
   let lastTick = new Date().getTime();
+  let tickCount = 0;
 
   setInterval(() => {
+    const shouldLog = tickCount % 60 === 0;
+
+    if (shouldLog) console.time("Tick");
+
     const now = new Date().getTime();
     const delta = (now - lastTick) / 1000;
 
@@ -40,6 +45,13 @@ export function startTicking() {
         );
       }
     }
+
+    if (shouldLog) {
+      console.log(`Ticked ${toTick.length} creatures`);
+      console.timeEnd("Tick");
+    }
+
+    tickCount++;
   }, TICK_INTERVAL);
 
   let dungeonRegenerationCounter = 0;
