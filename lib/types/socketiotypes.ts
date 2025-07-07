@@ -14,6 +14,7 @@ export interface ServerToClientEvents {
 
 export interface ClientToServerEvents {
   hello: () => void;
+  ping: (callback: () => void) => void;
   signIn: (
     email: string,
     password: string,

@@ -1,6 +1,7 @@
 import { getXpForNextLevel } from "lib/gamedata/levelling";
 import Menu from "lib/types/Menu";
 import { GameState } from "lib/types/types";
+import LatencyDisplay from "./LatencyDisplay";
 
 export default function HeaderBar({
   gameState,
@@ -52,6 +53,7 @@ export default function HeaderBar({
           }
           className="h-full border"
         />
+        <LatencyDisplay />
       </div>
     </div>
   );

@@ -24,6 +24,10 @@ function registerSocketListeners(socket: TypedSocket) {
     socket.emit("hello");
   });
 
+  socket.on("ping", (callback) => {
+    callback();
+  });
+
   registerAuthListeners(socket);
   registerSaveListeners(socket);
   registerGameListeners(socket);
