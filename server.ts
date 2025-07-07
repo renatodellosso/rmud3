@@ -11,6 +11,7 @@ import { startTicking } from "lib/TickManager";
 dotenv.config();
 
 const nextPort = parseInt(process.env.PORT || "3000", 10);
+const socketPort = parseInt(process.env.SOCKET_PORT || "4000", 10);
 const dev = process.env.NODE_ENV !== "production";
 
 const app = next({ dev, turbopack: dev });
@@ -29,7 +30,8 @@ function startSocketIoServer(httpServer: Server) {
 
   registerListeners(io);
 
-  io.listen(httpServer);
+  if (dev) io.listen(socketPort);
+  else io.listen(httpServer);
   console.log(`> Socket.io server listening`);
 }
 
