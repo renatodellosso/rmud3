@@ -161,7 +161,12 @@ export type ItemId =
   | "scaleChestplate"
   | "squidHelmet"
   | "implantableGills"
-  | "pocketGolem";
+  | "pocketGolem"
+  | "ice"
+  | "yetiFur"
+  | "frozenCrystal"
+  | "giantTooth"
+  | "blizzard";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -2353,6 +2358,54 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       ]),
     ],
   } satisfies ConsumableDefinition,
+  ice: {
+    getName: "Ice",
+    tags: [],
+    description: "A glistening shard of ice.",
+    getWeight: 0.5,
+    getSellValue: 50,
+  },
+  yetiFur: {
+    getName: "Yeti Fur",
+    tags: [],
+    description: "This pure white fur is very soft and warm.",
+    getWeight: 0.5,
+    getSellValue: 100,
+  },
+  frozenCrystal: {
+    getName: "Frozen Crystal",
+    tags: [],
+    description: "An intricate and beautiful blue crystal.",
+    getWeight: 0.2,
+    getSellValue: 500,
+  },
+  giantTooth: {
+    getName: "Giant Tooth",
+    tags: [],
+    description: "This tooth is the size of your head.",
+    getWeight: 1,
+    getSellValue: 200,
+  },
+  blizzard: {
+    getName: "Blizzard",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: `A giant club. It feels cold to hold`,
+    getWeight: 20,
+    getSellValue: 1000,
+    getAbilities: (creature, item) => [
+      Abilities.attack("Giant Blow", "Strike for heavy damage.", 2, [
+        { amount: 65, type: DamageType.Bludgeoning },
+        { amount: 15, type: DamageType.Cold }
+      ]),
+      Abilities.applyStatusEffect(
+        "Freeze",
+        "Freeze target for 5 seconds, increasing cooldowns.",
+        4,
+        [{ id: "frozen", strength: 20, duration: 5 }],
+      ),
+    ],
+  } satisfies EquipmentDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;

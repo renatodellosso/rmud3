@@ -17,7 +17,8 @@ export type StatusEffectId =
   | "haste"
   | "blocking"
   | "suffocating"
-  | "amphibious";
+  | "amphibious"
+  | "frozen";
 
 const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   stunned: {
@@ -203,6 +204,15 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
       creature.statusEffects = creature.statusEffects.filter(
         (se) => se.definitionId !== "suffocating"
       );
+    },
+  },
+  frozen: {
+    name: "Frozen",
+    getDescription: (source) =>
+      "You are freezing, increasing cooldown lengths.",
+    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    getCooldown: (creature, source, ability, cooldown) => {
+      return cooldown * (1 + source.strength / 100);
     },
   },
 };

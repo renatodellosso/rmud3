@@ -217,6 +217,120 @@ export function attackWithStatusEffect(
   };
 }
 
+export function attackLocation(
+  name: string,
+  getDescription: OptionalFunc<string, CreatureInstance>,
+  getCooldown: OptionalFunc<number, CreatureInstance>,
+  damage: DamageWithType[],
+  targetAlly: boolean,
+  options: AbilityOptions = {}
+): Ability {
+  const { activate: attackFunc, getDescription: attackDescription } = attack(
+    name,
+    getDescription,
+    getCooldown,
+    damage,
+    options
+  );
+
+  return {
+    name,
+    getDescription: addToDescription(
+      getDescription,
+      `Inflicts ${damage.map((d) => `${d.amount} ${d.type} to all targets in a room`)}.`
+    ),
+    getCooldown,
+    getTargetCount: options.targetCount ?? 1,
+    canTarget: CanTarget.and(
+      CanTarget.isTargetALocation,
+      ...(options.targetRestrictions ?? [])
+    ),
+    activate: (
+      creature: CreatureInstance,
+      targets: Targetable[],
+      source: AbilitySource
+    ) => {
+      const target = targets[0] as Location;
+
+      for (let entity of Array.from(target.entities)) {
+        if (
+          (targetAlly && CanTarget.isAlly(creature, entity)) ||
+          (!targetAlly && !CanTarget.isAlly(creature, entity))
+        ) {
+          attackFunc(creature, [target], source);
+        }
+      }
+
+      return true;
+    },
+  };
+}
+
+export function attackWithStatusEffectLocation(
+  name: string,
+  getDescription: OptionalFunc<string, CreatureInstance>,
+  getCooldown: OptionalFunc<number, CreatureInstance>,
+  damage: DamageWithType[],
+  statusEffectsToApply: StatusEffectToApply[],
+  targetAlly: boolean,
+  options: AbilityOptions = {}
+): Ability {
+  const { onActivate, ...otherOptions } = options;
+
+  const { activate: attackFunc, getDescription: attackDescription } = attack(
+    name,
+    getDescription,
+    getCooldown,
+    damage,
+    options
+  );
+  const {
+    activate: applyStatusEffectFunc,
+    getDescription: applyStatusEffectDescription,
+  } = applyStatusEffect(
+    name,
+    attackDescription as OptionalFunc<string, CreatureInstance>,
+    getCooldown,
+    statusEffectsToApply,
+    otherOptions
+  );
+
+  return {
+    name,
+    getDescription: addToDescription(
+      getDescription,
+      `Inflicts ${damage.map(
+        (d) => `${d.amount} ${d.type} to all targets in a room`
+      )}.`
+    ),
+    getCooldown,
+    getTargetCount: options.targetCount ?? 1,
+    canTarget: CanTarget.and(
+      CanTarget.isTargetALocation,
+      ...(options.targetRestrictions ?? [])
+    ),
+    activate: (
+      creature: CreatureInstance,
+      targets: Targetable[],
+      source: AbilitySource
+    ) => {
+      const target = targets[0] as Location;
+
+      for (let entity of Array.from(target.entities)) {
+        if (
+          (targetAlly && CanTarget.isAlly(creature, entity)) ||
+          (!targetAlly && !CanTarget.isAlly(creature, entity))
+        ) {
+          attackFunc(creature, [target], source);
+          applyStatusEffectFunc(creature, [target], source);
+        }
+      }
+
+      return true;
+    },
+  };
+}
+
 export function heal(
   name: string,
   getDescription: OptionalFunc<string, CreatureInstance>,
