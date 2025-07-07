@@ -18,7 +18,8 @@ export type StatusEffectId =
   | "blocking"
   | "suffocating"
   | "amphibious"
-  | "frozen";
+  | "frozen"
+  | "fireImmune";
 
 const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   stunned: {
@@ -214,6 +215,20 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     getCooldown: (creature, source, ability, cooldown) => {
       return cooldown * (1 + source.strength / 100);
     },
+  },
+  fireImmune: {
+    name: "Fire Immune",
+    getDescription: (source) =>
+      "You are immune to the burning effect. Reduces fire damage by 20",
+    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    getDamageResistances: (creature, source) => [
+      {
+        type: DamageType.Fire,
+        amount: 20,
+      },
+    ],
+    getStatusEffectToApply: (creature, effect) =>
+      effect.id === "burning" ? undefined : effect,
   },
 };
 

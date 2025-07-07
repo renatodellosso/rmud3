@@ -8,7 +8,6 @@ import { PlayerInstance } from "lib/types/entities/player";
 import { getIo } from "lib/ClientFriendlyIo";
 import Guild from "lib/types/Guild";
 import { chance, savePlayer } from "lib/utils";
-import reforges from "../gamedata/Reforges";
 import * as CanTarget from "lib/gamedata/CanTarget";
 import { Location } from "lib/types/Location";
 import { DungeonLocation } from "lib/dungeongeneration/types";
@@ -18,9 +17,6 @@ import AbilityScore from "lib/types/AbilityScore";
 import { ItemTag, EquipmentSlot } from "lib/types/itemenums";
 import locations from "lib/locations";
 import { teleportScroll } from "./itemtemplate";
-import { StatusEffectToApply } from "lib/types/statuseffect";
-import { StatusEffectId } from "./statusEffects";
-import { AbilityOptions } from "./Abilities";
 
 export type ItemId =
   | "bone"
@@ -111,6 +107,10 @@ export type ItemId =
   | "paper"
   | "returnScroll"
   | "teleportScroll3"
+  | "teleportScroll5"
+  | "teleportScroll7"
+  | "teleportScroll9"
+  | "teleportScroll11"
   | "vine"
   | "livingWood"
   | "hoof"
@@ -121,8 +121,6 @@ export type ItemId =
   | "treantMask"
   | "amuletOfTheCentaur"
   | "sequoia"
-  | "teleportScroll5"
-  | "teleportScroll7"
   | "skeletonKey"
   | "golemCore"
   | "livingStone"
@@ -166,7 +164,17 @@ export type ItemId =
   | "yetiFur"
   | "frozenCrystal"
   | "giantTooth"
-  | "blizzard";
+  | "blizzard"
+  | "volcanicAmulet"
+  | "magmaSlimeEgg"
+  | "volcanicOmelet"
+  | "dragonScale"
+  | "wyvernHeart"
+  | "dragonHead"
+  | "beastScaleArmor"
+  | "flamebane"
+  | "dragonfireRing"
+  | "wingedBackpack";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -1515,6 +1523,10 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
   } satisfies ConsumableDefinition,
   teleportScroll3: teleportScroll(3),
+  teleportScroll5: teleportScroll(5),
+  teleportScroll7: teleportScroll(7),
+  teleportScroll9: teleportScroll(9),
+  teleportScroll11: teleportScroll(11),
   vine: {
     getName: "Vine",
     description: "A long, twisted vine.",
@@ -1654,8 +1666,6 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     ],
     getDamageResistances: () => [{ amount: 3, type: DamageType.Poison }],
   } satisfies EquipmentDefinition,
-  teleportScroll5: teleportScroll(5),
-  teleportScroll7: teleportScroll(7),
   skeletonKey: {
     getName: "Skeleton Key",
     description:
@@ -2396,15 +2406,178 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getAbilities: (creature, item) => [
       Abilities.attack("Giant Blow", "Strike for heavy damage.", 2, [
         { amount: 65, type: DamageType.Bludgeoning },
-        { amount: 15, type: DamageType.Cold }
+        { amount: 15, type: DamageType.Cold },
       ]),
       Abilities.applyStatusEffect(
         "Freeze",
         "Freeze target for 5 seconds, increasing cooldowns.",
         4,
-        [{ id: "frozen", strength: 20, duration: 5 }],
+        [{ id: "frozen", strength: 20, duration: 5 }]
       ),
     ],
+  } satisfies EquipmentDefinition,
+  volcanicAmulet: {
+    getName: "Volcanic Amulet",
+    tags: [ItemTag.Equipment],
+    description: `An amulet that protects its wearer from fire and lava. 
+      Reduces fire damage taken by 10 and halves the duration and strength of burning effects.`,
+    getWeight: 0.5,
+    getSellValue: 1000,
+    getDamageResistances: [
+      { amount: 10, type: DamageType.Fire },
+      { amount: 3, type: "*" },
+    ],
+    getStatusEffectToApply: (creature, effect) =>
+      effect.id === "burning"
+        ? {
+            id: effect.id,
+            strength: effect.strength / 2,
+            duration: effect.duration / 2,
+          }
+        : effect,
+  } satisfies EquipmentDefinition,
+  magmaSlimeEgg: {
+    getName: "Magma Slime Egg",
+    tags: [],
+    description: `A pulsating sac of magma slime.`,
+    getWeight: 5,
+    getSellValue: 500,
+  },
+  volcanicOmelet: {
+    getName: "Volcanic Omelet",
+    tags: [ItemTag.Consumable],
+    description: `A spicy omelet made from a magma slime egg. Applies fire immunity for 300s.`,
+    getWeight: 1,
+    getSellValue: 500,
+    getAbilities: [
+      Abilities.applyStatusEffect(
+        "Eat",
+        "Eat the volcanic omelet.",
+        0,
+        [
+          {
+            id: "fireImmune",
+            strength: 1,
+            duration: 300, // Duration in seconds
+          },
+        ],
+        {
+          targetRestrictions: [CanTarget.isSelf],
+        }
+      ),
+    ],
+  } satisfies ConsumableDefinition,
+  dragonScale: {
+    getName: "Dragon Scale",
+    tags: [],
+    description: `A scale from a dragon.`,
+    getWeight: 2,
+    getSellValue: 1000,
+  },
+  wyvernHeart: {
+    getName: "Wyvern Heart",
+    tags: [],
+    description: `The still-beating heart of a wyvern.`,
+    getWeight: 15,
+    getSellValue: 2000,
+  },
+  dragonHead: {
+    getName: "Dragon Head",
+    tags: [],
+    description: `The severed head of a dragon.`,
+    getWeight: 50,
+    getSellValue: 5000,
+  },
+  beastScaleArmor: {
+    getName: "Beast Scalemail",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Chest,
+    description: `Armor made from dragon and demon scales, reinforced with kraken shells.`,
+    getWeight: 8,
+    getSellValue: 5000,
+    getDamageResistances: [
+      { amount: 15, type: "*" },
+      { amount: 25, type: DamageType.Fire },
+      { amount: 25, type: DamageType.Poison },
+    ],
+    getDamageBonuses: [
+      { amount: 10, type: DamageType.Slashing },
+      { amount: 10, type: DamageType.Piercing },
+      { amount: 10, type: DamageType.Bludgeoning },
+    ],
+    getAbilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 15,
+    },
+    onAttack: (creature, target, source, damage) => {
+      target.addStatusEffect({
+        id: "cursed",
+        strength: creature.scaleAbility(5),
+        duration: creature.scaleAbility(5),
+      });
+    },
+  } satisfies EquipmentDefinition,
+  flamebane: {
+    getName: "Flamebane",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: `A sword that burns with an icy flame.`,
+    getWeight: 12,
+    getSellValue: 3000,
+    getAbilities: [
+      Abilities.applyStatusEffect(
+        "Freeze/Burn",
+        "Freeze and burn the target for 10 seconds.",
+        4,
+        [
+          { id: "frozen", strength: 20, duration: 10 },
+          { id: "burning", strength: 5, duration: 10 },
+        ]
+      ),
+      Abilities.attack("Icy Thrust", "A piercing thrust of icy energy.", 1.5, [
+        { amount: 40, type: DamageType.Piercing },
+        { amount: 15, type: DamageType.Cold },
+      ]),
+      Abilities.attack(
+        "Flame Slash",
+        "A slashing attack of fiery energy.",
+        1.5,
+        [
+          { amount: 40, type: DamageType.Slashing },
+          { amount: 15, type: DamageType.Fire },
+        ]
+      ),
+    ],
+  } satisfies EquipmentDefinition,
+  dragonfireRing: {
+    getName: "Dragonfire Ring",
+    tags: [ItemTag.Equipment],
+    description: `A ring that enhances fire spells.`,
+    getWeight: 0.1,
+    getSellValue: 1500,
+    getAbilityScores: {
+      [AbilityScore.Intelligence]: 5,
+    },
+    getDamageBonuses: [{ amount: 5, type: DamageType.Fire }],
+    getAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Fireball",
+        "Unleash a powerful fireball.",
+        10,
+        [{ amount: 50, type: DamageType.Fire }],
+        [{ id: "burning", strength: 10, duration: 5 }]
+      ),
+    ],
+  } satisfies EquipmentDefinition,
+  wingedBackpack: {
+    getName: "Winged Backpack",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Back,
+    description: `A backpack with wings that hold it aloft.`,
+    getWeight: 0,
+    getSellValue: 2000,
+    getCarryingCapacity: 250,
   } satisfies EquipmentDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 

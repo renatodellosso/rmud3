@@ -27,7 +27,7 @@ import { ItemInstance } from "lib/types/item";
 import locations from "lib/locations";
 import reforgeInteraction from "./interactions/reforgeInteraction";
 import { DamageType } from "lib/types/Damage";
-import { AbilityOptions } from "./Abilities";
+import { Location } from "lib/types/Location";
 
 // Prefix summons with friendly
 
@@ -87,7 +87,13 @@ export type CreatureId =
   | "yeti"
   | "iceGolem"
   | "frostElemental"
-  | "frostGiant";
+  | "frostGiant"
+  | "magmaElemental"
+  | "volcanoSpirit"
+  | "magmaSlime"
+  | "wyvern"
+  | "animatedLavaFlow"
+  | "dragon";
 
 export type EntityId =
   | CreatureId
@@ -3545,6 +3551,420 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
   },
+  magmaElemental: {
+    name: "Magma Elemental",
+    health: 250,
+    abilityScores: {
+      [AbilityScore.Strength]: 12,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 3,
+    },
+    damageResistances: [{ amount: 100, type: DamageType.Fire }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Lava Burst",
+        "Unleash a burst of lava at the target.",
+        2,
+        [{ amount: 40, type: DamageType.Fire }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      {
+        name: "Magma Eruption",
+        getDescription: "Erupts magma around itself, damaging nearby enemies.",
+        getCooldown: 3,
+        getTargetCount: 1,
+        canTarget: CanTarget.isTargetALocation,
+        activate: (self, targets) => {
+          const location = targets[0] as Location;
+
+          for (const entity of Array.from(location.entities)) {
+            if (CanTarget.isAlly(self, entity)) {
+              (entity as CreatureInstance).addStatusEffect({
+                id: "burning",
+                strength: 5,
+                duration: 10,
+              });
+            }
+          }
+
+          getIo().sendMsgToRoom(
+            location.id,
+            "Magma erupts from the ground, scorching everything nearby!"
+          );
+
+          return true;
+        },
+      },
+    ],
+    xpValue: 850,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ember",
+            amount: [1, 3],
+            weight: 1,
+          },
+          {
+            item: "livingStone",
+            amount: [1, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  volcanoSpirit: {
+    name: "Volcano Spirit",
+    health: 300,
+    abilityScores: {
+      [AbilityScore.Strength]: 15,
+      [AbilityScore.Constitution]: 10,
+      [AbilityScore.Intelligence]: 5,
+    },
+    damageResistances: [{ amount: 100, type: DamageType.Fire }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Lava Burst",
+        "Unleash a burst of lava at the target.",
+        2,
+        [{ amount: 50, type: DamageType.Fire }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attackWithStatusEffectLocation(
+        "Volcanic Eruption",
+        "Erupts magma around itself, damaging nearby enemies.",
+        1.5,
+        [{ amount: 30, type: DamageType.Fire }],
+        [{ id: "burning", strength: 10, duration: 10 }],
+        true,
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 1200,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ember",
+            amount: [2, 5],
+            weight: 1,
+          },
+          {
+            item: "livingStone",
+            amount: [2, 4],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "volcanicAmulet",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  magmaSlime: {
+    name: "Magma Slime",
+    health: 80,
+    abilityScores: {
+      [AbilityScore.Strength]: 8,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 50, type: DamageType.Fire }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Lava Splash",
+        "Splashes lava at the target.",
+        1,
+        [{ amount: 20, type: DamageType.Fire }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Heat Aura",
+        "Emits a heat aura that damages nearby enemies.",
+        2,
+        [
+          {
+            id: "burning",
+            strength: 5,
+            duration: 5,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 150,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ember",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "ashes",
+            amount: [3, 5],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "slime",
+            amount: [5, 10],
+            weight: 1,
+          },
+          {
+            item: "magmaSlimeEgg",
+            amount: 1,
+            weight: 0.2,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  wyvern: {
+    name: "Wyvern",
+    health: 400,
+    abilityScores: {
+      [AbilityScore.Strength]: 15,
+      [AbilityScore.Constitution]: 10,
+      [AbilityScore.Intelligence]: 5,
+    },
+    damageResistances: [{ amount: 20, type: DamageType.Fire }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Fire Breath",
+        "Breathes fire at the target.",
+        2,
+        [{ amount: 60, type: DamageType.Fire }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attackWithStatusEffectLocation(
+        "Flame Wave",
+        "Unleashes a wave of flame around itself.",
+        1.5,
+        [{ amount: 40, type: DamageType.Fire }],
+        [{ id: "burning", strength: 15, duration: 10 }],
+        true,
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attackWithStatusEffect(
+        "Claw",
+        "Slashes at the target with claws.",
+        1,
+        [{ amount: 30, type: DamageType.Slashing }],
+        [{ id: "poisoned", strength: 5, duration: 5 }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 1500,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ember",
+            amount: [3, 6],
+            weight: 1,
+          },
+          {
+            item: "dragonScale",
+            amount: [1, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "wyvernHeart",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.4,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  animatedLavaFlow: {
+    name: "Animated Lava Flow",
+    health: 200,
+    abilityScores: {
+      [AbilityScore.Strength]: 10,
+      [AbilityScore.Constitution]: 10,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 100, type: DamageType.Fire }],
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Lash",
+        "Reach out with a fiery lash.",
+        2,
+        [{ amount: 40, type: DamageType.Fire }],
+        [
+          {
+            id: "burning",
+            strength: 4,
+            duration: 25,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 500,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ember",
+            amount: [2, 4],
+            weight: 1,
+          },
+          {
+            item: "livingStone",
+            amount: [1, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  dragon: {
+    name: "Dragon",
+    health: 1000,
+    abilityScores: {
+      [AbilityScore.Strength]: 25,
+      [AbilityScore.Constitution]: 25,
+      [AbilityScore.Intelligence]: 25,
+    },
+    damageResistances: [
+      { amount: 150, type: DamageType.Fire },
+      { amount: 50, type: DamageType.Poison },
+      { amount: 15, type: "*" },
+    ],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Fire Breath",
+        "Breathes fire at the target.",
+        3,
+        [{ amount: 100, type: DamageType.Fire }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attackWithStatusEffectLocation(
+        "Inferno",
+        "Unleashes a massive wave of flame around itself.",
+        2,
+        [{ amount: 80, type: DamageType.Fire }],
+        [{ id: "burning", strength: 20, duration: 15 }],
+        true,
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attackWithStatusEffect(
+        "Claw Swipe",
+        "Slashes at the target with claws.",
+        1.5,
+        [{ amount: 70, type: DamageType.Slashing }],
+        [{ id: "poisoned", strength: 10, duration: 10 }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Dragon's Might",
+        "Empowers itself, increasing its damage output.",
+        3,
+        [
+          {
+            id: "overcharged",
+            strength: 20,
+            duration: 10,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isSelf] }
+      ),
+      Abilities.summon("Wyrmcall", "Summons lesser dragons to assist.", 3, [
+        { id: "wyvern", amount: 2 },
+      ]),
+    ],
+    xpValue: 5000,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "money",
+            amount: [3000, 5000],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ashes",
+            amount: [10, 20],
+            weight: 1,
+          },
+          {
+            item: "ember",
+            amount: [10, 20],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "dragonScale",
+            amount: [15, 20],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "dragonHead",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+  },
 };
 
 const entities: Record<EntityId, EntityDefinition> = {
@@ -3799,6 +4219,33 @@ const entities: Record<EntityId, EntityDefinition> = {
           },
           new ItemInstance("squidHelmet", 1)
         ),
+        new Recipe(
+          {
+            krakenShellFragment: 5,
+            ember: 5,
+            ice: 5,
+          },
+          new ItemInstance("flamebane", 1)
+        ),
+        new Recipe(
+          {
+            fireballRing: 1,
+            ember: 5,
+            dragonScale: 1,
+            dreamingDust: 5,
+          },
+          new ItemInstance("dragonfireRing", 1)
+        ),
+        new Recipe(
+          {
+            demonScale: 15,
+            krakenShellFragment: 10,
+            dragonScale: 10,
+            wakingDust: 5,
+            dreamingDust: 5,
+          },
+          new ItemInstance("beastScaleArmor", 1)
+        ),
       ])
     ),
   },
@@ -3876,6 +4323,13 @@ const entities: Record<EntityId, EntityDefinition> = {
             goblinIdol: 1,
           },
           new ItemInstance("goblinScrap", 3)
+        ),
+        new Recipe(
+          {
+            magmaSlimeEgg: 1,
+            salt: 5,
+          },
+          new ItemInstance("volcanicOmelet", 1)
         ),
       ])
     ),
@@ -4117,6 +4571,16 @@ const entities: Record<EntityId, EntityDefinition> = {
           },
           new ItemInstance("pocketGolem", 1)
         ),
+        new Recipe(
+          {
+            fungalBackpack: 1,
+            ember: 5,
+            dragonScale: 4,
+            krakenShellFragment: 4,
+            wyvernHeart: 1,
+          },
+          new ItemInstance("wingedBackpack", 1)
+        ),
         // Keep the teleport scrolls at the end
         new Recipe(
           {
@@ -4149,6 +4613,23 @@ const entities: Record<EntityId, EntityDefinition> = {
             ashes: 1,
           },
           new ItemInstance("teleportScroll7", 1)
+        ),
+        new Recipe(
+          {
+            paper: 1,
+            ink: 1,
+            enchantingSpirit: 1,
+          },
+          new ItemInstance("teleportScroll9", 1)
+        ),
+        new Recipe(
+          {
+            paper: 1,
+            ember: 1,
+            dragonScale: 1,
+            krakenShellFragment: 1,
+          },
+          new ItemInstance("teleportScroll11", 1)
         ),
       ])
     ),

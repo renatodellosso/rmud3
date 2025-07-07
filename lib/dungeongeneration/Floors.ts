@@ -960,10 +960,10 @@ const floors: Record<string, FloorDefinition> = {
     depth: 11,
     visualizerColor: "#888888",
     layoutGenerationOptions: {
-      roomChance: 0.8,
+      roomChance: 0.7,
       connectionChance: 0.8,
-      width: [16, 24],
-      length: [16, 24],
+      width: [20, 28],
+      length: [12, 20],
       roomCount: [50, 80],
       exitCount: [6, 7],
     },
@@ -972,67 +972,32 @@ const floors: Record<string, FloorDefinition> = {
       maxEncounters: 3,
       encounters: new WeightedTable<Encounter>([
         {
-          item: "goblin",
-          amount: [1, 3],
-          weight: 2,
+          item: "magmaElemental",
+          amount: 1,
+          weight: 1,
         },
         {
-          item: "goblinShaman",
+          item: "volcanoSpirit",
+          amount: 1,
+          weight: 1,
+        },
+        {
+          item: "magmaSlime",
+          amount: [2, 3],
+          weight: 1,
+        },
+        {
+          item: "animatedLavaFlow",
           amount: [1, 2],
           weight: 1,
         },
         {
-          item: "hobgoblin",
-          amount: [1, 2],
-          weight: 1,
+          item: "wyvern",
+          amount: 1,
+          weight: 0.4,
         },
         {
-          item: randomContainer(
-            "Barrel",
-            new WeightedTable<ItemId>([
-              {
-                item: "money",
-                amount: [25, 50],
-                weight: 2,
-              },
-              {
-                item: "leather",
-                amount: [2, 4],
-                weight: 0.5,
-              },
-              {
-                item: "bottle",
-                amount: [2, 3],
-                weight: 0.5,
-              },
-              {
-                item: "rope",
-                amount: [3, 5],
-                weight: 0.5,
-              },
-              {
-                item: "healthPotion",
-                amount: [1, 2],
-                weight: 0.2,
-              },
-              {
-                item: "slimeJar",
-                amount: [1, 2],
-                weight: 0.2,
-              },
-              {
-                item: "hordeFlute",
-                amount: 1,
-                weight: 0.2,
-              },
-              {
-                item: "fireballRing",
-                amount: 1,
-                weight: 0.1,
-              },
-            ]),
-            [1, 3]
-          ),
+          item: "dragon",
           amount: 1,
           weight: 0.1,
         },
