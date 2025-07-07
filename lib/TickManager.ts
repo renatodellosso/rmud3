@@ -1,14 +1,12 @@
-import { CreatureInstance } from "./types/entities/creature";
-import { getSingleton } from "./utils";
 import { regenerateDungeon } from "./dungeongeneration/regenerateDungeon";
 import { getIo } from "./ClientFriendlyIo";
+import locations from "./locations";
+import { EntityInstance } from "./types/entity";
 
 const TICK_INTERVAL = 1000; // 1 second
 const REGENERATE_DUNGEON_INTERVAL = 30 * 60 * 1000; // 30 minutes
 
 export function startTicking() {
-  const locations = getSingleton("locations");
-
   if (!locations) {
     throw new Error("Locations singleton not found");
   }
@@ -26,11 +24,20 @@ export function startTicking() {
 
     lastTick = now;
 
-    // Expand to include world objects later
-    const toTick: CreatureInstance[] = [];
+    const locationsWithPlayers = getLocationsByIfTheyHavePlayers();
+
+    const toTick: EntityInstance[] = [];
 
     for (const location of Object.values(locations)) {
-      for (const creature of location.entities) {
+      // If there are no players in this location or adjacent locations, don't tick entities here
+      if (
+        !locationsWithPlayers[location.id] &&
+        !Array.from(location.exits).some((e) => locationsWithPlayers[e])
+      ) {
+        continue;
+      }
+
+      for (const creature of Array.from(location.entities)) {
         toTick.push(creature);
       }
     }
@@ -90,4 +97,16 @@ export function startTicking() {
     io.sendMsgToAll("Dungeon regeneration complete.");
     dungeonRegenerationCounter = 0;
   }, TICK_INTERVAL);
+}
+
+function getLocationsByIfTheyHavePlayers() {
+  const locationsByPlayer: { [locationId: string]: boolean } = {};
+
+  for (const location of Object.values(locations)) {
+    locationsByPlayer[location.id] = Array.from(location.entities).some(
+      (e) => e.definitionId === "player"
+    );
+  }
+
+  return locationsByPlayer;
 }
