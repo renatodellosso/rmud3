@@ -73,4 +73,14 @@ export default interface StatAndAbilityProvider<
     creature: CreatureInstance,
     effect: StatusEffectToApply
   ) => StatusEffectToApply | undefined;
+  getAmountToHeal?: (
+    creature: CreatureInstance,
+    source: TSource,
+    amount: number
+  ) => number;
+  onHeal?: (
+    creature: CreatureInstance,
+    source: TSource,
+    amount: number
+  ) => void;
 }

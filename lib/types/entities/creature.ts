@@ -507,10 +507,24 @@ export class CreatureInstance extends EntityInstance {
    * @returns actual health gained
    */
   addHealth(health: number) {
+    for (const provider of this.getStatAndAbilityProviders()) {
+      if (provider.provider.getAmountToHeal) {
+        health = provider.provider.getAmountToHeal(
+          this,
+          provider.source,
+          health
+        );
+      }
+    }
+
     const initialHealth = this.health;
     this.health += health;
 
     if (this.health > this.getMaxHealth()) this.health = this.getMaxHealth();
+
+    this.mapStatAndAbilityProviders((provider, source) =>
+      provider.onHeal?.(this, source, health)
+    );
 
     return this.health - initialHealth;
   }

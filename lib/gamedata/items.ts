@@ -182,7 +182,10 @@ export type ItemId =
   | "beastScaleArmor"
   | "flamebane"
   | "dragonfireRing"
-  | "wingedBackpack";
+  | "wingedBackpack"
+  | "vengefulRing"
+  | "drainingRing"
+  | "healthfulAmulet";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -2556,7 +2559,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       { amount: 30, type: DamageType.Cold },
       { amount: 15, type: DamageType.Slashing },
     ],
-    getDamageBonuses: [{ amount: 5, type: DamageType.Psychic}],
+    getDamageBonuses: [{ amount: 5, type: DamageType.Psychic }],
     getAbilityScores: {
       [AbilityScore.Strength]: 10,
       [AbilityScore.Constitution]: 10,
@@ -2725,6 +2728,60 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0,
     getSellValue: 2000,
     getCarryingCapacity: 250,
+  } satisfies EquipmentDefinition,
+  vengefulRing: {
+    getName: "Vengeful Ring",
+    tags: [ItemTag.Equipment],
+    description: "Applies Overcharged (2) for 5s whenever you heal.",
+    getWeight: 0.1,
+    getSellValue: 150,
+    onHeal: (creature, source, healAmount) => {
+      creature.addStatusEffect({
+        id: "overcharged",
+        strength: creature.scaleAbility(2),
+        duration: creature.scaleAbility(5),
+      });
+    },
+  } satisfies EquipmentDefinition,
+  drainingRing: {
+    getName: "Draining Ring",
+    tags: [ItemTag.Equipment],
+    description:
+      "Applies Overcharged (3) for 10s to you and Cursed (2) for 5s to everyone else in your location whenever you heal.",
+    getWeight: 0.1,
+    getSellValue: 450,
+    onHeal: (creature, source, healAmount) => {
+      creature.addStatusEffect({
+        id: "overcharged",
+        strength: creature.scaleAbility(3),
+        duration: creature.scaleAbility(10),
+      });
+
+      const location = locations[creature.location];
+      for (const entity of Array.from(location.entities)) {
+        if (entity instanceof CreatureInstance && entity._id !== creature._id) {
+          entity.addStatusEffect({
+            id: "cursed",
+            strength: creature.scaleAbility(2),
+            duration: creature.scaleAbility(5),
+          });
+        }
+      }
+    },
+  } satisfies EquipmentDefinition,
+  healthfulAmulet: {
+    getName: "Healthful Amulet",
+    tags: [ItemTag.Equipment],
+    description:
+      "Whenever you heal, heal extra health equal to half your intelligence. Increases your intelligence by 2.",
+    getWeight: 0.1,
+    getSellValue: 200,
+    getAbilityScores: {
+      [AbilityScore.Intelligence]: 2,
+    },
+    getAmountToHeal: (creature, source, healAmount) =>
+      healAmount +
+      Math.floor(creature.getAbilityScore(AbilityScore.Intelligence) / 2),
   } satisfies EquipmentDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 

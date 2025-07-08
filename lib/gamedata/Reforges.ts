@@ -1,6 +1,8 @@
 import { WeightedTable } from "lib/types/WeightedTable";
 import { ReforgeDefinition, ReforgeType } from "../types/Reforge";
 import { DamageType } from "lib/types/Damage";
+import AbilityScore from "lib/types/AbilityScore";
+import { PlayerInstance } from "lib/types/entities/player";
 
 export type ReforgeId =
   | "sharp"
@@ -14,9 +16,11 @@ export type ReforgeId =
   | "padded"
   | "indomitable"
   | "charged"
+  | "steadfast"
   | "robust"
   | "bullStrength"
   | "souldrinker"
+  | "rejuvenating"
   | "omniscient";
 
 const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
@@ -155,6 +159,18 @@ const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
       });
     },
   },
+  steadfast: {
+    name: "Steadfast",
+    type: ReforgeType.Armor,
+    weight: 0.5,
+    getDescription: "Increases your strength by 20% of its base value.",
+    getAbilityScores: {
+      [AbilityScore.Strength]: (creature) =>
+        creature instanceof PlayerInstance
+          ? creature.abilityScores[AbilityScore.Strength] * 0.2
+          : 0,
+    },
+  },
   robust: {
     name: "Robust",
     type: ReforgeType.Other,
@@ -190,6 +206,13 @@ const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
         duration: healthAdded,
       });
     },
+  },
+  rejuvenating: {
+    name: "Rejuvenating",
+    type: ReforgeType.Other,
+    weight: 0.5,
+    getDescription: "Heal 20% more whenever you heal.",
+    getAmountToHeal: (creature, source, amount) => amount * 1.2,
   },
   omniscient: {
     name: "Omniscient",

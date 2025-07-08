@@ -3589,7 +3589,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             item: "rottenFlesh",
             amount: [1, 3],
             weight: 0.9,
-          }
+          },
         ]),
         amount: 2,
         chance: 1,
@@ -4159,6 +4159,32 @@ const entities: Record<EntityId, EntityDefinition> = {
             antidote: 2,
           },
           new ItemInstance("phaseOutRing", 1)
+        ),
+        new Recipe(
+          {
+            ironBar: 10,
+            venom: 5,
+            healthPotion: 3,
+          },
+          new ItemInstance("vengefulRing", 1)
+        ),
+        new Recipe(
+          {
+            vengefulRing: 1,
+            goldBar: 5,
+            ember: 3,
+            healthPotion: 5,
+          },
+          new ItemInstance("drainingRing", 1)
+        ),
+        new Recipe(
+          {
+            ironBar: 5,
+            goldBar: 5,
+            ectoplasm: 3,
+            wakingDust: 3,
+          },
+          new ItemInstance("healthfulAmulet", 1)
         ),
         new Recipe(
           { ironBar: 5, ironDagger: 1, venom: 5 },
