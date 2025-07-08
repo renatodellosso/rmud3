@@ -172,7 +172,12 @@ export async function updateGameStateForRoom(roomId: string) {
 async function getGameState(socket: TypedSocket): Promise<GameState> {
   const player = getPlayer(socket);
 
-  const location = locations[player.instance.location];
+  let location = locations[player.instance.location];
+
+  if (!location) {
+    locations["dungeon-entrance"].enter(player.instance);
+    location = locations[player.instance.location];
+  }
 
   // Clone entities to avoid modifying the original objects
   const entityList = Array.from(location.entities).map((e) => {
