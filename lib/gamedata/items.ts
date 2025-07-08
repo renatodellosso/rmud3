@@ -165,6 +165,14 @@ export type ItemId =
   | "frozenCrystal"
   | "giantTooth"
   | "blizzard"
+  | "mammoth"
+  | "frozenChain"
+  | "wintersBreath"
+  | "giantCrown"
+  | "glacier"
+  | "yetiBoots"
+  | "yetiSkull"
+  | "yetiHead"
   | "volcanicAmulet"
   | "magmaSlimeEgg"
   | "volcanicOmelet"
@@ -2400,7 +2408,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getName: "Blizzard",
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Hands,
-    description: `A giant club. It feels cold to hold`,
+    description: `A giant club. It feels cold to hold.`,
     getWeight: 20,
     getSellValue: 1000,
     getAbilities: (creature, item) => [
@@ -2415,6 +2423,145 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         [{ id: "frozen", strength: 20, duration: 5 }]
       ),
     ],
+  } satisfies EquipmentDefinition,
+  wintersBreath: {
+    getName: "Winter's Breath",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: `A lightweight sword made of freezing steel.`,
+    getWeight: 10,
+    getSellValue: 1250,
+    getAbilities: (creature, item) => [
+      Abilities.attackWithStatusEffect(
+        "Winter's Strike",
+        "A freezing cold strike.",
+        0.8,
+        [{ amount: 40, type: DamageType.Piercing }],
+        [{ id: "frozen", strength: 30, duration: 0.6 }]
+      ),
+      Abilities.applyStatusEffectLocation(
+        "Winter's Cloak",
+        "Protect allies in your location.",
+        0.8,
+        [{ id: "frozen", strength: 30, duration: 0.6 }],
+        true,
+        false
+      ),
+    ],
+  } satisfies EquipmentDefinition,
+  mammoth: {
+    getName: "Mammoth",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: `A massive shield of ice.`,
+    getWeight: 20,
+    getSellValue: 1000,
+    getAbilities: (creature, item) => [
+      Abilities.applyStatusEffect(
+        "Ice Wall",
+        "Block significant damage for 5 seconds.",
+        30,
+        [{ id: "blocking", strength: 20, duration: 5 }]
+      ),
+    ],
+  } satisfies EquipmentDefinition,
+  frozenChain: {
+    getName: "Frozen Chain",
+    tags: [ItemTag.Equipment],
+    description: `A chain made of ice. Protects the wearer from cold and freezing.`,
+    getWeight: 1,
+    getSellValue: 700,
+    getDamageResistances: [
+      { amount: 10, type: DamageType.Cold },
+      { amount: 2, type: "*" },
+    ],
+    getStatusEffectToApply: (creature, effect) =>
+      effect.id === "frozen"
+        ? {
+            id: effect.id,
+            strength: effect.strength / 2,
+            duration: effect.duration / 2,
+          }
+        : effect,
+  } satisfies EquipmentDefinition,
+  giantCrown: {
+    getName: "Giant Crown",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Head,
+    description: `A crown of giant teeth. Boosts damage.`,
+    getWeight: 4,
+    getSellValue: 1000,
+    getDamageResistances: [
+      { amount: 20, type: "*" },
+      { amount: 30, type: DamageType.Cold },
+    ],
+    getDamageBonuses: [{ amount: 10, type: "*" }],
+    getAbilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 5,
+    },
+  } satisfies EquipmentDefinition,
+  glacier: {
+    getName: "Glacier",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Chest,
+    description: `A bulky chestplate made of ice.`,
+    getWeight: 12,
+    getSellValue: 3000,
+    getDamageResistances: [
+      { amount: 30, type: "*" },
+      { amount: 50, type: DamageType.Cold },
+    ],
+  } satisfies EquipmentDefinition,
+  yetiBoots: {
+    getName: "Yeti Boots",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Legs,
+    description: `A comfortable pair of boots for traversing cold weather.`,
+    getWeight: 4,
+    getSellValue: 800,
+    getDamageResistances: [{ amount: 25, type: DamageType.Cold }],
+    getAbilityScores: {
+      [AbilityScore.Strength]: 0,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 0,
+    },
+  } satisfies EquipmentDefinition,
+  yetiSkull: {
+    getName: "Yeti Skull",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Head,
+    description: `A large skull from a yeti. Prized by hunters.`,
+    getWeight: 6,
+    getSellValue: 400,
+    getDamageResistances: [
+      { amount: 20, type: DamageType.Cold },
+      { amount: 10, type: DamageType.Slashing },
+    ],
+    getAbilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 5,
+      [AbilityScore.Intelligence]: 10,
+    },
+  } satisfies EquipmentDefinition,
+  yetiHead: {
+    getName: "Yeti Head",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Head,
+    description: `A yeti head. Something about it looks a bit off...`,
+    getWeight: 8,
+    getSellValue: 650,
+    getDamageResistances: [
+      { amount: 30, type: DamageType.Cold },
+      { amount: 15, type: DamageType.Slashing },
+    ],
+    getDamageBonuses: [{ amount: 5, type: DamageType.Psychic}],
+    getAbilityScores: {
+      [AbilityScore.Strength]: 10,
+      [AbilityScore.Constitution]: 10,
+      [AbilityScore.Intelligence]: 15,
+    },
   } satisfies EquipmentDefinition,
   volcanicAmulet: {
     getName: "Volcanic Amulet",

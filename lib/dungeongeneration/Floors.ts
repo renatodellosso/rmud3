@@ -938,6 +938,11 @@ const floors: Record<string, FloorDefinition> = {
           weight: 0.5,
         },
         {
+          item: "wight",
+          amount: [2, 3],
+          weight: 0.8,
+        },
+        {
           item: randomContainer(
             "Ice Chunk",
             new WeightedTable<ItemId>([

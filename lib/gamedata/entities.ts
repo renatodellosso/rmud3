@@ -88,6 +88,7 @@ export type CreatureId =
   | "iceGolem"
   | "frostElemental"
   | "frostGiant"
+  | "wight"
   | "magmaElemental"
   | "volcanoSpirit"
   | "magmaSlime"
@@ -3391,6 +3392,11 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             amount: [1, 3],
             weight: 1,
           },
+          {
+            item: "yetiSkull",
+            amount: 1,
+            weight: 0.1,
+          },
         ]),
         amount: 2,
         chance: 1,
@@ -3467,6 +3473,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         [{ amount: 25, type: DamageType.Cold }],
         [{ id: "frozen", strength: 10, duration: 3 }],
         true,
+        false,
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
@@ -3547,6 +3554,45 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         ]),
         amount: 1,
         chance: 0.05,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  wight: {
+    name: "Wight",
+    health: 100,
+    abilityScores: {
+      [AbilityScore.Strength]: 5,
+      [AbilityScore.Constitution]: 2,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 5, type: DamageType.Cold }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Frostbite",
+        "A cold bite attack.",
+        2,
+        [{ amount: 35, type: DamageType.Cold }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 300,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ice",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "rottenFlesh",
+            amount: [1, 3],
+            weight: 0.9,
+          }
+        ]),
+        amount: 2,
+        chance: 1,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
@@ -3641,6 +3687,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         [{ amount: 30, type: DamageType.Fire }],
         [{ id: "burning", strength: 10, duration: 10 }],
         true,
+        false,
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
@@ -3768,6 +3815,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         [{ amount: 40, type: DamageType.Fire }],
         [{ id: "burning", strength: 15, duration: 10 }],
         true,
+        false,
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.attackWithStatusEffect(
@@ -3885,6 +3933,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         [{ amount: 80, type: DamageType.Fire }],
         [{ id: "burning", strength: 20, duration: 15 }],
         true,
+        false,
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.attackWithStatusEffect(
@@ -4580,6 +4629,69 @@ const entities: Record<EntityId, EntityDefinition> = {
             wyvernHeart: 1,
           },
           new ItemInstance("wingedBackpack", 1)
+        ),
+        new Recipe(
+          {
+            ice: 25,
+            livingWood: 10,
+            giantTooth: 8,
+          },
+          new ItemInstance("blizzard", 1)
+        ),
+        new Recipe(
+          {
+            ice: 50,
+            ironBar: 40,
+            frozenCrystal: 10,
+          },
+          new ItemInstance("wintersBreath", 1)
+        ),
+        new Recipe(
+          {
+            ice: 30,
+            frozenCrystal: 10,
+            yetiFur: 5,
+            ironBar: 5,
+          },
+          new ItemInstance("mammoth", 1)
+        ),
+        new Recipe(
+          {
+            giantTooth: 10,
+            ice: 10,
+            ironBar: 5,
+            goldBar: 5,
+          },
+          new ItemInstance("giantCrown", 1)
+        ),
+        new Recipe(
+          {
+            ice: 80,
+            giantTooth: 10,
+            frozenCrystal: 5,
+            yetiFur: 5,
+          },
+          new ItemInstance("glacier", 1)
+        ),
+        new Recipe(
+          {
+            yetiFur: 15,
+            leather: 10,
+          },
+          new ItemInstance("yetiBoots", 1)
+        ),
+        new Recipe(
+          {
+            yetiSkull: 1,
+            yetiFur: 25,
+          },
+          new ItemInstance("yetiHead", 1)
+        ),
+        new Recipe(
+          {
+            ice: 50,
+          },
+          new ItemInstance("frozenChain", 1)
         ),
         // Keep the teleport scrolls at the end
         new Recipe(
