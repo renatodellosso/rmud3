@@ -7,6 +7,7 @@ import { getSingleton } from "lib/utils";
 import { TypedServer } from "./lib/types/socketioserverutils";
 import { setupLocations } from "lib/startup";
 import { startTicking } from "lib/TickManager";
+import { startDiscordBot } from "lib/discordbot";
 
 dotenv.config();
 
@@ -50,3 +51,5 @@ app.prepare().then(() => {
 
 setupLocations();
 startTicking();
+
+startDiscordBot();

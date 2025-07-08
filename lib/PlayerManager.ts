@@ -106,6 +106,11 @@ export class PlayerManager {
     this.instances.delete(progress._id.toString());
     return true;
   }
+
+  public countOnlinePlayers(): number {
+    return Array.from(this.isOnline.values()).filter((isOnline) => isOnline)
+      .length;
+  }
 }
 
 const getPlayerManager = () =>
