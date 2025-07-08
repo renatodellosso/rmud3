@@ -293,6 +293,11 @@ export class Io implements ClientFriendlyIo {
 
   sendMsgToAll(msg: string): Promise<void> {
     const io = getRawIoSingleton();
+
+    for (const socket of Array.from(io!.sockets.sockets.values())) {
+      if (socket.data.session) socket.data.session.messages.push(msg);
+    }
+
     io!.emit("addMessage", msg);
 
     return Promise.resolve();

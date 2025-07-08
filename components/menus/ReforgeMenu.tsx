@@ -14,6 +14,8 @@ export default function ReforgeMenu({
   interaction: Interaction;
   self: PlayerInstance;
 }) {
+  const inventory = self.getCraftingInventory();
+
   return (
     <div className="border w-1/3 flex flex-col gap-2">
       <div className="flex justify-between">
@@ -36,7 +38,7 @@ export default function ReforgeMenu({
               <tr key={index}>
                 <td
                   className={
-                    self.inventory.getCountById("money") < REFORGE_COST
+                    inventory.getCountById("money") < REFORGE_COST
                       ? "text-red-500"
                       : ""
                   }
@@ -45,7 +47,7 @@ export default function ReforgeMenu({
                     items["money"].getName,
                     new ItemInstance("money", 1)
                   )}{" "}
-                  x{REFORGE_COST} ({self.inventory.getCountById("money")})
+                  x{REFORGE_COST} ({inventory.getCountById("money")})
                 </td>
                 <td className="tooltip">
                   {item.getName()}

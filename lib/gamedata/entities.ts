@@ -4547,7 +4547,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             leather: 1,
             inertDust: 1,
           },
-          new ItemInstance("paper", 1)
+          new ItemInstance("paper", 3)
         ),
         new Recipe(
           {
@@ -4731,15 +4731,15 @@ const entities: Record<EntityId, EntityDefinition> = {
         new Recipe(
           {
             paper: 1,
-            ironOre: 3,
-            goldOre: 3,
+            ironOre: 1,
+            coal: 1,
           },
           new ItemInstance("teleportScroll3", 1)
         ),
         new Recipe(
           {
             paper: 1,
-            silk: 8,
+            silk: 1,
             nightmare: 1,
           },
           new ItemInstance("teleportScroll5", 1)

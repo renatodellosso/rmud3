@@ -400,7 +400,10 @@ function respawn(player: PlayerInstance) {
 
   setTimeout(() => {
     io.sendMsgToPlayer(player._id.toString(), "You died...");
+
+    player.statusEffects = [];
     player.health = player.getMaxHealth();
+    
     locations["docks"].enter(player);
     io.updateGameState(player._id.toString());
   }, 1250);
