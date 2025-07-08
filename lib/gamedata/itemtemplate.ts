@@ -9,7 +9,7 @@ import { getIo } from "lib/ClientFriendlyIo";
 
 export function teleportScroll(depth: number): ConsumableDefinition {
   return {
-    getName: "Teleport Scroll",
+    getName: `Teleport Scroll (Depth ${depth})`,
     tags: [ItemTag.Consumable],
     description: `A scroll that teleports you to a random room at depth ${depth}.`,
     getWeight: 0.1,
