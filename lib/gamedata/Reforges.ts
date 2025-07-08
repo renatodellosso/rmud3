@@ -21,6 +21,7 @@ export type ReforgeId =
   | "bullStrength"
   | "souldrinker"
   | "rejuvenating"
+  | "enduring"
   | "omniscient";
 
 const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
@@ -213,6 +214,13 @@ const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
     weight: 0.5,
     getDescription: "Heal 20% more whenever you heal.",
     getAmountToHeal: (creature, source, amount) => amount * 1.2,
+  },
+  enduring: {
+    name: "Enduring",
+    type: ReforgeType.Other,
+    weight: 0.5,
+    getDescription: "Increases status effect durations by 30%.",
+    getStatusEffectDuration: (creature, effect) => effect.duration * 1.3,
   },
   omniscient: {
     name: "Omniscient",
