@@ -167,8 +167,8 @@ const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
     getDescription: "Increases your strength by 20% of its base value.",
     getAbilityScores: {
       [AbilityScore.Strength]: (creature) =>
-        creature instanceof PlayerInstance
-          ? creature.abilityScores[AbilityScore.Strength] * 0.2
+        "abilityScores" in creature
+          ? (creature.abilityScores as any)[AbilityScore.Strength] * 0.2
           : 0,
     },
   },
