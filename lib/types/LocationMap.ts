@@ -14,8 +14,8 @@ export default class LocationMap {
     this.locations = [
       [
         [undefined, "clearing", undefined],
-        ["workshop", "north-road-2", undefined],
-        ["bank", "north-road-1", "training-ground"],
+        ["bank", "north-road-2", undefined],
+        ["workshop", "north-road-1", "training-ground"],
         ["docks", "town-square", "dungeon-entrance"],
         [undefined, "tavern", undefined],
       ],

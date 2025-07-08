@@ -78,7 +78,7 @@ const rawLocations: Partial<OmitType<Location, Function>>[] = [
     name: "Bank",
     description:
       "You are in a small, dusty bank. The walls are lined with shelves of old books and scrolls.",
-    exits: new Set<LocationId>(["north-road-1"]),
+    exits: new Set<LocationId>(["north-road-2"]),
     entities: new Set<EntityInstance>([
       new EntityInstance("banker", "bank"),
       new EntityInstance("vault", "bank"),
@@ -89,21 +89,21 @@ const rawLocations: Partial<OmitType<Location, Function>>[] = [
     name: "North Road",
     description:
       "You are on a long, winding road that leads north. The path is lined with trees and bushes.",
-    exits: new Set<LocationId>(["town-square", "bank", "north-road-2"]),
+    exits: new Set<LocationId>(["town-square", "workshop", "north-road-2"]),
   },
   {
     id: "north-road-2",
     name: "North Road",
     description:
       "You are on a long, winding road that leads north. The path is lined with trees and bushes.",
-    exits: new Set<LocationId>(["north-road-1", "workshop", "clearing"]),
+    exits: new Set<LocationId>(["north-road-1", "bank", "clearing"]),
   },
   {
     id: "workshop",
     name: "Workshop",
     description:
       "You are in a small workshop filled with tools and materials. The walls are lined with shelves of various items.",
-    exits: new Set<LocationId>(["north-road-2"]),
+    exits: new Set<LocationId>(["north-road-1"]),
     entities: new Set<EntityInstance>([
       new EntityInstance("anvil", "workshop"),
       new EntityInstance("furnace", "workshop"),
