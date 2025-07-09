@@ -9,6 +9,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <title>RMUD3</title>
       <body>{children}</body>
     </html>
   );
