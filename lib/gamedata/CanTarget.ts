@@ -65,7 +65,7 @@ export function isSelf(
   creature: CreatureInstance,
   target: Targetable
 ): boolean {
-  return isTargetACreature(creature, target) && creature === target;
+  return "_id" in target && creature._id.equals(target._id);
 }
 
 export function notAtMaxHealth(
