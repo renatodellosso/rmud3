@@ -62,6 +62,7 @@ export type GameState = {
   interactions: Interaction[];
   map: LocationMap;
   guild: ClientGuild | undefined;
+  minutesTillDungeonRegeneration: number;
 };
 
 export type DamageWithType = {

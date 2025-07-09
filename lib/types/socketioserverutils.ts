@@ -239,6 +239,10 @@ async function getGameState(socket: TypedSocket): Promise<GameState> {
     interactions: socket.data.session!.interactions || [],
     map: socket.data.session!.map,
     guild: clientGuild,
+    minutesTillDungeonRegeneration: getSingleton<number>(
+      "minutesTillDungeonRegeneration",
+      () => -1
+    )!,
   };
 }
 

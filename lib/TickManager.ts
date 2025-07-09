@@ -2,6 +2,7 @@ import { regenerateDungeon } from "./dungeongeneration/regenerateDungeon";
 import { getIo } from "./ClientFriendlyIo";
 import locations from "./locations";
 import { EntityInstance } from "./types/entity";
+import { setSingleton } from "./utils";
 
 const TICK_INTERVAL = 1000; // 1 second
 const REGENERATE_DUNGEON_INTERVAL = 30 * 60 * 1000; // 30 minutes
@@ -64,6 +65,13 @@ export function startTicking() {
   let dungeonRegenerationCounter = 0;
   setInterval(() => {
     dungeonRegenerationCounter += TICK_INTERVAL;
+
+    setSingleton(
+      "minutesTillDungeonRegeneration",
+      Math.floor(
+        (REGENERATE_DUNGEON_INTERVAL - dungeonRegenerationCounter) / 1000 / 60
+      )
+    );
 
     if (
       dungeonRegenerationCounter ===

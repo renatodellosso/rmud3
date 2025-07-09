@@ -25,6 +25,12 @@ export default function HeaderBar({
             </button>
           ))}
       </div>
+      <div>
+        Dungeon regenerates in{" "}
+        {gameState.minutesTillDungeonRegeneration > 0
+          ? `${gameState.minutesTillDungeonRegeneration} minutes`
+          : "now!"}
+      </div>
       <div className="flex gap-2">
         {gameState.self.abilityScoreIncreases ? (
           <p className="text-right">
