@@ -1,7 +1,10 @@
 import entities, { CreatureId } from "lib/gamedata/entities";
 import { Targetable } from "lib/types/types";
 import { LootTable } from "lib/types/LootTable";
-import AbilityScore from "lib/types/AbilityScore";
+import AbilityScore, {
+  BONUS_FROM_INTELLIGENCE,
+  BONUS_FROM_STRENGTH,
+} from "lib/types/AbilityScore";
 import Ability, { AbilitySource, AbilityWithSource } from "lib/types/Ability";
 import locations from "lib/locations";
 import { getIo } from "lib/ClientFriendlyIo";
@@ -128,7 +131,7 @@ export class CreatureInstance extends EntityInstance {
     damage: DamageWithType[]
   ): { amount: number; type: DamageType }[] {
     const strengthMultiplier =
-      1 + 0.03 * this.getAbilityScore(AbilityScore.Strength);
+      1 + BONUS_FROM_STRENGTH * this.getAbilityScore(AbilityScore.Strength);
     for (const d of damage) {
       d.amount *= strengthMultiplier;
     }
@@ -561,7 +564,12 @@ export class CreatureInstance extends EntityInstance {
   }
 
   scaleAbility(base: number) {
-    return base * (1 + 0.03 * this.getAbilityScore(AbilityScore.Intelligence));
+    return (
+      base *
+      (1 +
+        BONUS_FROM_INTELLIGENCE *
+          this.getAbilityScore(AbilityScore.Intelligence))
+    );
   }
 }
 

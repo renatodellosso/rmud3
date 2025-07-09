@@ -26,7 +26,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     name: "Stunned",
     getDescription: (effect) =>
       `Your cooldowns are multipled by ${(effect.strength * 100).toFixed()}%.`,
-    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    stacking: StatusEffectStacking.Separate,
     getCooldown(creature, source, ability, cooldown) {
       return cooldown * source.strength;
     },
@@ -35,7 +35,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     name: "Infested",
     getDescription: (effect) =>
       `Something burrows beneath your skin, dealing ${effect.strength.toFixed()} damage when infested expires.`,
-    stacking: StatusEffectStacking.AddStrengthMaxDuration,
+    stacking: StatusEffectStacking.Separate,
     onExpire(creature, source) {
       creature.takeDamage(
         [
@@ -53,7 +53,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     name: "Cursed",
     getDescription: (effect) =>
       `You are cursed, reducing your ability scores by ${effect.strength}.`,
-    stacking: StatusEffectStacking.AddStrengthMaxDuration,
+    stacking: StatusEffectStacking.Separate,
     getAbilityScores: {
       Strength: (creature, source) => -source.strength,
       Constitution: (creature, source) => -source.strength,
@@ -64,7 +64,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     name: "Burning",
     getDescription: (effect) =>
       `You are on fire, taking ${effect.strength.toFixed()} damage each second.`,
-    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    stacking: StatusEffectStacking.Separate,
     tick: (creature, deltaTime, source) =>
       creature.takeDamage(
         [
@@ -83,7 +83,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
       `You are poisoned, taking damage each second equal to ${
         (source.strength * 100).toFixed
       }% of your current health.`,
-    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    stacking: StatusEffectStacking.Separate,
     tick: (creature, deltaTime, source) =>
       creature.takeDamage(
         [
@@ -103,7 +103,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
         (source.strength / 50) *
         100
       ).toFixed()}%.`,
-    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    stacking: StatusEffectStacking.Separate,
     getAbilityScores: {
       Intelligence: (creature, source) => source.strength,
     },
@@ -117,7 +117,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
       `You are well-fed, improving your XP gain by ${(
         source.strength * 100
       ).toFixed()}%.`,
-    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    stacking: StatusEffectStacking.Separate,
     getXpToAdd(creature, source, amount) {
       return amount * (1 + source.strength / 100);
     },
@@ -126,7 +126,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     name: "Stoneskin",
     getDescription: (source) =>
       `Your skin is hardened, reducing damage taken by physical attacks by ${source.strength.toFixed()}%.`,
-    stacking: StatusEffectStacking.AddStrengthMaxDuration,
+    stacking: StatusEffectStacking.Separate,
     getDamageResistances: (creature, source) => [
       {
         type: DamageType.Bludgeoning,
@@ -146,7 +146,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     name: "Overcharged",
     getDescription: (source) =>
       `You are overcharged, boosting your ability scores by ${source.strength.toFixed()}.`,
-    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    stacking: StatusEffectStacking.Separate,
     getAbilityScores: {
       Strength: (creature, source) => source.strength,
       Constitution: (creature, source) => source.strength,
@@ -157,7 +157,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     name: "Haste",
     getDescription: (source) =>
       `You act with increased speed, reducing cooldowns by ${source.strength.toFixed()}%.`,
-    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    stacking: StatusEffectStacking.Separate,
     getCooldown: (creature, source, ability, cooldown) => {
       return cooldown * (1 - source.strength / 100);
     },
@@ -166,7 +166,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     name: "Blocking",
     getDescription: (source) =>
       `You are blocking, reducing all incoming damage by ${source.strength.toFixed()}%.`,
-    stacking: StatusEffectStacking.AddStrengthAndDuration,
+    stacking: StatusEffectStacking.Separate,
     getDamageResistances: (creature, source) => [
       {
         type: "*",
@@ -180,7 +180,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
       `You are suffocating, taking ${(
         source.strength * 100
       ).toFixed()}% of your max health as damage each second.`,
-    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    stacking: StatusEffectStacking.Separate,
     tick: (creature, deltaTime, source) =>
       creature.takeDamage(
         [
@@ -197,7 +197,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     name: "Amphibious",
     getDescription: (source) =>
       `You can breathe underwater, ignoring suffocation effects.`,
-    stacking: StatusEffectStacking.AddStrengthMaxDuration,
+    stacking: StatusEffectStacking.AddDurationMaxStrength,
     getStatusEffectToApply: (creature, effect) =>
       effect.id === "suffocating" ? undefined : effect,
     onApply: (creature, source) => {
@@ -211,7 +211,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     name: "Frozen",
     getDescription: (source) =>
       "You are freezing, increasing cooldown lengths.",
-    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    stacking: StatusEffectStacking.Separate,
     getCooldown: (creature, source, ability, cooldown) => {
       return cooldown * (1 + source.strength / 100);
     },
@@ -220,7 +220,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     name: "Fire Immune",
     getDescription: (source) =>
       "You are immune to the burning effect. Reduces fire damage by 20",
-    stacking: StatusEffectStacking.AddDurationMaxStrength,
+    stacking: StatusEffectStacking.Separate,
     getDamageResistances: (creature, source) => [
       {
         type: DamageType.Fire,

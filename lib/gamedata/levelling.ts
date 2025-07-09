@@ -9,9 +9,9 @@ export const equipmentLimitByLevel: Record<number, number> = {
   1: 2,
   3: 3,
   5: 4,
-  10: 5,
-  25: 6,
-  50: 7,
+  15: 5,
+  30: 6,
+  60: 7,
   100: 8,
 };
 

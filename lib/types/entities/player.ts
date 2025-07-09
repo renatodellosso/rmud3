@@ -73,6 +73,8 @@ export class PlayerInstance extends CreatureInstance {
   getMaxHealth(): number {
     let val = super.getMaxHealth();
 
+    val += this.level;
+
     for (const equipment of this.equipment.items) {
       const def = items[equipment.definitionId] as EquipmentDefinition;
       if (def.getMaxHealth)
@@ -403,7 +405,7 @@ function respawn(player: PlayerInstance) {
 
     player.statusEffects = [];
     player.health = player.getMaxHealth();
-    
+
     locations["docks"].enter(player);
     io.updateGameState(player._id.toString());
   }, 1250);

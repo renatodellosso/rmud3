@@ -1,6 +1,6 @@
 import { WeightedTable } from "lib/types/WeightedTable";
 import { LootTable } from "lib/types/LootTable";
-import AbilityScore from "lib/types/AbilityScore";
+import AbilityScore, { BONUS_FROM_INTELLIGENCE, BONUS_FROM_STRENGTH } from "lib/types/AbilityScore";
 import {
   CreatureDefinition,
   CreatureInstance,
@@ -4828,9 +4828,13 @@ const entities: Record<EntityId, EntityDefinition> = {
           player._id.toString(),
           `The mystic looks at you with a knowing gaze and beckons towards the night sky. 
           You feel a strange energy in the air, as if the stars themselves are waiting for 
-          you to make a choice. You have ${player.abilityScoreIncreases} ability score increases left. 
-          Constitution grants +5 health, strength grants +10 kg carrying capacity and +3% damage, and 
-          intelligence improves abilities by 3%.`
+          you to make a choice. You have ${
+            player.abilityScoreIncreases
+          } ability score increases left. 
+          Constitution grants +5 health, strength grants +10 kg carrying capacity and +${
+            BONUS_FROM_STRENGTH * 100
+          }% damage, and 
+          intelligence improves abilities by ${BONUS_FROM_INTELLIGENCE * 100}%.`
         );
 
         return {
