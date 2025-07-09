@@ -4425,8 +4425,8 @@ const entities: Record<EntityId, EntityDefinition> = {
         new Recipe({ bone: 10 }, new ItemInstance("boneClub", 1)),
         new Recipe(
           {
-            bone: 4,
-            ratTail: 4,
+            bone: 5,
+            ratTail: 5,
           },
           new ItemInstance("tailFlail", 1)
         ),

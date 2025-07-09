@@ -228,7 +228,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         "Rusty Slash",
         "A basic slash attack with the rusty sword.",
         1,
-        [{ amount: 3, type: DamageType.Slashing }]
+        [{ amount: 4, type: DamageType.Slashing }]
       ),
     ],
     slot: EquipmentSlot.Hands,
@@ -428,8 +428,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Hands,
     getAbilities: (creature, item) => [
-      Abilities.attack("Flail", "A wild swing of the tail flail.", 1.5, [
-        { amount: 8, type: DamageType.Bludgeoning },
+      Abilities.attack("Flail", "A wild swing of the tail flail.", 1.3, [
+        { amount: 6, type: DamageType.Bludgeoning },
       ]),
     ],
   } satisfies EquipmentDefinition,
@@ -441,11 +441,11 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Hands,
     getAbilities: (creature, item) => [
-      Abilities.attack("Throw Pebble", "A simple throw of the sling.", 1.2, [
+      Abilities.attack("Throw Pebble", "A simple throw of the sling.", 1.1, [
         { amount: 5, type: DamageType.Piercing },
       ]),
       Abilities.attack("Throw Stone", "A simple throw of the sling.", 2, [
-        { amount: 8, type: DamageType.Bludgeoning },
+        { amount: 9, type: DamageType.Bludgeoning },
       ]),
     ],
   } satisfies EquipmentDefinition,
@@ -632,8 +632,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.attack(
         "Stab",
         "A basic stab attack with a simple spear.",
-        1.5,
-        [{ amount: 5, type: DamageType.Piercing }]
+        1.6,
+        [{ amount: 8, type: DamageType.Piercing }]
       ),
     ],
   } satisfies EquipmentDefinition,
@@ -646,7 +646,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 10,
     getAbilities: (creature, item) => [
       Abilities.attack("Chop", "A basic chop attack with a simple axe.", 1.8, [
-        { amount: 6, type: DamageType.Piercing },
+        { amount: 9, type: DamageType.Piercing },
       ]),
     ],
   } satisfies EquipmentDefinition,
@@ -659,7 +659,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 10,
     getAbilities: (creature, item) => [
       Abilities.attack("Slam", "A basic slam attack with a simple mace.", 2.1, [
-        { amount: 7, type: DamageType.Bludgeoning },
+        { amount: 11, type: DamageType.Bludgeoning },
       ]),
     ],
   } satisfies EquipmentDefinition,
@@ -675,7 +675,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         "Stab",
         "A basic stab attack with a simple short sword.",
         0.9,
-        [{ amount: 3, type: DamageType.Piercing }]
+        [{ amount: 5, type: DamageType.Piercing }]
       ),
     ],
   } satisfies EquipmentDefinition,
@@ -691,7 +691,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         "Slash",
         "A basic slash attack with a simple long sword.",
         0.9,
-        [{ amount: 3, type: DamageType.Slashing }]
+        [{ amount: 5, type: DamageType.Slashing }]
       ),
     ],
   } satisfies EquipmentDefinition,
@@ -707,7 +707,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         "Stab",
         "A basic stab attack with a simple dagger.",
         0.6,
-        [{ amount: 2, type: DamageType.Piercing }]
+        [{ amount: 3, type: DamageType.Piercing }]
       ),
     ],
   } satisfies EquipmentDefinition,
