@@ -8,21 +8,23 @@ export function getXpForNextLevel(level: number): number {
 export const equipmentLimitByLevel: Record<number, number> = {
   1: 2,
   3: 3,
-  10: 4,
-  25: 5,
-  50: 6,
+  5: 4,
+  10: 5,
+  25: 6,
+  50: 7,
+  100: 8,
 };
 
 export function getEquipmentLimitForLevel(level: number): number {
-  const sortedLevels = Object.keys(equipmentLimitByLevel)
-    .map(Number)
-    .sort((a, b) => a - b);
+  const sortedLevels = Object.entries(equipmentLimitByLevel)
+    .map(([k, v]) => [Number(k), v])
+    .sort(([a], [b]) => a - b);
 
   for (const lvl of sortedLevels) {
-    if (level < lvl) {
-      return equipmentLimitByLevel[lvl];
+    if (level < lvl[0]) {
+      return lvl[1];
     }
   }
 
-  return equipmentLimitByLevel[sortedLevels[sortedLevels.length - 1]];
+  return sortedLevels[sortedLevels.length - 1][1];
 }
