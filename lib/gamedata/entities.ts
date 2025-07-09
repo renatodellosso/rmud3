@@ -417,7 +417,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           {
             item: "trollTooth",
             amount: [1, 2],
-            weight: 0.8,
+            weight: 1.2,
           },
           {
             item: "trollHeart",
@@ -426,7 +426,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           },
         ]),
         amount: 2,
-        chance: 0.8,
+        chance: 1,
       },
       {
         item: new WeightedTable<ItemId>([
@@ -4726,7 +4726,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             money: 40,
             ectoplasm: 1,
           },
-          new ItemInstance("returnScroll", 1)
+          new ItemInstance("returnScroll", 2)
         ),
         new Recipe(
           {
@@ -4734,7 +4734,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             ironOre: 1,
             coal: 1,
           },
-          new ItemInstance("teleportScroll3", 1)
+          new ItemInstance("teleportScroll3", 2)
         ),
         new Recipe(
           {
@@ -4742,7 +4742,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             silk: 1,
             nightmare: 1,
           },
-          new ItemInstance("teleportScroll5", 1)
+          new ItemInstance("teleportScroll5", 2)
         ),
         new Recipe(
           {
@@ -4750,7 +4750,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             livingStone: 1,
             ashes: 1,
           },
-          new ItemInstance("teleportScroll7", 1)
+          new ItemInstance("teleportScroll7", 2)
         ),
         new Recipe(
           {
@@ -4758,7 +4758,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             ink: 1,
             enchantingSpirit: 1,
           },
-          new ItemInstance("teleportScroll9", 1)
+          new ItemInstance("teleportScroll9", 2)
         ),
         new Recipe(
           {
@@ -4767,7 +4767,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             dragonScale: 1,
             krakenShellFragment: 1,
           },
-          new ItemInstance("teleportScroll11", 1)
+          new ItemInstance("teleportScroll11", 2)
         ),
       ])
     ),
@@ -4994,6 +4994,13 @@ const entities: Record<EntityId, EntityDefinition> = {
           .getCraftingInventory()
           .getItems()
           .filter((i) => i.definitionId !== "money")
+          .sort((a, b) =>
+            getFromOptionalFunc(items[a.definitionId].getSellValue, a) >
+            getFromOptionalFunc(items[b.definitionId].getSellValue, b)
+              ? -1
+              : 1
+          )
+
           .map(
             (item) =>
               new Recipe(

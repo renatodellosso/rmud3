@@ -571,12 +571,12 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getName: "Repulsive Necklace",
     tags: [ItemTag.Equipment],
     description:
-      "A necklace made of all things disturbing. Turns physical damage you deal into psychic damage.",
+      "A necklace made of all things disturbing. Turns physical damage you deal into psychic damage and increases your damage by 1.",
     getWeight: 0.5,
     getSellValue: 15,
     getDamageToDeal: (creature, source, damage) =>
       damage.map((d) => ({
-        amount: d.amount,
+        amount: d.amount + 1,
         type:
           d.type == DamageType.Bludgeoning ||
           d.type === DamageType.Slashing ||
@@ -1119,13 +1119,13 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getName: "Possessed Skull",
     tags: [ItemTag.Equipment],
     description: `A skull that seems to have a mind of its own. It whispers to you, but you can't understand it. 
-      Reduces damage you take by 20%, if that damage would otherwise kill you`,
+      Reduces damage you take by 50%, if that damage would otherwise kill you`,
     getWeight: 1,
     getSellValue: 50,
     slot: EquipmentSlot.Head,
     getDamageToTake: (creature, source, damage) =>
       damage.map((d) => ({
-        amount: d.amount >= creature.health ? d.amount * 0.8 : d.amount,
+        amount: d.amount >= creature.health ? d.amount * 0.5 : d.amount,
         type: d.type,
       })),
   } satisfies EquipmentDefinition,

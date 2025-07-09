@@ -18,7 +18,7 @@ export function teleportScroll(depth: number): ConsumableDefinition {
       {
         name: `Teleport to Depth ${depth}`,
         getDescription: `Teleport to a random room at depth ${depth}.`,
-        getCooldown: 60,
+        getCooldown: 5,
         getTargetCount: 1,
         canTarget: CanTarget.isSelf,
         activate: (creature, targets) => {
