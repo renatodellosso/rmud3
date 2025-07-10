@@ -239,7 +239,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
 
   zombieHordling: {
@@ -278,7 +278,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   skeleton: {
     name: "Skeleton",
@@ -316,7 +316,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
 
   scavengingGoblin: {
@@ -389,7 +389,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   caveCrawler: {
     name: "Cave Crawler",
@@ -602,7 +602,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   slimeSplitter: {
     name: "Splitter Slime",
@@ -660,7 +660,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
     onDie: (creature) => {
       const location = locations[creature.location];
 
@@ -794,7 +794,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   lurkingTendril: {
     name: "Lurking Tendril",
@@ -860,7 +860,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
 
   ogre: {
@@ -929,7 +929,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.3,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   troll: {
     name: "Troll",
@@ -996,7 +996,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.6,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
 
   giantRat: {
@@ -1041,7 +1041,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.5,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
 
   saltGolem: {
@@ -1107,7 +1107,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   fungalZombie: {
     name: "Fungal Zombie",
@@ -1161,7 +1161,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   fungalTroll: {
     name: "Fungal Troll",
@@ -1228,7 +1228,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   sentientFungus: {
     name: "Sentient Fungus",
@@ -1274,7 +1274,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   fungalCore: {
     name: "Fungal Core",
@@ -1345,7 +1345,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   farulu: {
     name: "Farulu, Fungal Abomination",
@@ -1427,7 +1427,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.005),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.005),
   },
   lostAdventurer: {
     name: "Lost Adventurer",
@@ -1525,7 +1525,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.5,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   goblin: {
     name: "Goblin",
@@ -1594,7 +1594,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   hobgoblin: {
     name: "Hobgoblin",
@@ -1658,7 +1658,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   goblinShaman: {
     name: "Goblin Shaman",
@@ -1736,7 +1736,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   masterGoblinShaman: {
     name: "Master Goblin Shaman",
@@ -1846,7 +1846,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   goblinWarrior: {
     name: "Goblin Warrior",
@@ -1920,7 +1920,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   hobgoblinWarrior: {
     name: "Hobgoblin",
@@ -1984,7 +1984,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   goblinInventor: {
     name: "Goblin Inventor",
@@ -2063,7 +2063,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   ghost: {
     name: "Ghost",
@@ -2108,7 +2108,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
 
   cursedGhost: {
@@ -2161,7 +2161,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   wraith: {
     name: "Wraith",
@@ -2238,7 +2238,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   rat: {
     name: "Rat",
@@ -2282,7 +2282,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.5,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   trollRat: {
     name: "Troll Rat",
@@ -2349,7 +2349,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.5,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   plagueRat: {
     name: "Plague Rat",
@@ -2405,7 +2405,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   spider: {
     name: "Spider",
@@ -2470,7 +2470,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   spiderSpitter: {
     name: "Spitter Spider",
@@ -2540,7 +2540,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.8,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   ancientTroll: {
     name: "Ancient Troll",
@@ -2627,7 +2627,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       (entity as CreatureInstance).addHealth(deltaTime);
 
       activateAbilityAndMoveRandomlyOnTick(
-        0.5,
+        0.8,
         selectRandomAbility,
         0.01
       )(entity, deltaTime);
@@ -2653,7 +2653,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ],
     xpValue: 5,
     lootTable: new LootTable([]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   overgrownGolem: {
     name: "Overgrown Golem",
@@ -2725,7 +2725,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   writhingVines: {
     name: "Writhing Vines",
@@ -2773,7 +2773,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   viper: {
     name: "Viper",
@@ -2826,7 +2826,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   centaur: {
     name: "Centaur",
@@ -2898,7 +2898,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.3,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   friendlyCentaur: {
     name: "Friendly Centaur",
@@ -2927,7 +2927,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ],
     xpValue: 0,
     lootTable: new LootTable([]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   treant: {
     name: "Treant",
@@ -2977,7 +2977,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   elderTreant: {
     name: "Elder Treant",
@@ -3043,7 +3043,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   friendlyTreant: {
     name: "Friendly Treant",
@@ -3071,7 +3071,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ],
     xpValue: 0,
     lootTable: new LootTable([]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   skeletonWarrior: {
     name: "Skeleton Warrior",
@@ -3134,7 +3134,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   skeletonBonecaller: {
     name: "Skeleton Bonecaller",
@@ -3201,7 +3201,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   cryptGuardGolem: {
     name: "Crypt Guard Golem",
@@ -3263,7 +3263,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   livingStatue: {
     name: "Living Statue",
@@ -3314,7 +3314,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   banshee: {
     name: "Banshee",
@@ -3412,7 +3412,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   skeletonHero: {
     name: "Skeleton Hero",
@@ -3530,7 +3530,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ],
     xpValue: 0,
     lootTable: new LootTable([]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   piranha: {
     name: "Piranha",
@@ -3585,7 +3585,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.6,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   siren: {
     name: "Siren",
@@ -3637,7 +3637,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   giantSquid: {
     name: "Giant Squid",
@@ -3786,7 +3786,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.3,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   octoCrab: {
     name: "Octo-Crab",
@@ -3873,7 +3873,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.3,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   hordecallerCrab: {
     name: "Hordecaller Crab",
@@ -3931,7 +3931,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.3,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   kraken: {
     name: "Kraken",
@@ -4034,7 +4034,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   friendlyGolem: {
     name: "Friendly Golem",
@@ -4079,7 +4079,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ],
     xpValue: 0,
     lootTable: new LootTable([]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   yeti: {
     name: "Yeti",
@@ -4131,7 +4131,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   iceGolem: {
     name: "Ice Golem",
@@ -4176,7 +4176,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   frostElemental: {
     name: "Frost Elemental",
@@ -4225,7 +4225,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   frostGiant: {
     name: "Frost Giant",
@@ -4285,7 +4285,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.05,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   wight: {
     name: "Wight",
@@ -4324,7 +4324,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   magmaElemental: {
     name: "Magma Elemental",
@@ -4390,7 +4390,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   volcanoSpirit: {
     name: "Volcano Spirit",
@@ -4450,7 +4450,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   magmaSlime: {
     name: "Magma Slime",
@@ -4518,7 +4518,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   wyvern: {
     name: "Wyvern",
@@ -4586,7 +4586,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 0.4,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   animatedLavaFlow: {
     name: "Animated Lava Flow",
@@ -4632,7 +4632,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         chance: 1,
       },
     ]),
-    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   dragon: {
     name: "Dragon",
