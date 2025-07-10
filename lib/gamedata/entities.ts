@@ -5063,6 +5063,13 @@ const entities: Record<EntityId, EntityDefinition> = {
         new Recipe({ rottenFlesh: 1 }, new ItemInstance("leather", 1)),
         new Recipe({ meat: 1, coal: 1 }, new ItemInstance("grilledMeat", 1)),
         new Recipe(
+          {
+            eyeball: 1,
+            coal: 1,
+          },
+          new ItemInstance("friedEyeball", 1)
+        ),
+        new Recipe(
           { salt: 3, meat: 1, coal: 1 },
           new ItemInstance("saltedMeat", 1)
         ),

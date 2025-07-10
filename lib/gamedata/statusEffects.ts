@@ -117,7 +117,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
       `You are well-fed, improving your XP gain by ${(
         source.strength * 100
       ).toFixed()}%.`,
-    stacking: StatusEffectStacking.Separate,
+    stacking: StatusEffectStacking.AddDurationMaxStrength,
     getXpToAdd(creature, source, amount) {
       return amount * (1 + source.strength / 100);
     },

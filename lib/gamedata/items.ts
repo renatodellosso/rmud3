@@ -22,6 +22,7 @@ export type ItemId =
   | "bone"
   | "skull"
   | "eyeball"
+  | "friedEyeball"
   | "rustySword"
   | "money"
   | "healthPotion"
@@ -218,6 +219,22 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0.2,
     getSellValue: 1,
   },
+  friedEyeball: {
+    getName: "Fried Eyeball",
+    tags: [ItemTag.Consumable],
+    description: "A squishy eyeball that has been fried to a crisp.",
+    getWeight: 0.2,
+    getSellValue: 2,
+    getAbilities: (creature, item) => [
+      Abilities.healWithStatusEffect("Heal", "Heal 3 health.", 0, 3, [
+        {
+          id: "satiated",
+          strength: 5,
+          duration: 300, // Duration in seconds
+        },
+      ]),
+    ],
+  } satisfies ConsumableDefinition,
   rustySword: {
     getName: "Rusty Sword",
     tags: [ItemTag.Equipment],
@@ -541,7 +558,13 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0.5,
     getSellValue: 3,
     getAbilities: (creature, item) => [
-      Abilities.heal("Heal", "Heal 5 health.", 0, 5),
+      Abilities.healWithStatusEffect("Heal", "Heal 5 health.", 0, 5, [
+        {
+          id: "satiated",
+          strength: 10,
+          duration: 300,
+        },
+      ]),
     ],
   } satisfies ConsumableDefinition,
   saltedMeat: {
@@ -551,7 +574,13 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0.6,
     getSellValue: 5,
     getAbilities: (creature, item) => [
-      Abilities.heal("Heal", "Heal 10 health.", 0, 10),
+      Abilities.healWithStatusEffect("Heal", "Heal 10 health.", 0, 10, [
+        {
+          id: "satiated",
+          strength: 10,
+          duration: 300,
+        },
+      ]),
     ],
   } satisfies ConsumableDefinition,
   delversMeal: {
@@ -570,7 +599,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         [
           {
             id: "satiated",
-            strength: 10,
+            strength: 20,
             duration: 300,
           },
         ]
