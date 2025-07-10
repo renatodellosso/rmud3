@@ -5213,9 +5213,9 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
-            taintedFlesh: 25,
             bone: 25,
-            eyeball: 10,
+            taintedFlesh: 10,
+            eyeball: 5,
             trollHeart: 5,
           },
           new ItemInstance("horrifyingBow", 1)
