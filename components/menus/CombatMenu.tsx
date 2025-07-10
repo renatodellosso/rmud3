@@ -68,7 +68,7 @@ function TargetEntry({
       {isCreature && (
         <>
           (
-          {(target.health > 0 && target.health < 1) ? 1 : target.health.toFixed()}
+          {(target.health > 0 && target.health < 1) ? "1" : target.health.toFixed()}
           /{(target.getMaxHealth as () => number)().toFixed()})
         </>
       )}
