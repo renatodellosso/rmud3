@@ -221,7 +221,9 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
               <button
                 key={ability.ability.name}
                 onClick={() => selectAbility(ability.ability, ability.source)}
-                className={`tooltip w-full ${selected ? "bg-blue-500" : ""}`}
+                className={`tooltip w-full ${selected ? "bg-blue-500" : ""} ${
+                  selected && cooldownRemaining == 0 ? "animate-shake" : ""
+                }`}
                 style={{
                   background: `linear-gradient(to right, green, green ${
                     ((totalCooldown - cooldownRemaining) / totalCooldown) * 100

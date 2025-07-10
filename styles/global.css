@@ -64,6 +64,10 @@ input {
   animation: shake 1s infinite;
 }
 
+.animate-shake {
+  animation: shake 1s infinite;
+}
+
 @keyframes shake {
   10%,
   90% {
