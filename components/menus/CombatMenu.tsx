@@ -148,45 +148,31 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   const originalAbility = gameState.self.getAbilities().find((a) => (a.source.definitionId === selectedAbility?.source.definitionId)); 
 
   useEffect(() => {
-    if (originalAbility) setSelectedAbility(originalAbility);
-  }, [originalAbility?.source.canActAt]);
-
-  useEffect(() => {
+    if (originalAbility?.source) {
+      setTotalCooldown(
+        (originalAbility.source.canActAt.getTime() -
+          originalAbility.source.lastActedAt.getTime()) /
+          1000
+      );
+    }
+    
     const interval = setInterval(() => {
-      if (selectedAbility?.source) {
-        setCanAct(selectedAbility.source.canActAt <= new Date());
+      if (originalAbility) setSelectedAbility(originalAbility);
+
+      if (originalAbility?.source) {
+        setCanAct(originalAbility.source.canActAt <= new Date());
+        
+        setCooldownRemaining(
+          Math.max(
+            0,
+            originalAbility.source.canActAt.getTime() - new Date().getTime()
+          ) / 1000
+        );
       }
     }, 25);
 
     return () => clearInterval(interval);
-  }, [gameState.self]);
-
-  useEffect(() => {
-    const interval = setInterval(
-      () => {
-        if (selectedAbility?.source) {
-          setCooldownRemaining(
-            Math.max(
-              0,
-              selectedAbility.source.canActAt.getTime() - new Date().getTime()
-            ) / 1000
-          );
-        }
-      }, 25);
-
-    return () => clearInterval(interval);
-  }, [gameState.self]);
-
-  useEffect(
-    () => {
-      if (selectedAbility?.source) {
-        setTotalCooldown(
-          (selectedAbility.source.canActAt.getTime() -
-            selectedAbility.source.lastActedAt.getTime()) /
-            1000
-        );
-      }
-    }, [gameState.self]);
+  }, [originalAbility?.source.canActAt]);
 
   return (
     <div className="border w-1/6 flex flex-col gap-2">
