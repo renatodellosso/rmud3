@@ -71,6 +71,7 @@ export type ItemId =
   | "ironHelmet"
   | "ironChestplate"
   | "ironBoots"
+  | "skeletalSword"
   | "backpack"
   | "carvingStone"
   | "guildStone"
@@ -186,7 +187,11 @@ export type ItemId =
   | "wingedBackpack"
   | "vengefulRing"
   | "drainingRing"
-  | "healthfulAmulet";
+  | "healthfulAmulet"
+  | "horrifyingBow"
+  | "undeadChestplate"
+  | "undeadHelmet"
+  | "undeadBoots";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -754,6 +759,19 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Legs,
     getDamageResistances: [{ amount: 2, type: "*" }],
+  } satisfies EquipmentDefinition,
+  skeletalSword: {
+    getName: "Skeletal Sword",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: "A long, bony blade.",
+    getWeight: 4,
+    getSellValue: 20,
+    getAbilities: (creature, item) => [
+      Abilities.attack("Slash", "A basic slashing attack with a sword.", 1, [
+        { amount: 5, type: DamageType.Slashing },
+      ]),
+    ],
   } satisfies EquipmentDefinition,
   backpack: {
     getName: "Backpack",
@@ -2799,6 +2817,76 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getAmountToHeal: (creature, source, healAmount) =>
       healAmount +
       Math.floor(creature.getAbilityScore(AbilityScore.Intelligence) / 2),
+  } satisfies EquipmentDefinition,
+  horrifyingBow: {
+    getName: "Horrifying Bow",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: "A disgusting bow made of undead materials.",
+    getWeight: 5,
+    getSellValue: 100,
+    getAbilities: (creature, item) => [
+      Abilities.attack("Shoot", "A powerful, though disgusting, bow shot.", 2, [
+        { amount: 18, type: DamageType.Piercing },
+      ]),
+    ],
+  } satisfies EquipmentDefinition,
+  undeadChestplate: {
+    getName: "Undead Chestplate",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Chest,
+    description: `A chesplate made from the remains of the undead. Reduces the duration of the cursed status effect by 25% for you.`,
+    getWeight: 16,
+    getSellValue: 100,
+    getDamageResistances: [{ amount: 5, type: "*" }],
+    getAbilityScores: {
+      [AbilityScore.Strength]: 2,
+    },
+    getStatusEffectToApply: (creature, effect) =>
+      effect.id === "cursed"
+        ? {
+            ...effect,
+            duration: effect.duration * 0.75,
+          }
+        : effect,
+  } satisfies EquipmentDefinition,
+  undeadHelmet: {
+    getName: "Undead Helmet",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Head,
+    description: `A helmet made from the remains of the undead. Reduces the duration of the cursed status effect by 25% for you.`,
+    getWeight: 8,
+    getSellValue: 100,
+    getDamageResistances: [{ amount: 5, type: "*" }],
+    getAbilityScores: {
+      [AbilityScore.Strength]: 2,
+    },
+    getStatusEffectToApply: (creature, effect) =>
+      effect.id === "cursed"
+        ? {
+            ...effect,
+            duration: effect.duration * 0.75,
+          }
+        : effect,
+  } satisfies EquipmentDefinition,
+  undeadBoots: {
+    getName: "Undead Boots",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Head,
+    description: `A pair of boots made from the remains of the undead. Reduces the duration of the cursed status effect by 25% for you.`,
+    getWeight: 10,
+    getSellValue: 100,
+    getDamageResistances: [{ amount: 5, type: "*" }],
+    getAbilityScores: {
+      [AbilityScore.Strength]: 2,
+    },
+    getStatusEffectToApply: (creature, effect) =>
+      effect.id === "cursed"
+        ? {
+            ...effect,
+            duration: effect.duration * 0.75,
+          }
+        : effect,
   } satisfies EquipmentDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 

@@ -5194,10 +5194,51 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
+            bone: 15,
+            skull: 1,
+          },
+          new ItemInstance("skeletalSword", 1)
+        ),
+        new Recipe(
+          {
             leather: 5,
             trollTooth: 4,
           },
           new ItemInstance("furyBelt", 1)
+        ),
+        new Recipe(
+          {
+            taintedFlesh: 25,
+            bone: 25,
+            eyeball: 10,
+            trollHeart: 5,
+          },
+          new ItemInstance("horrifyingBow", 1)
+        ),
+        new Recipe(
+          {
+            rottenFlesh: 20,
+            taintedFlesh: 10,
+            ratTail: 10
+          },
+          new ItemInstance("undeadBoots", 1)
+        ),
+        new Recipe(
+          {
+            rottenFlesh: 20,
+            taintedFlesh: 10,
+            trollHeart: 1
+          },
+          new ItemInstance("undeadChestplate", 1)
+        ),
+        new Recipe(
+          {
+            rottenFlesh: 20,
+            taintedFlesh: 10,
+            eyeball: 5,
+            skull: 1,
+          },
+          new ItemInstance("undeadHelmet", 1)
         ),
         new Recipe(
           {
