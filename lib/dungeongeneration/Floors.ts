@@ -22,22 +22,22 @@ const floors: Record<string, FloorDefinition> = {
       maxEncounters: 2,
       encounters: new WeightedTable<Encounter>([
         {
-          item: "skeleton",
-          amount: 1,
-          weight: 0.6,
-        },
-        {
-          item: "zombie",
-          amount: 1,
-          weight: 0.8,
-        },
-        {
           item: "slime",
           amount: [1, 3],
           weight: 1,
         },
         {
           item: "slimeSplitter",
+          amount: 1,
+          weight: 1,
+        },
+        {
+          item: "slimePoisoner",
+          amount: 1,
+          weight: 1,
+        },
+        {
+          item: "bigSlime",
           amount: 1,
           weight: 1,
         },
@@ -50,6 +50,16 @@ const floors: Record<string, FloorDefinition> = {
           item: "giantRat",
           amount: 1,
           weight: 0.5,
+        },
+        {
+          item: "plagueRat",
+          amount: 1,
+          weight: 0.5,
+        },
+        {
+          item: "lurkingTendril",
+          amount: 1,
+          weight: 0.4,
         },
         {
           item: randomContainer(
@@ -116,34 +126,34 @@ const floors: Record<string, FloorDefinition> = {
       maxEncounters: 2,
       encounters: new WeightedTable<Encounter>([
         {
-          item: "skeleton",
-          amount: [1, 2],
-          weight: 1,
-        },
-        {
-          item: "zombie",
-          amount: [1, 2],
-          weight: 0.8,
-        },
-        {
           item: "troll",
           amount: 1,
           weight: 0.5,
         },
         {
-          item: "ghost",
+          item: "ogre",
           amount: 1,
-          weight: 0.2,
+          weight: 0.5,
         },
         {
-          item: "rat",
-          amount: [1, 3],
-          weight: 0.3,
+          item: "caveCrawler",
+          amount: 1,
+          weight: 1,
         },
         {
-          item: "giantRat",
+          item: "caveCrawlerVenomous",
           amount: 1,
-          weight: 0.3,
+          weight: 0.8,
+        },
+        {
+          item: "caveCrawlerScaled",
+          amount: 1,
+          weight: 0.8,
+        },
+        {
+          item: "trollRat",
+          amount: 1,
+          weight: 0.8,
         },
         {
           item: randomContainer(
@@ -205,12 +215,22 @@ const floors: Record<string, FloorDefinition> = {
           weight: 0.8,
         },
         {
+          item: "zombieHordling",
+          amount: [3, 5],
+          weight: 0.5,
+        },
+        {
           item: "ghost",
+          amount: 1,
+          weight: 1,
+        },
+        {
+          item: "cursedGhost",
           amount: 1,
           weight: 0.6,
         },
         {
-          item: "rat",
+          item: "plagueRat",
           amount: [1, 3],
           weight: 0.4,
         },
@@ -218,6 +238,11 @@ const floors: Record<string, FloorDefinition> = {
           item: "giantRat",
           amount: 1,
           weight: 0.2,
+        },
+        {
+          item: "scavengingGoblin",
+          amount: 1,
+          weight: 0.5,
         },
         {
           item: randomContainer(
@@ -266,7 +291,7 @@ const floors: Record<string, FloorDefinition> = {
         {
           item: "goblinShaman",
           amount: 1,
-          weight: 0.5,
+          weight: 0.7,
         },
         {
           item: "hobgoblin",
@@ -274,17 +299,17 @@ const floors: Record<string, FloorDefinition> = {
           weight: 0.8,
         },
         {
-          item: "troll",
-          amount: 1,
-          weight: 0.8,
+          item: "scavengingGoblin",
+          amount: [1, 3],
+          weight: 0.6,
         },
         {
-          item: "rat",
-          amount: [1, 3],
+          item: "troll",
+          amount: 1,
           weight: 0.5,
         },
         {
-          item: "giantRat",
+          item: "ogre",
           amount: 1,
           weight: 0.5,
         },

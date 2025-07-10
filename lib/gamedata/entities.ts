@@ -1,6 +1,9 @@
 import { WeightedTable } from "lib/types/WeightedTable";
 import { LootTable } from "lib/types/LootTable";
-import AbilityScore, { BONUS_FROM_INTELLIGENCE, BONUS_FROM_STRENGTH } from "lib/types/AbilityScore";
+import AbilityScore, {
+  BONUS_FROM_INTELLIGENCE,
+  BONUS_FROM_STRENGTH,
+} from "lib/types/AbilityScore";
 import {
   CreatureDefinition,
   CreatureInstance,
@@ -35,10 +38,20 @@ export type CreatureId =
   | "player"
   | "trainingDummy"
   | "zombie"
+  | "zombieHordling"
   | "skeleton"
+  | "scavengingGoblin"
+  | "caveCrawler"
+  | "caveCrawlerVenomous"
+  | "caveCrawlerScaled"
   | "slime"
   | "slimeSplitter"
+  | "slimePoisoner"
+  | "bigSlime"
+  | "lurkingTendril"
+  | "ogre"
   | "troll"
+  | "trollRat"
   | "fungalZombie"
   | "fungalTroll"
   | "sentientFungus"
@@ -53,9 +66,11 @@ export type CreatureId =
   | "hobgoblinWarrior"
   | "goblinInventor"
   | "ghost"
+  | "cursedGhost"
   | "wraith"
   | "rat"
   | "giantRat"
+  | "plagueRat"
   | "saltGolem"
   | "spider"
   | "spiderSpitter"
@@ -226,6 +241,45 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
+
+  zombieHordling: {
+    name: "Zombie Hordling",
+    health: 5,
+    abilityScores: {
+      [AbilityScore.Strength]: 2,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 0,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Bite",
+        "Bite an enemy.",
+        5,
+        [{ amount: 2, type: DamageType.Piercing }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 10,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "rottenFlesh",
+            amount: 1,
+            weight: 1.2,
+          },
+          {
+            item: "eyeball",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
   skeleton: {
     name: "Skeleton",
     health: 15,
@@ -263,6 +317,242 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+
+  scavengingGoblin: {
+    name: "Scavenging Goblin",
+    health: 10,
+    abilityScores: {
+      [AbilityScore.Strength]: 2,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 3,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Spear",
+        "Are these descriptions even displayed anywhere?",
+        3,
+        [{ amount: 5, type: DamageType.Piercing }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Block",
+        "Block an attack.",
+        2,
+        [
+          {
+            id: "blocking",
+            strength: 40,
+            duration: 2,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isSelf] }
+      ),
+    ],
+    xpValue: 15,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "money",
+            amount: [5, 9],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "bottle",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "mushroom",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "leather",
+            amount: 1,
+            weight: 1,
+          },
+          {
+            item: "rope",
+            amount: [2, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  caveCrawler: {
+    name: "Cave Crawler",
+    health: 20,
+    abilityScores: {
+      [AbilityScore.Strength]: 2,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 1, type: DamageType.Piercing }],
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Bite",
+        "Bite an enemy.",
+        2,
+        [{ amount: 2, type: DamageType.Piercing }],
+        [
+          {
+            id: "cursed",
+            strength: 1,
+            duration: 2,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 10,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "bone",
+            amount: [1, 3],
+            weight: 1,
+          },
+          {
+            item: "leather",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "meat",
+            amount: [1, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+    ]),
+  },
+  caveCrawlerVenomous: {
+    name: "Venomous Cave Crawler",
+    health: 25,
+    abilityScores: {
+      [AbilityScore.Strength]: 3,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [
+      { amount: 1, type: DamageType.Piercing },
+      { amount: 1, type: DamageType.Poison },
+    ],
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Venomous Bite",
+        "Bite an enemy with venom.",
+        3,
+        [{ amount: 3, type: DamageType.Piercing }],
+        [
+          {
+            id: "poisoned",
+            strength: 3,
+            duration: 3,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 15,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "bone",
+            amount: [1, 3],
+            weight: 1,
+          },
+          {
+            item: "leather",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "meat",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "venom",
+            amount: 1,
+            weight: 0.5,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+    ]),
+  },
+  caveCrawlerScaled: {
+    name: "Scaled Cave Crawler",
+    health: 15,
+    abilityScores: {
+      [AbilityScore.Strength]: 2,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 3, type: "*" }],
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Bite",
+        "Bite an enemy.",
+        3,
+        [{ amount: 2, type: DamageType.Piercing }],
+        [
+          {
+            id: "cursed",
+            strength: 1,
+            duration: 2,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 10,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "bone",
+            amount: [1, 3],
+            weight: 1,
+          },
+          {
+            item: "leather",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "meat",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "ironOre",
+            amount: [1, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+    ]),
   },
   slime: {
     name: "Slime",
@@ -386,6 +676,261 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       io.updateGameStateForRoom(creature.location);
     },
   },
+  slimePoisoner: {
+    name: "Poison Slime",
+    health: 20,
+    abilityScores: {
+      [AbilityScore.Strength]: 0,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 3, type: DamageType.Poison }],
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Poison Slime",
+        "A poisonous slime attack.",
+        4,
+        [{ amount: 2, type: DamageType.Poison }],
+        [
+          {
+            id: "poisoned",
+            strength: 5,
+            duration: 3,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Poison Cloud",
+        "Creates a cloud of poison.",
+        3,
+        [
+          {
+            id: "poisoned",
+            strength: 3,
+            duration: 5,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 20,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "slime",
+            amount: [2, 5],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ironOre",
+            amount: [1, 3],
+            weight: 0.5,
+          },
+          {
+            item: "coal",
+            amount: [1, 3],
+            weight: 0.5,
+          },
+        ]),
+        amount: 2,
+        chance: 0.8,
+      },
+    ]),
+  },
+  bigSlime: {
+    name: "Big Slime",
+    health: 40,
+    abilityScores: {
+      [AbilityScore.Strength]: 0,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 0,
+    },
+    damageResistances: [{ amount: 1, type: DamageType.Poison }],
+
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Slime",
+        "Slime.",
+        3,
+        [{ amount: 3, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 15,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "slime",
+            amount: [1, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ironOre",
+            amount: [1, 2],
+            weight: 0.5,
+          },
+          {
+            item: "coal",
+            amount: [1, 2],
+            weight: 0.5,
+          },
+        ]),
+        amount: 1,
+        chance: 0.8,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+  lurkingTendril: {
+    name: "Lurking Tendril",
+    health: 30,
+    abilityScores: {
+      [AbilityScore.Strength]: 2,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 1,
+    },
+    damageResistances: [{ amount: 2, type: DamageType.Bludgeoning }],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Tentacle Strike",
+        "A swift strike with a tentacle.",
+        4,
+        [{ amount: 4, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.attackWithStatusEffect(
+        "Grapple",
+        "Attempts to grapple a target.",
+        3,
+        [
+          {
+            amount: 4,
+            type: DamageType.Bludgeoning,
+          },
+        ],
+        [
+          {
+            id: "stunned",
+            strength: 2,
+            duration: 2,
+          },
+        ],
+        {
+          targetRestrictions: [CanTarget.isAlly],
+        }
+      ),
+    ],
+    xpValue: 30,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "meat",
+            amount: [1, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "slime",
+            amount: [1, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.8,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.1),
+  },
+
+  ogre: {
+    name: "Ogre",
+    health: 25,
+    abilityScores: {
+      [AbilityScore.Strength]: 8,
+      [AbilityScore.Constitution]: 3,
+      [AbilityScore.Intelligence]: 1,
+    },
+    damageResistances: [],
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Slam",
+        "Slam.",
+        4,
+        [{ amount: 5, type: DamageType.Bludgeoning }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Roar",
+        "Let out a fearsome roar.",
+        1.5,
+        [
+          {
+            id: "overcharged",
+            strength: 2,
+            duration: 15,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isSelf] }
+      ),
+    ],
+    xpValue: 25,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "taintedFlesh",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "trollTooth",
+            amount: [1, 2],
+            weight: 1.2,
+          },
+          {
+            item: "trollHeart",
+            amount: 1,
+            weight: 0.5,
+          },
+        ]),
+        amount: 2,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "furyBelt",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.3,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
   troll: {
     name: "Troll",
     health: 25,
@@ -411,7 +956,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         targetRestrictions: [CanTarget.isSelf],
       }),
     ],
-    xpValue: 20,
+    xpValue: 25,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -453,6 +998,52 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
+
+  giantRat: {
+    name: "Giant Rat",
+    health: 10,
+    abilityScores: {
+      [AbilityScore.Strength]: 1,
+      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Intelligence]: 0,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Bite",
+        "The rat snacks on you.",
+        4,
+        [{ amount: 4, type: DamageType.Piercing }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 10,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "meat",
+            amount: [1, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ratTail",
+            amount: 1,
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.5,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+
   saltGolem: {
     name: "Salt Golem",
     health: 35,
@@ -1519,6 +2110,59 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
+
+  cursedGhost: {
+    name: "Cursed Ghost",
+    health: 25,
+    abilityScores: {
+      [AbilityScore.Strength]: 0,
+      [AbilityScore.Constitution]: 0,
+      [AbilityScore.Intelligence]: 5,
+    },
+    damageResistances: [{ amount: 2, type: DamageType.Psychic }],
+    intrinsicAbilities: [
+      Abilities.attackWithStatusEffect(
+        "Haunt",
+        "A spooky attack on the mind.",
+        4,
+        [{ amount: 6, type: DamageType.Psychic }],
+        [
+          {
+            id: "cursed",
+            strength: 1,
+            duration: 5,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 20,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "memory",
+            amount: [1, 2],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 0.75,
+      },
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "ectoplasm",
+            amount: [1, 3],
+            weight: 1,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
   wraith: {
     name: "Wraith",
     health: 45,
@@ -1640,9 +2284,9 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
   },
-  giantRat: {
-    name: "Giant Rat",
-    health: 10,
+  trollRat: {
+    name: "Troll Rat",
+    health: 15,
     abilityScores: {
       [AbilityScore.Strength]: 1,
       [AbilityScore.Constitution]: 1,
@@ -1652,12 +2296,25 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       Abilities.attack(
         "Bite",
         "The rat snacks on you.",
-        4,
-        [{ amount: 4, type: DamageType.Piercing }],
+        3,
+        [{ amount: 6, type: DamageType.Piercing }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Bellow",
+        "The troll rat bellows, intimidating its enemies.",
+        2,
+        [
+          {
+            id: "stunned",
+            strength: 2,
+            duration: 3,
+          },
+        ],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 10,
+    xpValue: 15,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -1677,9 +2334,75 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             amount: 1,
             weight: 1,
           },
+          {
+            item: "trollTooth",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "trollHeart",
+            amount: 1,
+            weight: 1,
+          },
         ]),
         amount: 1,
         chance: 0.5,
+      },
+    ]),
+    tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
+  },
+  plagueRat: {
+    name: "Plague Rat",
+    health: 8,
+    abilityScores: {
+      [AbilityScore.Strength]: 0,
+      [AbilityScore.Constitution]: 1,
+      [AbilityScore.Intelligence]: 0,
+    },
+    intrinsicAbilities: [
+      Abilities.attack(
+        "Bite",
+        "The plague rat bites you.",
+        4,
+        [{ amount: 3, type: DamageType.Piercing }],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+      Abilities.applyStatusEffect(
+        "Infect",
+        "Inflicts a debilitating infection on an enemy.",
+        3,
+        [
+          {
+            id: "poisoned",
+            strength: 3,
+            duration: 3,
+          },
+        ],
+        { targetRestrictions: [CanTarget.isAlly] }
+      ),
+    ],
+    xpValue: 20,
+    lootTable: new LootTable([
+      {
+        item: new WeightedTable<ItemId>([
+          {
+            item: "meat",
+            amount: [1, 2],
+            weight: 1,
+          },
+          {
+            item: "ratTail",
+            amount: 1,
+            weight: 0.5,
+          },
+          {
+            item: "slimeEgg",
+            amount: 1,
+            weight: 0.5,
+          },
+        ]),
+        amount: 1,
+        chance: 1,
       },
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.5, selectRandomAbility, 0.01),
@@ -4468,6 +5191,13 @@ const entities: Record<EntityId, EntityDefinition> = {
             skull: 1,
           },
           new ItemInstance("repulsiveNecklace", 1)
+        ),
+        new Recipe(
+          {
+            leather: 5,
+            trollTooth: 4,
+          },
+          new ItemInstance("furyBelt", 1)
         ),
         new Recipe(
           {

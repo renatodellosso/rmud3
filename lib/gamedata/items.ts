@@ -33,6 +33,7 @@ export type ItemId =
   | "taintedFlesh"
   | "trollTooth"
   | "trollHeart"
+  | "furyBelt"
   | "mushroom"
   | "certificateOfAchievement"
   | "bigStick"
@@ -300,6 +301,22 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 2,
     getSellValue: 10,
   },
+  furyBelt: {
+    getName: "Fury Belt",
+    tags: [ItemTag.Equipment],
+    description: "A belt made of troll hide.",
+    getWeight: 1,
+    getSellValue: 25,
+    getAbilities: [
+      Abilities.applyStatusEffect("Roar", "Let out a mighty roar.", 1, [
+        {
+          id: "overcharged",
+          strength: 4,
+          duration: 15,
+        },
+      ]),
+    ],
+  } satisfies EquipmentDefinition,
   mushroom: {
     getName: "Mushroom",
     tags: [ItemTag.Consumable],
