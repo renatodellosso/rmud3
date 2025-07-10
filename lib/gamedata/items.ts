@@ -336,7 +336,9 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
           strength: 2,
           duration: 10,
         },
-      ]),
+      ], {
+        targetRestrictions: [CanTarget.isSelf]
+      }),
     ],
   } satisfies EquipmentDefinition,
   mushroom: {
