@@ -148,7 +148,7 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   const originalAbility = gameState.self.getAbilities().find((a) => (a.source.definitionId === selectedAbility?.source.definitionId)); 
 
   useEffect(() => {
-    if (originalAbility) selectAbility(originalAbility?.ability, originalAbility?.source);
+    if (originalAbility) setSelectedAbility(originalAbility);
   }, [originalAbility?.source.canActAt]);
 
   useEffect(() => {
