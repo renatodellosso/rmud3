@@ -52,4 +52,4 @@ app.prepare().then(() => {
 setupLocations();
 startTicking();
 
-startDiscordBot();
+if (!dev) startDiscordBot();
