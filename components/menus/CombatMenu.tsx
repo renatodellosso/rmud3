@@ -145,16 +145,21 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
     );
   }
 
+  const originalAbility = gameState.self.getAbilities().find((a) => (a.source.definitionId === selectedAbility?.source.definitionId)); 
+
+  useEffect(() => {
+    if (originalAbility) selectAbility(originalAbility?.ability, originalAbility?.source);
+  }, [originalAbility?.source.canActAt]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (selectedAbility?.source) {
         setCanAct(selectedAbility.source.canActAt <= new Date());
       }
-      else setCanAct(gameState.self.canActAt <= new Date());
-    }, 100);
+    }, 25);
 
     return () => clearInterval(interval);
-  }, [gameState, selectedAbility]);
+  }, [gameState.self]);
 
   useEffect(() => {
     const interval = setInterval(
@@ -167,20 +172,10 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
             ) / 1000
           );
         }
-        else {
-          setCooldownRemaining(
-            Math.max(
-              0,
-              gameState.self.canActAt.getTime() - new Date().getTime()
-            ) / 1000
-          );
-        }
-      },
-      25
-    );
+      }, 25);
 
     return () => clearInterval(interval);
-  }, [gameState.self.canActAt, selectedAbility?.source.canActAt]);
+  }, [gameState.self]);
 
   useEffect(
     () => {
@@ -191,23 +186,16 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
             1000
         );
       }
-      else {
-        setTotalCooldown(
-          (gameState.self.canActAt.getTime() -
-            gameState.self.lastActedAt.getTime()) /
-            1000
-        );
-      }
-    },
-    [gameState.self, selectedAbility?.source]
-  );
+    }, [gameState.self]);
 
   return (
     <div className="border w-1/6 flex flex-col gap-2">
       <h2 className="text-xl">Combat</h2>
       <div>
         Can act{" "}
-        {cooldownRemaining > 0 ? `in ${cooldownRemaining.toFixed(1)}s` : "now!"}
+        {cooldownRemaining > 0
+          ? `in ${cooldownRemaining.toFixed(1)} seconds`
+          : "now!"}
       </div>
       <div>
         <strong>Abilities</strong>
@@ -229,7 +217,8 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
                   ability.source.definitionId
                   ? {
                       background: `linear-gradient(to right, green, green ${
-                        (1 - cooldownRemaining / totalCooldown) * 100
+                        ((totalCooldown - cooldownRemaining) / totalCooldown) *
+                        100
                       }%, blue 1rem, blue 100%)`,
                     }
                   : {}
