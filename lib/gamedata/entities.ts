@@ -2323,6 +2323,11 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             amount: [1, 3],
             weight: 1,
           },
+          {
+            item: "taintedFlesh",
+            amount: 1,
+            weight: 1,
+          },
         ]),
         amount: 1,
         chance: 1,
