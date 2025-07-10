@@ -5218,7 +5218,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         new Recipe(
           {
             rottenFlesh: 20,
-            taintedFlesh: 10,
+            taintedFlesh: 3,
             ratTail: 10
           },
           new ItemInstance("undeadBoots", 1)
@@ -5226,7 +5226,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         new Recipe(
           {
             rottenFlesh: 20,
-            taintedFlesh: 10,
+            taintedFlesh: 3,
             trollHeart: 1
           },
           new ItemInstance("undeadChestplate", 1)
@@ -5234,7 +5234,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         new Recipe(
           {
             rottenFlesh: 20,
-            taintedFlesh: 10,
+            taintedFlesh: 3,
             eyeball: 5,
             skull: 1,
           },
