@@ -600,7 +600,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getAbilities: (creature, item) => [
       Abilities.healWithStatusEffect(
         "Heal",
-        "Heal a moderate amount of health.",
+        "Heal 20 health.",
         0,
         20,
         [

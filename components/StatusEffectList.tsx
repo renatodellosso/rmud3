@@ -21,11 +21,11 @@ export default function StatusEffectList({
     <div>
       <strong>Status Effects</strong>
       <ul>
-        {effects.map((effect) => (
-          <li key={effect.definitionId} className="tooltip">
+        {effects.map((effect, index) => (
+          <li key={index} className="tooltip">
             {statusEffects[effect.definitionId].name}{" "}
             {effect.strength.toFixed()} (expires in{" "}
-            {((effect.expiresAt.getTime() - Date.now()) / 1000).toFixed(1)}s)
+            {Math.max((effect.expiresAt.getTime() - Date.now()) / 1000, 0).toFixed(1)}s)
             <div className="tooltip-text w-48">
               {getFromOptionalFunc(
                 statusEffects[effect.definitionId].getDescription,
