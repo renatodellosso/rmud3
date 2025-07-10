@@ -49,7 +49,7 @@ export function attack(
     name,
     getDescription: addToDescription(
       getDescription,
-      `Inflicts ${damage.map((d) => `${d.amount} ${d.type}`)}.`
+      `Inflicts ${damage.map((d) => `${d.amount} ${d.type}`).join(", ")}.`
     ),
     getCooldown,
     getTargetCount: options.targetCount ?? 1,

@@ -24,7 +24,7 @@ export default function PlayerInfoMenu({
         HP: {self.health.toFixed()}/{self.getMaxHealth().toFixed()}
       </div>
       <div>
-        Level {self.level} - {self.xp.toLocaleString()}/
+        Level {self.level} - {Math.round(self.xp).toLocaleString()}/
         {getXpForNextLevel(self.level).toLocaleString()} XP
       </div>
       <div>
@@ -38,8 +38,9 @@ export default function PlayerInfoMenu({
 
             return (
               <li key={ability}>
-                {ability}: {val} ({self.abilityScores[ability as AbilityScore]}{" "}
-                base + {val - self.abilityScores[ability as AbilityScore]}{" "}
+                {ability}: {val.toFixed(1)} (
+                {self.abilityScores[ability as AbilityScore]} base +{" "}
+                {(val - self.abilityScores[ability as AbilityScore]).toFixed(1)}{" "}
                 bonus)
               </li>
             );

@@ -333,8 +333,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.applyStatusEffect("Roar", "Let out a mighty roar.", 1, [
         {
           id: "overcharged",
-          strength: 4,
-          duration: 15,
+          strength: 2,
+          duration: 10,
         },
       ]),
     ],
