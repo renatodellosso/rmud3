@@ -42,13 +42,6 @@ export default function registerGameListeners(socket: TypedSocket) {
     (abilityName: string, sourceName: string, targetIds: string[]) => {
       const player = getPlayer(socket);
 
-      if (
-        new Date() < player.instance.canActAt ||
-        player.instance.health <= 0
-      ) {
-        return;
-      }
-
       const abilities = player.instance.getAbilities();
 
       const ability = abilities.find(
@@ -61,6 +54,25 @@ export default function registerGameListeners(socket: TypedSocket) {
         console.error(
           `Ability ${abilityName} with source ${sourceName} not found for player ${player.instance.name}`
         );
+        return;
+      }
+
+      // Find source
+      const source = abilities.find(
+        (a) => getAbilitySourceName(a.source) === sourceName
+      )?.source;
+
+      if (!source) {
+        console.error(
+          `Source ${sourceName} not found for ability ${abilityName} for player ${player.instance.name}`
+        );
+        return;
+      }
+
+      if (
+        new Date() < source.canActAt ||
+        player.instance.health <= 0
+      ) {
         return;
       }
 
@@ -80,17 +92,6 @@ export default function registerGameListeners(socket: TypedSocket) {
         })
         .filter((t) => t != undefined) as Targetable[];
 
-      // Find source
-      const source = abilities.find(
-        (a) => getAbilitySourceName(a.source) === sourceName
-      )?.source;
-
-      if (!source) {
-        console.error(
-          `Source ${sourceName} not found for ability ${abilityName} for player ${player.instance.name}`
-        );
-        return;
-      }
       player.instance.activateAbility(ability.ability, targets, source);
     }
   );

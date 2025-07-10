@@ -303,8 +303,7 @@ export class PlayerInstance extends CreatureInstance {
 
     const location = locations[this.location];
 
-    this.lastActedAt = new Date();
-    this.canActAt = new Date();
+    
 
     let cooldown =
       getFromOptionalFunc(ability.getCooldown, this, source) * cooldownPercent;
@@ -319,14 +318,25 @@ export class PlayerInstance extends CreatureInstance {
       }
     }
 
-    this.canActAt.setTime(this.canActAt.getTime() + cooldown * 1000);
+    if ("health" in source) {
+      this.lastActedAt = new Date();
+      this.canActAt = new Date();
+
+      this.canActAt.setTime(this.canActAt.getTime() + cooldown * 1000);
+    }
 
     if (
       "definitionId" in source &&
-      "amount" in source &&
-      items[source.definitionId].tags.includes(ItemTag.Consumable)
+      "amount" in source
     ) {
-      this.inventory.remove(new ItemInstance(source.definitionId, 1));
+      if (items[source.definitionId].tags.includes(ItemTag.Consumable)) {
+        this.inventory.remove(new ItemInstance(source.definitionId, 1));
+      }
+
+      source.lastActedAt = new Date();
+      source.canActAt = new Date();
+
+      source.canActAt.setTime(source.canActAt.getTime() + cooldown * 1000);
     }
 
     getIo().updateGameStateForRoom(location.id);

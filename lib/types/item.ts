@@ -22,6 +22,8 @@ export class ItemInstance {
   reforge?: ReforgeId;
   guildId?: ObjectId;
   guildName?: string;
+  canActAt: Date = new Date();
+  lastActedAt: Date = new Date();
 
   constructor(
     definitionId: ItemId,

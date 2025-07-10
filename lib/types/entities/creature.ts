@@ -455,11 +455,9 @@ export class CreatureInstance extends EntityInstance {
     }
 
     if (def.stacking === StatusEffectStacking.Separate || !existing) {
-      this.statusEffects.push({
-        definitionId: effect.id,
-        strength: effect.strength,
-        expiresAt: new Date(Date.now() + effect.duration * 1000),
-      });
+      this.statusEffects.push(
+        new StatusEffectInstance(effect.id, effect.strength, new Date(Date.now() + effect.duration * 1000))
+      );
       return;
     }
 

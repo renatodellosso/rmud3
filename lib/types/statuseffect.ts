@@ -18,10 +18,22 @@ export type StatusEffectDefinition =
     ) => void;
   };
 
-export type StatusEffectInstance = {
+export class StatusEffectInstance {
   definitionId: StatusEffectId;
   strength: number;
   expiresAt: Date;
+  canActAt: Date = new Date();
+  lastActedAt: Date = new Date();
+
+  constructor(
+    definitionId: StatusEffectId,
+    strength: number,
+    expiresAt: Date
+  ) {
+    this.definitionId = definitionId;
+    this.strength = strength;
+    this.expiresAt = expiresAt;
+  }
 };
 
 export type StatusEffectToApply = {

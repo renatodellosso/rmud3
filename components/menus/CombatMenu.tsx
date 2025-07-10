@@ -147,35 +147,59 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCanAct(gameState.self.canActAt <= new Date());
+      if (selectedAbility?.source) {
+        setCanAct(selectedAbility.source.canActAt <= new Date());
+      }
+      else setCanAct(gameState.self.canActAt <= new Date());
     }, 100);
 
     return () => clearInterval(interval);
-  }, [gameState]);
+  }, [gameState, selectedAbility]);
 
   useEffect(() => {
     const interval = setInterval(
-      () =>
-        setCooldownRemaining(
-          Math.max(
-            0,
-            gameState.self.canActAt.getTime() - new Date().getTime()
-          ) / 1000
-        ),
+      () => {
+        if (selectedAbility?.source) {
+          setCooldownRemaining(
+            Math.max(
+              0,
+              selectedAbility.source.canActAt.getTime() - new Date().getTime()
+            ) / 1000
+          );
+        }
+        else {
+          setCooldownRemaining(
+            Math.max(
+              0,
+              gameState.self.canActAt.getTime() - new Date().getTime()
+            ) / 1000
+          );
+        }
+      },
       25
     );
 
     return () => clearInterval(interval);
-  }, [gameState.self.canActAt]);
+  }, [gameState.self.canActAt, selectedAbility?.source.canActAt]);
 
   useEffect(
-    () =>
-      setTotalCooldown(
-        (gameState.self.canActAt.getTime() -
-          gameState.self.lastActedAt.getTime()) /
-          1000
-      ),
-    [gameState.self]
+    () => {
+      if (selectedAbility?.source) {
+        setTotalCooldown(
+          (selectedAbility.source.canActAt.getTime() -
+            selectedAbility.source.lastActedAt.getTime()) /
+            1000
+        );
+      }
+      else {
+        setTotalCooldown(
+          (gameState.self.canActAt.getTime() -
+            gameState.self.lastActedAt.getTime()) /
+            1000
+        );
+      }
+    },
+    [gameState.self, selectedAbility?.source]
   );
 
   return (
