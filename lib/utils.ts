@@ -87,13 +87,15 @@ export function areItemInstancesEqual(
   );
 
   for (const key of keys) {
+    if (key === "canActAt" || key === "lastActedAt") continue;
+    if (skipAmount && key === "amount") continue;
+
     const v1 = (item1 as Record<string, any>)[key];
     const v2 = (item2 as Record<string, any>)[key];
 
     if (typeof v1 === "function" || typeof v2 === "function") continue;
 
     if (!(key in item2)) return false;
-    if (skipAmount && key === "amount") continue;
 
     if (ObjectId.isValid(v1) && ObjectId.isValid(v2)) {
       if (!new ObjectId(v1).equals(new ObjectId(v2))) return false;

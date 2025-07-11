@@ -4,7 +4,7 @@ import Ability, {
   getAbilitySourceName,
 } from "lib/types/Ability";
 import { GameState, Targetable } from "lib/types/types";
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import { CSSProperties, use, useEffect, useRef, useState } from "react";
 import { getFromOptionalFunc, getTargetId } from "../../lib/utils";
 import { socket } from "lib/socket";
 import { isTargetACreature } from "lib/gamedata/CanTarget";
@@ -68,7 +68,9 @@ function TargetEntry({
       {isCreature && (
         <>
           (
-          {(target.health > 0 && target.health < 1) ? "1" : target.health.toFixed()}
+          {target.health > 0 && target.health < 1
+            ? "1"
+            : target.health.toFixed()}
           /{(target.getMaxHealth as () => number)().toFixed()})
         </>
       )}
@@ -145,84 +147,110 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
     );
   }
 
+  const originalAbility = gameState.self
+    .getAbilities()
+    .find(
+      (a) => a.source.definitionId === selectedAbility?.source.definitionId
+    );
+
   useEffect(() => {
+    if (originalAbility?.source) {
+      setTotalCooldown(
+        (originalAbility.source.canActAt.getTime() -
+          originalAbility.source.lastActedAt.getTime()) /
+          1000
+      );
+    }
+
     const interval = setInterval(() => {
-      setCanAct(gameState.self.canActAt <= new Date());
-    }, 100);
+      if (originalAbility) setSelectedAbility(originalAbility);
 
-    return () => clearInterval(interval);
-  }, [gameState]);
+      if (originalAbility?.source) {
+        setCanAct(originalAbility.source.canActAt <= new Date());
 
-  useEffect(() => {
-    const interval = setInterval(
-      () =>
         setCooldownRemaining(
           Math.max(
             0,
-            gameState.self.canActAt.getTime() - new Date().getTime()
+            originalAbility.source.canActAt.getTime() - new Date().getTime()
           ) / 1000
-        ),
-      25
-    );
+        );
+      }
+    }, 25);
 
     return () => clearInterval(interval);
-  }, [gameState.self.canActAt]);
+  }, [originalAbility?.source.canActAt]);
 
-  useEffect(
-    () =>
-      setTotalCooldown(
-        (gameState.self.canActAt.getTime() -
-          gameState.self.lastActedAt.getTime()) /
-          1000
-      ),
-    [gameState.self]
-  );
+  const [render, setRender] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRender((prev) => prev + 1);
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="border w-1/6 flex flex-col gap-2">
       <h2 className="text-xl">Combat</h2>
       <div>
         Can act{" "}
-        {cooldownRemaining > 0 ? `in ${cooldownRemaining.toFixed(1)}s` : "now!"}
+        {cooldownRemaining > 0
+          ? `in ${cooldownRemaining.toFixed(1)} seconds`
+          : "now!"}
       </div>
       <div>
         <strong>Abilities</strong>
         <div className="flex flex-col gap-1">
-          {gameState.self.getAbilities().map((ability) => (
-            <button
-              key={ability.ability.name}
-              onClick={() => selectAbility(ability.ability, ability.source)}
-              className={`tooltip w-full ${
-                selectedAbility?.ability.name === ability.ability.name &&
-                selectedAbility?.source.definitionId ===
-                  ability.source.definitionId
-                  ? "bg-blue-500"
-                  : ""
-              }`}
-              style={
-                selectedAbility?.ability.name === ability.ability.name &&
-                selectedAbility?.source.definitionId ===
-                  ability.source.definitionId
-                  ? {
-                      background: `linear-gradient(to right, green, green ${
-                        (1 - cooldownRemaining / totalCooldown) * 100
-                      }%, blue 1rem, blue 100%)`,
-                    }
-                  : {}
-              }
-            >
-              {ability.ability.name} ({getAbilitySourceName(ability.source)})
-              {items[ability.source.definitionId as ItemId]?.tags.includes(
-                ItemTag.Consumable
-              )
-                ? ` (x${(ability.source as ItemInstance).amount})`
-                : ""}
-              <AbilityTooltip
-                abilityWithSource={ability}
-                creature={gameState.self}
-              />
-            </button>
-          ))}
+          {gameState.self.getAbilities().map((ability) => {
+            const totalCooldown =
+              (ability.source.canActAt.getTime() -
+                ability.source.lastActedAt.getTime()) /
+              1000;
+            const cooldownRemaining =
+              Math.max(
+                0,
+                ability.source.canActAt.getTime() - new Date().getTime()
+              ) / 1000;
+
+            const selected =
+              selectedAbility?.ability.name === ability.ability.name &&
+              selectedAbility?.source.definitionId ===
+                ability.source.definitionId;
+
+            return (
+              <button
+                key={ability.ability.name}
+                onClick={() => selectAbility(ability.ability, ability.source)}
+                className={`tooltip w-full`}
+                style={{
+                  background: `linear-gradient(to right, ${
+                    selected
+                      ? `rgb(0, 128, 0), rgb(0, 128, 0) ${
+                          ((totalCooldown - cooldownRemaining) /
+                            totalCooldown) *
+                          100
+                        }%, rgb(35, 35, 35) 1rem, rgb(35, 35, 35) 100%)`
+                      : `rgb(38, 77, 38), rgb(38, 77, 38) ${
+                          ((totalCooldown - cooldownRemaining) /
+                            totalCooldown) *
+                          100
+                        }%, black 1rem, black 100%)`
+                  }`,
+                }}
+              >
+                {ability.ability.name} ({getAbilitySourceName(ability.source)})
+                {items[ability.source.definitionId as ItemId]?.tags.includes(
+                  ItemTag.Consumable
+                )
+                  ? ` (x${(ability.source as ItemInstance).amount})`
+                  : ""}
+                <AbilityTooltip
+                  abilityWithSource={ability}
+                  creature={gameState.self}
+                />
+              </button>
+            );
+          })}
         </div>
       </div>
       <div>
