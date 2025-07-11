@@ -80,9 +80,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   poisoned: {
     name: "Poisoned",
     getDescription: (source) =>
-      `You are poisoned, taking damage each second equal to ${(
-        source.strength * 100
-      ).toFixed()}% of your current health.`,
+      `You are poisoned, taking damage each second equal to ${source.strength.toFixed()}% of your current health.`,
     stacking: StatusEffectStacking.Separate,
     tick: (creature, deltaTime, source) =>
       creature.takeDamage(
