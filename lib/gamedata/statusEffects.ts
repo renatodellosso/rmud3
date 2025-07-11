@@ -147,7 +147,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     name: "Overcharged",
     getDescription: (source) =>
       `You are overcharged, boosting your ability scores by ${source.strength.toFixed()}.`,
-    stacking: StatusEffectStacking.AddStrengthMaxDuration,
+    stacking: StatusEffectStacking.AddDurationMaxStrength,
     getAbilityScores: {
       Strength: (creature, source) => source.strength,
       Constitution: (creature, source) => source.strength,
