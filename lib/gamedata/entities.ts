@@ -4845,7 +4845,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         new Recipe({ ironBar: 5 }, new ItemInstance("ironHelmet", 1)),
         new Recipe({ ironBar: 5 }, new ItemInstance("ironChestplate", 1)),
         new Recipe({ ironBar: 5 }, new ItemInstance("ironBoots", 1)),
-        new Recipe({ ironBar: 1 }, new ItemInstance("dart", 1)),
+        new Recipe({ ironBar: 1 }, new ItemInstance("dart", 10)),
         new Recipe(
           { ironBar: 10, spore: 5 },
           new ItemInstance("fungalSpear", 1)
@@ -5084,10 +5084,10 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
-            dart: 1,
+            dart: 10,
             venom: 1,
           },
-          new ItemInstance("poisonDart", 1)
+          new ItemInstance("poisonDart", 10)
         ),
         new Recipe(
           {

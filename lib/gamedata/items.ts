@@ -2117,7 +2117,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     tags: [ItemTag.Consumable],
     description: `A dart.`,
     getWeight: 1,
-    getSellValue: 10,
+    getSellValue: 2,
     getAbilities: (creature, item) => [
       Abilities.attack("Dart", "Strike enemies with a blow dart.", 1, [
         { amount: 3, type: DamageType.Piercing },
@@ -2129,7 +2129,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     tags: [ItemTag.Consumable],
     description: `A dart dipped in spider venom.`,
     getWeight: 1,
-    getSellValue: 20,
+    getSellValue: 4,
     getAbilities: (creature, item) => [
       Abilities.attackWithStatusEffect(
         "Poison Dart",
