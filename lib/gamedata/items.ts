@@ -348,7 +348,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0.1,
     getSellValue: 1,
     getAbilities: (creature, item) => [
-      Abilities.heal("Heal", "Heal 1 health.", 0, 1),
+      Abilities.heal("Heal", "Heal 2 health.", 0, 2),
     ],
   } satisfies ConsumableDefinition,
   certificateOfAchievement: {
