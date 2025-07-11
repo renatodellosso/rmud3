@@ -100,7 +100,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     name: "Dreaming",
     getDescription: (source) =>
       `You are in a dream state, boosting your intelligence by ${source.strength.toFixed()}, but increasing cooldowns by ${(
-        (source.strength / 50) *
+        (source.strength / 25) *
         100
       ).toFixed()}%.`,
     stacking: StatusEffectStacking.Separate,
@@ -108,7 +108,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
       Intelligence: (creature, source) => source.strength,
     },
     getCooldown(creature, source, ability, cooldown) {
-      return (cooldown * source.strength) / 50;
+      return cooldown * source.strength / 25;
     },
   },
   satiated: {
