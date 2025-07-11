@@ -800,7 +800,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 20,
     getAbilities: (creature, item) => [
       Abilities.attack("Slash", "A basic slashing attack with a sword.", 1, [
-        { amount: 5, type: DamageType.Slashing },
+        { amount: 6, type: DamageType.Slashing },
       ]),
     ],
   } satisfies EquipmentDefinition,
@@ -2087,7 +2087,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getName: "Goblin Idol",
     description: "A miniature statue of a goblin.",
     getWeight: 1,
-    getSellValue: 200,
+    getSellValue: 100,
     tags: [],
   },
   firebomb: {
