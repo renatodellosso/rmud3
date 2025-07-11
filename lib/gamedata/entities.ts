@@ -271,7 +271,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           {
             item: "eyeball",
             amount: 1,
-            weight: 1,
+            weight: 0.5,
           },
         ]),
         amount: 1,
