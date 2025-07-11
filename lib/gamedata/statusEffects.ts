@@ -80,9 +80,9 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   poisoned: {
     name: "Poisoned",
     getDescription: (source) =>
-      `You are poisoned, taking damage each second equal to ${
-        (source.strength * 100).toFixed()
-      }% of your current health.`,
+      `You are poisoned, taking damage each second equal to ${(
+        source.strength * 100
+      ).toFixed()}% of your current health.`,
     stacking: StatusEffectStacking.Separate,
     tick: (creature, deltaTime, source) =>
       creature.takeDamage(
@@ -93,7 +93,8 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
           },
         ],
         source,
-        creature
+        creature,
+        true
       ),
   },
   dreaming: {
@@ -108,7 +109,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
       Intelligence: (creature, source) => source.strength,
     },
     getCooldown(creature, source, ability, cooldown) {
-      return cooldown * source.strength / 25;
+      return (cooldown * source.strength) / 25;
     },
   },
   satiated: {
