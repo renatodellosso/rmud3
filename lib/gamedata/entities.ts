@@ -342,7 +342,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         [
           {
             id: "blocking",
-            strength: 40,
+            strength: 15,
             duration: 2,
           },
         ],
