@@ -180,8 +180,33 @@ export class CreatureInstance extends EntityInstance {
   takeDamage(
     damage: { amount: number; type: DamageType }[],
     source: AbilitySource,
-    entitySource: EntityInstance
+    entitySource: EntityInstance,
+    ignoreAlterations = false
   ): { amount: number; type: DamageType }[] {
+    const newDamage = !ignoreAlterations
+      ? this.getDamageToTake(damage)
+      : damage;
+
+    for (let d of newDamage) {
+      d.amount = Math.min(Math.max(d.amount, 0), this.health);
+
+      this.damagers.addDamage(entitySource, d.amount);
+
+      this.health -= d.amount;
+    }
+
+    for (const provider of this.getStatAndAbilityProviders()) {
+      provider.provider.onTakeDamage?.(this, provider.source, newDamage);
+    }
+
+    if (this.health <= 0) {
+      this.die();
+    }
+
+    return newDamage;
+  }
+
+  getDamageToTake(damage: { amount: number; type: DamageType }[]) {
     let newDamage = damage.map((d) => ({ amount: d.amount, type: d.type }));
 
     let damageResistancePercent: number = 1;
@@ -293,22 +318,6 @@ export class CreatureInstance extends EntityInstance {
           }
         }
       }
-    }
-
-    for (let d of newDamage) {
-      d.amount = Math.min(Math.max(d.amount, 0), this.health);
-
-      this.damagers.addDamage(entitySource, d.amount);
-
-      this.health -= d.amount;
-    }
-
-    for (const provider of this.getStatAndAbilityProviders()) {
-      provider.provider.onTakeDamage?.(this, provider.source, newDamage);
-    }
-
-    if (this.health <= 0) {
-      this.die();
     }
 
     return newDamage;
@@ -456,7 +465,11 @@ export class CreatureInstance extends EntityInstance {
 
     if (def.stacking === StatusEffectStacking.Separate || !existing) {
       this.statusEffects.push(
-        new StatusEffectInstance(effect.id, effect.strength, new Date(Date.now() + effect.duration * 1000))
+        new StatusEffectInstance(
+          effect.id,
+          effect.strength,
+          new Date(Date.now() + effect.duration * 1000)
+        )
       );
       return;
     }

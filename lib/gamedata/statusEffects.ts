@@ -80,9 +80,9 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   poisoned: {
     name: "Poisoned",
     getDescription: (source) =>
-      `You are poisoned, taking damage each second equal to ${
-        (source.strength * 100).toFixed
-      }% of your current health.`,
+      `You are poisoned, taking damage each second equal to ${(
+        source.strength * 100
+      ).toFixed()}% of your current health.`,
     stacking: StatusEffectStacking.Separate,
     tick: (creature, deltaTime, source) =>
       creature.takeDamage(
@@ -93,14 +93,15 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
           },
         ],
         source,
-        creature
+        creature,
+        true
       ),
   },
   dreaming: {
     name: "Dreaming",
     getDescription: (source) =>
       `You are in a dream state, boosting your intelligence by ${source.strength.toFixed()}, but increasing cooldowns by ${(
-        (source.strength / 50) *
+        (source.strength / 25) *
         100
       ).toFixed()}%.`,
     stacking: StatusEffectStacking.Separate,
@@ -108,7 +109,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
       Intelligence: (creature, source) => source.strength,
     },
     getCooldown(creature, source, ability, cooldown) {
-      return (cooldown * source.strength) / 50;
+      return (cooldown * source.strength) / 25;
     },
   },
   satiated: {
@@ -146,7 +147,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     name: "Overcharged",
     getDescription: (source) =>
       `You are overcharged, boosting your ability scores by ${source.strength.toFixed()}.`,
-    stacking: StatusEffectStacking.Separate,
+    stacking: StatusEffectStacking.AddDurationMaxStrength,
     getAbilityScores: {
       Strength: (creature, source) => source.strength,
       Constitution: (creature, source) => source.strength,
@@ -173,6 +174,11 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
         amount: source.strength,
       },
     ],
+    getDamageToTake: (creature, source, damage) =>
+      damage.map((d) => ({
+        ...d,
+        amount: d.amount - source.strength,
+      })),
   },
   suffocating: {
     name: "Suffocating",

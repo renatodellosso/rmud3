@@ -75,19 +75,6 @@ export class PlayerInstance extends CreatureInstance {
 
     val += this.level;
 
-    for (const equipment of this.equipment.items) {
-      const def = items[equipment.definitionId] as EquipmentDefinition;
-      if (def.getMaxHealth)
-        val += getFromOptionalFunc(def.getMaxHealth, this, equipment);
-
-      if (equipment.reforge && reforges[equipment.reforge].getMaxHealth)
-        val += getFromOptionalFunc(
-          reforges[equipment.reforge].getMaxHealth,
-          this,
-          equipment
-        );
-    }
-
     return Math.max(val, 1);
   }
 

@@ -348,7 +348,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0.1,
     getSellValue: 1,
     getAbilities: (creature, item) => [
-      Abilities.heal("Heal", "Heal 1 health.", 0, 1),
+      Abilities.heal("Heal", "Heal 2 health.", 0, 2),
     ],
   } satisfies ConsumableDefinition,
   certificateOfAchievement: {
@@ -800,7 +800,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 20,
     getAbilities: (creature, item) => [
       Abilities.attack("Slash", "A basic slashing attack with a sword.", 1, [
-        { amount: 5, type: DamageType.Slashing },
+        { amount: 6, type: DamageType.Slashing },
       ]),
     ],
   } satisfies EquipmentDefinition,
@@ -919,7 +919,6 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: "A ring that allows you to cast fireball.",
     getWeight: 0.5,
     getSellValue: 100,
-    slot: EquipmentSlot.Hands,
     getAbilities: (creature, item) => [
       Abilities.attackWithStatusEffect(
         "Fireball",
@@ -2088,7 +2087,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getName: "Goblin Idol",
     description: "A miniature statue of a goblin.",
     getWeight: 1,
-    getSellValue: 200,
+    getSellValue: 100,
     tags: [],
   },
   firebomb: {
@@ -2118,7 +2117,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     tags: [ItemTag.Consumable],
     description: `A dart.`,
     getWeight: 1,
-    getSellValue: 10,
+    getSellValue: 2,
     getAbilities: (creature, item) => [
       Abilities.attack("Dart", "Strike enemies with a blow dart.", 1, [
         { amount: 3, type: DamageType.Piercing },
@@ -2130,7 +2129,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     tags: [ItemTag.Consumable],
     description: `A dart dipped in spider venom.`,
     getWeight: 1,
-    getSellValue: 20,
+    getSellValue: 4,
     getAbilities: (creature, item) => [
       Abilities.attackWithStatusEffect(
         "Poison Dart",

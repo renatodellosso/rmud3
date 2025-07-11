@@ -271,7 +271,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           {
             item: "eyeball",
             amount: 1,
-            weight: 1,
+            weight: 0.5,
           },
         ]),
         amount: 1,
@@ -342,7 +342,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         [
           {
             id: "blocking",
-            strength: 40,
+            strength: 15,
             duration: 2,
           },
         ],
@@ -4845,7 +4845,7 @@ const entities: Record<EntityId, EntityDefinition> = {
         new Recipe({ ironBar: 5 }, new ItemInstance("ironHelmet", 1)),
         new Recipe({ ironBar: 5 }, new ItemInstance("ironChestplate", 1)),
         new Recipe({ ironBar: 5 }, new ItemInstance("ironBoots", 1)),
-        new Recipe({ ironBar: 1 }, new ItemInstance("dart", 1)),
+        new Recipe({ ironBar: 1 }, new ItemInstance("dart", 10)),
         new Recipe(
           { ironBar: 10, spore: 5 },
           new ItemInstance("fungalSpear", 1)
@@ -5063,7 +5063,7 @@ const entities: Record<EntityId, EntityDefinition> = {
     interact: craftingInteraction(
       "Crafting at Furnace",
       new RecipeGroup([
-        new Recipe({ coal: 1, ironOre: 3 }, new ItemInstance("ironBar", 1)),
+        new Recipe({ coal: 1, ironOre: 2 }, new ItemInstance("ironBar", 1)),
         new Recipe({ coal: 1, goldOre: 3 }, new ItemInstance("goldBar", 1)),
         new Recipe({ rottenFlesh: 1 }, new ItemInstance("leather", 1)),
         new Recipe({ meat: 1, coal: 1 }, new ItemInstance("grilledMeat", 1)),
@@ -5084,10 +5084,10 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
-            dart: 1,
+            dart: 10,
             venom: 1,
           },
-          new ItemInstance("poisonDart", 1)
+          new ItemInstance("poisonDart", 10)
         ),
         new Recipe(
           {
