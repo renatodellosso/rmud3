@@ -26,7 +26,7 @@ function updateStatus(client: Client) {
     status: "online",
     activities: [
       {
-        name: `w/ ${playerManager.countOnlinePlayers()} players @ REDACTED`,
+        name: `w/ ${playerManager.countOnlinePlayers()} players @ rmud3.com`,
         type: ActivityType.Playing,
       },
     ],
