@@ -2087,7 +2087,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getName: "Goblin Idol",
     description: "A miniature statue of a goblin.",
     getWeight: 1,
-    getSellValue: 200,
+    getSellValue: 100,
     tags: [],
   },
   firebomb: {
