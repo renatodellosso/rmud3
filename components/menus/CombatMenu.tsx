@@ -221,15 +221,21 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
               <button
                 key={ability.ability.name}
                 onClick={() => selectAbility(ability.ability, ability.source)}
-                className={`tooltip w-full ${selected ? "bg-blue-500" : ""} ${
-                  selected && cooldownRemaining == 0 ? "animate-shake" : ""
-                }`}
+                className={`tooltip w-full`}
                 style={{
-                  background: `linear-gradient(to right, green, green ${
-                    ((totalCooldown - cooldownRemaining) / totalCooldown) * 100
-                  }%, ${
-                    selected ? "blue 1rem, blue 100%" : "black 1rem, black 100%"
-                  })`,
+                  background: `linear-gradient(to right, ${
+                    selected
+                      ? `rgb(0, 128, 0), rgb(0, 128, 0) ${
+                          ((totalCooldown - cooldownRemaining) /
+                            totalCooldown) *
+                          100
+                        }%, rgb(35, 35, 35) 1rem, rgb(35, 35, 35) 100%)`
+                      : `rgb(38, 77, 38), rgb(38, 77, 38) ${
+                          ((totalCooldown - cooldownRemaining) /
+                            totalCooldown) *
+                          100
+                        }%, black 1rem, black 100%)`
+                  }`,
                 }}
               >
                 {ability.ability.name} ({getAbilitySourceName(ability.source)})
