@@ -173,6 +173,11 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
         amount: source.strength,
       },
     ],
+    getDamageToTake: (creature, source, damage) =>
+      damage.map((d) => ({
+        ...d,
+        amount: d.amount - source.strength,
+      })),
   },
   suffocating: {
     name: "Suffocating",
