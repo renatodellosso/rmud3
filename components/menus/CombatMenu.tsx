@@ -184,7 +184,7 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setRender((prev) => prev + 1);
-    }, 100);
+    }, 25);
 
     return () => clearInterval(interval);
   }, []);
