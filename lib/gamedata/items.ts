@@ -919,7 +919,6 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: "A ring that allows you to cast fireball.",
     getWeight: 0.5,
     getSellValue: 100,
-    slot: EquipmentSlot.Hands,
     getAbilities: (creature, item) => [
       Abilities.attackWithStatusEffect(
         "Fireball",
