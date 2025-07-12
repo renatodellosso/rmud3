@@ -1470,7 +1470,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getName: "Fangbearer Anklet",
     tags: [ItemTag.Equipment],
     description: `An iron anklet, continually injecting venom into your bloodstream. 
-      Adds Poisoned (1) for 1s every second, but increases your intelligence by 15 and all XP gain by 10%.`,
+      Adds Poisoned (1) for 1s every second, but increases your intelligence by 5 and all XP gain by 5%.`,
     getWeight: 0.5,
     getSellValue: 250,
     tick: (creature) => {
@@ -1483,9 +1483,9 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       }
     },
     getAbilityScores: {
-      [AbilityScore.Intelligence]: 15,
+      [AbilityScore.Intelligence]: 5,
     },
-    getXpToAdd: (player, source, amount) => amount * 1.1,
+    getXpToAdd: (player, source, amount) => amount * 1.05,
   } satisfies EquipmentDefinition,
   spiderCloak: {
     getName: "Spider Cloak",
