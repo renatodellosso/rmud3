@@ -112,7 +112,7 @@ const floors: Record<string, FloorDefinition> = {
   caves: {
     name: "Caves",
     depth: 1,
-    visualizerColor: "#4682B4",
+    visualizerColor: "#4682B5",
     layoutGenerationOptions: {
       roomChance: 0.7,
       connectionChance: 0.5,
