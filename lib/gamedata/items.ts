@@ -1680,7 +1680,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getDamageResistances: () => [{ amount: 3, type: DamageType.Poison }],
   } satisfies EquipmentDefinition,
   treantSap: {
-    getName: "Treant",
+    getName: "Treant Sap",
     description: "An amber drop of sap from a fallen treant.",
     getWeight: 0.1,
     getSellValue: 25,
