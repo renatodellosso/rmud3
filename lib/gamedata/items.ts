@@ -1906,6 +1906,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 600,
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Chest,
+    getDamageResistances: [{ type: DamageType.Bludgeoning, amount: 4 }],
     getDamageToTake: (creature, source, damage) =>
       damage.map((d) => ({
         amount: d.amount * 0.8, // Reduces damage taken by 20%
@@ -2868,7 +2869,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: `A chesplate made from the remains of the undead. Reduces the duration of the cursed status effect by 25% for you.`,
     getWeight: 16,
     getSellValue: 100,
-    getDamageResistances: [{ amount: 5, type: "*" }],
+    getDamageResistances: [{ amount: 3, type: "*" }],
     getAbilityScores: {
       [AbilityScore.Strength]: 2,
     },
@@ -2887,7 +2888,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: `A helmet made from the remains of the undead. Reduces the duration of the cursed status effect by 25% for you.`,
     getWeight: 8,
     getSellValue: 100,
-    getDamageResistances: [{ amount: 5, type: "*" }],
+    getDamageResistances: [{ amount: 3, type: "*" }],
     getAbilityScores: {
       [AbilityScore.Strength]: 2,
     },
@@ -2906,7 +2907,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: `A pair of boots made from the remains of the undead. Reduces the duration of the cursed status effect by 25% for you.`,
     getWeight: 10,
     getSellValue: 100,
-    getDamageResistances: [{ amount: 5, type: "*" }],
+    getDamageResistances: [{ amount: 3, type: "*" }],
     getAbilityScores: {
       [AbilityScore.Strength]: 2,
     },
