@@ -17,7 +17,7 @@ export abstract class Hotbar {
 
   canEquip(player: PlayerInstance, item: ItemInstance): boolean {
     return (
-      this.items.length < this.getCapacity(player) && !this.isEquipped(item)
+      this.items.length < this.getCapacity(player)
     );
   }
 
