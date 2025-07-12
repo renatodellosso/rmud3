@@ -31,6 +31,7 @@ import locations from "lib/locations";
 import reforgeInteraction from "./interactions/reforgeInteraction";
 import { DamageType } from "lib/types/Damage";
 import { Location } from "lib/types/Location";
+import shopInteraction from "./interactions/shopInteraction";
 
 // Prefix summons with friendly
 
@@ -121,6 +122,7 @@ export type EntityId =
   | "mystic"
   | "tavernKeeper"
   | "junkCollector"
+  | "trader"
   | "banker"
   | "vault"
   | "menhir"
@@ -5813,6 +5815,10 @@ const entities: Record<EntityId, EntityDefinition> = {
 
       return func(entity, player, interaction, action);
     },
+  },
+  trader: {
+    name: "Trader",
+    interact: shopInteraction
   },
   banker: {
     name: "Banker",

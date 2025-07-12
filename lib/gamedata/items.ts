@@ -192,7 +192,8 @@ export type ItemId =
   | "horrifyingBow"
   | "undeadChestplate"
   | "undeadHelmet"
-  | "undeadBoots";
+  | "undeadBoots"
+  | "discountToken";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -330,15 +331,21 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 1,
     getSellValue: 25,
     getAbilities: [
-      Abilities.applyStatusEffect("Roar", "Let out a mighty roar.", 1, [
+      Abilities.applyStatusEffect(
+        "Roar",
+        "Let out a mighty roar.",
+        1,
+        [
+          {
+            id: "overcharged",
+            strength: 2,
+            duration: 10,
+          },
+        ],
         {
-          id: "overcharged",
-          strength: 2,
-          duration: 10,
-        },
-      ], {
-        targetRestrictions: [CanTarget.isSelf]
-      }),
+          targetRestrictions: [CanTarget.isSelf],
+        }
+      ),
     ],
   } satisfies EquipmentDefinition,
   mushroom: {
@@ -598,19 +605,13 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 2,
     getSellValue: 25,
     getAbilities: (creature, item) => [
-      Abilities.healWithStatusEffect(
-        "Heal",
-        "Heal 20 health.",
-        0,
-        20,
-        [
-          {
-            id: "satiated",
-            strength: 20,
-            duration: 300,
-          },
-        ]
-      ),
+      Abilities.healWithStatusEffect("Heal", "Heal 20 health.", 0, 20, [
+        {
+          id: "satiated",
+          strength: 20,
+          duration: 300,
+        },
+      ]),
     ],
   } satisfies ConsumableDefinition,
   ratTail: {
@@ -2919,6 +2920,13 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
           }
         : effect,
   } satisfies EquipmentDefinition,
+  discountToken: {
+    getName: "Discount Token",
+    tags: [],
+    description: "A token that grants a 20% discount on shop prices.",
+    getWeight: 0,
+    getSellValue: 3000,
+  },
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;
