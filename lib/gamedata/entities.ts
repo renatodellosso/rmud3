@@ -1923,7 +1923,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
   hobgoblinWarrior: {
-    name: "Hobgoblin",
+    name: "Hobgoblin Warrior",
     health: 25,
     abilityScores: {
       [AbilityScore.Strength]: 4,

@@ -1470,7 +1470,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getName: "Fangbearer Anklet",
     tags: [ItemTag.Equipment],
     description: `An iron anklet, continually injecting venom into your bloodstream. 
-      Adds Poisoned (1) for 1s every second, but increases your intelligence by 15 and all XP gain by 10%.`,
+      Adds Poisoned (1) for 1s every second, but increases your intelligence by 5 and all XP gain by 5%.`,
     getWeight: 0.5,
     getSellValue: 250,
     tick: (creature) => {
@@ -1483,9 +1483,9 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       }
     },
     getAbilityScores: {
-      [AbilityScore.Intelligence]: 15,
+      [AbilityScore.Intelligence]: 5,
     },
-    getXpToAdd: (player, source, amount) => amount * 1.1,
+    getXpToAdd: (player, source, amount) => amount * 1.05,
   } satisfies EquipmentDefinition,
   spiderCloak: {
     getName: "Spider Cloak",
@@ -1680,7 +1680,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getDamageResistances: () => [{ amount: 3, type: DamageType.Poison }],
   } satisfies EquipmentDefinition,
   treantSap: {
-    getName: "Treant",
+    getName: "Treant Sap",
     description: "An amber drop of sap from a fallen treant.",
     getWeight: 0.1,
     getSellValue: 25,
@@ -1906,6 +1906,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 600,
     tags: [ItemTag.Equipment],
     slot: EquipmentSlot.Chest,
+    getDamageResistances: [{ type: DamageType.Bludgeoning, amount: 4 }],
     getDamageToTake: (creature, source, damage) =>
       damage.map((d) => ({
         amount: d.amount * 0.8, // Reduces damage taken by 20%
@@ -2868,7 +2869,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: `A chesplate made from the remains of the undead. Reduces the duration of the cursed status effect by 25% for you.`,
     getWeight: 16,
     getSellValue: 100,
-    getDamageResistances: [{ amount: 5, type: "*" }],
+    getDamageResistances: [{ amount: 3, type: "*" }],
     getAbilityScores: {
       [AbilityScore.Strength]: 2,
     },
@@ -2887,7 +2888,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: `A helmet made from the remains of the undead. Reduces the duration of the cursed status effect by 25% for you.`,
     getWeight: 8,
     getSellValue: 100,
-    getDamageResistances: [{ amount: 5, type: "*" }],
+    getDamageResistances: [{ amount: 3, type: "*" }],
     getAbilityScores: {
       [AbilityScore.Strength]: 2,
     },
@@ -2902,11 +2903,11 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
   undeadBoots: {
     getName: "Undead Boots",
     tags: [ItemTag.Equipment],
-    slot: EquipmentSlot.Head,
+    slot: EquipmentSlot.Legs,
     description: `A pair of boots made from the remains of the undead. Reduces the duration of the cursed status effect by 25% for you.`,
     getWeight: 10,
     getSellValue: 100,
-    getDamageResistances: [{ amount: 5, type: "*" }],
+    getDamageResistances: [{ amount: 3, type: "*" }],
     getAbilityScores: {
       [AbilityScore.Strength]: 2,
     },

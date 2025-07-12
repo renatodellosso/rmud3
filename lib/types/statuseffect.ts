@@ -8,6 +8,7 @@ export type StatusEffectDefinition =
     name: string;
     getDescription: OptionalFunc<string, [StatusEffectInstance]>;
     stacking: StatusEffectStacking;
+    maxStrength?: number;
     onExpire?: (
       creature: CreatureInstance,
       source: StatusEffectInstance
