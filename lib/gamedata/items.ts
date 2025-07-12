@@ -2902,7 +2902,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
   undeadBoots: {
     getName: "Undead Boots",
     tags: [ItemTag.Equipment],
-    slot: EquipmentSlot.Head,
+    slot: EquipmentSlot.Legs,
     description: `A pair of boots made from the remains of the undead. Reduces the duration of the cursed status effect by 25% for you.`,
     getWeight: 10,
     getSellValue: 100,

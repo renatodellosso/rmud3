@@ -142,6 +142,18 @@ export class PlayerInstance extends CreatureInstance {
   die() {
     const corpse = super.die();
 
+    this.canActAt = new Date();
+    this.lastActedAt = new Date();
+
+    for (let item of this.equipment.items) {
+      item.canActAt = new Date();
+      item.lastActedAt = new Date();
+    }
+    for (let item of this.inventory.items) {
+      item.canActAt = new Date();
+      item.lastActedAt = new Date();
+    }
+
     switch (difficultyOptions[this.difficulty].inventoryHandlingOnDeath) {
       case InventoryHandlingOnDeath.KeepItems:
         break;
