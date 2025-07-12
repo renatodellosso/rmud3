@@ -30,6 +30,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     getCooldown(creature, source, ability, cooldown) {
       return cooldown * source.strength;
     },
+    maxStrength: 5,
   },
   infested: {
     name: "Infested",
@@ -82,6 +83,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     getDescription: (source) =>
       `You are poisoned, taking damage each second equal to ${source.strength.toFixed()}% of your current health.`,
     stacking: StatusEffectStacking.Separate,
+    maxStrength: 10,
     tick: (creature, deltaTime, source) =>
       creature.takeDamage(
         [
@@ -103,11 +105,12 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
         100
       ).toFixed()}%.`,
     stacking: StatusEffectStacking.Separate,
+    maxStrength: 100,
     getAbilityScores: {
       Intelligence: (creature, source) => source.strength,
     },
     getCooldown(creature, source, ability, cooldown) {
-      return (cooldown * source.strength) / 25;
+      return cooldown * (1 + source.strength / 25);
     },
   },
   satiated: {
@@ -160,6 +163,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     getCooldown: (creature, source, ability, cooldown) => {
       return cooldown * (1 - source.strength / 100);
     },
+    maxStrength: 80,
   },
   blocking: {
     name: "Blocking",
@@ -172,11 +176,6 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
         amount: source.strength,
       },
     ],
-    getDamageToTake: (creature, source, damage) =>
-      damage.map((d) => ({
-        ...d,
-        amount: d.amount - source.strength,
-      })),
   },
   suffocating: {
     name: "Suffocating",
@@ -196,6 +195,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
         source,
         creature
       ),
+    maxStrength: 10,
   },
   amphibious: {
     name: "Amphibious",
@@ -219,6 +219,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
     getCooldown: (creature, source, ability, cooldown) => {
       return cooldown * (1 + source.strength / 100);
     },
+    maxStrength: 500,
   },
   fireImmune: {
     name: "Fire Immune",
