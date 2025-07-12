@@ -15,7 +15,7 @@ import {
   activateAbilityOnTick,
   selectRandomAbility,
 } from "lib/entityutils";
-import { EntityDefinition } from "lib/types/entity";
+import { EntityDefinition, Interaction } from "lib/types/entity";
 import items, { ItemId } from "./items";
 import { getIo } from "lib/ClientFriendlyIo";
 import craftingInteraction from "./interactions/craftingInteraction";
@@ -32,6 +32,9 @@ import reforgeInteraction from "./interactions/reforgeInteraction";
 import { DamageType } from "lib/types/Damage";
 import { Location } from "lib/types/Location";
 import shopInteraction from "./interactions/shopInteraction";
+import statusEffects, { StatusEffectId } from "./statusEffects";
+import { StatusEffectInstance } from "lib/types/statuseffect";
+import reforges from "./Reforges";
 
 // Prefix summons with friendly
 
@@ -125,6 +128,7 @@ export type EntityId =
   | "trader"
   | "banker"
   | "vault"
+  | "instructor"
   | "menhir"
   | "reforgeAnvil"
   | "lockedCoffin";
@@ -5233,7 +5237,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           {
             rottenFlesh: 20,
             taintedFlesh: 3,
-            ratTail: 10
+            ratTail: 10,
           },
           new ItemInstance("undeadBoots", 1)
         ),
@@ -5241,7 +5245,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           {
             rottenFlesh: 20,
             taintedFlesh: 3,
-            trollHeart: 1
+            trollHeart: 1,
           },
           new ItemInstance("undeadChestplate", 1)
         ),
@@ -5818,7 +5822,7 @@ const entities: Record<EntityId, EntityDefinition> = {
   },
   trader: {
     name: "Trader",
-    interact: shopInteraction
+    interact: shopInteraction,
   },
   banker: {
     name: "Banker",
@@ -5946,6 +5950,89 @@ const entities: Record<EntityId, EntityDefinition> = {
         player.vault.inventory,
         "Vault"
       );
+    },
+  },
+  instructor: {
+    name: "Instructor",
+    interact: async (entity, player, interaction, action) => {
+      const interactionTemplate: Interaction = {
+        entityId: entity._id,
+        type: "logOnly",
+        state: undefined,
+        actions: [
+          {
+            id: "leave",
+            text: "Goodbye",
+          },
+          {
+            id: "basics",
+            text: "Basics",
+          },
+          {
+            id: "statuses",
+            text: "Status Effects",
+          },
+          {
+            id: "reforges",
+            text: "Reforges",
+          },
+        ],
+      };
+
+      if (!interaction) {
+        getIo().sendMsgToPlayer(
+          player._id.toString(),
+          'The instructor looks at you and says, "What do you want to know about?"'
+        );
+
+        return interactionTemplate;
+      }
+
+      if (action === "leave") return undefined;
+
+      if (action === "basics") {
+        getIo().sendMsgToPlayer(
+          player._id.toString(),
+          `Enter the dungeon at the dungeon entrance. Keep your location and combat menus open. 
+          Use the interact button at the bottom of your screen to loot corpses. Be sure to explore the town!`
+        );
+        return interactionTemplate;
+      }
+
+      if (action === "statuses") {
+        const statuses = Object.entries(statusEffects).map(
+          ([id, status]) =>
+            `- ${status.name} (1): ${getFromOptionalFunc(
+              status.getDescription,
+              new StatusEffectInstance(id as StatusEffectId, 1, new Date())
+            )}`
+        );
+
+        const msg = `Status Effects:\n${statuses.join("\n")}`;
+        getIo().sendMsgToPlayer(player._id.toString(), msg);
+
+        return interactionTemplate;
+      }
+
+      if (action === "reforges") {
+        const reforgeMessages = Object.values(reforges).map(
+          (reforge) =>
+            `- ${reforge.name} (type: ${reforge.type}, weight: ${
+              reforge.weight
+            }): ${getFromOptionalFunc(
+              reforge.getDescription,
+              player,
+              new ItemInstance("rustySword", 1)
+            )}`
+        );
+
+        const msg = `Reforges:\n${reforgeMessages.join("\n")}`;
+        getIo().sendMsgToPlayer(player._id.toString(), msg);
+
+        return interactionTemplate;
+      }
+
+      return interactionTemplate;
     },
   },
   menhir: {

@@ -116,9 +116,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   satiated: {
     name: "Satiated",
     getDescription: (source) =>
-      `You are well-fed, improving your XP gain by ${(
-        source.strength * 100
-      ).toFixed()}%.`,
+      `You are well-fed, improving your XP gain by ${source.strength.toFixed()}%.`,
     stacking: StatusEffectStacking.AddDurationMaxStrength,
     getXpToAdd(creature, source, amount) {
       return amount * (1 + source.strength / 100);
@@ -180,9 +178,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   suffocating: {
     name: "Suffocating",
     getDescription: (source) =>
-      `You are suffocating, taking ${(
-        source.strength * 100
-      ).toFixed()}% of your max health as damage each second.`,
+      `You are suffocating, taking ${source.strength.toFixed()}% of your max health as damage each second.`,
     stacking: StatusEffectStacking.Separate,
     tick: (creature, deltaTime, source) =>
       creature.takeDamage(
@@ -224,7 +220,7 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   fireImmune: {
     name: "Fire Immune",
     getDescription: (source) =>
-      "You are immune to the burning effect. Reduces fire damage by 20",
+      "You are immune to the burning effect. Reduces fire damage by 20.",
     stacking: StatusEffectStacking.Separate,
     getDamageResistances: (creature, source) => [
       {

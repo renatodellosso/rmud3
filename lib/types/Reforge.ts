@@ -14,7 +14,7 @@ export type ReforgeDefinition = StatAndAbilityProvider<ItemInstance> & {
 };
 
 export enum ReforgeType {
-  Hand,
-  Armor,
-  Other,
+  Hand = "Hand",
+  Armor = "Armor",
+  Other = "Other",
 }
