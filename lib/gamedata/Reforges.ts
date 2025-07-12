@@ -227,14 +227,13 @@ const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
     type: ReforgeType.Other,
     weight: 0.1,
     getDescription: (creature) =>
-      `Scales damage by your intelligence (x${creature
-        .scaleAbility(1)
-        .toFixed(2)}).`,
-    getDamageToDeal: (creature, source, damage) =>
-      damage.map((d) => ({
-        type: d.type,
-        amount: creature.scaleAbility(d.amount),
-      })),
+      `Increases your base intelligence by 40% of your current health, divided by your max health.`,
+    getAbilityScores: {
+      [AbilityScore.Intelligence]: (creature) => 
+        "abilityScores" in creature
+          ? (creature.abilityScores as any)[AbilityScore.Intelligence] * creature.health / creature.getMaxHealth() * 0.4
+          : 0
+    }
   },
 } satisfies Record<ReforgeId, ReforgeDefinition>);
 
