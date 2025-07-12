@@ -686,7 +686,12 @@ const floors: Record<string, FloorDefinition> = {
         {
           item: "cryptGuardGolem",
           amount: 1,
-          weight: 0.3,
+          weight: 0.4,
+        },
+        {
+          item: "livingStatue",
+          amount: 1,
+          weight: 0.8,
         },
         {
           item: "wraith",
