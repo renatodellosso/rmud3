@@ -2,7 +2,6 @@ import { WeightedTable } from "lib/types/WeightedTable";
 import { ReforgeDefinition, ReforgeType } from "../types/Reforge";
 import { DamageType } from "lib/types/Damage";
 import AbilityScore from "lib/types/AbilityScore";
-import { PlayerInstance } from "lib/types/entities/player";
 
 export type ReforgeId =
   | "sharp"
@@ -22,7 +21,10 @@ export type ReforgeId =
   | "souldrinker"
   | "rejuvenating"
   | "enduring"
-  | "omniscient";
+  | "omniscient"
+  | "wise"
+  | "hearty"
+  | "unbroken";
 
 const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
   sharp: {
@@ -225,15 +227,50 @@ const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
   omniscient: {
     name: "Omniscient",
     type: ReforgeType.Other,
-    weight: 0.1,
+    weight: 0.2,
     getDescription: (creature) =>
       `Increases your base intelligence by 40% of your current health, divided by your max health.`,
     getAbilityScores: {
-      [AbilityScore.Intelligence]: (creature) => 
+      [AbilityScore.Intelligence]: (creature) =>
         "abilityScores" in creature
-          ? (creature.abilityScores as any)[AbilityScore.Intelligence] * creature.health / creature.getMaxHealth() * 0.4
-          : 0
-    }
+          ? (((creature.abilityScores as any)[AbilityScore.Intelligence] *
+              creature.health) /
+              creature.getMaxHealth()) *
+            0.4
+          : 0,
+    },
+  },
+  wise: {
+    name: "Wise",
+    type: ReforgeType.Other,
+    weight: 0.2,
+    getDescription: (creature) => `Increases your XP gain by 5%`,
+    getXpToAdd: (creature, source, amount) => amount * 1.05,
+  },
+  hearty: {
+    name: "Hearty",
+    type: ReforgeType.Other,
+    weight: 0.2,
+    getDescription: (creature) =>
+      `Increases your maximum health by your base strength`,
+    getMaxHealth: (creature) =>
+      "abilityScores" in creature
+        ? (creature.abilityScores as any)[AbilityScore.Strength]
+        : 0,
+  },
+  unbroken: {
+    name: "Unbroken",
+    type: ReforgeType.Other,
+    weight: 0.2,
+    getDescription: (creature) => `Deal 25% more damage at max health`,
+    getDamageToDeal: (creature, source, damage) =>
+      damage.map((d) => ({
+        type: d.type,
+        amount:
+          creature.health === creature.getMaxHealth()
+            ? d.amount * 1.25
+            : d.amount,
+      })),
   },
 } satisfies Record<ReforgeId, ReforgeDefinition>);
 
