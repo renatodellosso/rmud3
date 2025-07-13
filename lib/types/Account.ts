@@ -7,6 +7,12 @@ type Account = {
   password: string;
   createdAt: Date;
   playerProgresses: ObjectId[];
+  discordLinkCode: string;
+  discordUserId?: string;
 };
 
 export default Account;
+
+export function getRandomDiscordLinkCode(): string {
+  return Math.random().toString(36).substring(2, 10);
+}

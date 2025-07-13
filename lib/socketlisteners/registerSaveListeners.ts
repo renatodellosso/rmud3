@@ -39,10 +39,10 @@ function startPlaySession(
 }
 
 export default function registerSaveListeners(socket: TypedSocket) {
-  socket.on("getSaves", async (callback) => {
+  socket.on("getSaveSelectPageData", async (callback) => {
     if (!socket.data.session) {
       console.error("No session set for socket");
-      callback(EJSON.stringify([]));
+      callback(EJSON.stringify([]), "", false);
       return;
     }
 
@@ -57,7 +57,7 @@ export default function registerSaveListeners(socket: TypedSocket) {
 
     if (!accounts || accounts.length === 0) {
       console.error("No account found for session:", socket.data.session._id);
-      callback(EJSON.stringify([]));
+      callback(EJSON.stringify([]), "", false);
       return;
     }
 
@@ -99,7 +99,11 @@ export default function registerSaveListeners(socket: TypedSocket) {
       })
       .filter((save: PlayerSave | undefined) => save !== undefined);
 
-    callback(EJSON.stringify(saves));
+    callback(
+      EJSON.stringify(saves),
+      account.discordLinkCode,
+      account.discordUserId !== undefined
+    );
   });
 
   socket.on("createNewSave", async (saveName, difficulty) => {

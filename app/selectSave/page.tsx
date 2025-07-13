@@ -51,6 +51,8 @@ export default function SelectSave() {
   const [selectedDifficulty, setSelectedDifficulty] = useState(
     Difficulty.Normal
   );
+  const [discordLinkCode, setDiscordLinkCode] = useState("Loading...");
+  const [linkedDiscordAccount, setLinkedDiscordAccount] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -68,9 +70,18 @@ export default function SelectSave() {
       }
     });
 
-    socket.emit("getSaves", (saves: SerializedEJSON<PlayerSave[]>) => {
-      setSaves(EJSON.parse(saves));
-    });
+    socket.emit(
+      "getSaveSelectPageData",
+      (
+        saves: SerializedEJSON<PlayerSave[]>,
+        discordLinkCode: string,
+        linkedDiscordAccount: boolean
+      ) => {
+        setSaves(EJSON.parse(saves));
+        setDiscordLinkCode(discordLinkCode);
+        setLinkedDiscordAccount(linkedDiscordAccount);
+      }
+    );
   }, []);
 
   function createNewSave() {
@@ -88,9 +99,21 @@ export default function SelectSave() {
 
   return (
     <div className="h-screen flex flex-col">
-      <Link href="/" className="text-3xl text-white font-bold">
-        RMUD3
-      </Link>
+      <div>
+        <Link href="/" className="text-3xl text-white font-bold">
+          RMUD3
+        </Link>
+        {linkedDiscordAccount ? (
+          <div>Discord account linked successfully.</div>
+        ) : (
+          <div className="w-1/3">
+            <span className="animate-pulse">NOTICE:</span> Link your Discord
+            account by running the command{" "}
+            <span className="font-mono">/link {discordLinkCode}</span> in the
+            RMUD3 Discord server
+          </div>
+        )}
+      </div>
       <div className="grow flex flex-col justify-center items-center">
         <h1 className="text-xl text-center">Select a save:</h1>
         <div className="w-1/4 flex flex-col items-center mt-4 gap-2">

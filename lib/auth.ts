@@ -1,5 +1,5 @@
 import argon2 from "argon2";
-import Account from "./types/Account";
+import Account, { getRandomDiscordLinkCode } from "./types/Account";
 import { ObjectId } from "bson";
 import { CollectionManager } from "./getCollectionManager";
 import CollectionId from "./types/CollectionId";
@@ -80,6 +80,7 @@ export async function createAccount(
     password: hashedPassword,
     createdAt: new Date(),
     playerProgresses: [],
+    discordLinkCode: getRandomDiscordLinkCode(),
   };
 
   await accountCollection.upsert(account);
@@ -112,6 +113,11 @@ export async function signIn(
   }
 
   accountCollection.setInCache(account._id, account);
+
+  if (!account.discordLinkCode) {
+    account.discordLinkCode = getRandomDiscordLinkCode();
+    await accountCollection.upsert(account);
+  }
 
   const session = sessionManager.createSession(account._id);
   return session._id;

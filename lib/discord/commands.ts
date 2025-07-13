@@ -1,10 +1,11 @@
-import { SlashCommandBuilder } from "discord.js";
+import { Embed, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import Command from "./types";
 import { getMongoClient } from "lib/getMongoClient";
 import CollectionId from "lib/types/CollectionId";
 import Guild from "lib/types/Guild";
 import { PlayerInstance } from "lib/types/entities/player";
 import { difficultyOptions } from "lib/types/Difficulty";
+import Account from "lib/types/Account";
 
 const commandArray: Command[] = [
   {
@@ -27,25 +28,48 @@ const commandArray: Command[] = [
         .find({}, { sort: { xp: -1 }, limit: 25 })
         .toArray()) as PlayerInstance[];
 
-      const guildIds = topPlayers.map((player) => player.guildId);
-      const guilds = (await db
-        .collection(CollectionId.Guilds)
-        .find({ id: { $in: guildIds } })
-        .toArray()) as Guild[];
+      async function getGuildsForPlayers(players: PlayerInstance[]) {
+        const guildIds = topPlayers.map((player) => player.guildId);
+        const guilds = (await db
+          .collection(CollectionId.Guilds)
+          .find({ id: { $in: guildIds } })
+          .toArray()) as Guild[];
 
-      const guildMap: { [id: string]: Guild } = {};
-      for (const guild of guilds) {
-        guildMap[guild._id.toString()] = guild;
+        const guildMap: { [id: string]: Guild } = {};
+        for (const guild of guilds) {
+          guildMap[guild._id.toString()] = guild;
+        }
+
+        return guildMap;
       }
 
-      let msg = "**RMUD3 Leaderboard**\n";
+      async function getAccountsForPlayers(players: PlayerInstance[]) {
+        const accountNames = players.map((player) => player.name);
+        const accounts = (await db
+          .collection(CollectionId.Accounts)
+          .find({ username: { $in: accountNames } })
+          .toArray()) as Account[];
+        const accountMap: { [username: string]: Account } = {};
+        for (const account of accounts) {
+          accountMap[account.username] = account;
+        }
+        return accountMap;
+      }
+
+      const [guildMap, accountMap] = await Promise.all([
+        getGuildsForPlayers(topPlayers),
+        getAccountsForPlayers(topPlayers),
+      ]);
+
+      let msg = "";
 
       for (let i = 0; i < topPlayers.length; i++) {
         const player = topPlayers[i];
+        const account = accountMap[player.name];
 
-        let row = `${i + 1}. ${player.name} - lvl ${
-          player.level
-        } / ${Math.round(player.xp).toLocaleString()} XP`;
+        let row = `${i + 1}. ${player.name}${
+          account?.discordUserId ? ` (<@${account.discordUserId}>)` : ""
+        } - lvl ${player.level} / ${Math.round(player.xp).toLocaleString()} XP`;
 
         if (player.guildId) {
           const guild = guildMap[player.guildId.toString()];
@@ -60,7 +84,12 @@ const commandArray: Command[] = [
         msg += `${row}\n`;
       }
 
-      await interaction.reply(msg);
+      const embed = new EmbedBuilder()
+        .setTitle("RMUD3 Leaderboard")
+        .setDescription(msg)
+        .setColor("#0099ff");
+
+      await interaction.reply({ embeds: [embed] });
     },
   },
   {
@@ -85,6 +114,65 @@ const commandArray: Command[] = [
       }
 
       await interaction.reply(msg);
+    },
+  },
+  {
+    builder: new SlashCommandBuilder()
+      .setName("link")
+      .setDescription("Links your Discord account.")
+      .addStringOption((option) =>
+        option
+          .setName("code")
+          .setDescription(
+            "The code to link your Discord account. Find it on the save select page."
+          )
+          .setRequired(true)
+      ) as SlashCommandBuilder,
+    handler: async (interaction) => {
+      const db = await getMongoClient();
+
+      const code = interaction.options.getString("code");
+
+      console.log(
+        `Linking Discord account with code "${code}" for user ${interaction.user.globalName}`
+      );
+
+      if (!code) {
+        await interaction.reply(
+          "Please provide a code to link your Discord account."
+        );
+        return;
+      }
+
+      const account = await db.collection(CollectionId.Accounts).findOne({
+        discordLinkCode: code,
+      });
+
+      if (!account) {
+        await interaction.reply(
+          "Invalid code. Please check the code and try again."
+        );
+        return;
+      }
+
+      if (account.discordUserId) {
+        interaction.reply(
+          `This Discord account was already linked to <@${account.discordUserId}>. Removing the link.`
+        );
+      } else {
+        interaction.reply(
+          `Successfully linked your Discord account to <@${interaction.user.id}>.`
+        );
+      }
+
+      await db.collection(CollectionId.Accounts).updateOne(
+        { _id: account._id },
+        {
+          $set: {
+            discordUserId: interaction.user.id,
+          },
+        }
+      );
     },
   },
 ];
