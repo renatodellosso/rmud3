@@ -111,6 +111,12 @@ export class PlayerManager {
     return Array.from(this.isOnline.values()).filter((isOnline) => isOnline)
       .length;
   }
+
+  public getOnlinePlayers(): PlayerInstance[] {
+    return Array.from(this.instances.values()).filter((instance) =>
+      this.isOnline.get(instance._id.toString())
+    );
+  }
 }
 
 const getPlayerManager = () =>

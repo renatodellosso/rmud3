@@ -10,6 +10,7 @@ import AbilityScore from "lib/types/AbilityScore";
 import items from "lib/gamedata/items";
 import { restoreFieldsAndMethods } from "lib/utils";
 import { ItemInstance } from "lib/types/item";
+import getPlayerManager from "lib/PlayerManager";
 
 const commandArray: Command[] = [
   {
@@ -270,7 +271,7 @@ const commandArray: Command[] = [
           name: "Difficulty",
           value: difficultyOptions[player.difficulty].name,
           inline: true,
-        },
+        }
       );
 
       if (player.guildId) {
@@ -294,6 +295,23 @@ const commandArray: Command[] = [
         );
 
       await interaction.reply({ embeds: [embed] });
+    },
+  },
+  {
+    builder: new SlashCommandBuilder()
+      .setName("online")
+      .setDescription("Lists all online players."),
+    handler: async (interaction) => {
+      const playerManager = getPlayerManager();
+
+      const players = playerManager.getOnlinePlayers();
+
+      let msg = `**Online Players: ${players.length}**\n`;
+      players.forEach((player) => {
+        msg += `- ${player.name}\n`;
+      });
+
+      await interaction.reply(msg);
     },
   },
 ];
