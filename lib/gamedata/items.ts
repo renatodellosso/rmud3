@@ -199,7 +199,9 @@ export type ItemId =
   | "sirensTrident"
   | "chitinLeggings"
   | "chitinChestplate"
-  | "chitinHelmet";
+  | "chitinHelmet"
+  | "livingRing"
+  | "vineWhip";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -1714,16 +1716,16 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getName: "Amulet of the Centaur",
     tags: [ItemTag.Equipment],
     description:
-      "This beautiful necklace protects its wearer from the dangers of the forest. Reduces duration of incoming poisoned effect by 20%.",
+      "This beautiful necklace protects its wearer from the dangers of the forest. Reduces duration of incoming poisoned effect by 40%.",
     getWeight: 1,
     getSellValue: 50,
     getDamageResistances: [
-      { amount: 3, type: "*" },
+      { amount: 5, type: "*" },
       { amount: 5, type: DamageType.Poison },
     ],
     getStatusEffectDuration: (creature, effect) => {
       if (effect.id === "poisoned") {
-        return effect.duration * 0.8;
+        return effect.duration * 0.6;
       }
       return effect.duration;
     },
@@ -1748,6 +1750,19 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.heal("Regrow", "Recover 10 health.", 2, 10),
     ],
     getDamageResistances: () => [{ amount: 3, type: DamageType.Poison }],
+  } satisfies EquipmentDefinition,
+  vineWhip: {
+    getName: "Vine Whip",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: `A thin whip made of vines.`,
+    getWeight: 2,
+    getSellValue: 300,
+    getAbilities: (creature, item) => [
+      Abilities.attack("Treefall", "This strike is sturdy like a tree.", 0.6, [
+        { amount: 16, type: DamageType.Slashing },
+      ]),
+    ],
   } satisfies EquipmentDefinition,
   skeletonKey: {
     getName: "Skeleton Key",
@@ -3039,6 +3054,14 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       ),
     ],
     slot: EquipmentSlot.Hands,
+  } satisfies EquipmentDefinition,
+  livingRing: {
+    getName: "Living Ring",
+    tags: [ItemTag.Equipment],
+    description: "A ring made of living vines. Increasing all healing by 30%.",
+    getWeight: 0.2,
+    getSellValue: 50,
+    getAmountToHeal: (creature, source, amount) => amount * 1.3,
   } satisfies EquipmentDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 

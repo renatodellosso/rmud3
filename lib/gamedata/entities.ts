@@ -5497,6 +5497,13 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
+            vine: 25,
+            livingWood: 5,
+          },
+          new ItemInstance("livingRing", 1)
+        ),
+        new Recipe(
+          {
             treantSap: 8,
             goldBar: 5,
             livingWood: 5,
@@ -5514,8 +5521,15 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
+            vine: 50,
+            ironBar: 1,
+          },
+          new ItemInstance("vineWhip", 1)
+        ),
+        new Recipe(
+          {
             livingWood: 25,
-            vine: 10,
+            vine: 15,
             livingStone: 5,
             treantSap: 2,
           },
