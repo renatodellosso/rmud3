@@ -1518,7 +1518,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         type: DamageType.Poison,
       },
       {
-        amount: 2,
+        amount: 4,
         type: "*",
       },
     ],
@@ -1555,11 +1555,11 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getCooldown: (creature, source, ability, cooldown) => cooldown * 0.9,
     getDamageResistances: () => [
       {
-        amount: 8,
+        amount: 5,
         type: DamageType.Poison,
       },
       {
-        amount: 3,
+        amount: 4,
         type: "*",
       },
     ],
@@ -1947,8 +1947,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.attackWithStatusEffect(
         "Avalanche Strike",
         "A powerful strike that causes an avalanche of rocks to fall on the target.",
-        5,
-        [{ amount: 30, type: DamageType.Bludgeoning }],
+        2,
+        [{ amount: 35, type: DamageType.Bludgeoning }],
         [
           {
             id: "stunned",
@@ -1963,7 +1963,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.attackWithStatusEffect(
         "Rockslide",
         "A strike that causes a rockslide, dealing damage to many enemies in the area.",
-        4,
+        2.5,
         [{ amount: 20, type: DamageType.Bludgeoning }],
         [
           {
