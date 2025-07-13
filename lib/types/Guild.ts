@@ -11,6 +11,9 @@ export default class Guild {
   owner: ObjectId | undefined;
   members: ObjectId[];
 
+  level: number = 0;
+  xp: number = 0;
+
   constructor(owner: ObjectId | undefined, members: ObjectId[] = []) {
     this.owner = owner;
     this.members = members;
@@ -55,6 +58,22 @@ export default class Guild {
     }
     return undefined;
   }
+
+  addXp(amount: number) {
+    this.xp += amount;
+
+    // Check if the guild can level up
+    const xpForNextLevel = xpForNextGuildLevel(this.level);
+    if (this.xp >= xpForNextLevel) {
+      this.level++;
+    }
+
+    Guild.upsert(this);
+  }
+
+  getPerks(): GuildPerks {
+    return getGuildPerksByLevel(this.level);
+  }
 }
 
 export type GuildMember = PlayerInstance & {
@@ -65,3 +84,56 @@ export type GuildMember = PlayerInstance & {
 export type ClientGuild = Guild & {
   memberInstances: GuildMember[];
 };
+
+export function xpForNextGuildLevel(level: number): number {
+  return Math.round(Math.pow(2.5, level) * 10000);
+}
+
+export type GuildPerks = {
+  baseAbilityScoreBonusMultiplier: number;
+  xpGainBonusMultiplier: number;
+  shopDiscount: number;
+};
+
+const perksByLevel: Partial<GuildPerks>[] = [
+  {
+    xpGainBonusMultiplier: 0.1,
+  },
+  {
+    baseAbilityScoreBonusMultiplier: 0.1,
+  },
+  {
+    shopDiscount: 0.1,
+  },
+  {
+    xpGainBonusMultiplier: 0.2,
+  },
+  {
+    baseAbilityScoreBonusMultiplier: 0.2,
+  },
+  {
+    shopDiscount: 0.2,
+  },
+];
+
+export function getGuildPerksByLevel(level: number): GuildPerks {
+  const perks: GuildPerks = {
+    baseAbilityScoreBonusMultiplier: 0,
+    xpGainBonusMultiplier: 0,
+    shopDiscount: 0,
+  };
+
+  for (let i = 0; i < level && i < perksByLevel.length; i++) {
+    const perk = perksByLevel[i];
+    for (const key in perk) {
+      if (perk.hasOwnProperty(key)) {
+        const value = perk[key as keyof GuildPerks];
+        if (value !== undefined) {
+          (perks[key as keyof GuildPerks] as number) = value;
+        }
+      }
+    }
+  }
+
+  return perks;
+}

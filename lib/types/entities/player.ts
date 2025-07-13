@@ -34,7 +34,7 @@ import { EntityInstance } from "../entity";
 import { getXpForNextLevel } from "lib/gamedata/levelling";
 import StatAndAbilityProvider from "../StatAndAbilityProvider";
 import Vault from "../Vault";
-import Guild from "../Guild";
+import Guild, { getGuildPerksByLevel, GuildPerks } from "../Guild";
 import reforges from "lib/gamedata/Reforges";
 import { DamageType } from "../Damage";
 
@@ -62,12 +62,14 @@ export class PlayerInstance extends CreatureInstance {
   vault: Vault = new Vault();
 
   guildId: ObjectId | undefined = undefined;
+  guildLevel: number = 0;
 
   tick(deltaTime: number): void {
-    // Update game state if status effects have changed
-    const originalStatusEffectCount = this.statusEffects.length;
     super.tick(deltaTime);
     getIo().updateGameState(this._id.toString());
+
+    // Store guild level to avoid messing with async/await
+    this.getGuild().then((guild) => (this.guildLevel = guild?.level || 0));
   }
 
   getMaxHealth(): number {
@@ -95,6 +97,10 @@ export class PlayerInstance extends CreatureInstance {
 
   getAbilityScore(score: AbilityScore) {
     let val = this.abilityScores[score] + super.getAbilityScore(score);
+
+    val +=
+      this.abilityScores[score] *
+      this.getGuildPerks().baseAbilityScoreBonusMultiplier;
 
     return val;
   }
@@ -188,6 +194,9 @@ export class PlayerInstance extends CreatureInstance {
   }
 
   addXp(amount: number): void {
+    const guildBonus = amount * this.getGuildPerks().xpGainBonusMultiplier;
+    amount = amount + guildBonus;
+
     for (const provider of this.getStatAndAbilityProviders()) {
       if (provider.provider.getXpToAdd) {
         amount = provider.provider.getXpToAdd(this, provider.source, amount);
@@ -199,13 +208,19 @@ export class PlayerInstance extends CreatureInstance {
     const io = getIo();
     io.sendMsgToPlayer(
       this._id.toString(),
-      `You gained ${amount.toFixed()} XP!`
+      `You gained ${amount.toFixed()} XP!${
+        guildBonus > 0
+          ? ` (including ${guildBonus.toFixed()} XP from guild bonus)`
+          : ""
+      }`
     );
 
     if (this.xp >= getXpForNextLevel(this.level)) this.levelUp();
 
     io.updateGameState(this._id.toString());
     savePlayer(this);
+
+    this.getGuild().then((guild) => guild?.addXp(amount));
   }
 
   levelUp() {
@@ -321,10 +336,7 @@ export class PlayerInstance extends CreatureInstance {
       this.canActAt.setTime(this.lastActedAt.getTime() + cooldown * 1000);
     }
 
-    if (
-      "definitionId" in source &&
-      "amount" in source
-    ) {
+    if ("definitionId" in source && "amount" in source) {
       if (items[source.definitionId].tags.includes(ItemTag.Consumable)) {
         this.inventory.remove(new ItemInstance(source.definitionId, 1));
       }
@@ -341,6 +353,10 @@ export class PlayerInstance extends CreatureInstance {
     return (
       (this.guildId && Guild.fromId(this.guildId)) || Promise.resolve(undefined)
     );
+  }
+
+  getGuildPerks(): GuildPerks {
+    return getGuildPerksByLevel(this.guildLevel);
   }
 
   getCraftingInventory(): Inventory {

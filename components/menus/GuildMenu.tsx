@@ -1,7 +1,11 @@
 import { ObjectId } from "bson";
 import { socket } from "lib/socket";
 import { PlayerInstance } from "lib/types/entities/player";
-import Guild, { ClientGuild, GuildMember } from "lib/types/Guild";
+import Guild, {
+  ClientGuild,
+  GuildMember,
+  xpForNextGuildLevel,
+} from "lib/types/Guild";
 
 function MemberEntry({
   member,
@@ -48,9 +52,35 @@ export default function GuildMenu({
   self: PlayerInstance;
   guild: ClientGuild;
 }) {
+  const perks = guild.getPerks();
+  console.log("Guild perks:", perks);
+
   return (
     <div className="border w-1/5 flex flex-col gap-2">
       <h1 className="text-xl">Guild: {guild.name}</h1>
+      <div>
+        <strong>Progress</strong>
+        <div>
+          Level: {guild.level}
+          <br />
+          XP: {Math.round(guild.xp).toLocaleString()} /{" "}
+          {xpForNextGuildLevel(guild.level).toLocaleString()}
+        </div>
+      </div>
+      <div>
+        <strong>Perks</strong>
+        <ul>
+          <li>
+            Base Ability Score Bonus Multiplier:{" "}
+            {(perks.baseAbilityScoreBonusMultiplier * 100).toFixed()}%
+          </li>
+          <li>
+            XP Gain Bonus Multiplier:{" "}
+            {(perks.xpGainBonusMultiplier * 100).toFixed()}%
+          </li>
+          <li>Shop Discount: {(perks.shopDiscount * 100).toFixed()}%</li>
+        </ul>
+      </div>
       <div>
         <strong>Members</strong>
         <ul>

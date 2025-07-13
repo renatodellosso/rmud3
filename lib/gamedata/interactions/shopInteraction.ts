@@ -6,7 +6,7 @@ import Recipe, { RecipeGroup } from "lib/types/Recipe";
 import { ItemInstance } from "lib/types/item";
 import { getFromOptionalFunc } from "lib/utils";
 
-const DISCOUNT = 0.2; // 20% discount
+const DISCOUNT_TOKEN_DISCOUNT = 0.2; // 20% discount
 
 const itemsByMinLevel: Record<number, { markUp: number; items: ItemId[] }> = {
   10: {
@@ -36,9 +36,16 @@ const itemsByMinLevel: Record<number, { markUp: number; items: ItemId[] }> = {
 };
 
 function getDiscount(player: PlayerInstance) {
-  return player.getCraftingInventory().getCountById("discountToken") > 0
-    ? DISCOUNT
-    : 0;
+  let discount = 0;
+
+  // Check if player has a discount token in their crafting inventory
+  if (player.getCraftingInventory().getCountById("discountToken") > 0) {
+    discount += DISCOUNT_TOKEN_DISCOUNT;
+  }
+
+  discount += player.getGuildPerks().shopDiscount;
+
+  return discount;
 }
 
 function itemIdToRecipe(
