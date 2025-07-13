@@ -787,6 +787,11 @@ const floors: Record<string, FloorDefinition> = {
           weight: 1,
         },
         {
+          item: "elderTreant",
+          amount: 1,
+          weight: 0.2,
+        },
+        {
           item: randomContainer(
             "Living Wood Chest",
             new WeightedTable<ItemId>([
