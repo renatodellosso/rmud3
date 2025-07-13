@@ -176,14 +176,14 @@ const floors: Record<string, FloorDefinition> = {
               },
               {
                 item: "goldOre",
-                amount: [1, 3],
+                amount: [1, 4],
                 weight: 0.8,
               },
             ]),
             [1, 2]
           ),
           amount: 1,
-          weight: 0.3,
+          weight: 0.4,
         },
       ]),
     },
@@ -339,14 +339,14 @@ const floors: Record<string, FloorDefinition> = {
               },
               {
                 item: "goldOre",
-                amount: [1, 3],
+                amount: [1, 4],
                 weight: 0.8,
               },
             ]),
             [1, 3]
           ),
           amount: 1,
-          weight: 0.6,
+          weight: 0.8,
         },
         {
           item: randomContainer(
@@ -808,6 +808,11 @@ const floors: Record<string, FloorDefinition> = {
               {
                 item: "vine",
                 amount: [2, 4],
+                weight: 1,
+              },
+              {
+                item: "goldBar",
+                amount: [1, 2],
                 weight: 1,
               },
               {
