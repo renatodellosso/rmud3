@@ -998,6 +998,11 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             amount: [1, 5],
             weight: 1,
           },
+          {
+            item: "goldOre",
+            amount: [1, 3],
+            weight: 0.5,
+          }
         ]),
         amount: 2,
         chance: 0.6,
@@ -1399,7 +1404,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         targetRestrictions: [CanTarget.isSelf],
       }),
     ],
-    xpValue: 250,
+    xpValue: 200,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -1872,7 +1877,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 15,
+    xpValue: 35,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -1946,7 +1951,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 40,
+    xpValue: 50,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -2117,7 +2122,6 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     ]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
-
   cursedGhost: {
     name: "Cursed Ghost",
     health: 25,
@@ -2601,7 +2605,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         }
       ),
     ],
-    xpValue: 300,
+    xpValue: 80,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -2630,6 +2634,11 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             amount: 1,
             weight: 0.5,
           },
+          {
+            item: "goldOre",
+            amount: [1, 3],
+            weight: 0.5
+          }
         ]),
         amount: 3,
         chance: 1,
@@ -2663,7 +2672,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.not(CanTarget.isAlly)] }
       ),
     ],
-    xpValue: 5,
+    xpValue: 0,
     lootTable: new LootTable([]),
     tick: activateAbilityAndMoveRandomlyOnTick(0.8, selectRandomAbility, 0.01),
   },
@@ -2702,7 +2711,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 50,
+    xpValue: 100,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -2777,7 +2786,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "vine",
-            amount: [2, 5],
+            amount: [1, 3],
             weight: 1,
           },
         ]),
@@ -2845,16 +2854,17 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     health: 50,
     abilityScores: {
       [AbilityScore.Strength]: 3,
-      [AbilityScore.Constitution]: 5,
-      [AbilityScore.Intelligence]: 5,
+      [AbilityScore.Constitution]: 10,
+      [AbilityScore.Intelligence]: 10,
     },
     damageResistances: [{ amount: 3, type: "*" }],
     intrinsicAbilities: [
-      Abilities.attack(
+      Abilities.attackWithStatusEffect(
         "Bow and Arrow",
         "Fire an arrow from a bow.",
         5,
         [{ amount: 20, type: DamageType.Piercing }],
+        [{ id: "poisoned", strength: 3, duration: 5 }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.attack(
@@ -2865,13 +2875,13 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 60,
+    xpValue: 125,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
           {
             item: "vine",
-            amount: [1, 3],
+            amount: [1, 2],
             weight: 1,
           },
           {
@@ -2946,7 +2956,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     health: 50,
     abilityScores: {
       [AbilityScore.Strength]: 5,
-      [AbilityScore.Constitution]: 10,
+      [AbilityScore.Constitution]: 15,
       [AbilityScore.Intelligence]: 5,
     },
     damageResistances: [
@@ -2965,7 +2975,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 75,
+    xpValue: 150,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -2995,9 +3005,9 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
     name: "Elder Treant",
     health: 100,
     abilityScores: {
-      [AbilityScore.Strength]: 8,
-      [AbilityScore.Constitution]: 10,
-      [AbilityScore.Intelligence]: 8,
+      [AbilityScore.Strength]: 10,
+      [AbilityScore.Constitution]: 20,
+      [AbilityScore.Intelligence]: 10,
     },
     damageResistances: [
       { amount: 7, type: "*" },
@@ -3015,7 +3025,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 100,
+    xpValue: 300,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -3161,7 +3171,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       Abilities.summon(
         "Summon Skeleton",
         "Summons a skeleton to fight for you.",
-        2,
+        15,
         [{ id: "skeleton", amount: 1 }]
       ),
       Abilities.attackWithStatusEffect(
@@ -3179,7 +3189,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 100,
+    xpValue: 50,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -3379,7 +3389,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 120,
+    xpValue: 100,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -3465,7 +3475,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 300,
+    xpValue: 200,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -3557,12 +3567,12 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       Abilities.attack(
         "Bite",
         "A quick bite from the piranha.",
-        0.5,
-        [{ amount: 5, type: DamageType.Piercing }],
+        0.75,
+        [{ amount: 9, type: DamageType.Piercing }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 30,
+    xpValue: 40,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -3613,7 +3623,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Sonic Wail",
         "A deafening wail that disorients foes.",
         1,
-        [{ amount: 10, type: DamageType.Psychic }],
+        [{ amount: 15, type: DamageType.Psychic }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.applyStatusEffect(
@@ -3665,14 +3675,14 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Tentacle Slam",
         "A powerful slam with a tentacle.",
         1,
-        [{ amount: 25, type: DamageType.Bludgeoning }],
+        [{ amount: 35, type: DamageType.Bludgeoning }],
         { targetRestrictions: [CanTarget.not(CanTarget.isAlly)] }
       ),
       Abilities.attackWithStatusEffect(
         "Ink Spray",
         "Sprays ink to blind and confuse enemies.",
         2,
-        [{ amount: 20, type: DamageType.Poison }],
+        [{ amount: 30, type: DamageType.Poison }],
         [
           {
             id: "stunned",
@@ -3728,10 +3738,10 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
   },
   bonecrusherCrab: {
     name: "Bonecrusher Crab",
-    health: 40,
+    health: 50,
     abilityScores: {
       [AbilityScore.Strength]: 5,
-      [AbilityScore.Constitution]: 4,
+      [AbilityScore.Constitution]: 5,
       [AbilityScore.Intelligence]: 1,
     },
     damageResistances: [{ amount: 2, type: DamageType.Bludgeoning }],
@@ -3740,14 +3750,14 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Claw",
         "A powerful claw strike from the bonecrusher crab.",
         1,
-        [{ amount: 15, type: DamageType.Slashing }],
+        [{ amount: 25, type: DamageType.Slashing }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.attackWithStatusEffect(
         "Crush",
         "Crush your target with a powerful strike.",
         2,
-        [{ amount: 20, type: DamageType.Bludgeoning }],
+        [{ amount: 40, type: DamageType.Bludgeoning }],
         [
           {
             id: "poisoned",
@@ -3763,7 +3773,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 60,
+    xpValue: 100,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -3814,14 +3824,14 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Tentacle Slam",
         "A powerful slam with a tentacle.",
         1,
-        [{ amount: 20, type: DamageType.Bludgeoning }],
+        [{ amount: 25, type: DamageType.Bludgeoning }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.attackWithStatusEffect(
         "Ink Spray",
         "Sprays ink to blind and confuse enemies.",
         2,
-        [{ amount: 15, type: DamageType.Poison }],
+        [{ amount: 25, type: DamageType.Poison }],
         [
           {
             id: "stunned",
@@ -3900,20 +3910,20 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       Abilities.summon(
         "Summon Piranha Swarm",
         "Calls forth a swarm of piranhas to assist in battle.",
-        3,
+        15,
         [{ id: "piranha", amount: 3 }]
       ),
       Abilities.summon(
         "Summon Siren",
         "Calls forth a siren to assist in battle.",
-        3,
+        15,
         [{ id: "siren", amount: 1 }]
       ),
-      Abilities.summon("Summon Giant Squid", "Summons a giant squid.", 3, [
-        { id: "giantSquid", amount: 2 },
+      Abilities.summon("Summon Giant Squid", "Summons a giant squid.", 15, [
+        { id: "giantSquid", amount: 1 },
       ]),
     ],
-    xpValue: 200,
+    xpValue: 80,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -3953,22 +3963,22 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 10,
       [AbilityScore.Intelligence]: 25,
     },
-    damageResistances: [{ amount: 10, type: DamageType.Bludgeoning }],
+    damageResistances: [{ amount: 10, type: DamageType.Bludgeoning }, { amount: 3, type: "*"}],
     intrinsicAbilities: [
       Abilities.attack(
         "Tentacle Slam",
         "Slams a tentacle down on the target.",
         1,
-        [{ amount: 20, type: DamageType.Bludgeoning }],
+        [{ amount: 50, type: DamageType.Bludgeoning }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.summon(
         "Call Minions",
         "Calls forth smaller sea creatures to assist.",
-        3,
+        5,
         [
-          { id: "siren", amount: 2 },
-          { id: "piranha", amount: 4 },
+          { id: "siren", amount: 1 },
+          { id: "piranha", amount: 2 },
         ]
       ),
       Abilities.applyStatusEffect(
@@ -4119,7 +4129,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 500,
+    xpValue: 250,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -4163,7 +4173,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 600,
+    xpValue: 300,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -4204,7 +4214,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Ice Spike",
         "Imaple target with ice.",
         2,
-        [{ amount: 50, type: DamageType.Piercing }],
+        [{ amount: 40, type: DamageType.Piercing }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.attackWithStatusEffectLocation(
@@ -4218,7 +4228,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 750,
+    xpValue: 500,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -4301,10 +4311,10 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
   },
   wight: {
     name: "Wight",
-    health: 100,
+    health: 50,
     abilityScores: {
       [AbilityScore.Strength]: 5,
-      [AbilityScore.Constitution]: 2,
+      [AbilityScore.Constitution]: 5,
       [AbilityScore.Intelligence]: 0,
     },
     damageResistances: [{ amount: 5, type: DamageType.Cold }],
@@ -4317,7 +4327,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 300,
+    xpValue: 200,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -4352,7 +4362,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Lava Burst",
         "Unleash a burst of lava at the target.",
         2,
-        [{ amount: 40, type: DamageType.Fire }],
+        [{ amount: 50, type: DamageType.Fire }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       {
@@ -4383,7 +4393,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         },
       },
     ],
-    xpValue: 850,
+    xpValue: 500,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -4425,14 +4435,14 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Volcanic Eruption",
         "Erupts magma around itself, damaging nearby enemies.",
         1.5,
-        [{ amount: 30, type: DamageType.Fire }],
+        [{ amount: 25, type: DamageType.Fire }],
         [{ id: "burning", strength: 10, duration: 10 }],
         true,
         false,
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 1200,
+    xpValue: 800,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -4568,7 +4578,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 1500,
+    xpValue: 1000,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -4614,7 +4624,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Lash",
         "Reach out with a fiery lash.",
         2,
-        [{ amount: 40, type: DamageType.Fire }],
+        [{ amount: 50, type: DamageType.Fire }],
         [
           {
             id: "burning",
@@ -4625,7 +4635,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 500,
+    xpValue: 750,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
@@ -4664,7 +4674,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Fire Breath",
         "Breathes fire at the target.",
         3,
-        [{ amount: 100, type: DamageType.Fire }],
+        [{ amount: 120, type: DamageType.Fire }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.attackWithStatusEffectLocation(
@@ -4698,8 +4708,8 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         ],
         { targetRestrictions: [CanTarget.isSelf] }
       ),
-      Abilities.summon("Wyrmcall", "Summons lesser dragons to assist.", 3, [
-        { id: "wyvern", amount: 2 },
+      Abilities.summon("Wyrmcall", "Summons lesser dragons to assist.", 5, [
+        { id: "wyvern", amount: 1 },
       ]),
     ],
     xpValue: 5000,
@@ -5010,11 +5020,54 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
+            ironHelmet: 1,
+            goblinScrap: 5,
+            goblinIdol: 1,
+          },
+          new ItemInstance("goblinHelmet", 1),
+        ),
+        new Recipe(
+          {
             goldBar: 5,
             enchantingSpirit: 3,
             ink: 5,
           },
           new ItemInstance("enrapturingRing", 1)
+        ),
+        new Recipe(
+          {
+            ironBar: 15,
+            demonScale: 10,
+            enchantingSpirit: 5,
+          },
+          new ItemInstance("sirensTrident", 1)
+        ),
+        new Recipe(
+          {
+            demonScale: 10,
+            fortressShell: 5,
+            midnightShell: 5,
+            hordeShell: 5,
+          },
+          new ItemInstance("chitinLeggings", 1)
+        ),
+        new Recipe(
+          {
+            demonScale: 10,
+            fortressShell: 5,
+            midnightShell: 5,
+            hordeShell: 5,
+          },
+          new ItemInstance("chitinChestplate", 1)
+        ),
+        new Recipe(
+          {
+            demonScale: 10,
+            fortressShell: 5,
+            midnightShell: 5,
+            hordeShell: 5,
+          },
+          new ItemInstance("chitinHelmet", 1)
         ),
         new Recipe(
           {
@@ -5034,6 +5087,49 @@ const entities: Record<EntityId, EntityDefinition> = {
             ember: 3,
           },
           new ItemInstance("squidHelmet", 1)
+        ),
+        new Recipe(
+          {
+            ice: 25,
+            livingWood: 10,
+            giantTooth: 8,
+          },
+          new ItemInstance("blizzard", 1)
+        ),
+        new Recipe(
+          {
+            ice: 50,
+            ironBar: 40,
+            frozenCrystal: 10,
+          },
+          new ItemInstance("wintersBreath", 1)
+        ),
+        new Recipe(
+          {
+            ice: 30,
+            frozenCrystal: 10,
+            yetiFur: 5,
+            ironBar: 5,
+          },
+          new ItemInstance("mammoth", 1)
+        ),
+        new Recipe(
+          {
+            giantTooth: 10,
+            ice: 10,
+            ironBar: 5,
+            goldBar: 5,
+          },
+          new ItemInstance("giantCrown", 1)
+        ),
+        new Recipe(
+          {
+            ice: 80,
+            giantTooth: 10,
+            frozenCrystal: 5,
+            yetiFur: 5,
+          },
+          new ItemInstance("glacier", 1)
         ),
         new Recipe(
           {
@@ -5071,7 +5167,7 @@ const entities: Record<EntityId, EntityDefinition> = {
       "Crafting at Furnace",
       new RecipeGroup([
         new Recipe({ coal: 1, ironOre: 2 }, new ItemInstance("ironBar", 1)),
-        new Recipe({ coal: 1, goldOre: 3 }, new ItemInstance("goldBar", 1)),
+        new Recipe({ coal: 1, goldOre: 2 }, new ItemInstance("goldBar", 1)),
         new Recipe({ rottenFlesh: 1 }, new ItemInstance("leather", 1)),
         new Recipe({ meat: 1, coal: 1 }, new ItemInstance("grilledMeat", 1)),
         new Recipe(
@@ -5301,6 +5397,14 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
+            leatherTunic: 1,
+            leather: 5,
+            goblinScrap: 5,
+          },
+          new ItemInstance("goblinJerkin", 1),
+        ),
+        new Recipe(
+          {
             ashes: 5,
             ember: 5,
           },
@@ -5347,12 +5451,12 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
-            bottle: 2,
+            bottle: 1,
             spore: 3,
             livingStone: 1,
             ashes: 1,
           },
-          new ItemInstance("stoneskinPotion", 2)
+          new ItemInstance("stoneskinPotion", 1)
         ),
         new Recipe(
           {
@@ -5393,6 +5497,13 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
+            vine: 25,
+            livingWood: 5,
+          },
+          new ItemInstance("livingRing", 1)
+        ),
+        new Recipe(
+          {
             treantSap: 8,
             goldBar: 5,
             livingWood: 5,
@@ -5410,8 +5521,15 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
+            vine: 50,
+            ironBar: 1,
+          },
+          new ItemInstance("vineWhip", 1)
+        ),
+        new Recipe(
+          {
             livingWood: 25,
-            vine: 10,
+            vine: 15,
             livingStone: 5,
             treantSap: 2,
           },
@@ -5419,8 +5537,8 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
-            mushroom: 1,
-            ember: 1,
+            mushroom: 2,
+            enchantingSpirit: 1,
             coal: 3,
           },
           new ItemInstance("bubbleShroom", 1)
@@ -5451,49 +5569,6 @@ const entities: Record<EntityId, EntityDefinition> = {
             wyvernHeart: 1,
           },
           new ItemInstance("wingedBackpack", 1)
-        ),
-        new Recipe(
-          {
-            ice: 25,
-            livingWood: 10,
-            giantTooth: 8,
-          },
-          new ItemInstance("blizzard", 1)
-        ),
-        new Recipe(
-          {
-            ice: 50,
-            ironBar: 40,
-            frozenCrystal: 10,
-          },
-          new ItemInstance("wintersBreath", 1)
-        ),
-        new Recipe(
-          {
-            ice: 30,
-            frozenCrystal: 10,
-            yetiFur: 5,
-            ironBar: 5,
-          },
-          new ItemInstance("mammoth", 1)
-        ),
-        new Recipe(
-          {
-            giantTooth: 10,
-            ice: 10,
-            ironBar: 5,
-            goldBar: 5,
-          },
-          new ItemInstance("giantCrown", 1)
-        ),
-        new Recipe(
-          {
-            ice: 80,
-            giantTooth: 10,
-            frozenCrystal: 5,
-            yetiFur: 5,
-          },
-          new ItemInstance("glacier", 1)
         ),
         new Recipe(
           {
