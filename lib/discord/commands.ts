@@ -231,18 +231,17 @@ const commandArray: Command[] = [
         {
           name: "Level",
           value: player.level.toString(),
+          inline: true,
         },
         {
           name: "XP",
           value: Math.round(player.xp).toLocaleString(),
-        },
-        {
-          name: "Difficulty",
-          value: difficultyOptions[player.difficulty].name,
+          inline: true,
         },
         {
           name: "Health",
           value: player.getMaxHealth().toString(),
+          inline: true,
         },
         {
           name: "Ability Scores",
@@ -254,6 +253,7 @@ const commandArray: Command[] = [
                 } base)`
             )
             .join(", "),
+          inline: true,
         },
         {
           name: "Equipment",
@@ -265,7 +265,12 @@ const commandArray: Command[] = [
               ).getName()
             )
             .join(", "),
-        }
+        },
+        {
+          name: "Difficulty",
+          value: difficultyOptions[player.difficulty].name,
+          inline: true,
+        },
       );
 
       if (player.guildId) {
@@ -276,6 +281,7 @@ const commandArray: Command[] = [
           embed.addFields({
             name: "Guild",
             value: guild.name,
+            inline: true,
           });
         }
       }
