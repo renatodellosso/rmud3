@@ -34,8 +34,14 @@ export interface ClientToServerEvents {
     callback: (success: boolean) => void
   ) => void;
   getSaveSelectPageData: (
-    callback: (saves: SerializedEJSON<PlayerSave[]>, discordLinkCode: string, linkedDiscordAccount: boolean) => void
+    callback: (
+      saves: SerializedEJSON<PlayerSave[]>,
+      discordLinkCode: string,
+      linkedDiscordAccount: boolean,
+      primarySaveId: string | undefined
+    ) => void
   ) => void;
+  setPrimarySave: (instanceId: string) => void;
   createNewSave: (saveName: string, difficulty: Difficulty) => void;
   selectSave: (progressId: string) => void;
   deleteSave: (progressId: string) => void;

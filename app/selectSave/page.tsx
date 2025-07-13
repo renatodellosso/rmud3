@@ -3,13 +3,19 @@
 import { socket } from "lib/socket";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { EJSON } from "bson";
+import { EJSON, ObjectId } from "bson";
 import { PlayerSave, SerializedEJSON } from "lib/types/types";
 import Difficulty, { difficultyOptions } from "lib/types/Difficulty";
 import useRedirectIfSessionIdIsNotPresent from "lib/hooks/useRedirectIfSessionIdIsNotPresent";
 import DifficultyDescription from "@/components/DifficultyDescription";
 
-function PlayerSaveCard({ save }: { save: PlayerSave }) {
+function PlayerSaveCard({
+  save,
+  isPrimary,
+}: {
+  save: PlayerSave;
+  isPrimary: boolean;
+}) {
   function selectSave() {
     socket.emit("selectSave", save.progress._id.toString());
     location.href = "/play";
@@ -30,14 +36,35 @@ function PlayerSaveCard({ save }: { save: PlayerSave }) {
     location.reload();
   }
 
+  function setPrimarySave() {
+    if (isPrimary) {
+      return;
+    }
+
+    socket.emit("setPrimarySave", save.instance._id.toString());
+    location.reload();
+  }
+
   return (
-    <div className="flex gap-2 w-full">
-      <button onClick={selectSave} className="w-full">
+    <div className="flex justify-between gap-2 w-full">
+      <button onClick={selectSave} className="w-3/4">
         {save.instance.saveName} (
         {difficultyOptions[save.instance.difficulty]?.name})
       </button>
       <button onClick={deleteSave} className="px-1 hover:bg-red-500!">
         Delete
+      </button>
+      <button
+        onClick={setPrimarySave}
+        disabled={isPrimary}
+        className="px-1 tooltip"
+      >
+        {isPrimary ? "Selected" : "Set"} as Primary
+        <div className="tooltip-text w-48">
+          {isPrimary
+            ? "This save is currently set as the primary save."
+            : "Set this save as the one to use for Discord commands"}
+        </div>
       </button>
     </div>
   );
@@ -53,6 +80,7 @@ export default function SelectSave() {
   );
   const [discordLinkCode, setDiscordLinkCode] = useState("Loading...");
   const [linkedDiscordAccount, setLinkedDiscordAccount] = useState(false);
+  const [primarySaveId, setPrimarySaveId] = useState<ObjectId>();
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -75,11 +103,15 @@ export default function SelectSave() {
       (
         saves: SerializedEJSON<PlayerSave[]>,
         discordLinkCode: string,
-        linkedDiscordAccount: boolean
+        linkedDiscordAccount: boolean,
+        primarySaveId: string | undefined
       ) => {
         setSaves(EJSON.parse(saves));
         setDiscordLinkCode(discordLinkCode);
         setLinkedDiscordAccount(linkedDiscordAccount);
+        setPrimarySaveId(
+          primarySaveId ? new ObjectId(primarySaveId) : undefined
+        );
       }
     );
   }, []);
@@ -116,9 +148,13 @@ export default function SelectSave() {
       </div>
       <div className="grow flex flex-col justify-center items-center">
         <h1 className="text-xl text-center">Select a save:</h1>
-        <div className="w-1/4 flex flex-col items-center mt-4 gap-2">
+        <div className="w-1/2 flex flex-col items-center mt-4 gap-2">
           {saves.map((save) => (
-            <PlayerSaveCard key={save.instance._id.toString()} save={save} />
+            <PlayerSaveCard
+              key={save.instance._id.toString()}
+              save={save}
+              isPrimary={primarySaveId?.equals(save.instance._id) || false}
+            />
           ))}
           <input
             type="text"

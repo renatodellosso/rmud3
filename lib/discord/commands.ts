@@ -6,6 +6,10 @@ import Guild from "lib/types/Guild";
 import { PlayerInstance } from "lib/types/entities/player";
 import { difficultyOptions } from "lib/types/Difficulty";
 import Account from "lib/types/Account";
+import AbilityScore from "lib/types/AbilityScore";
+import items from "lib/gamedata/items";
+import { restoreFieldsAndMethods } from "lib/utils";
+import { ItemInstance } from "lib/types/item";
 
 const commandArray: Command[] = [
   {
@@ -173,6 +177,117 @@ const commandArray: Command[] = [
           },
         }
       );
+    },
+  },
+  {
+    builder: new SlashCommandBuilder()
+      .setName("profile")
+      .setDescription("Displays details about a user's primary save.")
+      .addUserOption((option) =>
+        option
+          .setName("user")
+          .setDescription("The username of the player to view the profile of.")
+      ) as SlashCommandBuilder,
+    handler: async (interaction) => {
+      const user = interaction.options.getUser("user") || interaction.user;
+
+      const db = await getMongoClient();
+
+      const account = await db.collection(CollectionId.Accounts).findOne({
+        discordUserId: user.id,
+      });
+
+      if (!account) {
+        await interaction.reply(
+          `No account linked to Discord user <@${user.id}>.`
+        );
+        return;
+      }
+
+      if (!account.primarySaveId) {
+        await interaction.reply(
+          `No primary save set for account <@${user.id}>. Set one on the save select page.`
+        );
+        return;
+      }
+
+      const player = restoreFieldsAndMethods(
+        (await db
+          .collection(CollectionId.PlayerInstances)
+          .findOne({ _id: account.primarySaveId })) as PlayerInstance,
+        new PlayerInstance()
+      );
+
+      if (!player) {
+        await interaction.reply(
+          `No player found for account <@${user.id}>. This is likely a bug.`
+        );
+        return;
+      }
+
+      const embed = new EmbedBuilder();
+
+      embed.addFields(
+        {
+          name: "Level",
+          value: player.level.toString(),
+        },
+        {
+          name: "XP",
+          value: Math.round(player.xp).toLocaleString(),
+        },
+        {
+          name: "Difficulty",
+          value: difficultyOptions[player.difficulty].name,
+        },
+        {
+          name: "Health",
+          value: player.getMaxHealth().toString(),
+        },
+        {
+          name: "Ability Scores",
+          value: Object.values(AbilityScore)
+            .map(
+              (score) =>
+                `${score}: ${player.getAbilityScore(score)} (${
+                  player.abilityScores[score]
+                } base)`
+            )
+            .join(", "),
+        },
+        {
+          name: "Equipment",
+          value: player.equipment.items
+            .map((item) =>
+              restoreFieldsAndMethods(
+                item,
+                new ItemInstance(item.definitionId, item.amount)
+              ).getName()
+            )
+            .join(", "),
+        }
+      );
+
+      if (player.guildId) {
+        const guild = (await db
+          .collection(CollectionId.Guilds)
+          .findOne({ _id: player.guildId })) as Guild;
+        if (guild) {
+          embed.addFields({
+            name: "Guild",
+            value: guild.name,
+          });
+        }
+      }
+
+      embed
+        .setTitle(`${player.name}'s Profile`)
+        .setColor("#0099ff")
+        .setThumbnail(
+          `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+        );
+
+      await interaction.reply({ embeds: [embed] });
     },
   },
 ];

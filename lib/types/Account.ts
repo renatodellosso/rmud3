@@ -9,6 +9,7 @@ type Account = {
   playerProgresses: ObjectId[];
   discordLinkCode: string;
   discordUserId?: string;
+  primarySaveId?: ObjectId;
 };
 
 export default Account;

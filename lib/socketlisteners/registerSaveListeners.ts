@@ -42,7 +42,7 @@ export default function registerSaveListeners(socket: TypedSocket) {
   socket.on("getSaveSelectPageData", async (callback) => {
     if (!socket.data.session) {
       console.error("No session set for socket");
-      callback(EJSON.stringify([]), "", false);
+      callback(EJSON.stringify([]), "", false, "");
       return;
     }
 
@@ -57,7 +57,7 @@ export default function registerSaveListeners(socket: TypedSocket) {
 
     if (!accounts || accounts.length === 0) {
       console.error("No account found for session:", socket.data.session._id);
-      callback(EJSON.stringify([]), "", false);
+      callback(EJSON.stringify([]), "", false, "");
       return;
     }
 
@@ -102,8 +102,56 @@ export default function registerSaveListeners(socket: TypedSocket) {
     callback(
       EJSON.stringify(saves),
       account.discordLinkCode,
-      account.discordUserId !== undefined
+      account.discordUserId !== undefined,
+      account.primarySaveId?.toString()
     );
+  });
+
+  socket.on("setPrimarySave", async (instanceId: string) => {
+    if (!socket.data.session) {
+      console.error("No session set for socket");
+      return;
+    }
+
+    const db = await getMongoClient();
+    const collectionManager = getCollectionManager(db);
+    const accountsCollection = collectionManager.getCollection(
+      CollectionId.Accounts
+    );
+
+    const account = (
+      await accountsCollection.findWithOneFilter({
+        _id: socket.data.session.accountId,
+      })
+    )[0];
+
+    const progresses = await collectionManager
+      .getCollection(CollectionId.PlayerProgresses)
+      .find(
+        {
+          _id: { $in: account.playerProgresses },
+        },
+        undefined
+      );
+
+    const instances = await collectionManager
+      .getCollection(CollectionId.PlayerInstances)
+      .find(
+        {
+          _id: { $in: progresses.map((progress) => progress.playerInstanceId) },
+        },
+        undefined
+      );
+
+    const instance = instances.find((i) => i._id.equals(instanceId));
+
+    if (!instance) {
+      console.error("No instance found for ID:", instanceId);
+      return;
+    }
+
+    account.primarySaveId = instance._id;
+    await accountsCollection.upsert(account);
   });
 
   socket.on("createNewSave", async (saveName, difficulty) => {
