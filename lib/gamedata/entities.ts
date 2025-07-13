@@ -3171,7 +3171,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       Abilities.summon(
         "Summon Skeleton",
         "Summons a skeleton to fight for you.",
-        2,
+        15,
         [{ id: "skeleton", amount: 1 }]
       ),
       Abilities.attackWithStatusEffect(
@@ -3910,16 +3910,16 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       Abilities.summon(
         "Summon Piranha Swarm",
         "Calls forth a swarm of piranhas to assist in battle.",
-        3,
+        15,
         [{ id: "piranha", amount: 3 }]
       ),
       Abilities.summon(
         "Summon Siren",
         "Calls forth a siren to assist in battle.",
-        3,
+        15,
         [{ id: "siren", amount: 1 }]
       ),
-      Abilities.summon("Summon Giant Squid", "Summons a giant squid.", 3, [
+      Abilities.summon("Summon Giant Squid", "Summons a giant squid.", 15, [
         { id: "giantSquid", amount: 1 },
       ]),
     ],
@@ -3975,7 +3975,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       Abilities.summon(
         "Call Minions",
         "Calls forth smaller sea creatures to assist.",
-        3,
+        5,
         [
           { id: "siren", amount: 1 },
           { id: "piranha", amount: 2 },
@@ -4708,8 +4708,8 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         ],
         { targetRestrictions: [CanTarget.isSelf] }
       ),
-      Abilities.summon("Wyrmcall", "Summons lesser dragons to assist.", 3, [
-        { id: "wyvern", amount: 2 },
+      Abilities.summon("Wyrmcall", "Summons lesser dragons to assist.", 5, [
+        { id: "wyvern", amount: 1 },
       ]),
     ],
     xpValue: 5000,
