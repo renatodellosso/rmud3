@@ -35,16 +35,22 @@ const itemsByMinLevel: Record<number, { markUp: number; items: ItemId[] }> = {
   },
 };
 
+function getDiscount(player: PlayerInstance) {
+  return player.getCraftingInventory().getCountById("discountToken") > 0
+    ? DISCOUNT
+    : 0;
+}
+
 function itemIdToRecipe(
   itemId: ItemId,
   markUp: number,
-  discount: boolean
+  discount: number
 ): Recipe {
   const instance = new ItemInstance(itemId, 1);
   const sellPrice = Math.round(
     getFromOptionalFunc(items[itemId].getSellValue, instance) *
       markUp *
-      (discount ? 1 - DISCOUNT : 1)
+      (1 - discount)
   );
 
   return new Recipe(
@@ -55,16 +61,15 @@ function itemIdToRecipe(
   );
 }
 
-function getRecipeGroup(player: PlayerInstance): RecipeGroup {
+function getRecipeGroup(player: PlayerInstance, discount: number): RecipeGroup {
   const recipes: Recipe[] = [];
-  const hasDiscount = player.inventory.getCountById("discountToken") > 0;
 
   for (const tier of Object.entries(itemsByMinLevel)) {
     const level = parseInt(tier[0]);
     if (level > player.level) continue; // Skip items above player's level
 
     const items = tier[1].items.map((itemId) =>
-      itemIdToRecipe(itemId, tier[1].markUp, hasDiscount)
+      itemIdToRecipe(itemId, tier[1].markUp, discount)
     );
 
     recipes.push(...items);
@@ -79,7 +84,12 @@ export default function shopInteraction(
   interaction: Interaction | undefined,
   action: any
 ): Promise<Interaction | undefined> {
-  const func = craftingInteraction("Shop", getRecipeGroup(player));
+  const discount = getDiscount(player);
+
+  const func = craftingInteraction(
+    `Shop${discount > 0 ? ` (${discount * 100}% discount)` : ""}`,
+    getRecipeGroup(player, discount)
+  );
 
   return func(entity, player, interaction, action);
 }
