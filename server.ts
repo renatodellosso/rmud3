@@ -7,7 +7,7 @@ import { getSingleton } from "lib/utils";
 import { TypedServer } from "./lib/types/socketioserverutils";
 import { setupLocations } from "lib/startup";
 import { startTicking } from "lib/TickManager";
-import { startDiscordBot } from "lib/discordbot";
+import { startDiscordBot } from "lib/discord/discordbot";
 
 dotenv.config();
 
@@ -52,4 +52,4 @@ app.prepare().then(() => {
 setupLocations();
 startTicking();
 
-if (!dev) startDiscordBot();
+if (!dev || process.env.START_DISCORD_BOT) startDiscordBot();
