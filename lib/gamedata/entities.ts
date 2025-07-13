@@ -5028,6 +5028,41 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
+            ironBar: 15,
+            demonScale: 10,
+            enchantingSpirit: 5,
+          },
+          new ItemInstance("sirensTrident", 1)
+        ),
+        new Recipe(
+          {
+            demonScale: 10,
+            fortressShell: 5,
+            midnightShell: 5,
+            hordeShell: 5,
+          },
+          new ItemInstance("chitinLeggings", 1)
+        ),
+        new Recipe(
+          {
+            demonScale: 10,
+            fortressShell: 5,
+            midnightShell: 5,
+            hordeShell: 5,
+          },
+          new ItemInstance("chitinChestplate", 1)
+        ),
+        new Recipe(
+          {
+            demonScale: 10,
+            fortressShell: 5,
+            midnightShell: 5,
+            hordeShell: 5,
+          },
+          new ItemInstance("chitinHelmet", 1)
+        ),
+        new Recipe(
+          {
             goldBar: 5,
             demonScale: 10,
             ink: 4,
@@ -5429,8 +5464,8 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
-            mushroom: 1,
-            ember: 1,
+            mushroom: 2,
+            enchantingSpirit: 1,
             coal: 3,
           },
           new ItemInstance("bubbleShroom", 1)

@@ -193,7 +193,11 @@ export type ItemId =
   | "undeadChestplate"
   | "undeadHelmet"
   | "undeadBoots"
-  | "discountToken";
+  | "discountToken"
+  | "sirensTrident"
+  | "chitinLeggings"
+  | "chitinChestplate"
+  | "chitinHelmet";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -1735,9 +1739,9 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       ]),
       Abilities.applyStatusEffect(
         "Block",
-        "Reduce damage by 10 for 5 seconds.",
+        "Reduce damage by 10 for 2 seconds.",
         3,
-        [{ id: "blocking", strength: 10, duration: 5 }]
+        [{ id: "blocking", strength: 10, duration: 2 }]
       ),
       Abilities.heal("Regrow", "Recover 10 health.", 2, 10),
     ],
@@ -2367,7 +2371,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       { amount: 10, type: DamageType.Piercing },
       { amount: 8, type: DamageType.Slashing },
       { amount: 8, type: DamageType.Bludgeoning },
-      { amount: 3, type: "*" },
+      { amount: 4, type: "*" },
     ],
     getStatusEffectToApply: (creature, effect) =>
       effect.id === "cursed"
@@ -2376,6 +2380,55 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
             duration: effect.duration / 2, // Halve the duration of curse effects
           }
         : effect,
+  } satisfies EquipmentDefinition,
+  chitinLeggings: {
+    getName: "Chitin Leggings",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Legs,
+    description: `A heavy pair of leggings made from crab shells.`,
+    getWeight: 8,
+    getSellValue: 400,
+    getDamageResistances: () => [
+      { amount: 6, type: DamageType.Piercing },
+      { amount: 6, type: DamageType.Slashing },
+      { amount: 6, type: DamageType.Bludgeoning },
+      { amount: 4, type: "*" },
+    ],
+    getStatusEffectToApply: (creature, effect) =>
+      effect.id === "cursed"
+        ? {
+            ...effect,
+            duration: effect.duration / 2, // Halve the duration of curse effects
+          }
+        : effect,
+  } satisfies EquipmentDefinition,
+  chitinChestplate: {
+    getName: "Chitin Chestplate",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Chest,
+    description: `A heavy chestplate made from crab shells.`,
+    getWeight: 10,
+    getSellValue: 400,
+    getDamageResistances: () => [
+      { amount: 6, type: DamageType.Piercing },
+      { amount: 6, type: DamageType.Slashing },
+      { amount: 6, type: DamageType.Bludgeoning },
+      { amount: 4, type: "*" },
+    ],
+  } satisfies EquipmentDefinition,
+  chitinHelmet: {
+    getName: "Chitin Helmet",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Head,
+    description: `A heavy helmet made from crab shells.`,
+    getWeight: 8,
+    getSellValue: 400,
+    getDamageResistances: () => [
+      { amount: 6, type: DamageType.Piercing },
+      { amount: 6, type: DamageType.Slashing },
+      { amount: 6, type: DamageType.Bludgeoning },
+      { amount: 4, type: "*" },
+    ],
   } satisfies EquipmentDefinition,
   squidHelmet: {
     getName: "Squid Helmet",
@@ -2592,7 +2645,10 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: `A comfortable pair of boots for traversing cold weather.`,
     getWeight: 4,
     getSellValue: 800,
-    getDamageResistances: [{ amount: 20, type: DamageType.Cold }, { amount: 5, type: "*" }],
+    getDamageResistances: [
+      { amount: 20, type: DamageType.Cold },
+      { amount: 5, type: "*" },
+    ],
     getAbilityScores: {
       [AbilityScore.Strength]: 0,
       [AbilityScore.Constitution]: 5,
@@ -2928,6 +2984,32 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0,
     getSellValue: 3000,
   },
+  sirensTrident: {
+    getName: "Siren's Trident",
+    tags: [ItemTag.Equipment],
+    description: "A sleek trident that emanates a soft wail.",
+    getWeight: 4,
+    getSellValue: 200,
+    getAbilities: (creature, item) => [
+      Abilities.attack(
+        "Psychic Pierce",
+        "A piercing attack dealing psychic damage.",
+        1,
+        [
+          { amount: 15, type: DamageType.Piercing },
+          { amount: 10, type: DamageType.Psychic },
+        ]
+      ),
+      Abilities.attackWithStatusEffect(
+        "Stunning Strike",
+        "Stun enemies briefly.",
+        1.5,
+        [{ amount: 20, type: DamageType.Piercing }],
+        [{ id: "stunned", strength: 5, duration: 2 }]
+      ),
+    ],
+    slot: EquipmentSlot.Hands,
+  } satisfies EquipmentDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;
