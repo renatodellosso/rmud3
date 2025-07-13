@@ -140,6 +140,8 @@ export type ItemId =
   | "woodlandHorn"
   | "taintedSpear"
   | "hobspear"
+  | "goblinJerkin"
+  | "goblinHelmet"
   | "goblinScrap"
   | "goblinIdol"
   | "firebomb"
@@ -2080,6 +2082,34 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         2.5,
         [{ id: "blocking", strength: 5, duration: 3 }]
       ),
+    ],
+  } satisfies EquipmentDefinition,
+  goblinJerkin: {
+    getName: "Goblin Jerkin",
+    tags: [ItemTag.Equipment],
+    description: `A leather jacket offering some protection.`,
+    getWeight: 2,
+    getSellValue: 100,
+    slot: EquipmentSlot.Chest,
+    getDamageResistances: [
+      { amount: 2, type: "*" },
+      { amount: 3, type: DamageType.Bludgeoning },
+      { amount: 3, type: DamageType.Piercing },
+      { amount: 3, type: DamageType.Slashing },
+    ],
+  } satisfies EquipmentDefinition,
+  goblinHelmet: {
+    getName: "Goblin Helmet",
+    tags: [ItemTag.Equipment],
+    description: `An iron helmet offering some protection.`,
+    getWeight: 3,
+    getSellValue: 200,
+    slot: EquipmentSlot.Head,
+    getDamageResistances: [
+      { amount: 3, type: "*" },
+      { amount: 3, type: DamageType.Bludgeoning },
+      { amount: 3, type: DamageType.Piercing },
+      { amount: 3, type: DamageType.Slashing },
     ],
   } satisfies EquipmentDefinition,
   goblinScrap: {

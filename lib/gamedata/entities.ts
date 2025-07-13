@@ -5020,6 +5020,14 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
+            ironHelmet: 1,
+            goblinScrap: 5,
+            goblinIdol: 1,
+          },
+          new ItemInstance("goblinHelmet", 1),
+        ),
+        new Recipe(
+          {
             goldBar: 5,
             enchantingSpirit: 3,
             ink: 5,
@@ -5079,6 +5087,49 @@ const entities: Record<EntityId, EntityDefinition> = {
             ember: 3,
           },
           new ItemInstance("squidHelmet", 1)
+        ),
+        new Recipe(
+          {
+            ice: 25,
+            livingWood: 10,
+            giantTooth: 8,
+          },
+          new ItemInstance("blizzard", 1)
+        ),
+        new Recipe(
+          {
+            ice: 50,
+            ironBar: 40,
+            frozenCrystal: 10,
+          },
+          new ItemInstance("wintersBreath", 1)
+        ),
+        new Recipe(
+          {
+            ice: 30,
+            frozenCrystal: 10,
+            yetiFur: 5,
+            ironBar: 5,
+          },
+          new ItemInstance("mammoth", 1)
+        ),
+        new Recipe(
+          {
+            giantTooth: 10,
+            ice: 10,
+            ironBar: 5,
+            goldBar: 5,
+          },
+          new ItemInstance("giantCrown", 1)
+        ),
+        new Recipe(
+          {
+            ice: 80,
+            giantTooth: 10,
+            frozenCrystal: 5,
+            yetiFur: 5,
+          },
+          new ItemInstance("glacier", 1)
         ),
         new Recipe(
           {
@@ -5346,6 +5397,14 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
+            leatherTunic: 1,
+            leather: 5,
+            goblinScrap: 5,
+          },
+          new ItemInstance("goblinJerkin", 1),
+        ),
+        new Recipe(
+          {
             ashes: 5,
             ember: 5,
           },
@@ -5496,49 +5555,6 @@ const entities: Record<EntityId, EntityDefinition> = {
             wyvernHeart: 1,
           },
           new ItemInstance("wingedBackpack", 1)
-        ),
-        new Recipe(
-          {
-            ice: 25,
-            livingWood: 10,
-            giantTooth: 8,
-          },
-          new ItemInstance("blizzard", 1)
-        ),
-        new Recipe(
-          {
-            ice: 50,
-            ironBar: 40,
-            frozenCrystal: 10,
-          },
-          new ItemInstance("wintersBreath", 1)
-        ),
-        new Recipe(
-          {
-            ice: 30,
-            frozenCrystal: 10,
-            yetiFur: 5,
-            ironBar: 5,
-          },
-          new ItemInstance("mammoth", 1)
-        ),
-        new Recipe(
-          {
-            giantTooth: 10,
-            ice: 10,
-            ironBar: 5,
-            goldBar: 5,
-          },
-          new ItemInstance("giantCrown", 1)
-        ),
-        new Recipe(
-          {
-            ice: 80,
-            giantTooth: 10,
-            frozenCrystal: 5,
-            yetiFur: 5,
-          },
-          new ItemInstance("glacier", 1)
         ),
         new Recipe(
           {
