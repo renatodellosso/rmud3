@@ -131,6 +131,7 @@ export type EntityId =
   | "instructor"
   | "menhir"
   | "reforgeAnvil"
+  | "guildStorage"
   | "lockedCoffin";
 
 const creatures: Record<CreatureId, CreatureDefinition> = {
@@ -6111,6 +6112,36 @@ const entities: Record<EntityId, EntityDefinition> = {
     name: "Reforge Anvil",
     interact: async (entity, player, interaction, action) =>
       reforgeInteraction(entity, player, interaction, action, "Reforge Anvil"),
+  },
+  guildStorage: {
+    name: "Hidden Chest",
+    canInteract: (entity, player) => player.guildId !== undefined,
+    interact: async (entity, player, interaction, action) => {
+      const guild = await player.getGuild();
+
+      if (!guild) {
+        getIo().sendMsgToPlayer(
+          player._id.toString(),
+          "You are not in a guild."
+        );
+        return undefined;
+      }
+
+      guild.storage.maxWeight = guild.getPerks().guildStorageCapacity;
+
+      const int = inventoryInteraction(
+        entity,
+        player,
+        interaction,
+        action,
+        guild.storage,
+        "Guild Storage"
+      );
+
+      Guild.upsert(guild);
+
+      return int;
+    },
   },
   lockedCoffin: {
     name: "Locked Sarcophagus",

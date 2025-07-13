@@ -269,10 +269,13 @@ async function getClientGuild(guild: Guild): Promise<ClientGuild> {
         ) as GuildMember
     );
 
-  return restoreFieldsAndMethods(guild, {
-    ...guild,
-    memberInstances,
-  });
+  return restoreFieldsAndMethods(
+    restoreFieldsAndMethods(guild, {
+      ...guild,
+      memberInstances,
+    }),
+    new Guild(guild.owner, guild.members)
+  ) as ClientGuild;
 }
 
 export class Io implements ClientFriendlyIo {

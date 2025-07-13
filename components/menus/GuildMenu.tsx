@@ -1,11 +1,7 @@
 import { ObjectId } from "bson";
 import { socket } from "lib/socket";
 import { PlayerInstance } from "lib/types/entities/player";
-import Guild, {
-  ClientGuild,
-  GuildMember,
-  xpForNextGuildLevel,
-} from "lib/types/Guild";
+import { ClientGuild, GuildMember, xpForNextGuildLevel } from "lib/types/Guild";
 
 function MemberEntry({
   member,
@@ -79,6 +75,10 @@ export default function GuildMenu({
             {(perks.xpGainBonusMultiplier * 100).toFixed()}%
           </li>
           <li>Shop Discount: {(perks.shopDiscount * 100).toFixed()}%</li>
+          <li>
+            Guild Storage Capacity:{" "}
+            {perks.guildStorageCapacity.toLocaleString()} kg
+          </li>
         </ul>
       </div>
       <div>
