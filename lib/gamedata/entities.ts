@@ -5357,12 +5357,12 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
-            bottle: 2,
+            bottle: 1,
             spore: 3,
             livingStone: 1,
             ashes: 1,
           },
-          new ItemInstance("stoneskinPotion", 2)
+          new ItemInstance("stoneskinPotion", 1)
         ),
         new Recipe(
           {

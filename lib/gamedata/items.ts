@@ -2534,11 +2534,12 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         [{ id: "blocking", strength: 20, duration: 5 }]
       ),
     ],
+    getDamageResistances: [{ amount: 10, type: "*" }],
   } satisfies EquipmentDefinition,
   frozenChain: {
     getName: "Frozen Chain",
     tags: [ItemTag.Equipment],
-    description: `A chain made of ice. Protects the wearer from cold and freezing.`,
+    description: `A chain made of ice. Protects the wearer from cold and freezing. Halves the strength and duration of the frozen effect.`,
     getWeight: 1,
     getSellValue: 700,
     getDamageResistances: [
@@ -2591,7 +2592,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: `A comfortable pair of boots for traversing cold weather.`,
     getWeight: 4,
     getSellValue: 800,
-    getDamageResistances: [{ amount: 25, type: DamageType.Cold }],
+    getDamageResistances: [{ amount: 20, type: DamageType.Cold }, { amount: 5, type: "*" }],
     getAbilityScores: {
       [AbilityScore.Strength]: 0,
       [AbilityScore.Constitution]: 5,
@@ -2607,7 +2608,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 400,
     getDamageResistances: [
       { amount: 20, type: DamageType.Cold },
-      { amount: 10, type: DamageType.Slashing },
+      { amount: 10, type: "*" },
     ],
     getAbilityScores: {
       [AbilityScore.Strength]: 5,
@@ -2624,7 +2625,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 650,
     getDamageResistances: [
       { amount: 30, type: DamageType.Cold },
-      { amount: 15, type: DamageType.Slashing },
+      { amount: 15, type: "*" },
     ],
     getDamageBonuses: [{ amount: 5, type: DamageType.Psychic }],
     getAbilityScores: {
