@@ -11,7 +11,7 @@ const floors: Record<string, FloorDefinition> = {
     visualizerColor: "#2F4F4F",
     layoutGenerationOptions: {
       roomChance: 0.5,
-      connectionChance: 0.3,
+      connectionChance: 0.4,
       width: [10, 15],
       length: [10, 15],
       roomCount: [15, 30],
@@ -194,7 +194,7 @@ const floors: Record<string, FloorDefinition> = {
     visualizerColor: "#8B4513",
     layoutGenerationOptions: {
       roomChance: 0.6,
-      connectionChance: 0.4,
+      connectionChance: 0.6,
       width: [6, 12],
       length: [6, 12],
       roomCount: [20, 40],
@@ -268,7 +268,7 @@ const floors: Record<string, FloorDefinition> = {
     visualizerColor: "#A9A9A9",
     layoutGenerationOptions: {
       roomChance: 0.6,
-      connectionChance: 0.4,
+      connectionChance: 0.6,
       width: [10, 16],
       length: [10, 16],
       roomCount: [20, 40],
@@ -455,7 +455,7 @@ const floors: Record<string, FloorDefinition> = {
     visualizerColor: "#B8860B",
     layoutGenerationOptions: {
       roomChance: 0.5,
-      connectionChance: 0.3,
+      connectionChance: 0.7,
       width: [14, 20],
       length: [14, 20],
       roomCount: [35, 70],
@@ -751,7 +751,7 @@ const floors: Record<string, FloorDefinition> = {
     visualizerColor: "#06c225",
     layoutGenerationOptions: {
       roomChance: 0.6,
-      connectionChance: 0.3,
+      connectionChance: 0.6,
       width: [15, 22],
       length: [15, 22],
       roomCount: [40, 70],
