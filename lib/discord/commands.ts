@@ -4,6 +4,7 @@ import { getMongoClient } from "lib/getMongoClient";
 import CollectionId from "lib/types/CollectionId";
 import Guild from "lib/types/Guild";
 import { PlayerInstance } from "lib/types/entities/player";
+import { difficultyOptions } from "lib/types/Difficulty";
 
 const commandArray: Command[] = [
   {
@@ -52,6 +53,9 @@ const commandArray: Command[] = [
             row += ` (${guild.name})`;
           }
         }
+
+        const difficulty = difficultyOptions[player.difficulty].name;
+        row += ` [${difficulty}]`;
 
         msg += `${row}\n`;
       }
