@@ -56,6 +56,10 @@ function registerCommands(client: Client) {
 function handleCommandInteraction(interaction: Interaction) {
   if (!interaction.isChatInputCommand()) return;
 
+  console.log(
+    `Received interaction: ${interaction.commandName} from ${interaction.user.tag}`
+  );
+
   const command = commands[interaction.commandName];
   if (!command) {
     console.error(`Unknown command: ${interaction.commandName}`);
