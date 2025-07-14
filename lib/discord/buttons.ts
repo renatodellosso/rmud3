@@ -85,7 +85,7 @@ const buttons: Record<
     }
 
     // Transfer the item from the seller to the buyer
-    playerInstance
+    const removed = playerInstance
       .getCraftingInventory()
       .removeById(buyOrder.itemId, buyOrder.amount);
     buyer
@@ -93,10 +93,14 @@ const buttons: Record<
       .add(new ItemInstance(buyOrder.itemId, buyOrder.amount));
 
     // Transfer the money from the buyer to the seller
-    playerInstance
+    const paid = playerInstance
       .getCraftingInventory()
       .add(new ItemInstance("money", buyOrder.price));
     buyer.getCraftingInventory().removeById("money", buyOrder.price);
+
+    console.log(
+      `Player ${playerInstance._id} sold ${removed}x to ${buyer._id} for ${paid}x`
+    );
 
     const promises: Promise<any>[] = [];
 
