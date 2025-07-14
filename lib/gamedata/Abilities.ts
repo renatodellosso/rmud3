@@ -135,7 +135,7 @@ export function applyStatusEffect(
         .join(", ")}.`
     ),
     getCooldown: (creature, source) =>
-      creature.scaleAbility(getFromOptionalFunc(getCooldown, creature, source)),
+      getFromOptionalFunc(getCooldown, creature, source),
     getTargetCount: options.targetCount ?? 1,
     canTarget: CanTarget.and(
       CanTarget.isTargetACreature,
