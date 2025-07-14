@@ -93,6 +93,9 @@ export default function registerGameListeners(socket: TypedSocket) {
         .filter((t) => t != undefined) as Targetable[];
 
       player.instance.activateAbility(ability.ability, targets, source);
+
+      const session = socket.data.session!;
+      session.map.addLocation(player.instance.location);
     }
   );
 

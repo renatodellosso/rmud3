@@ -8,6 +8,7 @@ import { randInRangeInt } from "lib/utils";
 import { getIo } from "lib/ClientFriendlyIo";
 
 export function teleportScroll(depth: number): ConsumableDefinition {
+  depth++;
   return {
     getName: `Teleport Scroll (Depth ${depth})`,
     tags: [ItemTag.Consumable],

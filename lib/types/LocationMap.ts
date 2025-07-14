@@ -55,7 +55,7 @@ export default class LocationMap {
     if (!dungeon)
       throw new Error("Tried to add a location to a map without a dungeon");
 
-    if (this.locations.length <= location.floor.depth + 1) {
+    while (this.locations.length <= location.floor.depth + 1) {
       const floorLocations = dungeon!.locations[location.floor.depth];
       this.locations.push(
         new Array(floorLocations.length)
