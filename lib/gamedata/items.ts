@@ -2938,11 +2938,11 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getName: "Healthful Amulet",
     tags: [ItemTag.Equipment],
     description:
-      "Whenever you heal, heal extra health equal to half your intelligence. Increases your intelligence by 2.",
+      "Whenever you heal, heal extra health equal to half your intelligence. Increases your intelligence by 10.",
     getWeight: 0.1,
     getSellValue: 200,
     getAbilityScores: {
-      [AbilityScore.Intelligence]: 2,
+      [AbilityScore.Intelligence]: 10,
     },
     getAmountToHeal: (creature, source, healAmount) =>
       healAmount +
@@ -3054,10 +3054,10 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
   livingRing: {
     getName: "Living Ring",
     tags: [ItemTag.Equipment],
-    description: "A ring made of living vines. Increasing all healing by 30%.",
+    description: "A ring made of living vines. Increasing all healing by 20%.",
     getWeight: 0.2,
     getSellValue: 50,
-    getAmountToHeal: (creature, source, amount) => amount * 1.3,
+    getAmountToHeal: (creature, source, amount) => amount * 1.2,
   } satisfies EquipmentDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
