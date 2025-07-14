@@ -3957,19 +3957,19 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
   },
   kraken: {
     name: "Kraken",
-    health: 300,
+    health: 800,
     abilityScores: {
       [AbilityScore.Strength]: 10,
       [AbilityScore.Constitution]: 10,
       [AbilityScore.Intelligence]: 25,
     },
-    damageResistances: [{ amount: 10, type: DamageType.Bludgeoning }, { amount: 3, type: "*"}],
+    damageResistances: [{ amount: 10, type: DamageType.Bludgeoning }, { amount: 5, type: "*"}],
     intrinsicAbilities: [
       Abilities.attack(
         "Tentacle Slam",
         "Slams a tentacle down on the target.",
         1,
-        [{ amount: 50, type: DamageType.Bludgeoning }],
+        [{ amount: 80, type: DamageType.Bludgeoning }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.summon(
@@ -3984,11 +3984,11 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       Abilities.applyStatusEffect(
         "Ink Spray",
         "Sprays ink to blind enemies.",
-        2,
+        1,
         [
           {
             id: "stunned",
-            strength: 5,
+            strength: 2,
             duration: 5,
           },
           {
@@ -4005,7 +4005,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
-    xpValue: 500,
+    xpValue: 2000,
     lootTable: new LootTable([
       {
         item: new WeightedTable<ItemId>([
