@@ -5,6 +5,7 @@ import { CollectionManager } from "./getCollectionManager";
 import CollectionId from "./types/CollectionId";
 import { SessionManager } from "./SessionManager";
 import { PlayerInstance } from "./types/entities/player";
+import getPlayerManager from "./PlayerManager";
 
 export async function hashPassword(password: string): Promise<string> {
   return argon2.hash(password);
@@ -140,21 +141,15 @@ export async function discordIdToAccount(
 export async function discordIdToPlayerInstance(
   collectionManager: CollectionManager,
   discordId: string
-): Promise<PlayerInstance | null> {
+): Promise<PlayerInstance | undefined> {
   const account = await discordIdToAccount(collectionManager, discordId);
-  if (!account) return null;
-
-  const playerInstancesCollection = collectionManager.getCollection(
-    CollectionId.PlayerInstances
-  );
+  if (!account) return undefined;
 
   if (!account.primarySaveId) {
-    return null;
+    return undefined;
   }
 
-  return (
-    await playerInstancesCollection.findWithOneFilter({
-      _id: account.primarySaveId,
-    })
-  )[0];
+  const playerManager = getPlayerManager();
+
+  return await playerManager.getInstanceById(account.primarySaveId, true);
 }
