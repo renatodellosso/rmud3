@@ -149,7 +149,9 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   const originalAbility = gameState.self
     .getAbilities()
     .find(
-      (a) => a.source.definitionId === selectedAbility?.source.definitionId
+      (a) =>
+        a.source.definitionId === selectedAbility?.source.definitionId &&
+        a.ability === selectedAbility?.ability
     );
 
   useEffect(() => {
@@ -182,7 +184,7 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   }, []);
 
   return (
-    <div className="border w-1/6 flex flex-col gap-2 overflow-y-scroll">
+    <div className="border w-1/6 flex flex-col gap-2">
       <h2 className="text-xl">Combat</h2>
       <div>
         Can act{" "}

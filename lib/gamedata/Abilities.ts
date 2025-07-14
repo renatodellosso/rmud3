@@ -318,7 +318,9 @@ export function attackWithStatusEffectLocation(
       for (let entity of Array.from(target.entities)) {
         if (
           (targetAlly && CanTarget.isAlly(creature, entity)) ||
-          (targetNonAlly && !CanTarget.isAlly(creature, entity))
+          (targetNonAlly &&
+            !CanTarget.isAlly(creature, entity) &&
+            CanTarget.isTargetACreature(creature, entity))
         ) {
           attackFunc(creature, [target], source);
           applyStatusEffectFunc(creature, [target], source);
