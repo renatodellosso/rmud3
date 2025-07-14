@@ -85,7 +85,6 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   const [canAct, setCanAct] = useState<boolean>(true);
 
   const [cooldownRemaining, setCooldownRemaining] = useState<number>(0);
-  const [totalCooldown, setTotalCooldown] = useState<number>(0);
 
   function toggleTarget(target: Targetable) {
     const newTargets = targets.includes(target)
@@ -154,14 +153,6 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
     );
 
   useEffect(() => {
-    if (originalAbility?.source) {
-      setTotalCooldown(
-        (originalAbility.source.canActAt.getTime() -
-          originalAbility.source.lastActedAt.getTime()) /
-          1000
-      );
-    }
-
     const interval = setInterval(() => {
       if (originalAbility) setSelectedAbility(originalAbility);
 
