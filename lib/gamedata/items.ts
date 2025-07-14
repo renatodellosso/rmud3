@@ -2661,8 +2661,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 4,
     getSellValue: 1000,
     getDamageResistances: [
-      { amount: 20, type: "*" },
-      { amount: 30, type: DamageType.Cold },
+      { amount: 10, type: "*" },
+      { amount: 20, type: DamageType.Cold },
     ],
     getDamageBonuses: [{ amount: 10, type: "*" }],
     getAbilityScores: {
@@ -2679,8 +2679,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 12,
     getSellValue: 3000,
     getDamageResistances: [
-      { amount: 30, type: "*" },
-      { amount: 50, type: DamageType.Cold },
+      { amount: 10, type: "*" },
+      { amount: 20, type: DamageType.Cold },
     ],
   } satisfies EquipmentDefinition,
   yetiBoots: {
@@ -2691,7 +2691,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 4,
     getSellValue: 800,
     getDamageResistances: [
-      { amount: 20, type: DamageType.Cold },
+      { amount: 15, type: DamageType.Cold },
       { amount: 5, type: "*" },
     ],
     getAbilityScores: {
@@ -2708,8 +2708,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 6,
     getSellValue: 400,
     getDamageResistances: [
-      { amount: 20, type: DamageType.Cold },
-      { amount: 10, type: "*" },
+      { amount: 12, type: DamageType.Cold },
+      { amount: 8, type: "*" },
     ],
     getAbilityScores: {
       [AbilityScore.Strength]: 5,
@@ -2725,8 +2725,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 8,
     getSellValue: 650,
     getDamageResistances: [
-      { amount: 30, type: DamageType.Cold },
-      { amount: 15, type: "*" },
+      { amount: 15, type: DamageType.Cold },
+      { amount: 10, type: "*" },
     ],
     getDamageBonuses: [{ amount: 5, type: DamageType.Psychic }],
     getAbilityScores: {
