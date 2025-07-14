@@ -68,11 +68,13 @@ export default class Guild {
     this.xp += amount;
 
     // Check if the guild can level up
-    const xpForNextLevel = xpForNextGuildLevel(this.level);
+    let xpForNextLevel = xpForNextGuildLevel(this.level);
     while (this.xp >= xpForNextLevel) {
       this.level++;
 
       this.storage.maxWeight = this.getPerks().guildStorageCapacity;
+
+      xpForNextLevel = xpForNextGuildLevel(this.level);
     }
 
     Guild.upsert(this);
