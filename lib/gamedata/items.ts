@@ -2251,7 +2251,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 15,
     getSellValue: 500,
     getAbilities: (creature) =>
-      "floor" in locations[creature.location] &&
+      locations[creature.location] && "floor" in locations[creature.location] &&
       (locations[creature.location] as DungeonLocation).floor.definition
         .name === "Flooded Caves"
         ? [
