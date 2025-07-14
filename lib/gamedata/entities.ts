@@ -5590,6 +5590,15 @@ const entities: Record<EntityId, EntityDefinition> = {
           },
           new ItemInstance("frozenChain", 1)
         ),
+        new Recipe(
+          {
+            hordeShell: 1,
+            fortressShell: 1,
+            midnightShell: 1,
+            enchantingSpirit: 3,
+          },
+          new ItemInstance("shellHorn", 1)
+        ),
         // Keep the teleport scrolls at the end
         new Recipe(
           {

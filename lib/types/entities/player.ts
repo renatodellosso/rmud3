@@ -339,13 +339,13 @@ export class PlayerInstance extends CreatureInstance {
     }
 
     if ("definitionId" in source && "amount" in source) {
-      if (items[source.definitionId].tags.includes(ItemTag.Consumable)) {
-        this.inventory.remove(new ItemInstance(source.definitionId, 1));
-      }
-
       source.lastActedAt = new Date();
 
       source.canActAt.setTime(source.lastActedAt.getTime() + cooldown * 1000);
+
+      if (items[source.definitionId].tags.includes(ItemTag.Consumable)) {
+        this.inventory.remove(new ItemInstance(source.definitionId, 1));
+      }
     }
 
     getIo().updateGameStateForRoom(location.id);
