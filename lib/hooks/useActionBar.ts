@@ -66,6 +66,16 @@ export default function useActionBar(gameState: GameState) {
           });
         }
 
+        newActions.push({
+          text: "Chat",
+          action: () => {
+            const message = prompt("Enter your message:");
+            if (message) {
+              socket.emit("chat", message);
+            }
+          },
+        });
+
         break;
 
       case ActionState.Move:

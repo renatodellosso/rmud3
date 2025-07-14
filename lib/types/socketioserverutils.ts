@@ -236,6 +236,7 @@ async function getGameState(socket: TypedSocket): Promise<GameState> {
         ),
     },
     messages: socket.data.session!.messages,
+    chatMessages: socket.data.session!.chatMessages || [],
     interactions: socket.data.session!.interactions || [],
     map: socket.data.session!.map,
     guild: clientGuild,
@@ -454,6 +455,19 @@ export class Io implements ClientFriendlyIo {
     }
 
     socket.data.session.interactions = [];
+    return Promise.resolve();
+  }
+
+  addChatMessage(playerName: string, message: string): Promise<void> {
+    const io = getRawIoSingleton();
+
+    for (const socket of Array.from(io!.sockets.sockets.values())) {
+      if (socket.data.session)
+        socket.data.session.chatMessages.push({ user: playerName, message });
+    }
+
+    this.sendMsgToAll(`${playerName}: ${message}`);
+
     return Promise.resolve();
   }
 }

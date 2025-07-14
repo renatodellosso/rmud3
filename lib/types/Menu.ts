@@ -5,6 +5,7 @@ enum Menu {
   Inventory = "Inventory & Equipment",
   Map = "Map",
   Guild = "Guild",
+  Chat = "Chat",
 }
 
 export default Menu;

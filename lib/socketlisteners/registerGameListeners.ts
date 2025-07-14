@@ -69,10 +69,7 @@ export default function registerGameListeners(socket: TypedSocket) {
         return;
       }
 
-      if (
-        new Date() < source.canActAt ||
-        player.instance.health <= 0
-      ) {
+      if (new Date() < source.canActAt || player.instance.health <= 0) {
         return;
       }
 
@@ -110,8 +107,7 @@ export default function registerGameListeners(socket: TypedSocket) {
 
     const player = getPlayer(socket);
 
-    if (player.instance.health <= 0)
-      return;
+    if (player.instance.health <= 0) return;
 
     const entity = Array.from(
       locations[player.instance.location].entities
@@ -145,7 +141,7 @@ export default function registerGameListeners(socket: TypedSocket) {
 
   socket.on("interact", async (entityId: string, action: any) => {
     const player = getPlayer(socket);
-    
+
     if (player.instance.health <= 0) return;
 
     const entity = Array.from(
@@ -235,7 +231,7 @@ export default function registerGameListeners(socket: TypedSocket) {
 
   socket.on("unequip", (item) => {
     const player = getPlayer(socket);
-    
+
     if (player.instance.health <= 0) return;
 
     // Check if the item is equipped
@@ -284,7 +280,11 @@ export default function registerGameListeners(socket: TypedSocket) {
 
     restoreFieldsAndMethods(
       foundItem,
-      new ItemInstance(foundItem.definitionId, foundItem.amount, foundItem.reforge)
+      new ItemInstance(
+        foundItem.definitionId,
+        foundItem.amount,
+        foundItem.reforge
+      )
     );
 
     foundItem.amount = Math.min(foundItem.amount, item.amount);
@@ -305,7 +305,9 @@ export default function registerGameListeners(socket: TypedSocket) {
 
       if (container.name.includes(foundItem.getName())) {
         container.inventory.add(foundItem);
-        container.name = `${foundItem.getName()} x${container.inventory.getCountById(foundItem.definitionId)}`;
+        container.name = `${foundItem.getName()} x${container.inventory.getCountById(
+          foundItem.definitionId
+        )}`;
         itemAdded = true;
       }
     }
@@ -383,5 +385,19 @@ export default function registerGameListeners(socket: TypedSocket) {
       `You have been kicked from the guild ${guild.name} by ${kicker.instance.name}.`
     );
     io.updateGameState(kickee._id.toString());
+  });
+
+  socket.on("chat", (message: string) => {
+    const player = getPlayer(socket);
+
+    if (!message || message.trim() === "") {
+      return;
+    }
+
+    if (message.length > 400) {
+      return;
+    }
+
+    getIo().addChatMessage(player.instance.name, message);
   });
 }

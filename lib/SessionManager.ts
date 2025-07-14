@@ -17,6 +17,7 @@ export class SessionManager {
       playerProgressId: undefined,
       playerInstanceId: undefined,
       messages: [],
+      chatMessages: [],
       interactions: [],
       map: new LocationMap()
     };

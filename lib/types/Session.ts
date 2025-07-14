@@ -8,6 +8,7 @@ type Session = {
   playerProgressId: ObjectId | undefined;
   playerInstanceId: ObjectId | undefined;
   messages: string[];
+  chatMessages: { user: string; message: string }[];
   interactions: Interaction[];
   map: LocationMap;
 };

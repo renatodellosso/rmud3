@@ -1,5 +1,5 @@
-import { updateGameState, Io } from "./types/socketioserverutils";
 import { ServerToClientEvents } from "./types/socketiotypes";
+
 export default interface ClientFriendlyIo {
   sendMsgToRoom(room: string, msg: string): Promise<void>;
   sendMsgToPlayer(playerId: string, msg: string): Promise<void>;
@@ -15,6 +15,7 @@ export default interface ClientFriendlyIo {
   ): Promise<void>;
   clearMessages(playerId: string): Promise<void>;
   clearInteractions(playerId: string): Promise<void>;
+  addChatMessage(playerName: string, message: string): Promise<void>;
 }
 
 export class DisabledIo implements ClientFriendlyIo {
@@ -50,6 +51,9 @@ export class DisabledIo implements ClientFriendlyIo {
     return Promise.resolve();
   }
   clearInteractions(playerId: string): Promise<void> {
+    return Promise.resolve();
+  }
+  addChatMessage(playerName: string, message: string): Promise<void> {
     return Promise.resolve();
   }
 }
