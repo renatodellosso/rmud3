@@ -5,7 +5,7 @@ import { MapWithControls } from "./MapMenu";
 export default function LocationMenu({ gameState }: { gameState: GameState }) {
   return (
     <div className="border w-1/6 flex flex-col justify-between">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 overflow-y-scroll">
         <h1 className="text-xl">{gameState.location.name}</h1>
         <div>
           <h2 className="text-lg">Exits</h2>
