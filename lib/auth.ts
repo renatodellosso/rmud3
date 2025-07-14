@@ -4,6 +4,7 @@ import { ObjectId } from "bson";
 import { CollectionManager } from "./getCollectionManager";
 import CollectionId from "./types/CollectionId";
 import { SessionManager } from "./SessionManager";
+import { PlayerInstance } from "./types/entities/player";
 
 export async function hashPassword(password: string): Promise<string> {
   return argon2.hash(password);
@@ -121,4 +122,39 @@ export async function signIn(
 
   const session = sessionManager.createSession(account._id);
   return session._id;
+}
+
+export async function discordIdToAccount(
+  collectionManager: CollectionManager,
+  discordId: string
+): Promise<Account | null> {
+  const accountCollection = collectionManager.getCollection(
+    CollectionId.Accounts
+  );
+
+  return (
+    await accountCollection.findWithOneFilter({ discordUserId: discordId })
+  )[0];
+}
+
+export async function discordIdToPlayerInstance(
+  collectionManager: CollectionManager,
+  discordId: string
+): Promise<PlayerInstance | null> {
+  const account = await discordIdToAccount(collectionManager, discordId);
+  if (!account) return null;
+
+  const playerInstancesCollection = collectionManager.getCollection(
+    CollectionId.PlayerInstances
+  );
+
+  if (!account.primarySaveId) {
+    return null;
+  }
+
+  return (
+    await playerInstancesCollection.findWithOneFilter({
+      _id: account.primarySaveId,
+    })
+  )[0];
 }

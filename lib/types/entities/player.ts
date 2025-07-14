@@ -64,6 +64,8 @@ export class PlayerInstance extends CreatureInstance {
   guildId: ObjectId | undefined = undefined;
   guildLevel: number = 0;
 
+  buyOrders: ObjectId[] = [];
+
   tick(deltaTime: number): void {
     super.tick(deltaTime);
     getIo().updateGameState(this._id.toString());

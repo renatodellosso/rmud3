@@ -8,6 +8,7 @@ import items, { ItemId } from "lib/gamedata/items";
 import { ItemDefinition, ItemInstance } from "./item";
 import Guild, { ClientGuild } from "./Guild";
 import { DamageType } from "./Damage";
+import { ObjectId } from "bson";
 
 export type Targetable = EntityInstance | Location;
 
@@ -68,4 +69,16 @@ export type GameState = {
 export type DamageWithType = {
   amount: number;
   type: DamageType;
+};
+
+export type BuyOrder = {
+  _id: ObjectId;
+  /**
+   * Player instance that created the buy order.
+   */
+  owner: ObjectId;
+  ownerDiscordId: string;
+  itemId: ItemId;
+  amount: number;
+  price: number;
 };

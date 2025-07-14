@@ -7,6 +7,8 @@ import {
 } from "discord.js";
 import getPlayerManager from "../PlayerManager";
 import commands from "./commands";
+import handleModalSubmit from "./modals";
+import handleButtonInteraction from "./buttons";
 
 export function startDiscordBot() {
   const client = new Client({
@@ -54,6 +56,22 @@ function registerCommands(client: Client) {
 }
 
 function handleCommandInteraction(interaction: Interaction) {
+  if (interaction.isModalSubmit()) {
+    console.log(
+      `Received modal submit interaction: ${interaction.customId} from ${interaction.user.tag}`
+    );
+    handleModalSubmit(interaction);
+    return;
+  }
+
+  if (interaction.isButton()) {
+    console.log(
+      `Received button interaction: ${interaction.customId} from ${interaction.user.tag}`
+    );
+    handleButtonInteraction(interaction);
+    return;
+  }
+
   if (!interaction.isChatInputCommand()) return;
 
   console.log(

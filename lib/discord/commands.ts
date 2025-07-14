@@ -1,4 +1,16 @@
-import { Embed, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  Embed,
+  EmbedBuilder,
+  ModalBuilder,
+  SlashCommandBuilder,
+  StringSelectMenuBuilder,
+  StringSelectMenuOptionBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+} from "discord.js";
 import Command from "./types";
 import { getMongoClient } from "lib/getMongoClient";
 import CollectionId from "lib/types/CollectionId";
@@ -7,10 +19,14 @@ import { PlayerInstance } from "lib/types/entities/player";
 import { difficultyOptions } from "lib/types/Difficulty";
 import Account from "lib/types/Account";
 import AbilityScore from "lib/types/AbilityScore";
-import items from "lib/gamedata/items";
+import items, { ItemId } from "lib/gamedata/items";
 import { restoreFieldsAndMethods } from "lib/utils";
 import { ItemInstance } from "lib/types/item";
 import getPlayerManager from "lib/PlayerManager";
+import { getFromOptionalFunc } from "../utils";
+import getCollectionManager from "lib/getCollectionManager";
+import { discordIdToAccount } from "lib/auth";
+import { requirePrimarySave } from "./utils";
 
 const commandArray: Command[] = [
   {
@@ -312,6 +328,56 @@ const commandArray: Command[] = [
       });
 
       await interaction.reply(msg);
+    },
+  },
+  {
+    builder: new SlashCommandBuilder()
+      .setName("buy")
+      .setDescription("Offer to buy an item from other players."),
+    handler: async (interaction) => {
+      const playerInstance = await requirePrimarySave(interaction);
+      if (!playerInstance) return;
+
+      const modal = new ModalBuilder()
+        .setCustomId("buyOrderModal")
+        .setTitle("Create Buy Order");
+
+      modal.addComponents(
+        new ActionRowBuilder<TextInputBuilder>().addComponents(
+          new TextInputBuilder()
+            .setCustomId("itemName")
+            .setLabel("Item Name")
+            .setStyle(TextInputStyle.Short)
+            .setRequired(true)
+        ),
+        new ActionRowBuilder<TextInputBuilder>().addComponents(
+          new TextInputBuilder()
+            .setCustomId("amount")
+            .setLabel("Amount")
+            .setStyle(TextInputStyle.Short)
+            .setRequired(true)
+            .setMinLength(1)
+        ),
+        new ActionRowBuilder<TextInputBuilder>().addComponents(
+          new TextInputBuilder()
+            .setCustomId("price")
+            .setLabel(
+              `Price - ${playerInstance
+                .getCraftingInventory()
+                .getCountById("money")
+                .toLocaleString()} available`
+            )
+            .setStyle(TextInputStyle.Short)
+            .setRequired(true)
+            .setMinLength(1)
+        )
+      );
+
+      await interaction.showModal(modal);
+
+      await interaction.awaitModalSubmit({
+        time: 60 * 1000,
+      });
     },
   },
 ];
