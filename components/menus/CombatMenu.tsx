@@ -171,6 +171,7 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
     return () => clearInterval(interval);
   }, [originalAbility?.source.canActAt]);
 
+  // This renders the menu periodically so that cooldown bars are smooth
   const [render, setRender] = useState(0);
   useEffect(() => {
     const interval = setInterval(() => {
