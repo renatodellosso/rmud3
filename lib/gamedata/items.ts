@@ -2301,7 +2301,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.attackWithStatusEffect(
         "Kraken Slash",
         "A powerful slash that channels the energy of the kraken.",
-        3,
+        1.5,
         [{ amount: 40, type: DamageType.Slashing }],
         [
           {
@@ -2314,23 +2314,23 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.attackWithStatusEffect(
         "Kraken's Grasp",
         "A strike that ensnares the target, dealing damage and applying a stun.",
-        4,
+        3,
         [{ amount: 30, type: DamageType.Slashing }],
         [
           {
             id: "stunned",
             strength: 2,
-            duration: 5,
+            duration: 3,
           },
           {
             id: "cursed",
             strength: 3,
-            duration: 5,
+            duration: 3,
           },
           {
             id: "poisoned",
             strength: 2,
-            duration: 5,
+            duration: 3,
           },
         ]
       ),
@@ -2347,8 +2347,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.attackWithStatusEffect(
         "Kraken's Bite",
         "A quick slash that channels the energy of the kraken.",
-        1.5,
-        [{ amount: 25, type: DamageType.Piercing }],
+        1,
+        [{ amount: 20, type: DamageType.Piercing }],
         [
           {
             id: "poisoned",
@@ -2366,12 +2366,12 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
           {
             id: "cursed",
             strength: 2,
-            duration: 5,
+            duration: 3,
           },
           {
             id: "poisoned",
             strength: 2,
-            duration: 5,
+            duration: 3,
           },
         ]
       ),
