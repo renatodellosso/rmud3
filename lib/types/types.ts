@@ -60,6 +60,7 @@ export type GameState = {
     exits: ExitData[];
   };
   messages: string[];
+  chatMessages: { user: string; message: string }[];
   interactions: Interaction[];
   map: LocationMap;
   guild: ClientGuild | undefined;

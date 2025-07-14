@@ -18,6 +18,7 @@ import ReforgeMenu from "@/components/menus/ReforgeMenu";
 import PrimaryActionBar from "@/components/menus/PrimaryActionBar";
 import HeaderBar from "@/components/HeaderBar";
 import Menu from "lib/types/Menu";
+import ChatMenu from "@/components/menus/ChatMenu";
 
 function LoadingGameState() {
   return (
@@ -78,6 +79,7 @@ export default function Play() {
         {gameState.guild && openMenus.includes(Menu.Guild) && (
           <GuildMenu self={gameState.self} guild={gameState.guild} />
         )}
+        {openMenus.includes(Menu.Chat) && <ChatMenu gameState={gameState} />}
         {gameState.interactions
           .filter((i) => i.type !== "logOnly")
           .map((interaction, index) =>
