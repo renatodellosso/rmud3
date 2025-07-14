@@ -2251,23 +2251,19 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 15,
     getSellValue: 500,
     getAbilities: (creature) =>
-      locations[creature.location] && "floor" in locations[creature.location] &&
-      (locations[creature.location] as DungeonLocation).floor.definition
-        .name === "Flooded Caves"
-        ? [
-            Abilities.summon(
-              "Call Kraken",
-              "Blow into the shell, beckoning a kraken from the depths.",
-              0,
-              [
-                {
-                  id: "kraken",
-                  amount: 1,
-                },
-              ]
-            ),
+      [
+        Abilities.summon(
+          "Call Kraken",
+          "Blow into the shell, beckoning a kraken from the depths.",
+          0,
+          [
+            {
+              id: "kraken",
+              amount: 1,
+            },
           ]
-        : [],
+        ),
+      ],
   } satisfies ConsumableDefinition,
   enchantingSpirit: {
     getName: "Enchanting Spirit",
