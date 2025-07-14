@@ -8,6 +8,7 @@ import { ItemInstance } from "lib/types/item";
 import items from "lib/gamedata/items";
 import { getFromOptionalFunc, restoreFieldsAndMethods } from "lib/utils";
 import { PlayerInstance } from "lib/types/entities/player";
+import getPlayerManager from "lib/PlayerManager";
 
 const buttons: Record<
   string,
@@ -46,9 +47,7 @@ const buttons: Record<
     }
 
     // Check if player has enough money to create this buy order
-    const buyer = await collectionManager
-      .getCollection(CollectionId.PlayerInstances)
-      .get(buyOrder.owner);
+    const buyer = await getPlayerManager().getInstanceById(buyOrder.owner);
 
     if (!buyer) {
       interaction.reply({
@@ -90,16 +89,16 @@ const buttons: Record<
       .removeById(buyOrder.itemId, buyOrder.amount);
     buyer
       .getCraftingInventory()
-      .add(new ItemInstance(buyOrder.itemId, buyOrder.amount));
+      .add(new ItemInstance(buyOrder.itemId, buyOrder.amount), true);
 
     // Transfer the money from the buyer to the seller
     const paid = playerInstance
       .getCraftingInventory()
-      .add(new ItemInstance("money", buyOrder.price));
+      .add(new ItemInstance("money", buyOrder.price), true);
     buyer.getCraftingInventory().removeById("money", buyOrder.price);
 
     console.log(
-      `Player ${playerInstance._id} sold ${removed}x to ${buyer._id} for ${paid}x`
+      `Player ${playerInstance._id} sold ${removed}x ${buyOrder.itemId} to ${buyer._id} for ${paid}x money`
     );
 
     const promises: Promise<any>[] = [];
