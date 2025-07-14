@@ -4263,7 +4263,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Ice Club",
         "Bludgeoning club attack.",
         2,
-        [{ amount: 60, type: DamageType.Bludgeoning }],
+        [{ amount: 70, type: DamageType.Bludgeoning }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.applyStatusEffect(
@@ -4362,36 +4362,17 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Lava Burst",
         "Unleash a burst of lava at the target.",
         2,
-        [{ amount: 50, type: DamageType.Fire }],
+        [{ amount: 80, type: DamageType.Fire }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
-      {
-        name: "Magma Eruption",
-        getDescription: "Erupts magma around itself, damaging nearby enemies.",
-        getCooldown: 3,
-        getTargetCount: 1,
-        canTarget: CanTarget.isTargetALocation,
-        activate: (self, targets) => {
-          const location = targets[0] as Location;
-
-          for (const entity of Array.from(location.entities)) {
-            if (CanTarget.isAlly(self, entity)) {
-              (entity as CreatureInstance).addStatusEffect({
-                id: "burning",
-                strength: 5,
-                duration: 10,
-              });
-            }
-          }
-
-          getIo().sendMsgToRoom(
-            location.id,
-            "Magma erupts from the ground, scorching everything nearby!"
-          );
-
-          return true;
-        },
-      },
+      Abilities.applyStatusEffectLocation(
+        "Magma Eruption",
+        "Erupts magma around itself, damaging nearby enemies.",
+        2,
+        [{ id: "burning", strength: 15, duration: 10 }],
+        true,
+        false
+      )
     ],
     xpValue: 500,
     lootTable: new LootTable([
@@ -4428,14 +4409,14 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Lava Burst",
         "Unleash a burst of lava at the target.",
         2,
-        [{ amount: 50, type: DamageType.Fire }],
+        [{ amount: 85, type: DamageType.Fire }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.attackWithStatusEffectLocation(
         "Volcanic Eruption",
         "Erupts magma around itself, damaging nearby enemies.",
         1.5,
-        [{ amount: 25, type: DamageType.Fire }],
+        [{ amount: 40, type: DamageType.Fire }],
         [{ id: "burning", strength: 10, duration: 10 }],
         true,
         false,
@@ -4488,21 +4469,22 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Lava Splash",
         "Splashes lava at the target.",
         1,
-        [{ amount: 20, type: DamageType.Fire }],
+        [{ amount: 30, type: DamageType.Fire }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
-      Abilities.applyStatusEffect(
+      Abilities.applyStatusEffectLocation(
         "Heat Aura",
         "Emits a heat aura that damages nearby enemies.",
         2,
         [
           {
             id: "burning",
-            strength: 5,
+            strength: 10,
             duration: 5,
           },
         ],
-        { targetRestrictions: [CanTarget.isAlly] }
+        true,
+        false,
       ),
     ],
     xpValue: 150,
@@ -4555,7 +4537,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       Abilities.attack(
         "Fire Breath",
         "Breathes fire at the target.",
-        2,
+        1.2,
         [{ amount: 60, type: DamageType.Fire }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
@@ -4563,7 +4545,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Flame Wave",
         "Unleashes a wave of flame around itself.",
         1.5,
-        [{ amount: 40, type: DamageType.Fire }],
+        [{ amount: 50, type: DamageType.Fire }],
         [{ id: "burning", strength: 15, duration: 10 }],
         true,
         false,
@@ -4573,8 +4555,8 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Claw",
         "Slashes at the target with claws.",
         1,
-        [{ amount: 30, type: DamageType.Slashing }],
-        [{ id: "poisoned", strength: 5, duration: 5 }],
+        [{ amount: 40, type: DamageType.Slashing }],
+        [{ id: "poisoned", strength: 10, duration: 5 }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
     ],
@@ -4624,11 +4606,11 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Lash",
         "Reach out with a fiery lash.",
         2,
-        [{ amount: 50, type: DamageType.Fire }],
+        [{ amount: 65, type: DamageType.Fire }],
         [
           {
             id: "burning",
-            strength: 4,
+            strength: 8,
             duration: 25,
           },
         ],
@@ -4674,13 +4656,13 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Fire Breath",
         "Breathes fire at the target.",
         1.5,
-        [{ amount: 120, type: DamageType.Fire }],
+        [{ amount: 150, type: DamageType.Fire }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.attackWithStatusEffectLocation(
         "Inferno",
         "Unleashes a massive wave of flame around itself.",
-        2,
+        1,
         [{ amount: 100, type: DamageType.Fire }],
         [{ id: "burning", strength: 20, duration: 15 }],
         true,
@@ -4691,19 +4673,19 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Claw Swipe",
         "Slashes at the target with claws.",
         1,
-        [{ amount: 70, type: DamageType.Slashing }],
+        [{ amount: 80, type: DamageType.Slashing }],
         [{ id: "poisoned", strength: 10, duration: 10 }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
       Abilities.applyStatusEffect(
         "Dragon's Might",
         "Empowers itself, increasing its damage output.",
-        2,
+        1,
         [
           {
             id: "overcharged",
             strength: 20,
-            duration: 10,
+            duration: 5,
           },
         ],
         { targetRestrictions: [CanTarget.isSelf] }
@@ -4715,7 +4697,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "money",
-            amount: [3000, 5000],
+            amount: [2000, 4000],
             weight: 1,
           },
         ]),
