@@ -1,12 +1,12 @@
 import { Interaction } from "lib/types/entity";
 import Inventory from "../../lib/types/Inventory";
 import { socket } from "lib/socket";
-import items, { ItemId } from "lib/gamedata/items";
+import { ItemId } from "lib/gamedata/items";
 import ItemTooltip from "../ItemTooltip";
-import { CreatureInstance } from "lib/types/entities/creature";
-import { getFromOptionalFunc } from "../../lib/utils";
 import { ItemInstance } from "../../lib/types/item";
 import { PlayerInstance } from "lib/types/entities/player";
+import { useState } from "react";
+import Recipe from "lib/types/Recipe";
 
 export default function CraftingMenu({
   inventory,
@@ -17,8 +17,44 @@ export default function CraftingMenu({
   interaction: Interaction;
   self: PlayerInstance;
 }) {
+  const [sortBy, setSortBy] = useState<
+    "output name" | "input name" | "craftability"
+  >("craftability");
+
+  const comparator =
+    sortBy === "output name"
+      ? (a: Recipe, b: Recipe) =>
+          a.getOutputText().localeCompare(b.getOutputText())
+      : sortBy === "input name"
+      ? (a: Recipe, b: Recipe) =>
+          a.getInputText().localeCompare(b.getInputText())
+      : (a: Recipe, b: Recipe) => {
+          const aCanCraft =
+            a.hasInput(inventory) && a.hasRoomForOutput(inventory);
+          const bCanCraft =
+            b.hasInput(inventory) && b.hasRoomForOutput(inventory);
+          return (bCanCraft ? 1 : 0) - (aCanCraft ? 1 : 0);
+        };
+
   function craft(index: number) {
     socket.emit("interact", interaction.entityId.toString(), index);
+  }
+
+  const sortedRecipes = interaction
+    .recipes!.map((recipe, index) => ({
+      recipe,
+      originalIndex: index,
+    }))
+    .sort((a, b) => comparator(a.recipe, b.recipe));
+
+  function headerClassName(sortType: typeof sortBy) {
+    let className = "cursor-pointer";
+
+    if (sortBy === sortType) {
+      className += " border-b border-white";
+    }
+
+    return className;
   }
 
   return (
@@ -35,16 +71,39 @@ export default function CraftingMenu({
           Exit
         </button>
       </div>
+      <div>Sorting by {sortBy}</div>
       <div className="h-full overflow-y-scroll overflow-x-hidden">
         <table className="border-separate border-spacing-y-2">
           <thead>
             <tr>
-              <th>Input (in inventory)</th>
-              <th>Output (in inventory)</th>
+              <th>
+                <a
+                  onClick={() => setSortBy("input name")}
+                  className={headerClassName("input name")}
+                >
+                  Input
+                </a>
+              </th>
+              <th>
+                <a
+                  onClick={() => setSortBy("output name")}
+                  className={headerClassName("output name")}
+                >
+                  Output
+                </a>
+              </th>
+              <th>
+                <a
+                  onClick={() => setSortBy("craftability")}
+                  className={headerClassName("craftability")}
+                >
+                  Craft
+                </a>
+              </th>
             </tr>
           </thead>
           <tbody>
-            {interaction.recipes!.map((recipe, index) => (
+            {sortedRecipes.map(({ recipe, originalIndex }, index) => (
               <tr key={index} className="hover:bg-gray-900">
                 <td>
                   {Object.entries(recipe.input).map(([id, amt], index, arr) => (
@@ -81,7 +140,7 @@ export default function CraftingMenu({
                 </td>
                 <td>
                   <button
-                    onClick={() => craft(index)}
+                    onClick={() => craft(originalIndex)}
                     disabled={
                       !recipe.hasInput(inventory) ||
                       !recipe.hasRoomForOutput(inventory)
