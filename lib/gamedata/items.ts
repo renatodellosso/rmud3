@@ -140,6 +140,8 @@ export type ItemId =
   | "woodlandHorn"
   | "taintedSpear"
   | "hobspear"
+  | "goblinJerkin"
+  | "goblinHelmet"
   | "goblinScrap"
   | "goblinIdol"
   | "firebomb"
@@ -193,7 +195,13 @@ export type ItemId =
   | "undeadChestplate"
   | "undeadHelmet"
   | "undeadBoots"
-  | "discountToken";
+  | "discountToken"
+  | "sirensTrident"
+  | "chitinLeggings"
+  | "chitinChestplate"
+  | "chitinHelmet"
+  | "livingRing"
+  | "vineWhip";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -1518,7 +1526,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         type: DamageType.Poison,
       },
       {
-        amount: 2,
+        amount: 4,
         type: "*",
       },
     ],
@@ -1555,11 +1563,11 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getCooldown: (creature, source, ability, cooldown) => cooldown * 0.9,
     getDamageResistances: () => [
       {
-        amount: 8,
+        amount: 5,
         type: DamageType.Poison,
       },
       {
-        amount: 3,
+        amount: 4,
         type: "*",
       },
     ],
@@ -1708,16 +1716,16 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getName: "Amulet of the Centaur",
     tags: [ItemTag.Equipment],
     description:
-      "This beautiful necklace protects its wearer from the dangers of the forest. Reduces duration of incoming poisoned effect by 20%.",
+      "This beautiful necklace protects its wearer from the dangers of the forest. Reduces duration of incoming poisoned effect by 40%.",
     getWeight: 1,
     getSellValue: 50,
     getDamageResistances: [
-      { amount: 3, type: "*" },
+      { amount: 5, type: "*" },
       { amount: 5, type: DamageType.Poison },
     ],
     getStatusEffectDuration: (creature, effect) => {
       if (effect.id === "poisoned") {
-        return effect.duration * 0.8;
+        return effect.duration * 0.6;
       }
       return effect.duration;
     },
@@ -1735,13 +1743,26 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       ]),
       Abilities.applyStatusEffect(
         "Block",
-        "Reduce damage by 10 for 5 seconds.",
+        "Reduce damage by 10 for 2 seconds.",
         3,
-        [{ id: "blocking", strength: 10, duration: 5 }]
+        [{ id: "blocking", strength: 10, duration: 2 }]
       ),
       Abilities.heal("Regrow", "Recover 10 health.", 2, 10),
     ],
     getDamageResistances: () => [{ amount: 3, type: DamageType.Poison }],
+  } satisfies EquipmentDefinition,
+  vineWhip: {
+    getName: "Vine Whip",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    description: `A thin whip made of vines.`,
+    getWeight: 2,
+    getSellValue: 300,
+    getAbilities: (creature, item) => [
+      Abilities.attack("Treefall", "This strike is sturdy like a tree.", 0.6, [
+        { amount: 16, type: DamageType.Slashing },
+      ]),
+    ],
   } satisfies EquipmentDefinition,
   skeletonKey: {
     getName: "Skeleton Key",
@@ -1947,8 +1968,8 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.attackWithStatusEffect(
         "Avalanche Strike",
         "A powerful strike that causes an avalanche of rocks to fall on the target.",
-        5,
-        [{ amount: 30, type: DamageType.Bludgeoning }],
+        2,
+        [{ amount: 35, type: DamageType.Bludgeoning }],
         [
           {
             id: "stunned",
@@ -1963,7 +1984,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.attackWithStatusEffect(
         "Rockslide",
         "A strike that causes a rockslide, dealing damage to many enemies in the area.",
-        4,
+        2.5,
         [{ amount: 20, type: DamageType.Bludgeoning }],
         [
           {
@@ -2076,6 +2097,34 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         2.5,
         [{ id: "blocking", strength: 5, duration: 3 }]
       ),
+    ],
+  } satisfies EquipmentDefinition,
+  goblinJerkin: {
+    getName: "Goblin Jerkin",
+    tags: [ItemTag.Equipment],
+    description: `A leather jacket offering some protection.`,
+    getWeight: 2,
+    getSellValue: 100,
+    slot: EquipmentSlot.Chest,
+    getDamageResistances: [
+      { amount: 2, type: "*" },
+      { amount: 3, type: DamageType.Bludgeoning },
+      { amount: 3, type: DamageType.Piercing },
+      { amount: 3, type: DamageType.Slashing },
+    ],
+  } satisfies EquipmentDefinition,
+  goblinHelmet: {
+    getName: "Goblin Helmet",
+    tags: [ItemTag.Equipment],
+    description: `An iron helmet offering some protection.`,
+    getWeight: 3,
+    getSellValue: 200,
+    slot: EquipmentSlot.Head,
+    getDamageResistances: [
+      { amount: 3, type: "*" },
+      { amount: 3, type: DamageType.Bludgeoning },
+      { amount: 3, type: DamageType.Piercing },
+      { amount: 3, type: DamageType.Slashing },
     ],
   } satisfies EquipmentDefinition,
   goblinScrap: {
@@ -2367,7 +2416,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       { amount: 10, type: DamageType.Piercing },
       { amount: 8, type: DamageType.Slashing },
       { amount: 8, type: DamageType.Bludgeoning },
-      { amount: 3, type: "*" },
+      { amount: 4, type: "*" },
     ],
     getStatusEffectToApply: (creature, effect) =>
       effect.id === "cursed"
@@ -2376,6 +2425,55 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
             duration: effect.duration / 2, // Halve the duration of curse effects
           }
         : effect,
+  } satisfies EquipmentDefinition,
+  chitinLeggings: {
+    getName: "Chitin Leggings",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Legs,
+    description: `A heavy pair of leggings made from crab shells.`,
+    getWeight: 8,
+    getSellValue: 400,
+    getDamageResistances: () => [
+      { amount: 6, type: DamageType.Piercing },
+      { amount: 6, type: DamageType.Slashing },
+      { amount: 6, type: DamageType.Bludgeoning },
+      { amount: 4, type: "*" },
+    ],
+    getStatusEffectToApply: (creature, effect) =>
+      effect.id === "cursed"
+        ? {
+            ...effect,
+            duration: effect.duration / 2, // Halve the duration of curse effects
+          }
+        : effect,
+  } satisfies EquipmentDefinition,
+  chitinChestplate: {
+    getName: "Chitin Chestplate",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Chest,
+    description: `A heavy chestplate made from crab shells.`,
+    getWeight: 10,
+    getSellValue: 400,
+    getDamageResistances: () => [
+      { amount: 6, type: DamageType.Piercing },
+      { amount: 6, type: DamageType.Slashing },
+      { amount: 6, type: DamageType.Bludgeoning },
+      { amount: 4, type: "*" },
+    ],
+  } satisfies EquipmentDefinition,
+  chitinHelmet: {
+    getName: "Chitin Helmet",
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Head,
+    description: `A heavy helmet made from crab shells.`,
+    getWeight: 8,
+    getSellValue: 400,
+    getDamageResistances: () => [
+      { amount: 6, type: DamageType.Piercing },
+      { amount: 6, type: DamageType.Slashing },
+      { amount: 6, type: DamageType.Bludgeoning },
+      { amount: 4, type: "*" },
+    ],
   } satisfies EquipmentDefinition,
   squidHelmet: {
     getName: "Squid Helmet",
@@ -2534,11 +2632,12 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         [{ id: "blocking", strength: 20, duration: 5 }]
       ),
     ],
+    getDamageResistances: [{ amount: 10, type: "*" }],
   } satisfies EquipmentDefinition,
   frozenChain: {
     getName: "Frozen Chain",
     tags: [ItemTag.Equipment],
-    description: `A chain made of ice. Protects the wearer from cold and freezing.`,
+    description: `A chain made of ice. Protects the wearer from cold and freezing. Halves the strength and duration of the frozen effect.`,
     getWeight: 1,
     getSellValue: 700,
     getDamageResistances: [
@@ -2591,7 +2690,10 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: `A comfortable pair of boots for traversing cold weather.`,
     getWeight: 4,
     getSellValue: 800,
-    getDamageResistances: [{ amount: 25, type: DamageType.Cold }],
+    getDamageResistances: [
+      { amount: 20, type: DamageType.Cold },
+      { amount: 5, type: "*" },
+    ],
     getAbilityScores: {
       [AbilityScore.Strength]: 0,
       [AbilityScore.Constitution]: 5,
@@ -2607,7 +2709,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 400,
     getDamageResistances: [
       { amount: 20, type: DamageType.Cold },
-      { amount: 10, type: DamageType.Slashing },
+      { amount: 10, type: "*" },
     ],
     getAbilityScores: {
       [AbilityScore.Strength]: 5,
@@ -2624,7 +2726,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 650,
     getDamageResistances: [
       { amount: 30, type: DamageType.Cold },
-      { amount: 15, type: DamageType.Slashing },
+      { amount: 15, type: "*" },
     ],
     getDamageBonuses: [{ amount: 5, type: DamageType.Psychic }],
     getAbilityScores: {
@@ -2927,6 +3029,40 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0,
     getSellValue: 3000,
   },
+  sirensTrident: {
+    getName: "Siren's Trident",
+    tags: [ItemTag.Equipment],
+    description: "A sleek trident that emanates a soft wail.",
+    getWeight: 4,
+    getSellValue: 200,
+    getAbilities: (creature, item) => [
+      Abilities.attack(
+        "Psychic Pierce",
+        "A piercing attack dealing psychic damage.",
+        1,
+        [
+          { amount: 15, type: DamageType.Piercing },
+          { amount: 10, type: DamageType.Psychic },
+        ]
+      ),
+      Abilities.attackWithStatusEffect(
+        "Stunning Strike",
+        "Stun enemies briefly.",
+        1.5,
+        [{ amount: 20, type: DamageType.Piercing }],
+        [{ id: "stunned", strength: 5, duration: 2 }]
+      ),
+    ],
+    slot: EquipmentSlot.Hands,
+  } satisfies EquipmentDefinition,
+  livingRing: {
+    getName: "Living Ring",
+    tags: [ItemTag.Equipment],
+    description: "A ring made of living vines. Increasing all healing by 30%.",
+    getWeight: 0.2,
+    getSellValue: 50,
+    getAmountToHeal: (creature, source, amount) => amount * 1.3,
+  } satisfies EquipmentDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;

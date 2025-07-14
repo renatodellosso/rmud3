@@ -11,7 +11,7 @@ const floors: Record<string, FloorDefinition> = {
     visualizerColor: "#2F4F4F",
     layoutGenerationOptions: {
       roomChance: 0.5,
-      connectionChance: 0.3,
+      connectionChance: 0.4,
       width: [10, 15],
       length: [10, 15],
       roomCount: [15, 30],
@@ -176,14 +176,14 @@ const floors: Record<string, FloorDefinition> = {
               },
               {
                 item: "goldOre",
-                amount: [1, 3],
+                amount: [1, 4],
                 weight: 0.8,
               },
             ]),
             [1, 2]
           ),
           amount: 1,
-          weight: 0.3,
+          weight: 0.4,
         },
       ]),
     },
@@ -194,7 +194,7 @@ const floors: Record<string, FloorDefinition> = {
     visualizerColor: "#8B4513",
     layoutGenerationOptions: {
       roomChance: 0.6,
-      connectionChance: 0.4,
+      connectionChance: 0.6,
       width: [6, 12],
       length: [6, 12],
       roomCount: [20, 40],
@@ -268,7 +268,7 @@ const floors: Record<string, FloorDefinition> = {
     visualizerColor: "#A9A9A9",
     layoutGenerationOptions: {
       roomChance: 0.6,
-      connectionChance: 0.4,
+      connectionChance: 0.6,
       width: [10, 16],
       length: [10, 16],
       roomCount: [20, 40],
@@ -339,14 +339,14 @@ const floors: Record<string, FloorDefinition> = {
               },
               {
                 item: "goldOre",
-                amount: [1, 3],
+                amount: [1, 4],
                 weight: 0.8,
               },
             ]),
             [1, 3]
           ),
           amount: 1,
-          weight: 0.6,
+          weight: 0.8,
         },
         {
           item: randomContainer(
@@ -455,7 +455,7 @@ const floors: Record<string, FloorDefinition> = {
     visualizerColor: "#B8860B",
     layoutGenerationOptions: {
       roomChance: 0.5,
-      connectionChance: 0.3,
+      connectionChance: 0.7,
       width: [14, 20],
       length: [14, 20],
       roomCount: [35, 70],
@@ -751,7 +751,7 @@ const floors: Record<string, FloorDefinition> = {
     visualizerColor: "#06c225",
     layoutGenerationOptions: {
       roomChance: 0.6,
-      connectionChance: 0.3,
+      connectionChance: 0.6,
       width: [15, 22],
       length: [15, 22],
       roomCount: [40, 70],
@@ -764,7 +764,7 @@ const floors: Record<string, FloorDefinition> = {
         {
           item: "fungalTroll",
           amount: [1, 2],
-          weight: 0.5,
+          weight: 0.25,
         },
         {
           item: "overgrownGolem",
@@ -787,6 +787,16 @@ const floors: Record<string, FloorDefinition> = {
           weight: 1,
         },
         {
+          item: "viper",
+          amount: [1, 2],
+          weight: 1
+        },
+        {
+          item: "elderTreant",
+          amount: 1,
+          weight: 0.2,
+        },
+        {
           item: randomContainer(
             "Living Wood Chest",
             new WeightedTable<ItemId>([
@@ -798,6 +808,11 @@ const floors: Record<string, FloorDefinition> = {
               {
                 item: "vine",
                 amount: [2, 4],
+                weight: 1,
+              },
+              {
+                item: "goldBar",
+                amount: [1, 2],
                 weight: 1,
               },
               {
