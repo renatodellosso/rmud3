@@ -8,6 +8,19 @@ export default function LocationMenu({ gameState }: { gameState: GameState }) {
       <div className="flex flex-col gap-2">
         <h1 className="text-xl">{gameState.location.name}</h1>
         <div>
+          <h2 className="text-lg">Exits</h2>
+          <ul className="flex flex-col gap-2">
+            {gameState.location.exits.map((exit) => (
+              <button
+                key={exit.id}
+                onClick={() => socket.emit("move", exit.id)}
+              >
+                {exit.name}
+              </button>
+            ))}
+          </ul>
+        </div>
+        <div>
           <h2 className="text-lg">Entities</h2>
           <ul>
             {gameState.location.entities.map((entity) => (
@@ -20,19 +33,6 @@ export default function LocationMenu({ gameState }: { gameState: GameState }) {
                   </>
                 )}
               </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h2 className="text-lg">Exits</h2>
-          <ul className="flex flex-col gap-2">
-            {gameState.location.exits.map((exit) => (
-              <button
-                key={exit.id}
-                onClick={() => socket.emit("move", exit.id)}
-              >
-                {exit.name}
-              </button>
             ))}
           </ul>
         </div>
