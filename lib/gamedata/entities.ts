@@ -3646,7 +3646,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "demonScale",
-            amount: [1, 2],
+            amount: 1,
             weight: 1,
           },
           {
@@ -3717,17 +3717,17 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "meat",
-            amount: [4, 6],
+            amount: [1, 3],
             weight: 1,
           },
           {
             item: "demonScale",
-            amount: [2, 3],
+            amount: 1,
             weight: 0.5,
           },
           {
             item: "ink",
-            amount: [2, 4],
+            amount: [1, 4],
             weight: 0.8,
           },
         ]),
@@ -3779,17 +3779,17 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "meat",
-            amount: [2, 4],
+            amount: [1, 3],
             weight: 1,
           },
           {
             item: "demonScale",
-            amount: [1, 2],
+            amount: 1,
             weight: 0.5,
           },
           {
             item: "livingStone",
-            amount: [2, 3],
+            amount: [1, 2],
             weight: 0.5,
           },
         ]),
@@ -3866,17 +3866,17 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "meat",
-            amount: [3, 5],
+            amount: [1, 3],
             weight: 1,
           },
           {
             item: "demonScale",
-            amount: [1, 2],
+            amount: 1,
             weight: 0.5,
           },
           {
             item: "ink",
-            amount: [1, 3],
+            amount: [1, 2],
             weight: 0.8,
           },
         ]),
@@ -3929,12 +3929,12 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "meat",
-            amount: [5, 8],
+            amount: [1, 3],
             weight: 1,
           },
           {
             item: "demonScale",
-            amount: [2, 3],
+            amount: 1,
             weight: 0.5,
           },
         ]),
@@ -4016,11 +4016,11 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           },
           {
             item: "demonScale",
-            amount: [2, 4],
+            amount: [1, 2],
             weight: 0.5,
           },
         ]),
-        amount: 3,
+        amount: 2,
         chance: 1,
       },
       {
@@ -4135,13 +4135,13 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "ice",
-            amount: [1, 2],
+            amount: 1,
             weight: 1,
           },
           {
             item: "yetiFur",
             amount: [1, 3],
-            weight: 1,
+            weight: 0.8,
           },
           {
             item: "yetiSkull",
@@ -4190,7 +4190,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "ice",
-            amount: [1, 4],
+            amount: [1, 3],
             weight: 1,
           },
         ]),
@@ -4234,12 +4234,12 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "ice",
-            amount: [1, 5],
+            amount: [1, 3],
             weight: 1,
           },
           {
             item: "frozenCrystal",
-            amount: [1, 2],
+            amount: 1,
             weight: 1,
           },
         ]),
@@ -4283,7 +4283,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "ice",
-            amount: [1, 3],
+            amount: [1, 2],
             weight: 1,
           },
           {
@@ -4333,7 +4333,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "ice",
-            amount: [1, 2],
+            amount: 1,
             weight: 1,
           },
           {
@@ -4404,7 +4404,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           },
           {
             item: "livingStone",
-            amount: [1, 3],
+            amount: [1, 2],
             weight: 1,
           },
         ]),
@@ -4448,12 +4448,12 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "ember",
-            amount: [2, 5],
+            amount: [1, 3],
             weight: 1,
           },
           {
             item: "livingStone",
-            amount: [2, 4],
+            amount: [1, 2],
             weight: 1,
           },
         ]),
@@ -4516,7 +4516,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           },
           {
             item: "ashes",
-            amount: [3, 5],
+            amount: [1, 3],
             weight: 1,
           },
         ]),
@@ -4527,7 +4527,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "slime",
-            amount: [5, 10],
+            amount: [2, 6],
             weight: 1,
           },
           {
@@ -4584,7 +4584,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "ember",
-            amount: [3, 6],
+            amount: [1, 3],
             weight: 1,
           },
           {
@@ -4641,12 +4641,12 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "ember",
-            amount: [2, 4],
+            amount: [1, 3],
             weight: 1,
           },
           {
             item: "livingStone",
-            amount: [1, 3],
+            amount: [1, 2],
             weight: 1,
           },
         ]),
@@ -4658,22 +4658,22 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
   },
   dragon: {
     name: "Dragon",
-    health: 1000,
+    health: 1500,
     abilityScores: {
-      [AbilityScore.Strength]: 25,
-      [AbilityScore.Constitution]: 25,
-      [AbilityScore.Intelligence]: 25,
+      [AbilityScore.Strength]: 50,
+      [AbilityScore.Constitution]: 100,
+      [AbilityScore.Intelligence]: 50,
     },
     damageResistances: [
-      { amount: 150, type: DamageType.Fire },
+      { amount: 100, type: DamageType.Fire },
       { amount: 50, type: DamageType.Poison },
-      { amount: 15, type: "*" },
+      { amount: 25, type: "*" },
     ],
     intrinsicAbilities: [
       Abilities.attack(
         "Fire Breath",
         "Breathes fire at the target.",
-        3,
+        1.5,
         [{ amount: 120, type: DamageType.Fire }],
         { targetRestrictions: [CanTarget.isAlly] }
       ),
@@ -4681,7 +4681,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         "Inferno",
         "Unleashes a massive wave of flame around itself.",
         2,
-        [{ amount: 80, type: DamageType.Fire }],
+        [{ amount: 100, type: DamageType.Fire }],
         [{ id: "burning", strength: 20, duration: 15 }],
         true,
         false,
@@ -4690,7 +4690,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       Abilities.attackWithStatusEffect(
         "Claw Swipe",
         "Slashes at the target with claws.",
-        1.5,
+        1,
         [{ amount: 70, type: DamageType.Slashing }],
         [{ id: "poisoned", strength: 10, duration: 10 }],
         { targetRestrictions: [CanTarget.isAlly] }
@@ -4698,7 +4698,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       Abilities.applyStatusEffect(
         "Dragon's Might",
         "Empowers itself, increasing its damage output.",
-        3,
+        2,
         [
           {
             id: "overcharged",
@@ -4708,9 +4708,6 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         ],
         { targetRestrictions: [CanTarget.isSelf] }
       ),
-      Abilities.summon("Wyrmcall", "Summons lesser dragons to assist.", 5, [
-        { id: "wyvern", amount: 1 },
-      ]),
     ],
     xpValue: 5000,
     lootTable: new LootTable([
@@ -4729,12 +4726,12 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "ashes",
-            amount: [10, 20],
+            amount: [5, 15],
             weight: 1,
           },
           {
             item: "ember",
-            amount: [10, 20],
+            amount: [5, 15],
             weight: 1,
           },
         ]),
@@ -4745,7 +4742,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         item: new WeightedTable<ItemId>([
           {
             item: "dragonScale",
-            amount: [15, 20],
+            amount: [10, 15],
             weight: 1,
           },
         ]),
