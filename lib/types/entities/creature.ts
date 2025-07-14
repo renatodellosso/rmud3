@@ -249,7 +249,7 @@ export class CreatureInstance extends EntityInstance {
         for (const damageResistance of getFromOptionalFunc(
           provider.provider.getDamageResistances,
           this,
-          provider.provider as ItemInstance
+          provider.source
         )) {
           let isDamageResisted = false;
           for (const damageEntry of newDamage) {
@@ -280,7 +280,7 @@ export class CreatureInstance extends EntityInstance {
         for (const damageResistance of getFromOptionalFunc(
           provider.provider.getDamageResistances,
           this,
-          provider.provider as ItemInstance
+          provider.source
         )) {
           let isDamageResisted = false;
           for (const damageEntry of newDamage) {
@@ -574,7 +574,7 @@ export class CreatureInstance extends EntityInstance {
     source: AbilitySource;
   }[] {
     return this.statusEffects.map((effect) => ({
-      provider: effect as StatAndAbilityProvider,
+      provider: statusEffects[effect.definitionId] as StatAndAbilityProvider,
       source: effect,
     }));
   }
