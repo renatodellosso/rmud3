@@ -194,13 +194,13 @@ const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
     weight: 0.5,
     getDescription: (creature) =>
       `Heals for ${(
-        creature.scaleAbility(0.02) * 100
+        creature.scaleAbility(0.01) * 100
       ).toFixed()}% of damage dealt, but applies Cursed (${creature
         .scaleAbility(1)
         .toFixed()}) for seconds equal to how much health was healed.`,
     onAttack: (creature, target, source, damage) => {
       const totalDamage = damage.reduce((sum, d) => sum + d.amount, 0);
-      const healthAdded = totalDamage * creature.scaleAbility(0.02);
+      const healthAdded = totalDamage * creature.scaleAbility(0.01);
 
       creature.addHealth(healthAdded);
       creature.addStatusEffect({
