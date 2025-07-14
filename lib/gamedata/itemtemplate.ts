@@ -8,17 +8,17 @@ import { randInRangeInt } from "lib/utils";
 import { getIo } from "lib/ClientFriendlyIo";
 
 export function teleportScroll(depth: number): ConsumableDefinition {
-  depth++;
+  const displayDepth = depth + 1;
   return {
-    getName: `Teleport Scroll (Depth ${depth})`,
+    getName: `Teleport Scroll (Depth ${displayDepth})`,
     tags: [ItemTag.Consumable],
-    description: `A scroll that teleports you to a random room at depth ${depth}.`,
+    description: `A scroll that teleports you to a random room at depth ${displayDepth}.`,
     getWeight: 0.1,
     getSellValue: 25 * depth,
     getAbilities: [
       {
-        name: `Teleport to Depth ${depth}`,
-        getDescription: `Teleport to a random room at depth ${depth}.`,
+        name: `Teleport to Depth ${displayDepth}`,
+        getDescription: `Teleport to a random room at depth ${displayDepth}.`,
         getCooldown: 5,
         getTargetCount: 1,
         canTarget: CanTarget.isSelf,
@@ -45,7 +45,7 @@ export function teleportScroll(depth: number): ConsumableDefinition {
 
           getIo().sendMsgToPlayer(
             creature._id.toString(),
-            `You teleport to a random room at depth ${depth}.`
+            `You teleport to a random room at depth ${displayDepth}.`
           );
 
           return true;
