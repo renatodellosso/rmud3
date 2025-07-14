@@ -85,7 +85,6 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   const [canAct, setCanAct] = useState<boolean>(true);
 
   const [cooldownRemaining, setCooldownRemaining] = useState<number>(0);
-  const [totalCooldown, setTotalCooldown] = useState<number>(0);
 
   function toggleTarget(target: Targetable) {
     const newTargets = targets.includes(target)
@@ -154,14 +153,6 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
     );
 
   useEffect(() => {
-    if (originalAbility?.source) {
-      setTotalCooldown(
-        (originalAbility.source.canActAt.getTime() -
-          originalAbility.source.lastActedAt.getTime()) /
-          1000
-      );
-    }
-
     const interval = setInterval(() => {
       if (originalAbility) setSelectedAbility(originalAbility);
 
@@ -180,6 +171,7 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
     return () => clearInterval(interval);
   }, [originalAbility?.source.canActAt]);
 
+  // This renders the menu periodically so that cooldown bars are smooth
   const [render, setRender] = useState(0);
   useEffect(() => {
     const interval = setInterval(() => {
@@ -190,7 +182,7 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   }, []);
 
   return (
-    <div className="border w-1/6 flex flex-col gap-2">
+    <div className="border w-1/6 flex flex-col gap-2 overflow-y-scroll">
       <h2 className="text-xl">Combat</h2>
       <div>
         Can act{" "}
