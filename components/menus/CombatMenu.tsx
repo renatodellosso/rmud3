@@ -194,7 +194,9 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
   useKeybind(
     (e) => !isNaN(Number(e.key)),
     (e) => {
-      const index = Number(e.key) - 1;
+      let index = Number(e.key) - 1;
+
+      if (index == -1) index = 9;
 
       if (index < 0 || index >= abilities.length) {
         console.warn(`Invalid ability index: ${index}`);
@@ -254,6 +256,7 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
                   }`,
                 }}
               >
+                {index < 9 ? `[${(index + 1) % 10}] ` : ""}
                 {ability.ability.name} ({getAbilitySourceName(ability.source)})
                 {items[ability.source.definitionId as ItemId]?.tags.includes(
                   ItemTag.Consumable
