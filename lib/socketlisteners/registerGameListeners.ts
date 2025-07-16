@@ -433,4 +433,29 @@ export default function registerGameListeners(socket: TypedSocket) {
       }
     }
   });
+
+  socket.on("pinRecipe", (entityId: string, recipeIndex: number) => {
+    const player = getPlayer(socket);
+    const interaction = socket.data.session?.interactions.find(
+      (i) => i.entityId.toString() === entityId
+    );
+
+    if (!interaction || !interaction.recipes) {
+      throw new Error(`No interaction found for entity with ID ${entityId}.`);
+    }
+
+    if (recipeIndex < 0 || recipeIndex >= interaction.recipes.length) {
+      throw new Error(`Recipe index ${recipeIndex} is out of bounds.`);
+    }
+
+    const recipe = interaction.recipes[recipeIndex];
+
+    if (!recipe) {
+      throw new Error(`Recipe at index ${recipeIndex} not found.`);
+    }
+
+    player.instance.pinnedRecipe = recipe;
+
+    getIo().updateGameState(player.instance._id.toString());
+  });
 }

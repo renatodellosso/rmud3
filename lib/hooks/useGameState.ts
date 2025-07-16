@@ -114,6 +114,17 @@ function restoreMethods(gameState: GameState) {
     );
   }
 
+  if (gameState.self.pinnedRecipe) {
+    restoreFieldsAndMethods(gameState.self.pinnedRecipe, new Recipe({}, []));
+
+    for (const output of gameState.self.pinnedRecipe.output) {
+      restoreFieldsAndMethods(
+        output,
+        new ItemInstance(output.definitionId, output.amount, output.reforge)
+      );
+    }
+  }
+
   for (const interaction of gameState.interactions) {
     if (interaction.recipes) {
       for (const recipe of interaction.recipes) {
