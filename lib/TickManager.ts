@@ -78,7 +78,7 @@ export function startTicking() {
       REGENERATE_DUNGEON_INTERVAL - 5 * 60 * 1000
     ) {
       getIo().sendMsgToAll(
-        "NOTICE: The dungeon will be regenerated in 5 minutes."
+        ">>> NOTICE: The dungeon will be regenerated in 5 minutes."
       );
       return;
     }
@@ -88,7 +88,7 @@ export function startTicking() {
       REGENERATE_DUNGEON_INTERVAL - 60 * 1000
     ) {
       getIo().sendMsgToAll(
-        "NOTICE: The dungeon will be regenerated in 1 minute."
+        ">>> NOTICE: The dungeon will be regenerated in 1 minute."
       );
       return;
     }
@@ -98,11 +98,11 @@ export function startTicking() {
     }
 
     const io = getIo();
-    io.sendMsgToAll("Dungeon regeneration in progress...");
+    io.sendMsgToAll(">>> Dungeon regeneration in progress...");
 
     regenerateDungeon();
 
-    io.sendMsgToAll("Dungeon regeneration complete.");
+    io.sendMsgToAll(">>> Dungeon regeneration complete.");
     dungeonRegenerationCounter = 0;
   }, TICK_INTERVAL);
 }

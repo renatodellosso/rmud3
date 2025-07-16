@@ -166,11 +166,11 @@ const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
     name: "Steadfast",
     type: ReforgeType.Armor,
     weight: 0.5,
-    getDescription: "Increases your strength by 20% of its base value.",
+    getDescription: "Increases your strength by 10% of its base value.",
     getAbilityScores: {
       [AbilityScore.Strength]: (creature) =>
         "abilityScores" in creature
-          ? (creature.abilityScores as any)[AbilityScore.Strength] * 0.2
+          ? (creature.abilityScores as any)[AbilityScore.Strength] * 0.1
           : 0,
     },
   },
@@ -194,18 +194,18 @@ const reforges: Record<ReforgeId, ReforgeDefinition> = Object.freeze({
     weight: 0.5,
     getDescription: (creature) =>
       `Heals for ${(
-        creature.scaleAbility(0.05) * 100
+        creature.scaleAbility(0.01) * 100
       ).toFixed()}% of damage dealt, but applies Cursed (${creature
         .scaleAbility(1)
         .toFixed()}) for seconds equal to how much health was healed.`,
     onAttack: (creature, target, source, damage) => {
       const totalDamage = damage.reduce((sum, d) => sum + d.amount, 0);
-      const healthAdded = totalDamage * creature.scaleAbility(0.05);
+      const healthAdded = totalDamage * creature.scaleAbility(0.01);
 
       creature.addHealth(healthAdded);
       creature.addStatusEffect({
         id: "cursed",
-        strength: creature.scaleAbility(1),
+        strength: 1,
         duration: healthAdded,
       });
     },

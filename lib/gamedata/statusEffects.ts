@@ -25,10 +25,10 @@ const statusEffects: Record<StatusEffectId, StatusEffectDefinition> = {
   stunned: {
     name: "Stunned",
     getDescription: (effect) =>
-      `Your cooldowns are multipled by ${(effect.strength * 100).toFixed()}%.`,
+      `Your cooldowns are increased by ${(effect.strength).toFixed()} seconds.`,
     stacking: StatusEffectStacking.Separate,
     getCooldown(creature, source, ability, cooldown) {
-      return cooldown * source.strength;
+      return cooldown + source.strength;
     },
     maxStrength: 5,
   },
