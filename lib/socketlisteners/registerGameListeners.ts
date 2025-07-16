@@ -409,11 +409,11 @@ export default function registerGameListeners(socket: TypedSocket) {
       throw new Error(`Location not found for player ${player.instance.name}.`);
     }
 
-    const lootableItems = Array.from(location.entities).filter(
+    const containers = Array.from(location.entities).filter(
       (entity) => entity instanceof ContainerInstance
-    );
+    ) as ContainerInstance[];
 
-    for (const container of lootableItems) {
+    for (const container of containers) {
       for (const item of container.inventory.getItems()) {
         const transferredAmount = player.instance
           .getCraftingInventory()
