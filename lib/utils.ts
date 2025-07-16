@@ -120,7 +120,8 @@ export type SingletonId =
   | "socketsByPlayerInstanceIds"
   | "socket"
   | "locations"
-  | "minutesTillDungeonRegeneration";
+  | "minutesTillDungeonRegeneration"
+  | "dailyQuests";
 
 export function getSingleton<T>(
   name: SingletonId,

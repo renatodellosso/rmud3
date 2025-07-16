@@ -47,6 +47,7 @@ export default function PlayerInfoMenu({
           })}
         </ul>
       </div>
+      <div>Quests Completed: {self.completedQuests.length}</div>
       <StatusEffectList effects={self.statusEffects} />
     </div>
   );

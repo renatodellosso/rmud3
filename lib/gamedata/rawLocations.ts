@@ -43,6 +43,7 @@ const rawLocations: Partial<OmitType<Location, Function>>[] = [
     ]),
     entities: new Set<EntityInstance>([
       new EntityInstance("mystic", "town-square"),
+      new EntityInstance("questBoard", "town-square"),
     ]),
   },
   {

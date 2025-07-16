@@ -8,7 +8,10 @@ import { getFromOptionalFunc } from "lib/utils";
 
 const DISCOUNT_TOKEN_DISCOUNT = 0.2; // 20% discount
 
-const itemsByMinLevel: Record<number, { markUp: number; items: ItemId[] }> = {
+export const shopItemsByMinLevel: Record<
+  number,
+  { markUp: number; items: ItemId[] }
+> = {
   10: {
     markUp: 1.5,
     items: ["meat", "mushroom", "bottle"],
@@ -34,6 +37,24 @@ const itemsByMinLevel: Record<number, { markUp: number; items: ItemId[] }> = {
     items: ["discountToken"],
   },
 };
+
+export function getShopItemsForLevel(level: number): ItemId[] {
+  const items: ItemId[] = [];
+  for (const [minLevel, data] of Object.entries(shopItemsByMinLevel)) {
+    if (parseInt(minLevel) <= level) {
+      items.push(...data.items);
+    }
+  }
+  return items;
+}
+
+export function itemIdToShopLevel(itemId: ItemId): number {
+  for (const [minLevel, data] of Object.entries(shopItemsByMinLevel))
+    if (data.items.includes(itemId)) {
+      return parseInt(minLevel);
+    }
+  return 0; // Default to 0 if not found
+}
 
 function getDiscount(player: PlayerInstance) {
   let discount = 0;
@@ -71,7 +92,7 @@ function itemIdToRecipe(
 function getRecipeGroup(player: PlayerInstance, discount: number): RecipeGroup {
   const recipes: Recipe[] = [];
 
-  for (const tier of Object.entries(itemsByMinLevel)) {
+  for (const tier of Object.entries(shopItemsByMinLevel)) {
     const level = parseInt(tier[0]);
     if (level > player.level) continue; // Skip items above player's level
 

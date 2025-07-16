@@ -3,6 +3,7 @@ import { getIo } from "./ClientFriendlyIo";
 import locations from "./locations";
 import { EntityInstance } from "./types/entity";
 import { setSingleton } from "./utils";
+import { generateDailyQuests, getDailyQuests } from "./questutils";
 
 const TICK_INTERVAL = 1000; // 1 second
 const REGENERATE_DUNGEON_INTERVAL = 30 * 60 * 1000; // 30 minutes
@@ -105,6 +106,8 @@ export function startTicking() {
     io.sendMsgToAll(">>> Dungeon regeneration complete.");
     dungeonRegenerationCounter = 0;
   }, TICK_INTERVAL);
+
+  setInterval(generateDailyQuests, 2 * 60 * 60 * 1000);
 }
 
 function getLocationsByIfTheyHavePlayers() {

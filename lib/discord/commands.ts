@@ -287,6 +287,11 @@ const commandArray: Command[] = [
           name: "Difficulty",
           value: difficultyOptions[player.difficulty].name,
           inline: true,
+        },
+        {
+          name: "Quests Completed",
+          value: player.completedQuests?.length.toString() ?? 0,
+          inline: true,
         }
       );
 

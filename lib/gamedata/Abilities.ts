@@ -91,6 +91,10 @@ export function attack(
       const damageDealt: { amount: number; type: DamageType }[] =
         target.takeDamage(newDamage, creature, creature);
 
+      if (target.health <= 0) {
+        creature.onKill(target);
+      }
+
       getIo().sendMsgToRoom(
         creature.location,
         `${creature.name} hit ${target.name} using ${name} for ${damageDealt

@@ -38,6 +38,8 @@ import Guild, { getGuildPerksByLevel, GuildPerks } from "../Guild";
 import reforges from "lib/gamedata/Reforges";
 import { DamageType } from "../Damage";
 import Recipe from "../Recipe";
+import PlayerEventListener from "../PlayerEventListener";
+import { questListener } from "../Quest";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -68,6 +70,8 @@ export class PlayerInstance extends CreatureInstance {
   buyOrders: ObjectId[] = [];
 
   pinnedRecipe: Recipe | undefined = undefined;
+
+  completedQuests: string[] = [];
 
   tick(deltaTime: number): void {
     super.tick(deltaTime);
@@ -190,6 +194,12 @@ export class PlayerInstance extends CreatureInstance {
     respawn(this);
 
     return corpse;
+  }
+
+  onKill(target: CreatureInstance): void {
+    for (const listener of this.getEventListeners()) {
+      listener.onKill?.(this, target);
+    }
   }
 
   move(newLocationId: LocationId): void {
@@ -368,6 +378,10 @@ export class PlayerInstance extends CreatureInstance {
     return isInTown(this.location)
       ? new MultipleInventory([this.inventory, this.vault.inventory])
       : this.inventory;
+  }
+
+  getEventListeners(): PlayerEventListener[] {
+    return [questListener];
   }
 }
 

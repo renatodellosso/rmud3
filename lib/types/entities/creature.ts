@@ -359,6 +359,8 @@ export class CreatureInstance extends EntityInstance {
     return corpse;
   }
 
+  onKill(target: CreatureInstance) {}
+
   activateAbility(
     ability: Ability,
     targets: Targetable[],
@@ -486,9 +488,12 @@ export class CreatureInstance extends EntityInstance {
           existing.expiresAt.getTime() - Date.now(),
           effect.duration * 1000
         );
-        existing.strength = Math.min(newStrength, statusEffects[effect.id].maxStrength
-              ? statusEffects[effect.id].maxStrength!
-              : newStrength);
+        existing.strength = Math.min(
+          newStrength,
+          statusEffects[effect.id].maxStrength
+            ? statusEffects[effect.id].maxStrength!
+            : newStrength
+        );
         existing.expiresAt.setTime(Date.now() + newDuration);
         break;
       case StatusEffectStacking.AddDurationMaxStrength:

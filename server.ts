@@ -8,6 +8,7 @@ import { TypedServer } from "./lib/types/socketioserverutils";
 import { setupLocations } from "lib/startup";
 import { startTicking } from "lib/TickManager";
 import { startDiscordBot } from "lib/discord/discordbot";
+import { generateDailyQuests } from "lib/questutils";
 
 dotenv.config();
 
@@ -50,6 +51,7 @@ app.prepare().then(() => {
 });
 
 setupLocations();
+generateDailyQuests();
 startTicking();
 
 if (!dev || process.env.START_DISCORD_BOT) startDiscordBot();

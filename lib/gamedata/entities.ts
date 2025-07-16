@@ -22,7 +22,7 @@ import craftingInteraction from "./interactions/craftingInteraction";
 import Recipe, { RecipeGroup } from "lib/types/Recipe";
 import { ContainerInstance } from "lib/types/entities/container";
 import inventoryInteraction from "./interactions/inventoryInteraction";
-import { savePlayer } from "lib/utils";
+import { getSingleton, savePlayer } from "lib/utils";
 import { getFromOptionalFunc } from "../utils";
 import { vaultLevelling } from "lib/types/Vault";
 import Guild from "lib/types/Guild";
@@ -35,6 +35,7 @@ import shopInteraction from "./interactions/shopInteraction";
 import statusEffects, { StatusEffectId } from "./statusEffects";
 import { StatusEffectInstance } from "lib/types/statuseffect";
 import reforges from "./Reforges";
+import Quest, { questToString } from "lib/types/Quest";
 
 // Prefix summons with friendly
 
@@ -132,9 +133,10 @@ export type EntityId =
   | "menhir"
   | "reforgeAnvil"
   | "guildStorage"
+  | "questBoard"
   | "lockedCoffin";
 
-const creatures: Record<CreatureId, CreatureDefinition> = {
+export const creatures: Record<CreatureId, CreatureDefinition> = {
   player: {
     name: "Player",
     health: 40,
@@ -1002,7 +1004,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
             item: "goldOre",
             amount: [1, 3],
             weight: 0.5,
-          }
+          },
         ]),
         amount: 2,
         chance: 0.6,
@@ -2637,8 +2639,8 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           {
             item: "goldOre",
             amount: [1, 3],
-            weight: 0.5
-          }
+            weight: 0.5,
+          },
         ]),
         amount: 3,
         chance: 1,
@@ -3963,7 +3965,10 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
       [AbilityScore.Constitution]: 10,
       [AbilityScore.Intelligence]: 25,
     },
-    damageResistances: [{ amount: 10, type: DamageType.Bludgeoning }, { amount: 5, type: "*"}],
+    damageResistances: [
+      { amount: 10, type: DamageType.Bludgeoning },
+      { amount: 5, type: "*" },
+    ],
     intrinsicAbilities: [
       Abilities.attack(
         "Tentacle Slam",
@@ -4372,7 +4377,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
         [{ id: "burning", strength: 15, duration: 10 }],
         true,
         false
-      )
+      ),
     ],
     xpValue: 500,
     lootTable: new LootTable([
@@ -4484,7 +4489,7 @@ const creatures: Record<CreatureId, CreatureDefinition> = {
           },
         ],
         true,
-        false,
+        false
       ),
     ],
     xpValue: 150,
@@ -5003,7 +5008,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             goblinScrap: 5,
             goblinIdol: 1,
           },
-          new ItemInstance("goblinHelmet", 1),
+          new ItemInstance("goblinHelmet", 1)
         ),
         new Recipe(
           {
@@ -5380,7 +5385,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             leather: 5,
             goblinScrap: 5,
           },
-          new ItemInstance("goblinJerkin", 1),
+          new ItemInstance("goblinJerkin", 1)
         ),
         new Recipe(
           {
@@ -6204,6 +6209,32 @@ const entities: Record<EntityId, EntityDefinition> = {
       Guild.upsert(guild);
 
       return int;
+    },
+  },
+  questBoard: {
+    name: "Bounty Board",
+    interact: async (entity, player, interaction, action) => {
+      const quests = getSingleton<Quest[]>("dailyQuests");
+
+      if (!quests) {
+        getIo().sendMsgToPlayer(
+          player._id.toString(),
+          "There are no quests available at the moment."
+        );
+        return undefined;
+      }
+
+      let msg = "Available Quests:\n";
+
+      const availableQuests = quests.filter(
+        (quest) => !player.completedQuests.includes(quest.id)
+      );
+
+      msg += availableQuests.map(questToString).join("\n");
+
+      getIo().sendMsgToPlayer(player._id.toString(), msg);
+
+      return undefined;
     },
   },
   lockedCoffin: {
