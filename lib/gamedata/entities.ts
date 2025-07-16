@@ -123,6 +123,8 @@ export type EntityId =
   | "anvil"
   | "furnace"
   | "workbench"
+  | "cauldron"
+  | "wizard"
   | "mystic"
   | "tavernKeeper"
   | "junkCollector"
@@ -1831,7 +1833,7 @@ export const creatures: Record<CreatureId, CreatureDefinition> = {
             weight: 1,
           },
           {
-            item: "healthPotion",
+            item: "healthPotion5",
             amount: 1,
             weight: 1,
           },
@@ -4899,7 +4901,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           {
             ironBar: 10,
             venom: 5,
-            healthPotion: 3,
+            healthPotion5: 3,
           },
           new ItemInstance("vengefulRing", 1)
         ),
@@ -4908,7 +4910,7 @@ const entities: Record<EntityId, EntityDefinition> = {
             vengefulRing: 1,
             goldBar: 5,
             ember: 3,
-            healthPotion: 5,
+            healthPotion5: 5,
           },
           new ItemInstance("drainingRing", 1)
         ),
@@ -5635,6 +5637,100 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
       ])
     ),
+  },
+  cauldron: {
+    name: "Cauldron",
+    interact: craftingInteraction(
+      "Crafting at Cauldron",
+      new RecipeGroup([
+        new Recipe(
+          {
+            bottle: 1,
+            eyeball: 1,
+            meat: 1,
+          },
+          new ItemInstance("healthPotion5", 1)
+        ),
+        new Recipe(
+          {
+            bottle: 1,
+            eyeball: 4,
+          },
+          new ItemInstance("healthPotion10", 1)
+        ),
+        new Recipe(
+          {
+            bottle: 1,
+            mushroom: 5,
+            eyeball: 2,
+          },
+          new ItemInstance("healthPotion15", 1)
+        ),
+        new Recipe(
+          {
+            bottle: 1,
+            trollHeart: 1,
+          },
+          new ItemInstance("healthPotion20", 1)
+        ),
+        new Recipe(
+          {
+            bottle: 1,
+            trollHeart: 1,
+            livingWood: 3,
+          },
+          new ItemInstance("healthPotion25", 1)
+        ),
+      ])
+    ),
+  },
+  wizard: {
+    name: "Wizard",
+    interact: async (entity, player, interaction, action) => {
+      if (!interaction) {
+        interaction = {
+          entityId: entity._id,
+          type: "logOnly",
+          state: undefined,
+          actions: [
+            {
+              id: "talk",
+              text: "Talk",
+            },
+            {
+              id: "leave",
+              text: "Leave",
+            },
+          ],
+        };
+
+        return interaction;
+      }
+
+      if (action === "talk") {
+        getIo().sendMsgToPlayer(
+          player._id.toString(),
+          "One day I might do something useful!"
+        );
+
+        return {
+          ...interaction,
+          state: undefined,
+          actions: [
+            {
+              id: "talk",
+              text: "Talk",
+            },
+            {
+              id: "leave",
+              text: "Leave",
+            },
+          ],
+        };
+      }
+
+      return undefined;
+    },
   },
   mystic: {
     name: "Mystic",
