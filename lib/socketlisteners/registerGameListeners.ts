@@ -400,4 +400,35 @@ export default function registerGameListeners(socket: TypedSocket) {
 
     getIo().addChatMessage(player.instance.name, message);
   });
+
+  socket.on("quickLoot", () => {
+    const player = getPlayer(socket);
+    const location = locations[player.instance.location];
+
+    if (!location) {
+      throw new Error(`Location not found for player ${player.instance.name}.`);
+    }
+
+    const lootableItems = Array.from(location.entities).filter(
+      (entity) => entity instanceof ContainerInstance
+    );
+
+    for (const container of lootableItems) {
+      for (const item of container.inventory.getItems()) {
+        const transferredAmount = player.instance
+          .getCraftingInventory()
+          .add(item);
+
+        container.inventory.remove(
+          restoreFieldsAndMethods(
+            {
+              ...item,
+              amount: transferredAmount,
+            },
+            new ItemInstance(item.definitionId, transferredAmount)
+          )
+        );
+      }
+    }
+  });
 }

@@ -59,6 +59,7 @@ export interface ClientToServerEvents {
   dropItem: (item: SerializedEJSON<ItemInstance>) => void;
   kickGuildMember(guildId: string, memberId: string): void;
   chat: (message: string) => void;
+  quickLoot: () => void;
 }
 
 export interface InterServerEvents {
