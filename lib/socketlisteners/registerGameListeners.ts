@@ -27,6 +27,8 @@ export default function registerGameListeners(socket: TypedSocket) {
 
     if (player.instance.health <= 0) return;
 
+    console.log(">>>>>>>>>>>>> MOVING MOVING MOVING");
+
     player.instance.move(exitId);
 
     const session = socket.data.session!;

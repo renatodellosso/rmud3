@@ -12,13 +12,15 @@ import PrimaryMenu from "@/components/menus/PrimaryMenu";
 import useAnimations from "lib/hooks/useAnimations";
 import useGameState from "lib/hooks/useGameState";
 import useRedirectIfSessionIdIsNotPresent from "lib/hooks/useRedirectIfSessionIdIsNotPresent";
-import React from "react";
+import React, { useEffect } from "react";
 import { SnowOverlay } from "react-snow-overlay";
 import ReforgeMenu from "@/components/menus/ReforgeMenu";
 import PrimaryActionBar from "@/components/menus/PrimaryActionBar";
 import HeaderBar from "@/components/HeaderBar";
 import Menu from "lib/types/Menu";
 import ChatMenu from "@/components/menus/ChatMenu";
+import { socket } from "lib/socket";
+import { ExitData } from "lib/types/types";
 
 function LoadingGameState() {
   return (
@@ -42,6 +44,90 @@ export default function Play() {
       setOpenMenus([...openMenus, menuName]);
     }
   }
+
+  
+
+  useEffect(() => {
+    function moveOnKeydown(event: KeyboardEvent) {
+      console.log("running");
+
+      if (!gameState) return () => {
+        document.removeEventListener("keydown", moveOnKeydown, true);
+      };
+
+      let exit = undefined;
+
+      if (event.key === "ArrowDown" || event.key === "s" || event.key === "S") {
+        exit = gameState!.location.exits.find((e) => {
+          const direction = gameState!.map.getDirection(
+            gameState!.location.id,
+            e.id
+          );
+          if (direction && direction[1] > 0) return true;
+        });
+      } else if (
+        event.key === "ArrowUp" ||
+        event.key === "w" ||
+        event.key === "W"
+      ) {
+        exit = gameState!.location.exits.find((e) => {
+          const direction = gameState!.map.getDirection(
+            gameState!.location.id,
+            e.id
+          );
+          if (direction && direction[1] < 0) return true;
+        });
+      } else if (
+        event.key === "ArrowLeft" ||
+        event.key === "a" ||
+        event.key === "A"
+      ) {
+        exit = gameState!.location.exits.find((e) => {
+          const direction = gameState!.map.getDirection(
+            gameState!.location.id,
+            e.id
+          );
+          if (direction && direction[2] < 0) return true;
+        });
+      } else if (
+        event.key === "ArrowRight" ||
+        event.key === "d" ||
+        event.key === "D"
+      ) {
+        exit = gameState!.location.exits.find((e) => {
+          const direction = gameState!.map.getDirection(
+            gameState!.location.id,
+            e.id
+          );
+          if (direction && direction[2] > 0) return true;
+        });
+      } else if (event.key === "q" || event.key === "Q") {
+        exit = gameState!.location.exits.find((e) => {
+          const direction = gameState!.map.getDirection(
+            gameState!.location.id,
+            e.id
+          );
+          if (direction && direction[0] < 0) return true;
+        });
+      } else if (event.key === "e" || event.key === "E") {
+        exit = gameState!.location.exits.find((e) => {
+          const direction = gameState!.map.getDirection(
+            gameState!.location.id,
+            e.id
+          );
+          if (direction && direction[0] > 0) return true;
+        });
+      }
+
+      if (exit) {
+        socket.emit("move", exit.id);
+      }
+    }
+
+    document.addEventListener("keydown", moveOnKeydown, true);
+
+    return () => {document.removeEventListener("keydown", moveOnKeydown, true)};
+  }, [gameState]);
 
   if (!gameState) {
     return <LoadingGameState />;
