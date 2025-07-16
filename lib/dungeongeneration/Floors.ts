@@ -629,7 +629,7 @@ const floors: Record<string, FloorDefinition> = {
                 weight: 0.5,
               },
               {
-                item: "healthPotion",
+                item: "healthPotion5",
                 amount: [1, 2],
                 weight: 0.2,
               },
@@ -789,7 +789,7 @@ const floors: Record<string, FloorDefinition> = {
         {
           item: "viper",
           amount: [1, 2],
-          weight: 1
+          weight: 1,
         },
         {
           item: "elderTreant",
