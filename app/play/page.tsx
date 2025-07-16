@@ -21,6 +21,7 @@ import Menu from "lib/types/Menu";
 import ChatMenu from "@/components/menus/ChatMenu";
 import { socket } from "lib/socket";
 import { ExitData } from "lib/types/types";
+import useKeybind from "lib/hooks/useKeybind";
 
 function LoadingGameState() {
   return (
@@ -45,15 +46,12 @@ export default function Play() {
     }
   }
 
-  
-
   useEffect(() => {
     function moveOnKeydown(event: KeyboardEvent) {
-      console.log("running");
-
-      if (!gameState) return () => {
-        document.removeEventListener("keydown", moveOnKeydown, true);
-      };
+      if (!gameState)
+        return () => {
+          document.removeEventListener("keydown", moveOnKeydown, true);
+        };
 
       let exit = undefined;
 
@@ -126,7 +124,9 @@ export default function Play() {
 
     document.addEventListener("keydown", moveOnKeydown, true);
 
-    return () => {document.removeEventListener("keydown", moveOnKeydown, true)};
+    return () => {
+      document.removeEventListener("keydown", moveOnKeydown, true);
+    };
   }, [gameState]);
 
   if (!gameState) {

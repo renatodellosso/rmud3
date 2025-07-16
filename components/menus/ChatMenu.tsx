@@ -23,13 +23,14 @@ export default function ChatMenu({ gameState }: { gameState: GameState }) {
           </li>
         ))}
       </ul>
-      <form onSubmit={sendMessage}>
+      <form onSubmit={sendMessage} className="flex">
         <input
           type="text"
           name="message"
           placeholder="Type your message..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          className="grow"
         />
         <button type="submit">Send</button>
       </form>

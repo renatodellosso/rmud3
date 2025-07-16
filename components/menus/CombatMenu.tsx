@@ -14,6 +14,7 @@ import StatusEffectList from "../StatusEffectList";
 import items, { ItemId } from "lib/gamedata/items";
 import { ItemTag } from "lib/types/itemenums";
 import { ItemInstance } from "lib/types/item";
+import useKeybind from "lib/hooks/useKeybind";
 
 function TargetEntry({
   target,
@@ -183,6 +184,27 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
     return () => clearInterval(interval);
   }, []);
 
+  function quickLoot() {
+    socket.emit("quickLoot");
+  }
+
+  const abilities = gameState.self.getAbilities();
+
+  useKeybind("t", quickLoot);
+  useKeybind(
+    (e) => !isNaN(Number(e.key)),
+    (e) => {
+      const index = Number(e.key) - 1;
+
+      if (index < 0 || index >= abilities.length) {
+        console.warn(`Invalid ability index: ${index}`);
+        return;
+      }
+
+      setSelectedAbility(abilities[index]);
+    }
+  );
+
   return (
     <div className="border w-1/6 flex flex-col gap-2 overflow-y-scroll overflow-x-hidden">
       <h2 className="text-xl">Combat</h2>
@@ -195,7 +217,7 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
       <div>
         <strong>Abilities</strong>
         <div className="flex flex-col gap-1">
-          {gameState.self.getAbilities().map((ability, index) => {
+          {abilities.map((ability, index) => {
             const totalCooldown =
               (ability.source.canActAt.getTime() -
                 ability.source.lastActedAt.getTime()) /
@@ -268,8 +290,8 @@ export default function CombatMenu({ gameState }: { gameState: GameState }) {
             ))}
         </div>
       </div>
-      <button onClick={(e) => socket.emit("quickLoot")}>
-        Quick Loot (
+      <button onClick={quickLoot}>
+        [T] Quick Loot (
         {
           gameState.location.entities.filter(
             (e) => e.definitionId === "container"

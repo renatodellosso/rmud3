@@ -2,6 +2,7 @@ import { getXpForNextLevel } from "lib/gamedata/levelling";
 import Menu from "lib/types/Menu";
 import { GameState } from "lib/types/types";
 import LatencyDisplay from "./LatencyDisplay";
+import useKeybind from "lib/hooks/useKeybind";
 
 export default function HeaderBar({
   gameState,
@@ -10,6 +11,30 @@ export default function HeaderBar({
   gameState: GameState;
   toggleMenu: (menu: Menu) => void;
 }) {
+  const menuKeybinds: Record<string, Menu> = {
+    p: Menu.PlayerInfo,
+    i: Menu.Inventory,
+    c: Menu.Combat,
+    l: Menu.Location,
+    m: Menu.Map,
+    g: Menu.Guild,
+    h: Menu.Chat,
+  };
+
+  const menuToKeybind: Record<Menu, string> = Object.fromEntries(
+    Object.entries(menuKeybinds).map(([key, menu]) => [menu, key])
+  ) as Record<Menu, string>;
+
+  useKeybind(
+    (e) => Object.keys(menuKeybinds).includes(e.key),
+    (event) => {
+      const menuName = menuKeybinds[event.key];
+      if (menuName) {
+        toggleMenu(menuName);
+      }
+    }
+  );
+
   return (
     <div className="flex justify-between h-1/30 border-b border-white">
       <div className="flex">
@@ -21,7 +46,15 @@ export default function HeaderBar({
               key={name}
               className="px-1"
             >
-              {name}
+              {name.includes(menuToKeybind[name].toUpperCase())
+                ? name.replace(
+                    menuToKeybind[name].toUpperCase(),
+                    `[${menuToKeybind[name].toUpperCase()}]`
+                  )
+                : name.replace(
+                    menuToKeybind[name].toLowerCase(),
+                    `[${menuToKeybind[name].toLowerCase()}]`
+                  )}
             </button>
           ))}
       </div>
