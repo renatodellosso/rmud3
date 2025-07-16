@@ -3,6 +3,7 @@ import Menu from "lib/types/Menu";
 import { GameState } from "lib/types/types";
 import LatencyDisplay from "./LatencyDisplay";
 import useKeybind from "lib/hooks/useKeybind";
+import HeaderNotice from "./HeaderNotice";
 
 export default function HeaderBar({
   gameState,
@@ -58,12 +59,7 @@ export default function HeaderBar({
             </button>
           ))}
       </div>
-      <div>
-        Dungeon regenerates in{" "}
-        {gameState.minutesTillDungeonRegeneration > 0
-          ? `${gameState.minutesTillDungeonRegeneration} minutes`
-          : "now!"}
-      </div>
+      <HeaderNotice gameState={gameState} />
       <div className="flex gap-2">
         {gameState.self.abilityScoreIncreases ? (
           <p className="text-right">

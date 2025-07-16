@@ -7,6 +7,8 @@ import { ItemInstance } from "../../lib/types/item";
 import { PlayerInstance } from "lib/types/entities/player";
 import { useState } from "react";
 import Recipe from "lib/types/Recipe";
+import ItemOutputList from "../ItemOutputList";
+import ItemInputList from "../ItemInputList";
 
 export default function CraftingMenu({
   inventory,
@@ -57,6 +59,10 @@ export default function CraftingMenu({
     return className;
   }
 
+  function pinRecipe(originalIndex: number) {
+    socket.emit("pinRecipe", interaction.entityId.toString(), originalIndex);
+  }
+
   return (
     <div className="border w-1/3 flex flex-col gap-2">
       <div className="flex justify-between">
@@ -100,43 +106,27 @@ export default function CraftingMenu({
                   Craft
                 </a>
               </th>
+              <th>Pin</th>
             </tr>
           </thead>
           <tbody>
             {sortedRecipes.map(({ recipe, originalIndex }, index) => (
               <tr key={index} className="hover:bg-gray-900">
                 <td>
-                  {Object.entries(recipe.input).map(([id, amt], index, arr) => (
-                    <span key={id}>
-                      <span
-                        className={`${
-                          inventory.getCountById(id as ItemId) < amt
-                            ? "text-red-500"
-                            : ""
-                        } tooltip`}
-                      >
-                        {new ItemInstance(id as ItemId, amt).getName()} x{amt} (
-                        {inventory.getCountById(id as ItemId)})
-                        <ItemTooltip
-                          item={new ItemInstance(id as ItemId, amt)}
-                          creature={self}
-                          side="right"
-                        />
-                      </span>
-                      {index < arr.length - 1 ? ", " : ""}
-                    </span>
-                  ))}
+                  <ItemInputList
+                    items={recipe.input}
+                    inventory={inventory}
+                    self={self}
+                  />
                 </td>
                 <td
                   className={recipe.hasInput(inventory) ? "" : "text-red-500"}
                 >
-                  {recipe.output.map((item, index) => (
-                    <span key={index} className="tooltip">
-                      {item.getName()} x{item.amount} (
-                      {inventory.getCount(item) ?? 0})
-                      <ItemTooltip item={item} creature={self} />
-                    </span>
-                  ))}
+                  <ItemOutputList
+                    items={recipe.output}
+                    inventory={inventory}
+                    self={self}
+                  />
                 </td>
                 <td>
                   <button
@@ -158,6 +148,9 @@ export default function CraftingMenu({
                   >
                     Craft
                   </button>
+                </td>
+                <td>
+                  <button onClick={() => pinRecipe(originalIndex)}>Pin</button>
                 </td>
               </tr>
             ))}

@@ -37,6 +37,7 @@ import Vault from "../Vault";
 import Guild, { getGuildPerksByLevel, GuildPerks } from "../Guild";
 import reforges from "lib/gamedata/Reforges";
 import { DamageType } from "../Damage";
+import Recipe from "../Recipe";
 
 export class PlayerInstance extends CreatureInstance {
   progressId: ObjectId = undefined as unknown as ObjectId;
@@ -65,6 +66,8 @@ export class PlayerInstance extends CreatureInstance {
   guildLevel: number = 0;
 
   buyOrders: ObjectId[] = [];
+
+  pinnedRecipe: Recipe | undefined = undefined;
 
   tick(deltaTime: number): void {
     super.tick(deltaTime);

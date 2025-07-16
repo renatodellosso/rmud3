@@ -60,6 +60,7 @@ export interface ClientToServerEvents {
   kickGuildMember(guildId: string, memberId: string): void;
   chat: (message: string) => void;
   quickLoot: () => void;
+  pinRecipe: (entityId: string, recipeIndex: number) => void;
 }
 
 export interface InterServerEvents {

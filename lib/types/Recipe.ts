@@ -4,7 +4,7 @@ import Inventory from "./Inventory";
 import { ItemInstance } from "./item";
 import { getFromOptionalFunc } from "../utils";
 
-type ItemGroup = {
+export type ItemGroup = {
   [key in ItemId]?: number;
 };
 
