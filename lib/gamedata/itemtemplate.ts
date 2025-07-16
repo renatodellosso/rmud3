@@ -41,6 +41,7 @@ export function teleportScroll(depth: number): ConsumableDefinition {
           const randomLocation =
             possibleLocations[randInRangeInt(0, possibleLocations.length - 1)];
 
+          locations[creature.location].exit(creature);
           randomLocation.enter(creature);
 
           getIo().sendMsgToPlayer(
