@@ -16,7 +16,7 @@ import { DamageType } from "lib/types/Damage";
 import AbilityScore from "lib/types/AbilityScore";
 import { ItemTag, EquipmentSlot } from "lib/types/itemenums";
 import locations from "lib/locations";
-import { teleportScroll } from "./itemtemplate";
+import { healthPotion, teleportScroll } from "./itemtemplate";
 
 export type ItemId =
   | "bone"
@@ -25,7 +25,11 @@ export type ItemId =
   | "friedEyeball"
   | "rustySword"
   | "money"
-  | "healthPotion"
+  | "healthPotion5"
+  | "healthPotion10"
+  | "healthPotion15"
+  | "healthPotion20"
+  | "healthPotion25"
   | "boneNecklace"
   | "slime"
   | "slimeJar"
@@ -272,16 +276,11 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getWeight: 0,
     getSellValue: 1,
   },
-  healthPotion: {
-    getName: "Health Potion",
-    tags: [ItemTag.Consumable],
-    description: "A red solution in a small bottle.",
-    getWeight: 0.5,
-    getSellValue: 10,
-    getAbilities: (creature, item) => [
-      Abilities.heal("Heal", "Heal 5 health.", 0, 5),
-    ],
-  } as ConsumableDefinition,
+  healthPotion5: healthPotion(5),
+  healthPotion10: healthPotion(10),
+  healthPotion15: healthPotion(15),
+  healthPotion20: healthPotion(20),
+  healthPotion25: healthPotion(25),
   boneNecklace: {
     getName: "Bone Necklace",
     tags: [ItemTag.Equipment],
@@ -2250,20 +2249,19 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     description: `A horn made from a shell.`,
     getWeight: 15,
     getSellValue: 500,
-    getAbilities: (creature) =>
-      [
-        Abilities.summon(
-          "Call Kraken",
-          "Blow into the shell, beckoning a kraken from the depths.",
-          0,
-          [
-            {
-              id: "kraken",
-              amount: 1,
-            },
-          ]
-        ),
-      ],
+    getAbilities: (creature) => [
+      Abilities.summon(
+        "Call Kraken",
+        "Blow into the shell, beckoning a kraken from the depths.",
+        0,
+        [
+          {
+            id: "kraken",
+            amount: 1,
+          },
+        ]
+      ),
+    ],
   } satisfies ConsumableDefinition,
   enchantingSpirit: {
     getName: "Enchanting Spirit",

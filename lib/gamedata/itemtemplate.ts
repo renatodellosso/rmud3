@@ -6,6 +6,7 @@ import { Location } from "lib/types/Location";
 import locations from "lib/locations";
 import { randInRangeInt } from "lib/utils";
 import { getIo } from "lib/ClientFriendlyIo";
+import * as Abilities from "lib/gamedata/Abilities";
 
 export function teleportScroll(depth: number): ConsumableDefinition {
   const displayDepth = depth + 1;
@@ -52,6 +53,19 @@ export function teleportScroll(depth: number): ConsumableDefinition {
           return true;
         },
       },
+    ],
+  };
+}
+
+export function healthPotion(strength: number): ConsumableDefinition {
+  return {
+    getName: `Health Potion (${strength})`,
+    tags: [ItemTag.Consumable],
+    description: `A red solution in a small bottle. Can restore ${strength} health.`,
+    getWeight: 0.5,
+    getSellValue: 10,
+    getAbilities: (creature, item) => [
+      Abilities.heal("Heal", `Heal ${strength} health.`, 0.1, strength),
     ],
   };
 }

@@ -17,6 +17,7 @@ export type LocationId =
   | "bank"
   | "workshop"
   | "clearing"
+  | "wizard-tower"
   | `dungeon-${string}`;
 
 const rawLocations: Partial<OmitType<Location, Function>>[] = [
@@ -100,7 +101,7 @@ const rawLocations: Partial<OmitType<Location, Function>>[] = [
     name: "North Road",
     description:
       "You are on a long, winding road that leads north. The path is lined with trees and bushes.",
-    exits: new Set<LocationId>(["north-road-1", "bank", "clearing"]),
+    exits: new Set<LocationId>(["north-road-1", "bank", "clearing", "wizard-tower"]),
   },
   {
     id: "workshop",
@@ -125,6 +126,17 @@ const rawLocations: Partial<OmitType<Location, Function>>[] = [
       new EntityInstance("menhir", "clearing"),
       new EntityInstance("guildStorage", "clearing"),
     ]),
+  },
+  {
+    id: "wizard-tower",
+    name: "Wizard Tower",
+    description:
+      "You are in a cozy room filled with all kinds of magical artifacts and ancient tomes. In the center is a bubbling cauldron.",
+    exits: new Set<LocationId>(["north-road-2"]),
+    entities: new Set<EntityInstance>([
+      new EntityInstance("wizard", "wizard-tower"),
+      new EntityInstance("cauldron", "wizard-tower"),
+    ])
   },
 ];
 
