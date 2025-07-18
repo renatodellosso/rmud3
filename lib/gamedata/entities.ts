@@ -5676,10 +5676,26 @@ const entities: Record<EntityId, EntityDefinition> = {
           {
             bottle: 1,
             spore: 3,
-            livingStone: 1,
+            livingStone: 3,
             ashes: 1,
           },
           new ItemInstance("stoneskinPotion", 1)
+        ),
+        new Recipe(
+          {
+            bottle: 1,
+            demonScale: 5,
+            ashes: 1
+          },
+          new ItemInstance("overchargedPotion", 1)
+        ),
+        new Recipe(
+          {
+            bottle: 1,
+            wakingDust: 5,
+            treantSap: 1
+          },
+          new ItemInstance("hastePotion", 1)
         ),
       ])
     ),

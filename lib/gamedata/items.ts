@@ -205,7 +205,9 @@ export type ItemId =
   | "chitinChestplate"
   | "chitinHelmet"
   | "livingRing"
-  | "vineWhip";
+  | "vineWhip"
+  | "overchargedPotion"
+  | "hastePotion";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -2009,12 +2011,12 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Abilities.applyStatusEffect(
         "Drink",
         "Drink the potion to gain stoneskin.",
-        0.5,
+        30,
         [
           {
             id: "stoneskin",
             strength: 5,
-            duration: 60, // Duration in seconds
+            duration: 30, // Duration in seconds
           },
         ],
         {
@@ -3057,6 +3059,56 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 50,
     getAmountToHeal: (creature, source, amount) => amount * 1.2,
   } satisfies EquipmentDefinition,
+  overchargedPotion: {
+    getName: "Overcharged Potion",
+    description:
+      "A potion that grants a temporary boost to all ability scores.",
+    getWeight: 0.5,
+    getSellValue: 150,
+    tags: [ItemTag.Consumable],
+    getAbilities: [
+      Abilities.applyStatusEffect(
+        "Drink",
+        "Drink the potion to gain overcharged.",
+        30,
+        [
+          {
+            id: "overcharged",
+            strength: 5,
+            duration: 30, // Duration in seconds
+          },
+        ],
+        {
+          targetRestrictions: [CanTarget.isSelf],
+        }
+      ),
+    ],
+  } satisfies ConsumableDefinition,
+  hastePotion: {
+    getName: "Haste Potion",
+    description:
+      "A potion that decreases cooldowns.",
+    getWeight: 0.5,
+    getSellValue: 150,
+    tags: [ItemTag.Consumable],
+    getAbilities: [
+      Abilities.applyStatusEffect(
+        "Drink",
+        "Drink the potion to gain haste.",
+        30,
+        [
+          {
+            id: "haste",
+            strength: 10,
+            duration: 30, // Duration in seconds
+          },
+        ],
+        {
+          targetRestrictions: [CanTarget.isSelf],
+        }
+      ),
+    ],
+  } satisfies ConsumableDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;
