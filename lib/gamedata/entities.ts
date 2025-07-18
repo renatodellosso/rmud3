@@ -5437,15 +5437,6 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
-            bottle: 1,
-            spore: 3,
-            livingStone: 1,
-            ashes: 1,
-          },
-          new ItemInstance("stoneskinPotion", 1)
-        ),
-        new Recipe(
-          {
             paper: 1,
             ashes: 5,
             wakingDust: 1,
@@ -5680,6 +5671,15 @@ const entities: Record<EntityId, EntityDefinition> = {
             livingWood: 3,
           },
           new ItemInstance("healthPotion25", 1)
+        ),
+        new Recipe(
+          {
+            bottle: 1,
+            spore: 3,
+            livingStone: 1,
+            ashes: 1,
+          },
+          new ItemInstance("stoneskinPotion", 1)
         ),
       ])
     ),

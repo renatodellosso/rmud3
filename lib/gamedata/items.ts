@@ -2013,7 +2013,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
         [
           {
             id: "stoneskin",
-            strength: 7,
+            strength: 5,
             duration: 60, // Duration in seconds
           },
         ],
