@@ -4850,6 +4850,14 @@ const entities: Record<EntityId, EntityDefinition> = {
         new Recipe({ ironBar: 5 }, new ItemInstance("ironBoots", 1)),
         new Recipe({ ironBar: 1 }, new ItemInstance("dart", 10)),
         new Recipe(
+          {
+            ironBar: 5,
+            bone: 5,
+            eyeball: 1,
+          },
+          new ItemInstance("dungeoneersSword", 1)
+        ),
+        new Recipe(
           { ironBar: 10, spore: 5 },
           new ItemInstance("fungalSpear", 1)
         ),
@@ -4874,6 +4882,14 @@ const entities: Record<EntityId, EntityDefinition> = {
             spiderFang: 1,
           },
           new ItemInstance("indomitableEarring", 1)
+        ),
+        new Recipe(
+          {
+            ironHelmet: 1,
+            goldBar: 1,
+            coal: 5,
+          },
+          new ItemInstance("minersHelmet", 1)
         ),
         new Recipe(
           { ironBar: 12, memory: 10, nightmare: 1, ectoplasm: 5 },
@@ -5019,6 +5035,14 @@ const entities: Record<EntityId, EntityDefinition> = {
             ink: 5,
           },
           new ItemInstance("enrapturingRing", 1)
+        ),
+        new Recipe(
+          {
+            ironBar: 10,
+            venom: 5,
+            livingWood: 5,
+          },
+          new ItemInstance("parasiticSpear", 1)
         ),
         new Recipe(
           {
@@ -5375,6 +5399,15 @@ const entities: Record<EntityId, EntityDefinition> = {
         ),
         new Recipe(
           {
+            silk: 5,
+            dreamingDust: 5,
+            memory: 10,
+            ectoplasm: 3,
+          },
+          new ItemInstance("dreamWeb", 1)
+        ),
+        new Recipe(
+          {
             skull: 1,
             bone: 5,
             rottenFlesh: 5,
@@ -5685,7 +5718,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           {
             bottle: 1,
             demonScale: 5,
-            ashes: 1
+            ashes: 1,
           },
           new ItemInstance("overchargedPotion", 1)
         ),
@@ -5693,7 +5726,7 @@ const entities: Record<EntityId, EntityDefinition> = {
           {
             bottle: 1,
             wakingDust: 5,
-            treantSap: 1
+            treantSap: 1,
           },
           new ItemInstance("hastePotion", 1)
         ),

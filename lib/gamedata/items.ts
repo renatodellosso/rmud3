@@ -207,7 +207,11 @@ export type ItemId =
   | "livingRing"
   | "vineWhip"
   | "overchargedPotion"
-  | "hastePotion";
+  | "hastePotion"
+  | "dungeoneersSword"
+  | "minersHelmet"
+  | "dreamWeb"
+  | "parasiticSpear";
 
 const items: Record<ItemId, ItemDefinition> = Object.freeze({
   bone: {
@@ -1273,7 +1277,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 100,
     slot: EquipmentSlot.Legs,
     getDamageResistances: [
-      { amount: 2, type: "*" },
+      { amount: 3, type: "*" },
       { amount: 3, type: DamageType.Psychic },
     ],
     getCooldown: (creature, source, ability, cooldown) => cooldown * 0.95,
@@ -1287,34 +1291,27 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
     getSellValue: 150,
     slot: EquipmentSlot.Hands,
     getAbilities: (creature, item) => [
-      Abilities.attackWithStatusEffect(
+      Abilities.attack(
         "Dream Slash",
         "A quick slash that rips through the fabric of dreams.",
         1.2,
         [
           { amount: 8, type: DamageType.Piercing },
-          { amount: 2, type: DamageType.Psychic },
-        ],
-        [
-          {
-            id: "cursed",
-            strength: 1,
-            duration: 3, // Duration in seconds
-          },
+          { amount: 4, type: DamageType.Psychic },
         ]
       ),
       Abilities.attackWithStatusEffect(
         "Pierce the Veil",
         "Pierce the veil between worlds, dealing damage and applying a curse. Deals 5 damage to yourself.",
-        3,
+        2,
         [
-          { amount: 10, type: DamageType.Piercing },
-          { amount: 5, type: DamageType.Psychic },
+          { amount: 12, type: DamageType.Piercing },
+          { amount: 8, type: DamageType.Psychic },
         ],
         [
           {
             id: "cursed",
-            strength: 2,
+            strength: 3,
             duration: 5, // Duration in seconds
           },
         ],
@@ -1355,6 +1352,23 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       Intelligence: 15,
     },
     getDamageResistances: [{ amount: 7, type: DamageType.Psychic }],
+  } satisfies EquipmentDefinition,
+  dreamWeb: {
+    getName: "Dream Web",
+    tags: [ItemTag.Equipment],
+    description: "A translucent veil, filled with dreaming dust.",
+    getWeight: 0.5,
+    getSellValue: 100,
+    getAbilityScores: {
+      Strength: 0,
+      Constitution: 0,
+      Intelligence: 10,
+    },
+    getAbilities: [
+      Abilities.applyStatusEffect("Dream", "Enter a dream state.", 5, [
+        { id: "dreaming", strength: 2, duration: 5 },
+      ]),
+    ],
   } satisfies EquipmentDefinition,
   spectralDust: {
     getName: "Spectral Dust",
@@ -3086,8 +3100,7 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
   } satisfies ConsumableDefinition,
   hastePotion: {
     getName: "Haste Potion",
-    description:
-      "A potion that decreases cooldowns.",
+    description: "A potion that decreases cooldowns.",
     getWeight: 0.5,
     getSellValue: 150,
     tags: [ItemTag.Consumable],
@@ -3109,6 +3122,50 @@ const items: Record<ItemId, ItemDefinition> = Object.freeze({
       ),
     ],
   } satisfies ConsumableDefinition,
+  dungeoneersSword: {
+    getName: "Dungeoneer's Sword",
+    description: "A sturdy sword for a well prepared dungeoneer.",
+    getWeight: 4,
+    getSellValue: 20,
+    tags: [ItemTag.Equipment],
+    getAbilities: [
+      Abilities.attack("Slash", "A slash with the Dungeoneer's Sword.", 1, [
+        { amount: 6, type: DamageType.Slashing },
+      ]),
+    ],
+  } satisfies EquipmentDefinition,
+  minersHelmet: {
+    getName: "Miner's Helmet",
+    description: "A solid helmet. Increases carrying capacity.",
+    getWeight: 5,
+    getSellValue: 25,
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    getDamageResistances: [{ amount: 2, type: DamageType.Bludgeoning }],
+    getCarryingCapacity: 30,
+  } satisfies EquipmentDefinition,
+  parasiticSpear: {
+    getName: "Parisitic Spear",
+    description: "A spear that bores into it's targets to extract life.",
+    getWeight: 3,
+    getSellValue: 150,
+    tags: [ItemTag.Equipment],
+    slot: EquipmentSlot.Hands,
+    onAttack: (creature, target, source, damage) => {
+      const totalDamage = damage.reduce((sum, d) => sum + d.amount, 0);
+      const healthAdded = totalDamage * creature.scaleAbility(0.01);
+
+      creature.addHealth(healthAdded);
+    },
+    getAbilities: [
+      Abilities.attack(
+        "Parisitic Pierce",
+        "Burrow into your target.",
+        1.5,
+        [{ amount: 30, type: DamageType.Piercing }],
+      )
+    ],
+  } satisfies EquipmentDefinition,
 } satisfies Record<ItemId, ItemDefinition | EquipmentDefinition | ConsumableDefinition>);
 
 export default items;
