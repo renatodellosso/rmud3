@@ -220,7 +220,17 @@ export default function registerGameListeners(socket: TypedSocket) {
 
     player.instance.equipment.equip(
       player.instance,
-      structuredClone(new ItemInstance(item.definitionId, 1, item.reforge)) // Ensure we equip one item
+      structuredClone(
+        new ItemInstance(
+          item.definitionId,
+          1,
+          item.reforge,
+          item.guildId,
+          item.guildName,
+          item.canActAt,
+          item.lastActedAt
+        )
+      ) // Ensure we equip one item
     );
 
     player.instance.inventory.remove(
@@ -246,7 +256,7 @@ export default function registerGameListeners(socket: TypedSocket) {
     }
 
     player.instance.inventory.add(
-      new ItemInstance(item.definitionId, 1, item.reforge),
+      new ItemInstance(item.definitionId, 1, item.reforge, item.guildId, item.guildName, item.canActAt, item.lastActedAt),
       true
     );
 

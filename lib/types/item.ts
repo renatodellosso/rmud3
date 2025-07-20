@@ -23,20 +23,24 @@ export class ItemInstance {
   guildId?: ObjectId;
   guildName?: string;
   canActAt: Date = new Date();
-  lastActedAt: Date = new Date();
+  lastActedAt: Date = new Date(0);
 
   constructor(
     definitionId: ItemId,
     amount: number,
     reforge?: ReforgeId,
     guildId?: ObjectId,
-    guildName?: string
+    guildName?: string,
+    canActAt?: Date,
+    lastActedAt?: Date,
   ) {
     this.definitionId = definitionId;
     this.amount = amount;
     this.reforge = reforge ?? undefined;
     this.guildId = guildId ?? undefined;
     this.guildName = guildName ?? undefined;
+    if (canActAt) this.canActAt.setTime(new Date(canActAt).getTime());
+    if (lastActedAt) this.lastActedAt.setTime(new Date(lastActedAt).getTime());
   }
 
   getName(): string {

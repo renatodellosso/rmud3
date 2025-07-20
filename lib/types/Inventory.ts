@@ -75,6 +75,12 @@ export class DirectInventory implements Inventory {
 
     if (existingItem) {
       existingItem.amount += amountToAdd;
+      existingItem.canActAt.setTime(
+        Math.max(item.canActAt.getTime(), existingItem.canActAt.getTime())
+      );
+      existingItem.lastActedAt.setTime(
+        Math.max(item.lastActedAt.getTime(), existingItem.lastActedAt.getTime())
+      );
     } else {
       this.items.push(
         restoreFieldsAndMethods(
